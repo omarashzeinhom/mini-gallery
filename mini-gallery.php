@@ -183,11 +183,11 @@ function mgwpp_upload() {
             foreach ($_FILES['sowar']['name'] as $key => $value) {
                 if ($_FILES['sowar']['name'][$key]) {
                     $file = array(
-                        'name' => sanitize_file_name($_FILES['sowar']['name'][$key]), // Sanitize file name
-                        'type' => $_FILES['sowar']['type'][$key],
-                        'tmp_name' => $_FILES['sowar']['tmp_name'][$key],
-                        'error' => $_FILES['sowar']['error'][$key],
-                        'size' => $_FILES['sowar']['size'][$key]
+                        'name' => sanitize_file_name($_FILES['sowar']['name'][$key]),  // Sanitize file name
+                        'type' => sanitize_mime_type($_FILES['sowar']['type'][$key]),  // Sanitize file type (MIME type)
+                        'tmp_name' => sanitize_text_field($_FILES['sowar']['tmp_name'][$key]),  // Sanitize temporary file name
+                        'error' => intval($_FILES['sowar']['error'][$key]),  // Sanitize error code as an integer
+                        'size' => intval($_FILES['sowar']['size'][$key])  // Sanitize file size as an integer
                     );
 
                     $file_type = wp_check_filetype($file['name']);

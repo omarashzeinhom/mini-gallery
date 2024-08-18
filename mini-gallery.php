@@ -95,13 +95,11 @@ register_deactivation_hook(__FILE__, 'mgwpp_plugin_deactivate');
 // Uninstall Hook
 function mgwpp_plugin_uninstall()
 {
-    filter_var(
-        $sowar = get_posts(array(
-            'post_type' => 'mgwpp_soora',
-            'numberposts' => -1,
-            'post_status' => 'any'
-        ))
-        );
+    $sowar = get_posts(array(
+        'post_type' => 'mgwpp_soora',
+        'numberposts' => -1,
+        'post_status' => 'any'
+    ));
     foreach ($sowar as $gallery_image) {
         wp_delete_post(intval($gallery_image->ID), true);
     }
@@ -200,20 +198,19 @@ function mgwpp_upload()
 
             foreach ($_FILES['sowar']['name'] as $key => $value) {
                 if ($_FILES['sowar']['name'][$key]) {
-                    filter_var(
-                        $file = array(
-                            'name' => sanitize_file_name($_FILES['sowar']['name'][$key]),  // Sanitize file name
-                            'type' => sanitize_mime_type($_FILES['sowar']['type'][$key]),  // Sanitize file type (MIME type)
-                            'tmp_name' => sanitize_text_field($_FILES['sowar']['tmp_name'][$key]),  // Sanitize temporary file name
-                            'error' => intval($_FILES['sowar']['error'][$key]),  // Sanitize error code as an integer
-                            'size' => intval($_FILES['sowar']['size'][$key])  // Sanitize file size as an integer
-                        )
+                  filter_var(
+                    $file = array(
+                        'name' => sanitize_file_name($_FILES['sowar']['name'][$key]),  // Sanitize file name
+                        'type' => sanitize_mime_type($_FILES['sowar']['type'][$key]),  // Sanitize file type (MIME type)
+                        'tmp_name' => sanitize_text_field($_FILES['sowar']['tmp_name'][$key]),  // Sanitize temporary file name
+                        'error' => intval($_FILES['sowar']['error'][$key]),  // Sanitize error code as an integer
+                        'size' => intval($_FILES['sowar']['size'][$key])  // Sanitize file size as an integer
+                    )
                     );
 
                     filter_var($file_type = wp_check_filetype($file['name']));
-                    filter_var(
-                        $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif')
-                    );
+                    filter_var(                    $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif')
+                );
                     if (in_array($file_type['type'], $allowed_types)) {
                         $uploaded = wp_handle_upload($file, array('test_form' => false));
                         if (isset($uploaded['file'])) {

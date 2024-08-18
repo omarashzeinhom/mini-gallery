@@ -162,8 +162,8 @@ add_action('admin_menu', 'mgwpp_menu');
 // Handle File Uploads
 function mgwpp_upload() {
     // Verify nonce for security
-    if (!isset($_POST['mgwpp_upload_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_upload_nonce'])), 'mgwpp_upload_nonce')) {
-        wp_die(__('Security check failed', 'text-domain'));
+    if (!isset($_POST['mgwpp_upload_nonce']) || !wp_verify_nonce(wp_unslash($_POST['mgwpp_upload_nonce']), 'mgwpp_upload_nonce')) {
+        wp_die(esc_html__('Security check failed', 'text-domain'));
     }
 
     // Check required fields and sanitize
@@ -222,7 +222,7 @@ function mgwpp_upload() {
                                 wp_update_attachment_metadata($attachment_id, $attach_data);
                             } else {
                                 // Handle file error
-                                error_log(__('File path does not exist: ', 'text-domain') . $file_path);
+                                error_log(__('File path does not exist: ', 'text-domain') . esc_url($file_path));
                             }
                         } else {
                             // Handle upload error
@@ -230,7 +230,7 @@ function mgwpp_upload() {
                         }
                     } else {
                         // Handle invalid file type or size
-                        error_log(__('Invalid file type or size: ', 'text-domain') . $file_type['type'] . ', Size: ' . $file['size']);
+                        error_log(__('Invalid file type or size: ', 'text-domain') . esc_html($file_type['type']) . ', Size: ' . esc_html($file['size']));
                     }
                 }
             }
@@ -241,7 +241,6 @@ function mgwpp_upload() {
     exit;
 }
 add_action('admin_post_mgwpp_upload', 'mgwpp_upload');
-
 
 
 // Handle Gallery Deletion

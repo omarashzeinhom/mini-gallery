@@ -237,7 +237,7 @@ function mgwpp_upload() {
         }
     }
 
-    wp_redirect(admin_url('admin.php?page=mini-gallery'));
+    wp_redirect(esc_url_raw(admin_url('admin.php?page=mini-gallery')));
     exit;
 }
 add_action('admin_post_mgwpp_upload', 'mgwpp_upload');

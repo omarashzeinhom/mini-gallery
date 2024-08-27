@@ -162,7 +162,7 @@ add_action('admin_menu', 'mgwpp_menu');
 // Handle File Uploads
 function mgwpp_upload() {
     // Verify nonce for security
-    if (!isset($_POST['mgwpp_upload_nonce']) || !wp_verify_nonce(wp_unslash($_POST['mgwpp_upload_nonce']), 'mgwpp_upload_nonce')) {
+    if (!isset($_POST['mgwpp_upload_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_upload_nonce'])), 'mgwpp_upload_nonce')) {
         wp_die(esc_html__('Security check failed', 'text-domain'));
     }
 
@@ -194,7 +194,7 @@ function mgwpp_upload() {
                     );
 
                     // Validate file type and size
-                    $file_type = wp_check_filetype($file['name']);
+                    $file_type = wp_check_filetype_and_ext($file['tmp_name'], $file['name']);
                     $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif');
                     $max_size = 5 * 1024 * 1024; // 5MB
 
@@ -256,7 +256,7 @@ function mgwpp_delete_gallery() {
     }
 
     wp_delete_post($gallery_id, true);
-    wp_redirect(admin_url('admin.php?page=mini-gallery'));
+    wp_redirect(esc_url_raw(admin_url('admin.php?page=mini-gallery')));
     exit;
 }
 add_action('admin_post_mgwpp_delete_gallery', 'mgwpp_delete_gallery');

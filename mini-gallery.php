@@ -168,8 +168,10 @@ function mgwpp_upload() {
 
     // Check required fields and sanitize
     if (!empty($_FILES['sowar']) && !empty($_POST['image_title']) && !empty($_POST['gallery_type'])) {
-        $title = sanitize_text_field(wp_unslash($_POST['image_title']));      
-        $gallery_type = sanitize_text_field(wp_unslash($_POST['gallery_type']));        // Create a new post for the gallery
+        $title = sanitize_text_field(wp_unslash($_POST['image_title']));
+        $gallery_type = sanitize_text_field(wp_unslash($_POST['gallery_type']));
+        
+        // Create a new post for the gallery
         $post_id = wp_insert_post(array(
             'post_title'  => $title,
             'post_type'   => 'mgwpp_soora',
@@ -180,73 +182,107 @@ function mgwpp_upload() {
             // Save the gallery type as post meta
             update_post_meta($post_id, 'gallery_type', $gallery_type);
 
-            // Handle each file
-            if (isset($_FILES['sowar']['name']) && is_array($_FILES['sowar']['name'])) {                foreach ( $_FILES['sowar']['name']  as $key => $file_name) {
-                    if (isset($file_name)) {
-                        // Ensure all file fields are set
+            // Handle files
+            $files = isset($_FILES['sowar']) ? $_FILES['sowar'] : array();
+            $is_multiple = isset($files['name']) && is_array($files['name']) && isset($files['name'][0]);
 
-                        if (isset($_FILES['sowar']['tmp_name'][$key], $_FILES['sowar']['type'][$key], $_FILES['sowar']['error'][$key], $_FILES['sowar']['size'][$key], $_FILES['sowar']['name'][$key])) {
-                            $file = array(
-                                'name'     => wp_unslash( sanitize_file_name($_FILES['sowar']['name'][$key])),
-                                'type'     => wp_unslash(sanitize_mime_type($_FILES['sowar']['type'][$key])),
-                                'tmp_name' => $_FILES['sowar']['tmp_name'][$key],
-                                'error'    => wp_unslash(intval($_FILES['sowar']['error'][$key])),
-                                'size'     => wp_unslash(intval($_FILES['sowar']['size'][$key]))
-                            );
-    
-                            // Validate file type and size
-                            $file_type = wp_check_filetype_and_ext($file['tmp_name'], $file['name']);
-                            $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif');
-                            $max_size = 5 * 1024 * 1024; // 5MB
-    
-                            if (in_array($file_type['type'], $allowed_types) && $file['size'] <= $max_size) {
-                                // Handle the upload
-                                $uploaded = wp_handle_upload($file, array('test_form' => false));
-    
-                                if (isset($uploaded['file']) && !empty($uploaded['file'])) {
-                                    $file_path = $uploaded['file'];
-                                    $file_url = esc_url($uploaded['url']); // Escape URL for safety
-    
-                                    // Ensure file path and URL are valid
-                                    if (file_exists($file_path)) {
-                                        $attachment_id = wp_insert_attachment(array(
-                                            'guid'           => $file_url,
-                                            'post_mime_type' => $file_type['type'],
-                                            'post_title'     => sanitize_text_field($title), // Ensure title is safe
-                                            'post_content'   => '',
-                                            'post_status'    => 'inherit'
-                                        ), $file_path, $post_id);
-    
-                                        // Generate and update attachment metadata
-                                        require_once(ABSPATH . 'wp-admin/includes/image.php');
-                                        $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
-                                        wp_update_attachment_metadata($attachment_id, $attach_data);
-                                    } else {
-                                        // Handle file error
-                                        error_log(__('File path does not exist: ', 'text-domain') . esc_url($file_path));
-                                    }
+            if ($is_multiple) {
+                foreach ($files['name'] as $key => $file_name) {
+                    if (isset($file_name)) {
+                        $file = array(
+                            'name'     => wp_unslash(sanitize_file_name($files['name'][$key])),
+                            'type'     => wp_unslash(sanitize_mime_type($files['type'][$key])),
+                            'tmp_name' => $files['tmp_name'][$key],
+                            'error'    => wp_unslash(intval($files['error'][$key])),
+                            'size'     => wp_unslash(intval($files['size'][$key]))
+                        );
+
+                        // Validate file type and size
+                        $file_type = wp_check_filetype_and_ext($file['tmp_name'], $file['name']);
+                        $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif');
+                        $max_size = 5 * 1024 * 1024; // 5MB
+
+                        if (in_array($file_type['type'], $allowed_types) && $file['size'] <= $max_size) {
+                            // Handle the upload
+                            $uploaded = wp_handle_upload($file, array('test_form' => false));
+
+                            if (isset($uploaded['file']) && !empty($uploaded['file'])) {
+                                $file_path = $uploaded['file'];
+                                $file_url = esc_url($uploaded['url']); // Escape URL for safety
+
+                                if (file_exists($file_path)) {
+                                    $attachment_id = wp_insert_attachment(array(
+                                        'guid'           => $file_url,
+                                        'post_mime_type' => $file_type['type'],
+                                        'post_title'     => sanitize_text_field($title),
+                                        'post_content'   => '',
+                                        'post_status'    => 'inherit'
+                                    ), $file_path, $post_id);
+
+                                    require_once(ABSPATH . 'wp-admin/includes/image.php');
+                                    $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
+                                    wp_update_attachment_metadata($attachment_id, $attach_data);
                                 } else {
-                                    // Handle upload error
-                                    error_log(__('File upload failed: ', 'text-domain') . print_r($uploaded, true));
+                                    error_log(__('File path does not exist: ', 'text-domain') . esc_url($file_path));
                                 }
                             } else {
-                                // Handle invalid file type or size
-                                error_log(__('Invalid file type or size: ', 'text-domain') . esc_html($file_type['type']) . ', Size: ' . esc_html($file['size']));
+                                error_log(__('File upload failed: ', 'text-domain') . print_r($uploaded, true));
                             }
                         } else {
-                            // Handle missing file data
-                            error_log(__('Missing file data for key: ', 'text-domain') . esc_html($key));
+                            error_log(__('Invalid file type or size: ', 'text-domain') . esc_html($file_type['type']) . ', Size: ' . esc_html($file['size']));
                         }
                     }
                 }
+            } else {
+                // Handle single file upload
+                $file = array(
+                    'name'     => wp_unslash(sanitize_file_name($files['name'])),
+                    'type'     => wp_unslash(sanitize_mime_type($files['type'])),
+                    'tmp_name' => $files['tmp_name'],
+                    'error'    => wp_unslash(intval($files['error'])),
+                    'size'     => wp_unslash(intval($files['size']))
+                );
+
+                $file_type = wp_check_filetype_and_ext($file['tmp_name'], $file['name']);
+                $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif');
+                $max_size = 5 * 1024 * 1024; // 5MB
+
+                if (in_array($file_type['type'], $allowed_types) && $file['size'] <= $max_size) {
+                    $uploaded = wp_handle_upload($file, array('test_form' => false));
+
+                    if (isset($uploaded['file']) && !empty($uploaded['file'])) {
+                        $file_path = $uploaded['file'];
+                        $file_url = esc_url($uploaded['url']);
+
+                        if (file_exists($file_path)) {
+                            $attachment_id = wp_insert_attachment(array(
+                                'guid'           => $file_url,
+                                'post_mime_type' => $file_type['type'],
+                                'post_title'     => sanitize_text_field($title),
+                                'post_content'   => '',
+                                'post_status'    => 'inherit'
+                            ), $file_path, $post_id);
+
+                            require_once(ABSPATH . 'wp-admin/includes/image.php');
+                            $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
+                            wp_update_attachment_metadata($attachment_id, $attach_data);
+                        } else {
+                            error_log(__('File path does not exist: ', 'text-domain') . esc_url($file_path));
+                        }
+                    } else {
+                        error_log(__('File upload failed: ', 'text-domain') . print_r($uploaded, true));
+                    }
+                } else {
+                    error_log(__('Invalid file type or size: ', 'text-domain') . esc_html($file_type['type']) . ', Size: ' . esc_html($file['size']));
+                }
             }
-       
         }
     }
 
     wp_redirect(esc_url_raw(admin_url('admin.php?page=mini-gallery')));
     exit;
 }
+
 add_action('admin_post_mgwpp_upload', 'mgwpp_upload');
 
 

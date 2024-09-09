@@ -181,8 +181,7 @@ function mgwpp_upload() {
             update_post_meta($post_id, 'gallery_type', $gallery_type);
 
             // Handle each file
-            if(isset($_FILES['sowar']['name'])) {
-                foreach ( $_FILES['sowar']['name']  as $key => $file_name) {
+            if (isset($_FILES['sowar']['name']) && is_array($_FILES['sowar']['name'])) {                foreach ( $_FILES['sowar']['name']  as $key => $file_name) {
                     if (isset($file_name)) {
                         // Ensure all file fields are set
 

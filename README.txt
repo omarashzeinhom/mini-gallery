@@ -15,3 +15,8 @@ Features
 - Allows For User Marketing Team To Upload Images
 - Simple Gallery Carousel
 - Light Weight Carousel With ShortCode.
+
+== Screenshots == 
+1- Single Gallery
+2- Multi Carousel 
+3- Grid

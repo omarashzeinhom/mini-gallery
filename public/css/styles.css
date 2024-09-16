@@ -118,6 +118,8 @@
 .grid-layout .grid-item {
     padding: 10px;
     opacity: 0.9;
+    max-width: 250px;
+    width: 100%;
 }
 
 .grid-layout .grid-item img {

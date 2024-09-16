@@ -63,7 +63,7 @@
     overflow: hidden;
     position: relative;
     width: 100%;
-    max-width: 800px; /* Adjusted max-width for consistency */
+    max-width: 1920px; /* Adjusted max-width for consistency */
     margin: 0 auto;
     gap: 20px; /* Space between images */
     align-items: center;
@@ -71,9 +71,9 @@
 }
 
 .mg-gallery.multi-carousel .mg-multi-carousel-slide {
-    flex: 0 0 calc(100% / 6); /* Adjust width based on the number of images per page */
-    max-width: 250px;
-    max-height: 250px;
+    flex: 1 1 calc(100% / 3); /* Adjust width based on the number of images per page */
+    max-width: 400px;
+    max-height: 400px;
     text-align: center;
 }
 

@@ -390,7 +390,7 @@ function mgwpp_gallery_shortcode($atts)
                 $images = array_slice($all_images, $offset, $images_per_page);
                 foreach ($images as $image) {
                     $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                    $output .= '<div class="mg-multi-carousel-slide"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
+                    $output .= '<div class="mg-multi-carousel-slide"><img class="mg-multi-carousel-slide" src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
                 }
                 $output .= '</div>';
             } elseif ($gallery_type === 'grid') {

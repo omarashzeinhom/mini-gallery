@@ -109,15 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Set up an interval to automatically switch slides
         setInterval(nextSlide, 3000); // Change slide every 3 seconds
 
-        // Add event listener for load more button
-        var loadMoreButton = carousel.querySelector(".load-more-button");
-        if (loadMoreButton) {
-            loadMoreButton.addEventListener("click", function() {
-                currentIndex++;
-                showSlides();
-            });
-        }
-
+        
         // Handle window resize to adjust images per page
         window.addEventListener('resize', function() {
             updateImagesPerPage();

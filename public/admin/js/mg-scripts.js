@@ -1,13 +1,13 @@
 // Carousel for Single Gallery
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var singleCarousels = document.querySelectorAll(".mg-gallery-single-carousel");
 
-    singleCarousels.forEach(function(carousel) {
+    singleCarousels.forEach(function (carousel) {
         var slides = carousel.querySelectorAll(".carousel-slide");
         var currentIndex = 0;
 
         function showSlide(index) {
-            slides.forEach(function(slide) {
+            slides.forEach(function (slide) {
                 slide.style.display = "none";
             });
             slides[index].style.display = "block";
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var loading = false; // Flag to prevent multiple requests
     var page = 1; // Start with page 1
 
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "/path/to/your/endpoint?page=" + page, true);
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 400) {
                 // Append new items to the grid
                 var newItems = xhr.responseText;
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Load more items when scrolling near the bottom
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
             loadMoreItems();
         }
@@ -65,10 +65,10 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Carousel for Multi Gallery
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var multiCarousels = document.querySelectorAll(".mg-gallery.multi-carousel");
 
-    multiCarousels.forEach(function(carousel) {
+    multiCarousels.forEach(function (carousel) {
         var slides = carousel.querySelectorAll(".mg-multi-carousel-slide");
         var currentIndex = 0;
         var imagesPerPage = 6; // Default number of images per page
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Function to show the current page of slides
         function showSlides() {
             var totalSlides = slides.length;
-            slides.forEach(function(slide, index) {
+            slides.forEach(function (slide, index) {
                 if (index >= currentIndex * imagesPerPage && index < (currentIndex + 1) * imagesPerPage) {
                     slide.style.display = "flex";
                 } else {
@@ -109,9 +109,9 @@ document.addEventListener("DOMContentLoaded", function() {
         // Set up an interval to automatically switch slides
         setInterval(nextSlide, 3000); // Change slide every 3 seconds
 
-        
+
         // Handle window resize to adjust images per page
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             updateImagesPerPage();
             showSlides();
         });

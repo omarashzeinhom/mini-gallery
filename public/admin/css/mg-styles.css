@@ -93,11 +93,13 @@
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
 }
 
+
 @media (max-width: 768px) {
     .mg-gallery.multi-carousel .mg-multi-carousel-slide {
-        flex: 0 0 calc(100% / 2); /* 2 images per page on mobile */
+        flex: 1 1 1 calc(100% / 1); /* 1 images per page on mobile */
     }
 }
+
 
 
 /* Grid Layout */

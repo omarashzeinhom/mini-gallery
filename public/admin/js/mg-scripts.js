@@ -23,46 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    var loading = false; // Flag to prevent multiple requests
-    var page = 1; // Start with page 1
 
-    // Function to load more items
-    function loadMoreItems() {
-        if (loading) return;
-        loading = true;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/path/to/your/endpoint?page=" + page, true);
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 400) {
-                // Append new items to the grid
-                var newItems = xhr.responseText;
-                var container = document.getElementById("grid-container");
-                container.insertAdjacentHTML('beforeend', newItems);
-
-                // Update loading state
-                loading = false;
-                page++;
-            } else {
-                // Handle error
-                console.error("Error loading more items.");
-                loading = false;
-            }
-        };
-        xhr.send();
-    }
-
-    // Load more items when scrolling near the bottom
-    window.addEventListener('scroll', function () {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-            loadMoreItems();
-        }
-    });
-
-    // Initial load of items if needed
-    loadMoreItems();
-});
 
 // Carousel for Multi Gallery
 document.addEventListener("DOMContentLoaded", function () {

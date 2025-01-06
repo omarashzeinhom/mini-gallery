@@ -130,10 +130,12 @@ class MGWPP_Admin
                         <summary><?php echo esc_html__('Click to view gallery preview', 'mini-gallery'); ?></summary>
                         
                         <!-- Gallery Preview Section -->
+                         
                         <h3><?php echo esc_html__('Gallery Preview', 'mini-gallery'); ?></h3>
                         <div class="mgwpp-gallery-preview">
                             <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
                         </div>
+                        
                         <hr style="border: 1px solid #ccc;">
                     </details>
                 </td>
@@ -204,7 +206,8 @@ radios.forEach(radio => {
 // Correctly hook into the action using the updated method name
 add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'mgwpp_enqueue_assets'));
 
-
+add_filter('widget_text', 'do_shortcode');
+add_filter('the_content', 'do_shortcode'); 
 
 ?>
 

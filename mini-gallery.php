@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mini Gallery
  * Description: A WordPress plugin to display a simple custom gallery.
- * Version: 1.0.0
+ * Version: 1.1
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */

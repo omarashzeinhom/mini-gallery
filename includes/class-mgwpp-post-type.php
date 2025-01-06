@@ -34,7 +34,9 @@ class MGWPP_Post_Type {
         );
         register_post_type('mgwpp_soora', $args);
     }
-};
+}
 
-add_action('init', array('MGWPP_Post_Type', 'register_post_type'));
+// Register the custom post type during the 'init' hook
+add_action('init', array('MGWPP_Post_Type', 'mgwpp_register_post_type'));
+
 ?>

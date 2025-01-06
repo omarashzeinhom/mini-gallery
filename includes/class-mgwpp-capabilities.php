@@ -59,4 +59,7 @@ class MGWPP_Gallery_ShortCode{
         return $output;
     }
 }
+
+add_action('init', array('MGWPP_Gallery_Shortcode', 'register_shortcode'));
+
 ;?>

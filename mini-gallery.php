@@ -85,32 +85,36 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
          $all_images = get_attached_media('image', $post_id);
  
          if ($all_images) {
-             if ($gallery_type === 'single_carousel') {
-                 $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
-                 foreach ($all_images as $image) {
-                     $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                     $output .= '<div class="carousel-slide"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
-                 }
-                 $output .= '</div>';
-             } elseif ($gallery_type === 'multi_carousel') {
-                 $output .= '<div id="mg-multi-carousel" class="mg-gallery multi-carousel" data-page="' . esc_attr($paged) . '">';
-                 
-                 // Slice images for current page
-                 $images = array_slice($all_images, $offset, $images_per_page);
-                 foreach ($images as $image) {
-                     $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                     $output .= '<div class="mg-multi-carousel-slide"><img class="mg-multi-carousel-slide" src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
-                 }
-                 $output .= '</div>';
-             } elseif ($gallery_type === 'grid') {
-                 $output .= '<div class="grid-layout">';
-                 foreach ($all_images as $image) {
-                     $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                     $output .= '<div class="grid-item"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
-                 }
-                 $output .= '</div>';
-             }
-         } else {
+            if ($gallery_type === 'single_carousel') {
+                $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
+                foreach ($all_images as $image) {
+                    $output .= '<div class="carousel-slide">' . 
+                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) . 
+                        '</div>';
+                }
+                $output .= '</div>';
+            } elseif ($gallery_type === 'multi_carousel') {
+                $output .= '<div id="mg-multi-carousel" class="mg-gallery multi-carousel" data-page="' . esc_attr($paged) . '">';
+                
+                // Slice images for current page
+                $images = array_slice($all_images, $offset, $images_per_page);
+                foreach ($images as $image) {
+                    $output .= '<div class="mg-multi-carousel-slide">' . 
+                        wp_get_attachment_image($image->ID, 'medium', false, ['class' => 'mg-multi-carousel-slide', 'loading' => 'lazy']) . 
+                        '</div>';
+                }
+                $output .= '</div>';
+            } elseif ($gallery_type === 'grid') {
+                $output .= '<div class="grid-layout">';
+                foreach ($all_images as $image) {
+                    $output .= '<div class="grid-item">' . 
+                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) . 
+                        '</div>';
+                }
+                $output .= '</div>';
+            }
+        }
+         else {
              $output .= '<p>No images found for this gallery.</p>';
          }
  

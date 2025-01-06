@@ -17,7 +17,7 @@ function mgwpp_register_post_type()
         'public' => true,
         'label' => 'Gallery Image',
         'description' => 'Manage your galleries here',
-        'show_in_rest' => false,
+        'show_in_rest' => true,
         'show_in_menu' => false,
         'rest_base' => 'soora-api',
         'menu_icon' => 'dashicons-format-gallery',
@@ -239,13 +239,17 @@ function mgwpp_upload()
                                 $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
                                 wp_update_attachment_metadata($attachment_id, $attach_data);
                             } else {
-                                error_log(__('Attachment creation failed: ', 'mini-gallery') . $attachment_id->get_error_message());
+                                return new WP_Error('attachment_creation_failed', __('Attachment creation failed: ', 'mini-gallery') . $attachment_id->get_error_message());
                             }
                         } else {
-                            error_log(__('File upload failed: ', 'mini-gallery') . print_r($uploaded, true));
+                            return new WP_Error('file_upload_failed', __('File upload failed: ', 'mini-gallery') . print_r($uploaded, true));
                         }
                     } else {
-                        error_log(__('File data validation failed for index: ', 'mini-gallery') . $i);
+                        /* translators: %d is the index of the file that failed validation. */
+                        return new WP_Error(
+                            'file_data_validation_failed',
+                            sprintf(__('File data validation failed for index: %d', 'mini-gallery'), $index)
+                        );
                     }
                 }
             }
@@ -280,135 +284,227 @@ function mgwpp_delete_gallery()
 add_action('admin_post_mgwpp_delete_gallery', 'mgwpp_delete_gallery');
 
 
-function mgwpp_plugin_page()
-{
-?>
+function mgwpp_plugin_page() {
+    ?>
+<div>
     <h1><?php echo esc_html__('Mini Gallery', 'mini-gallery'); ?></h1>
 
-    <!-- Form to upload new gallery images -->
-    <h2><?php echo esc_html__('Upload New Images', 'mini-gallery'); ?></h2>
+    <div>
+        <label>
+            <input type="radio" name="mgwpp_menu_selection" class="app__dashboard-selection" value="dashboard"
+                checked />
+            DashBoard
+        </label>
+        <label>
+            <input type="radio" name="mgwpp_menu_selection" class="app__dashboard-selection" value="albums" />
+            Albums
+        </label>
+        <label>
+            <input type="radio" name="mgwpp_menu_selection" class="app__dashboard-selection" value="galleries" />
+            Galleries
+        </label>
+        <label>
+            <input type="radio" name="mgwpp_menu_selection" class="app__dashboard-selection" value="security" />
+            Security
+        </label>
+    </div>
+
+    <!-- Display content based on the selected tab -->
+    <div id="mgwpp_dashboard_content" class="mgwpp-tab-content">
+        <h2><?php echo esc_html__('Dashboard Content', 'mini-gallery'); ?></h2>
+        <!-- Dashboard content goes here -->
+        <h2><?php echo esc_html__('Albums', 'mini-gallery'); ?></h2>
+        <h2><?php echo esc_html__('Galleries', 'mini-gallery'); ?></h2>
+
+    </div>
+
+    <div id="mgwpp_albums_content" class="mgwpp-tab-content" style="display: none;">
+    <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
+
+    </div>
+
+    <div id="mgwpp_galleries_content" class="mgwpp-tab-content" style="display: none;">
+    <h2><?php echo esc_html__('Create New Gallery', 'mini-gallery'); ?></h2>
+
+    <!-- Form for creating new gallery -->
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
         <input type="hidden" name="action" value="mgwpp_upload">
         <input type="hidden" name="mgwpp_upload_nonce" value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
 
-        <label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label>
-        <input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple>
-        <br><br>
-
-        <label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label>
-        <input type="text" id="image_title" name="image_title" required>
-        <br><br>
-
-        <!-- Dropdown for gallery type -->
-        <label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label>
-        <select id="gallery_type" name="gallery_type" required>
-            <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?></option>
-            <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
-            <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
-        </select>
-        <br><br>
-
-        <input type="submit" class="button button-primary" value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
+        <table class="form-table">
+            <tr>
+                <td><label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label></td>
+                <td><input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple></td>
+            </tr>
+            <tr>
+                <td><label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
+                <td><input type="text" id="image_title" name="image_title" required></td>
+            </tr>
+            <tr>
+                <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
+                <td>
+                    <select id="gallery_type" name="gallery_type" required>
+                        <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?></option>
+                        <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
+                        <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <input type="submit" class="button button-primary" value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
+                </td>
+            </tr>
+        </table>
     </form>
 
-    <!-- Display existing galleries with their IDs and shortcodes -->
     <h2><?php echo esc_html__('Existing Galleries', 'mini-gallery'); ?></h2>
-    <?php
-    $galleries = get_posts(array(
-        'post_type' => 'mgwpp_soora',
-        'numberposts' => -1
-    ));
-    if ($galleries) {
-        foreach ($galleries as $gallery) {
-    ?>
-            <div>
-                <h3><?php echo esc_html($gallery->post_title) . ' (ID: ' . esc_html($gallery->ID) . ')'; ?></h3>
-                <p><?php echo esc_html($gallery->post_content); ?></p>
 
-               <details style="cursor: pointer;">
-                 <!-- Display the gallery type -->
-                 <?php
-                $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
-                echo '<p>' . esc_html__('Gallery Type: ', 'mini-gallery') . esc_html(ucfirst($gallery_type)) . '</p>';
-                ?>
+    <!-- Display existing galleries in a table -->
+    <table class="wp-list-table widefat fixed striped">
+        <thead>
+            <tr>
+                <th><?php echo esc_html__('Gallery Title', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Gallery Type', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Shortcode', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Actions', 'mini-gallery'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $galleries = get_posts(array(
+                    'post_type' => 'mgwpp_soora',
+                    'numberposts' => -1
+                ));
+                if ($galleries) {
+                    foreach ($galleries as $gallery) {
+            ?>
+            <tr>
+                <td><?php echo esc_html($gallery->post_title); ?> (ID: <?php echo esc_html($gallery->ID); ?>)</td>
+                <td>
+                    <?php
+                        $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
+                        echo esc_html(ucfirst($gallery_type));
+                    ?>
+                </td>
+                <td>
+                    <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
+                </td>
+                <td>
+                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery')); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a>
+                </td>
+            </tr>
+            <!-- Gallery Details with Preview inside a <details> -->
+            <tr>
+                <td colspan="4">
+                    <details>
+                        <summary><?php echo esc_html__('Click to view gallery preview', 'mini-gallery'); ?></summary>
+                        
+                        <!-- Gallery Preview Section -->
+                        <h3><?php echo esc_html__('Gallery Preview', 'mini-gallery'); ?></h3>
+                        <div class="mgwpp-gallery-preview">
+                            <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
+                        </div>
+                        <hr style="border: 1px solid #ccc;">
+                    </details>
+                </td>
+            </tr>
+            <?php
+                    }
+                } else {
+            ?>
+            <tr>
+                <td colspan="4"><?php echo esc_html__('No galleries found.', 'mini-gallery'); ?></td>
+            </tr>
+            <?php
+                }
+            ?>
+        </tbody>
+    </table>
+</div>
 
-                <!-- Display the carousel preview using the shortcode -->
-                <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
-                <hr>
-                <!-- Display the shortcode dynamically with the post ID -->
-                <p><?php echo esc_html__('Shortcode to display this gallery:', 'mini-gallery'); ?></p>
-                <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
-                <!-- Add delete link -->
-                <?php
-                $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
-                ?>
-                <p><a href="<?php echo esc_url($delete_url); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
-               </details>
-            </div>
-            <hr>
-        <?php
-        }
-    } else {
-        ?>
-        <p><?php echo esc_html__('No galleries found.', 'mini-gallery'); ?></p>
+
+
+
+    <div id="mgwpp_security_content" class="mgwpp-tab-content" style="display: none;">
+        <h2><?php echo esc_html__('Security Content', 'mini-gallery'); ?></h2>
+        <!-- Security content goes here -->
+    </div>
+
+</div>
+
+<script>
+// JavaScript to toggle content visibility based on selected radio button
+const radios = document.querySelectorAll('input[name="mgwpp_menu_selection"]');
+const tabContents = document.querySelectorAll('.mgwpp-tab-content');
+
+radios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Hide all tab content
+        tabContents.forEach(tab => tab.style.display = 'none');
+        // Show the selected tab content
+        const selectedTab = `mgwpp_${this.value}_content`;
+        document.getElementById(selectedTab).style.display = 'block';
+    });
+});
+</script>
 <?php
-    }
 }
 
 
-// Shortcode to display gallery
-function mgwpp_gallery_shortcode($atts)
-{
-    $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
-    $post_id = max(0, intval($atts['id']));
-    $paged = max(1, intval($atts['paged']));
-    $output = '';
+    // Shortcode to display gallery
+    function mgwpp_gallery_shortcode($atts)
+    {
+        $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
+        $post_id = max(0, intval($atts['id']));
+        $paged = max(1, intval($atts['paged']));
+        $output = '';
 
-    if ($post_id) {
-        // Retrieve the gallery type from post meta
-        $gallery_type = get_post_meta($post_id, 'gallery_type', true);
-        if (!$gallery_type) {
-            $gallery_type = 'single_carousel'; // Fallback to default if not set
-        }
+        if ($post_id) {
+            // Retrieve the gallery type from post meta
+            $gallery_type = get_post_meta($post_id, 'gallery_type', true);
+            if (!$gallery_type) {
+                $gallery_type = 'single_carousel'; // Fallback to default if not set
+            }
 
-        $images_per_page = 6; // Number of images per page for multi-carousel
-        $offset = ($paged - 1) * $images_per_page;
+            $images_per_page = 6; // Number of images per page for multi-carousel
+            $offset = ($paged - 1) * $images_per_page;
 
-        // Retrieve all images for the gallery
-        $all_images = get_attached_media('image', $post_id);
+            // Retrieve all images for the gallery
+            $all_images = get_attached_media('image', $post_id);
 
-        if ($all_images) {
-            if ($gallery_type === 'single_carousel') {
-                $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
-                foreach ($all_images as $image) {
-                    $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                    $output .= '<div class="carousel-slide"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
+            if ($all_images) {
+                if ($gallery_type === 'single_carousel') {
+                    $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
+                    foreach ($all_images as $image) {
+                        $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
+                        $output .= '<div class="carousel-slide"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
+                    }
+                    $output .= '</div>';
+                } elseif ($gallery_type === 'multi_carousel') {
+                    $output .= '<div id="mg-multi-carousel" class="mg-gallery multi-carousel" data-page="' . esc_attr($paged) . '">';
+
+                    // Slice images for current page
+                    $images = array_slice($all_images, $offset, $images_per_page);
+                    foreach ($images as $image) {
+                        $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
+                        $output .= '<div class="mg-multi-carousel-slide"><img class="mg-multi-carousel-slide" src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
+                    }
+                    $output .= '</div>';
+                } elseif ($gallery_type === 'grid') {
+                    $output .= '<div class="grid-layout">';
+                    foreach ($all_images as $image) {
+                        $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
+                        $output .= '<div class="grid-item"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
+                    }
+                    $output .= '</div>';
                 }
-                $output .= '</div>';
-            } elseif ($gallery_type === 'multi_carousel') {
-                $output .= '<div id="mg-multi-carousel" class="mg-gallery multi-carousel" data-page="' . esc_attr($paged) . '">';
-
-                // Slice images for current page
-                $images = array_slice($all_images, $offset, $images_per_page);
-                foreach ($images as $image) {
-                    $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                    $output .= '<div class="mg-multi-carousel-slide"><img class="mg-multi-carousel-slide" src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
-                }
-                $output .= '</div>';
-            } elseif ($gallery_type === 'grid') {
-                $output .= '<div class="grid-layout">';
-                foreach ($all_images as $image) {
-                    $imgwpp_url = wp_get_attachment_image_src($image->ID, 'medium');
-                    $output .= '<div class="grid-item"><img src="' . esc_url($imgwpp_url[0]) . '" alt="' . esc_attr($image->post_title) . '" loading="lazy"></div>';
-                }
-                $output .= '</div>';
+            } else {
+                $output .= '<p>No images found for this gallery.</p>';
             }
         } else {
-            $output .= '<p>No images found for this gallery.</p>';
+            $output .= '<p>Invalid gallery ID.</p>';
         }
-    } else {
-        $output .= '<p>Invalid gallery ID.</p>';
+        return $output;
     }
-    return $output;
-}
-add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
+    add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');

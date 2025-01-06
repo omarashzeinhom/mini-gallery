@@ -325,8 +325,9 @@ function mgwpp_plugin_page()
                 <h3><?php echo esc_html($gallery->post_title) . ' (ID: ' . esc_html($gallery->ID) . ')'; ?></h3>
                 <p><?php echo esc_html($gallery->post_content); ?></p>
 
-                <!-- Display the gallery type -->
-                <?php
+               <details style="cursor: pointer;">
+                 <!-- Display the gallery type -->
+                 <?php
                 $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
                 echo '<p>' . esc_html__('Gallery Type: ', 'mini-gallery') . esc_html(ucfirst($gallery_type)) . '</p>';
                 ?>
@@ -342,6 +343,7 @@ function mgwpp_plugin_page()
                 $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
                 ?>
                 <p><a href="<?php echo esc_url($delete_url); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
+               </details>
             </div>
             <hr>
         <?php

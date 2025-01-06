@@ -135,3 +135,36 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
      return $output;
  }
  
+
+ // Activation & Deactivation Hooks
+function mgwpp_plugin_activate()
+{
+    MGWPP_Post_Type::mgwpp_register_post_type();
+    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+    MGWPP_Capabilities::mgwpp_capabilities();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
+
+function mgwpp_plugin_deactivate()
+{
+    unregister_post_type('mgwpp_soora');
+    remove_role('marketing_team');
+    flush_rewrite_rules();
+}
+register_deactivation_hook(__FILE__, 'mgwpp_plugin_deactivate');
+
+// Uninstall Hook
+function mgwpp_plugin_uninstall()
+{
+    $sowar = get_posts(array(
+        'post_type' => 'mgwpp_soora',
+        'numberposts' => -1,
+        'post_status' => 'any'
+    ));
+    foreach ($sowar as $gallery_image) {
+        wp_delete_post(intval($gallery_image->ID), true);
+    }
+    remove_role('marketing_team');
+}
+register_uninstall_hook(__FILE__, 'mgwpp_plugin_uninstall');

@@ -23,3 +23,4 @@ add_action('admin_menu', function () {
         6
     );
 });
+?>

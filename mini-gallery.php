@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mini Gallery
  * Description: A WordPress plugin to display a simple custom gallery.
- * Version: 1.0.0
+ * Version: 1.1
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */
@@ -239,13 +239,16 @@ function mgwpp_upload()
                                 $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
                                 wp_update_attachment_metadata($attachment_id, $attach_data);
                             } else {
-                                error_log(__('Attachment creation failed: ', 'mini-gallery') . $attachment_id->get_error_message());
+                                return new WP_Error('attachment_creation_failed', __('Attachment creation failed:', 'mini-gallery') . $attachment_id->get_error_message());
                             }
                         } else {
-                            error_log(__('File upload failed: ', 'mini-gallery') . print_r($uploaded, true));
+                            return new WP_Error(
+                                'file_data_validation_failed',
+                                sprintf(__('File data validation failed for index: %d', 'mini-gallery'), $index)
+                            );
                         }
                     } else {
-                        error_log(__('File data validation failed for index: ', 'mini-gallery') . $i);
+                        return new WP_Error('file_data_validation_failed', __('File data validation failed for index: ', 'mini-gallery') . $index);
                     }
                 }
             }
@@ -325,25 +328,25 @@ function mgwpp_plugin_page()
                 <h3><?php echo esc_html($gallery->post_title) . ' (ID: ' . esc_html($gallery->ID) . ')'; ?></h3>
                 <p><?php echo esc_html($gallery->post_content); ?></p>
 
-               <details style="cursor: pointer;">
-                 <!-- Display the gallery type -->
-                 <?php
-                $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
-                echo '<p>' . esc_html__('Gallery Type: ', 'mini-gallery') . esc_html(ucfirst($gallery_type)) . '</p>';
-                ?>
+                <details style="cursor: pointer;">
+                    <!-- Display the gallery type -->
+                    <?php
+                    $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
+                    echo '<p>' . esc_html__('Gallery Type: ', 'mini-gallery') . esc_html(ucfirst($gallery_type)) . '</p>';
+                    ?>
 
-                <!-- Display the carousel preview using the shortcode -->
-                <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
-                <hr>
-                <!-- Display the shortcode dynamically with the post ID -->
-                <p><?php echo esc_html__('Shortcode to display this gallery:', 'mini-gallery'); ?></p>
-                <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
-                <!-- Add delete link -->
-                <?php
-                $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
-                ?>
-                <p><a href="<?php echo esc_url($delete_url); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
-               </details>
+                    <!-- Display the carousel preview using the shortcode -->
+                    <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
+                    <hr>
+                    <!-- Display the shortcode dynamically with the post ID -->
+                    <p><?php echo esc_html__('Shortcode to display this gallery:', 'mini-gallery'); ?></p>
+                    <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
+                    <!-- Add delete link -->
+                    <?php
+                    $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
+                    ?>
+                    <p><a href="<?php echo esc_url($delete_url); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
+                </details>
             </div>
             <hr>
         <?php

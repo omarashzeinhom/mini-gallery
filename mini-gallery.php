@@ -242,6 +242,7 @@ function mgwpp_upload()
                                 return new WP_Error('attachment_creation_failed', __('Attachment creation failed:', 'mini-gallery') . $attachment_id->get_error_message());
                             }
                         } else {
+                            /* translators: %d is the index of the file that failed validation. */
                             return new WP_Error(
                                 'file_data_validation_failed',
                                 sprintf(__('File data validation failed for index: %d', 'mini-gallery'), $index)
@@ -292,7 +293,8 @@ function mgwpp_plugin_page()
     <h2><?php echo esc_html__('Upload New Images', 'mini-gallery'); ?></h2>
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
         <input type="hidden" name="action" value="mgwpp_upload">
-        <input type="hidden" name="mgwpp_upload_nonce" value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
+        <input type="hidden" name="mgwpp_upload_nonce"
+            value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
 
         <label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label>
         <input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple>
@@ -311,7 +313,8 @@ function mgwpp_plugin_page()
         </select>
         <br><br>
 
-        <input type="submit" class="button button-primary" value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
+        <input type="submit" class="button button-primary"
+            value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
     </form>
 
     <!-- Display existing galleries with their IDs and shortcodes -->
@@ -345,7 +348,8 @@ function mgwpp_plugin_page()
                     <?php
                     $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
                     ?>
-                    <p><a href="<?php echo esc_url($delete_url); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
+                    <p><a href="<?php echo esc_url($delete_url); ?>"
+                            class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a></p>
                 </details>
             </div>
             <hr>

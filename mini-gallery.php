@@ -313,76 +313,118 @@ function mgwpp_plugin_page() {
     <div id="mgwpp_dashboard_content" class="mgwpp-tab-content">
         <h2><?php echo esc_html__('Dashboard Content', 'mini-gallery'); ?></h2>
         <!-- Dashboard content goes here -->
+        <h2><?php echo esc_html__('Albums', 'mini-gallery'); ?></h2>
+        <h2><?php echo esc_html__('Galleries', 'mini-gallery'); ?></h2>
+
     </div>
 
     <div id="mgwpp_albums_content" class="mgwpp-tab-content" style="display: none;">
-        <h2><?php echo esc_html__('Upload New Images', 'mini-gallery'); ?></h2>
-        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-            <input type="hidden" name="action" value="mgwpp_upload">
-            <input type="hidden" name="mgwpp_upload_nonce"
-                value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
+    <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
 
-            <label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label>
-            <input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple>
-            <br><br>
-
-            <label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label>
-            <input type="text" id="image_title" name="image_title" required>
-            <br><br>
-
-            <label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label>
-            <select id="gallery_type" name="gallery_type" required>
-                <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?></option>
-                <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
-                <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
-            </select>
-            <br><br>
-
-            <input type="submit" class="button button-primary"
-                value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
-        </form>
     </div>
 
     <div id="mgwpp_galleries_content" class="mgwpp-tab-content" style="display: none;">
-        <h2><?php echo esc_html__('Existing Galleries', 'mini-gallery'); ?></h2>
-        <?php
-            $galleries = get_posts(array(
-                'post_type' => 'mgwpp_soora',
-                'numberposts' => -1
-            ));
-            if ($galleries) {
-                foreach ($galleries as $gallery) {
+    <h2><?php echo esc_html__('Create New Gallery', 'mini-gallery'); ?></h2>
+
+    <!-- Form for creating new gallery -->
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="mgwpp_upload">
+        <input type="hidden" name="mgwpp_upload_nonce" value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
+
+        <table class="form-table">
+            <tr>
+                <td><label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label></td>
+                <td><input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple></td>
+            </tr>
+            <tr>
+                <td><label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
+                <td><input type="text" id="image_title" name="image_title" required></td>
+            </tr>
+            <tr>
+                <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
+                <td>
+                    <select id="gallery_type" name="gallery_type" required>
+                        <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?></option>
+                        <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
+                        <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <input type="submit" class="button button-primary" value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <h2><?php echo esc_html__('Existing Galleries', 'mini-gallery'); ?></h2>
+
+    <!-- Display existing galleries in a table -->
+    <table class="wp-list-table widefat fixed striped">
+        <thead>
+            <tr>
+                <th><?php echo esc_html__('Gallery Title', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Gallery Type', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Shortcode', 'mini-gallery'); ?></th>
+                <th><?php echo esc_html__('Actions', 'mini-gallery'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $galleries = get_posts(array(
+                    'post_type' => 'mgwpp_soora',
+                    'numberposts' => -1
+                ));
+                if ($galleries) {
+                    foreach ($galleries as $gallery) {
             ?>
-        <div>
-            <h3><?php echo esc_html($gallery->post_title) . ' (ID: ' . esc_html($gallery->ID) . ')'; ?></h3>
-            <p><?php echo esc_html($gallery->post_content); ?></p>
-            <details>
-                <?php
-                            $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
-                            echo '<p>' . esc_html__('Gallery Type: ', 'mini-gallery') . esc_html(ucfirst($gallery_type)) . '</p>';
-                            ?>
-                <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
-                <hr style="border: 1px solid black;">
-                <p><?php echo esc_html__('Shortcode to display this gallery:', 'mini-gallery'); ?></p>
-                <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
-                <?php
-                            $delete_url = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery');
-                            ?>
-                <p><a href="<?php echo esc_url($delete_url); ?>"
-                        class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a>
-                </p>
-            </details>
-        </div>
-        <hr style="border: 1px solid black;">
-        <?php
+            <tr>
+                <td><?php echo esc_html($gallery->post_title); ?> (ID: <?php echo esc_html($gallery->ID); ?>)</td>
+                <td>
+                    <?php
+                        $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
+                        echo esc_html(ucfirst($gallery_type));
+                    ?>
+                </td>
+                <td>
+                    <pre><?php echo esc_html('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?></pre>
+                </td>
+                <td>
+                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . esc_attr($gallery->ID)), 'mgwpp_delete_gallery')); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a>
+                </td>
+            </tr>
+            <!-- Gallery Details with Preview inside a <details> -->
+            <tr>
+                <td colspan="4">
+                    <details>
+                        <summary><?php echo esc_html__('Click to view gallery preview', 'mini-gallery'); ?></summary>
+                        
+                        <!-- Gallery Preview Section -->
+                        <h3><?php echo esc_html__('Gallery Preview', 'mini-gallery'); ?></h3>
+                        <div class="mgwpp-gallery-preview">
+                            <?php echo do_shortcode('[mgwpp_gallery id="' . esc_attr($gallery->ID) . '"]'); ?>
+                        </div>
+                        <hr style="border: 1px solid #ccc;">
+                    </details>
+                </td>
+            </tr>
+            <?php
+                    }
+                } else {
+            ?>
+            <tr>
+                <td colspan="4"><?php echo esc_html__('No galleries found.', 'mini-gallery'); ?></td>
+            </tr>
+            <?php
                 }
-            } else {
             ?>
-        <p><?php echo esc_html__('No galleries found.', 'mini-gallery'); ?></p>
-        <?php
-            }
-            ?>
-    </div>
+        </tbody>
+    </table>
+</div>
+
+
+
 
     <div id="mgwpp_security_content" class="mgwpp-tab-content" style="display: none;">
         <h2><?php echo esc_html__('Security Content', 'mini-gallery'); ?></h2>

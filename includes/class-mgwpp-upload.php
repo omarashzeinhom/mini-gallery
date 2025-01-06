@@ -93,7 +93,7 @@ class MGWPP_Upload {
     
 }
 
-add_action('admin_post_mgwpp_upload', array('MGWPP_Upload', 'handle_upload'));
+add_action('admin_post_mgwpp_upload', array('MGWPP_Upload', 'mgwpp_upload'));
 
 
 ?>

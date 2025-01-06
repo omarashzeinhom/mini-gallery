@@ -60,6 +60,6 @@ class MGWPP_Gallery_ShortCode{
     }
 }
 
-add_action('init', array('MGWPP_Gallery_Shortcode', 'register_shortcode'));
+add_action('init', array('MGWPP_Gallery_Shortcode', 'mgwpp_gallery_register_shortcode'));
 
 ;?>

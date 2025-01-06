@@ -2,7 +2,7 @@
 class MGWPP_Admin
 {
     // Correct method name to match the action hook
-    public static function enqueue_assets()
+    public static function mgwpp_enqueue_assets()
     {
         wp_register_script('mgwpp-admin-scripts', plugin_dir_url(__FILE__) . 'admin/js/mg-scripts.js', array('jquery'), '1.0', true);
         wp_enqueue_script('mgwpp-admin-scripts');
@@ -12,7 +12,7 @@ class MGWPP_Admin
     }
 
     // You may have other methods, like rendering the plugin page, for admin menu
-    public static function render_plugin_page()
+    public static function mgwpp_render_plugin_page()
     {
         ?>
         <div>
@@ -179,22 +179,32 @@ radios.forEach(radio => {
 </script>
 <?php
     }
+
+    public static function mgwpp_add_menu() {
+        // Check if the current user has permission to edit the galleries
+        if (current_user_can('edit_mgwpp_sooras')) {
+            add_menu_page(
+                'Add New Mini Gallery',               // Page title
+                'Mini Gallery',                       // Menu title
+                'edit_mgwpp_sooras',                  // Capability
+                'mini-gallery',                       // Menu slug
+                array('MGWPP_Admin', 'mgwpp_render_plugin_page'), // Function to render the page
+                'dashicons-format-gallery',           // Icon
+                6                                     // Position in menu
+            );
+        }
+    }
+
+     // Register the admin menu
+     public static function mgwpp_register_menu() {
+        add_action('admin_menu', array('MGWPP_Admin', 'mgwpp_add_menu'));
+    }
 }
 
 // Correctly hook into the action using the updated method name
-add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'enqueue_assets'));
+add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'mgwpp_enqueue_assets'));
 
-add_action('admin_menu', function () {
-    add_menu_page(
-        'Mini Gallery',
-        'Mini Gallery',
-        'edit_mgwpp_sooras',
-        'mini-gallery',
-        array('MGWPP_Admin', 'render_plugin_page'),
-        'dashicons-format-gallery',
-        6
-    );
-});
+
 
 ?>
 

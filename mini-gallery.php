@@ -17,7 +17,7 @@ function mgwpp_register_post_type()
         'public' => true,
         'label' => 'Gallery Image',
         'description' => 'Manage your galleries here',
-        'show_in_rest' => false,
+        'show_in_rest' => true,
         'show_in_menu' => false,
         'rest_base' => 'soora-api',
         'menu_icon' => 'dashicons-format-gallery',

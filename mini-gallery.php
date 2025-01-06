@@ -17,7 +17,6 @@
  require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
  require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-gallery-manager.php'; // Include the gallery manager class
  require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php'; // Include the uninstall class
- require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-admin-menu.php'; // Include the admin menu class
  require_once plugin_dir_path(__FILE__) . 'public/mgwpp-gallery-shortcode.php'; // Include the gallery shortcode class
  
  // Initialize plugin
@@ -25,7 +24,6 @@
      // Register gallery shortcode
      add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
  
-     MGWPP_Admin::mgwpp_enqueue_assets();
      // Call the static methods to initialize classes
      MGWPP_Post_Type::mgwpp_register_post_type();
      MGWPP_Capabilities::mgwpp_add_marketing_team_role();

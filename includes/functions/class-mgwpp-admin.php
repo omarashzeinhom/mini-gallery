@@ -2,7 +2,7 @@
 class MGWPP_Admin
 {
     // Correct method name to match the action hook
-    public static function mgwpp_enqueue_assets()
+    public static function mgwpp_enqueue_admin_assets()
     {
         wp_register_script('mgwpp-admin-scripts', plugin_dir_url(__FILE__) . 'admin/js/mg-scripts.js', array('jquery'), '1.0', true);
         wp_enqueue_script('mgwpp-admin-scripts');
@@ -204,7 +204,7 @@ radios.forEach(radio => {
 }
 
 // Correctly hook into the action using the updated method name
-add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'mgwpp_enqueue_assets'));
+add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'mgwpp_enqueue_admin_assets'));
 
 add_filter('widget_text', 'do_shortcode');
 add_filter('the_content', 'do_shortcode'); 

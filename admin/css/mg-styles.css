@@ -140,3 +140,92 @@
     opacity: 1;
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
 }
+
+
+/*Panel Styles*/
+
+/* Dashboard Stats */
+.mgwpp-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-box h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #0073aa;
+    margin: 0;
+}
+
+/* Album Management */
+.mgwpp-album-galleries-list {
+    margin: 10px 0;
+    padding: 0 20px;
+}
+
+.mgwpp-album-galleries-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* Tab Navigation */
+.app__dashboard-selection {
+    margin-right: 10px;
+}
+
+.mgwpp-tab-content {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Forms */
+.form-table td {
+    padding: 15px 10px;
+}
+
+.form-table input[type="text"],
+.form-table textarea {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Gallery Checkboxes */
+.form-table label {
+    display: block;
+    margin: 5px 0;
+}
+
+/* Details Summary */
+details summary {
+    cursor: pointer;
+    padding: 10px;
+    background: #f9f9f9;
+    margin: 5px 0;
+}
+
+details[open] summary {
+    margin-bottom: 10px;
+}
+
+/* Action Buttons */
+.button-secondary {
+    margin-right: 5px;
+}

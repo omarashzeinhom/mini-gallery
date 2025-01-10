@@ -337,5 +337,3 @@ add_action('admin_enqueue_scripts', array('MGWPP_Admin', 'mgwpp_enqueue_admin_as
 add_filter('widget_text', 'do_shortcode');
 add_filter('the_content', 'do_shortcode');
 ?>
-        
-        ?>

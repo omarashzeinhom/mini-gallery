@@ -3,7 +3,7 @@ class MGWPP_Album_Post_Type {
     public static function mgwpp_register_album_post_type() {
         $args = array(
             'public' => true,
-            'label' => 'Gallery Albums',
+            //'label' => 'Gallery Albums',
             'description' => 'Organize your galleries into albums',
             'show_in_rest' => true,
             'show_in_menu' => 'mini-gallery',

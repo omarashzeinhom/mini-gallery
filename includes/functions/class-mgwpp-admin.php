@@ -213,7 +213,7 @@ class MGWPP_Admin
                 'mini-gallery',                       // Menu slug
                 array('MGWPP_Admin', 'mgwpp_render_plugin_page'), // Function to render the page
                 'dashicons-format-gallery',           // Icon
-                6                                     // Position in menu
+                7                                    // Position in menu
             );
         }
     }

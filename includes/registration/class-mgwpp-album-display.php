@@ -1,6 +1,8 @@
 <?php
-class MGWPP_Album_Display {
-    public static function render_album($post_id) {
+class MGWPP_Album_Display
+{
+    public static function render_album($post_id)
+    {
         $galleries = get_post_meta($post_id, '_mgwpp_album_galleries', true);
         if (!is_array($galleries) || empty($galleries)) {
             return '<p class="mgwpp-no-galleries">' . esc_html__('No galleries in this album.', 'mini-gallery') . '</p>';
@@ -33,7 +35,7 @@ class MGWPP_Album_Display {
                 foreach ($attachments as $attachment) {
                     $image_src = wp_get_attachment_image_src($attachment->ID, 'thumbnail');
                     $full_src = wp_get_attachment_image_src($attachment->ID, 'full');
-                    
+
                     if ($image_src) {
                         $output .= sprintf(
                             '<a href="%s" class="mgwpp-gallery-item" data-fancybox="gallery-%d">
@@ -55,7 +57,8 @@ class MGWPP_Album_Display {
         return $output;
     }
 
-    public static function album_shortcode($atts) {
+    public static function album_shortcode($atts)
+    {
         $atts = shortcode_atts(array(
             'id' => 0
         ), $atts, 'mgwpp_album');
@@ -72,6 +75,6 @@ class MGWPP_Album_Display {
 add_shortcode('mgwpp_album', array('MGWPP_Album_Display', 'album_shortcode'));
 
 // Add display styles
-add_action('wp_enqueue_scripts', function() {
+add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('mgwpp-album-style', plugins_url('css/album-style.css', dirname(__FILE__)));
 });

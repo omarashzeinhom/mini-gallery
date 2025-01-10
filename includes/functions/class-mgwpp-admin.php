@@ -285,8 +285,11 @@ class MGWPP_Admin
 
   
     private static function render_dashboard_stats() {
-        $total_galleries = wp_count_posts('mgwpp_soora')->publish;
-        $total_albums = wp_count_posts('mgwpp_album')->publish;
+        $gallery_post_statuses = wp_count_posts('mgwpp_soora');
+        $album_post_statuses = wp_count_posts('mgwpp_album');
+    
+        $total_galleries = isset($gallery_post_statuses->publish) ? $gallery_post_statuses->publish : 0;
+        $total_albums = isset($album_post_statuses->publish) ? $album_post_statuses->publish : 0;
         ?>
         <div class="mgwpp-dashboard-stats">
             <div class="stat-box">
@@ -300,7 +303,7 @@ class MGWPP_Admin
         </div>
         <?php
     }
-
+    
     private static function render_security_content() {
         ?>
         <div class="mgwpp-security-settings">

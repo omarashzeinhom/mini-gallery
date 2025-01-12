@@ -1,0 +1,16 @@
+{
+    "name": "omarabdelrahman/mini-gallery",
+    "autoload": {
+        "psr-4": {
+            "Omarabdelrahman\\MiniGallery\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "omarashzeinhom"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}

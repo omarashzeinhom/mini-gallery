@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) { exit;
  require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-upload.php';
  // Albums
  require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-post-type.php';
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-display.php';
  require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';
  require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-submit.php';
  // Functions

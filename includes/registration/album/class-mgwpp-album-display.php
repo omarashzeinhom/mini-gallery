@@ -76,5 +76,8 @@ add_shortcode('mgwpp_album', array('MGWPP_Album_Display', 'album_shortcode'));
 
 // Add display styles
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('mgwpp-album-style', plugins_url('css/album-style.css', dirname(__FILE__)));
+    wp_enqueue_style(
+        'mgwpp-album-style',
+        plugins_url('../../../../public/css/mg-album-styles.css', __FILE__)
+    );
 });

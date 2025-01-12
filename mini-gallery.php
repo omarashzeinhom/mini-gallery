@@ -80,6 +80,9 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
 
 
 
+
+
+
  // Define the shortcode function
 function mgwpp_gallery_shortcode($atts)
 {

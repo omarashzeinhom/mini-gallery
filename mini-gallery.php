@@ -8,7 +8,8 @@
  * License: GPLv2
  */
 
- if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) { exit;
+}
 
 /* Include necessary files */
  
@@ -27,23 +28,24 @@
  require_once plugin_dir_path(__FILE__) . 'public/mgwpp-gallery-shortcode.php'; // Include the gallery shortcode class
  
  // Initialize plugin
- function mgwpp_initialize_plugin() {
-     // Register gallery shortcode
-     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
+function mgwpp_initialize_plugin()
+{
+    // Register gallery shortcode
+    add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
  
-     // Call the static methods to initialize classes
-     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
-     MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    // Call the static methods to initialize classes
+    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+    MGWPP_Capabilities::mgwpp_gallery_capabilities();
 
-     MGWPP_Gallery_Manager::mgwpp_register_gallery_delete_action(); // Register gallery deletion
-     MGWPP_Uninstall::mgwpp_register_uninstall_hook(); // Register the uninstall hook
-     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+    MGWPP_Gallery_Manager::mgwpp_register_gallery_delete_action(); // Register gallery deletion
+    MGWPP_Uninstall::mgwpp_register_uninstall_hook(); // Register the uninstall hook
+    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
 
-     MGWPP_Admin::mgwpp_register_menu(); // Register the admin menu
-     //Albums
-     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
-     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
-    }
+    MGWPP_Admin::mgwpp_register_menu(); // Register the admin menu
+    //Albums
+    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
+    MGWPP_Album_Capabilities::mgwpp_album_capabilities();
+}
  add_action('init', 'mgwpp_initialize_plugin');
  
 // Enqueue front-end scripts and styles
@@ -78,26 +80,27 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
 
 
  // Define the shortcode function
- function mgwpp_gallery_shortcode($atts) {
-     $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
-     $post_id = max(0, intval($atts['id']));
-     $paged = max(1, intval($atts['paged']));
-     $output = '';
+function mgwpp_gallery_shortcode($atts)
+{
+    $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
+    $post_id = max(0, intval($atts['id']));
+    $paged = max(1, intval($atts['paged']));
+    $output = '';
  
-     if ($post_id) {
-         // Retrieve the gallery type from post meta
-         $gallery_type = get_post_meta($post_id, 'gallery_type', true);
-         if (!$gallery_type) {
-             $gallery_type = 'single_carousel'; // Fallback to default if not set
-         }
+    if ($post_id) {
+        // Retrieve the gallery type from post meta
+        $gallery_type = get_post_meta($post_id, 'gallery_type', true);
+        if (!$gallery_type) {
+            $gallery_type = 'single_carousel'; // Fallback to default if not set
+        }
  
-         $images_per_page = 6; // Number of images per page for multi-carousel
-         $offset = ($paged - 1) * $images_per_page;
+        $images_per_page = 6; // Number of images per page for multi-carousel
+        $offset = ($paged - 1) * $images_per_page;
  
-         // Retrieve all images for the gallery
-         $all_images = get_attached_media('image', $post_id);
+        // Retrieve all images for the gallery
+        $all_images = get_attached_media('image', $post_id);
  
-         if ($all_images) {
+        if ($all_images) {
             if ($gallery_type === 'single_carousel') {
                 $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
                 foreach ($all_images as $image) {
@@ -127,28 +130,28 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
                 $output .= '</div>';
             }
         }
-         else {
-             $output .= '<p>No images found for this gallery.</p>';
-         }
+        else {
+            $output .= '<p>No images found for this gallery.</p>';
+        }
  
-         // Handle pagination if necessary for multi-carousel
-         if ($gallery_type === 'multi_carousel' && count($all_images) > $images_per_page) {
-             $total_pages = ceil(count($all_images) / $images_per_page);
-             $output .= '<div class="gallery-pagination">';
-             if ($paged > 1) {
-                 $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged - 1], get_permalink($post_id))) . '">Previous</a>';
-             }
-             if ($paged < $total_pages) {
-                 $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged + 1], get_permalink($post_id))) . '">Next</a>';
-             }
-             $output .= '</div>';
-         }
-     } else {
-         $output .= '<p>Invalid gallery ID.</p>';
-     }
+        // Handle pagination if necessary for multi-carousel
+        if ($gallery_type === 'multi_carousel' && count($all_images) > $images_per_page) {
+            $total_pages = ceil(count($all_images) / $images_per_page);
+            $output .= '<div class="gallery-pagination">';
+            if ($paged > 1) {
+                $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged - 1], get_permalink($post_id))) . '">Previous</a>';
+            }
+            if ($paged < $total_pages) {
+                $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged + 1], get_permalink($post_id))) . '">Next</a>';
+            }
+            $output .= '</div>';
+        }
+    } else {
+        $output .= '<p>Invalid gallery ID.</p>';
+    }
  
-     return $output;
- }
+    return $output;
+}
  
 
  // Activation & Deactivation Hooks
@@ -174,11 +177,13 @@ register_deactivation_hook(__FILE__, 'mgwpp_plugin_deactivate');
 // Uninstall Hook
 function mgwpp_plugin_uninstall()
 {
-    $sowar = get_posts(array(
+    $sowar = get_posts(
+        array(
         'post_type' => 'mgwpp_soora',
         'numberposts' => -1,
         'post_status' => 'any'
-    ));
+        )
+    );
     foreach ($sowar as $gallery_image) {
         wp_delete_post(intval($gallery_image->ID), true);
     }
@@ -186,8 +191,13 @@ function mgwpp_plugin_uninstall()
 }
 
 
-/**Debugging  */
-add_action('admin_init', function() {
-    error_log('POST Data: ' . print_r($_POST, true));
-    error_log('REQUEST Data: ' . print_r($_REQUEST, true));
-});
+/**
+* 
+* Debugging  
+*/
+add_action(
+    'admin_init', function () {
+        error_log('POST Data: ' . print_r($_POST, true));
+        error_log('REQUEST Data: ' . print_r($_REQUEST, true));
+    }
+);

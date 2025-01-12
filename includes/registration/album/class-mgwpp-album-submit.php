@@ -10,8 +10,8 @@ class MGWPP_Album_Submit {
     // Fix #2: Renamed method to match the convention and added error logging
     public static function handle_album_submission() {
         // Verify nonce
-        if (!isset($_POST['mgwpp_album_nonce']) || 
-            !wp_verify_nonce($_POST['mgwpp_album_nonce'], 'mgwpp_album_submit_nonce')) {
+        if (!isset($_POST['mgwpp_album_submit_nonce']) || 
+            !wp_verify_nonce($_POST['mgwpp_album_submit_nonce'], 'mgwpp_album_submit_nonce')) {
             wp_die('Security check failed for Submitting Album', 'Error', array('response' => 403));
         }
 

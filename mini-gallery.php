@@ -42,7 +42,7 @@ function mgwpp_initialize_plugin()
     MGWPP_Uninstall::mgwpp_register_uninstall_hook(); // Register the uninstall hook
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
 
-    MGWPP_Admin::mgwpp_register_menu(); // Register the admin menu
+    //MGWPP_Admin::mgwpp_register_admin_menu(); // Register the admin menu
     //Albums
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();

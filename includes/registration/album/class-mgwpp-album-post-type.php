@@ -1,6 +1,8 @@
 <?php
-class MGWPP_Album_Post_Type {
-    public static function mgwpp_register_album_post_type() {
+class MGWPP_Album_Post_Type
+{
+    public static function mgwpp_register_album_post_type()
+    {
         $args = array(
             'public' => true,
             //'label' => 'Gallery Albums',
@@ -31,13 +33,14 @@ class MGWPP_Album_Post_Type {
             )
         );
         register_post_type('mgwpp_album', $args);
-        
+
         // Register meta box for gallery selection
         add_action('add_meta_boxes', array(__CLASS__, 'add_album_galleries_meta_box'));
         add_action('save_post_mgwpp_album', array(__CLASS__, 'save_album_galleries_meta'));
     }
 
-    public static function add_album_galleries_meta_box() {
+    public static function add_album_galleries_meta_box()
+    {
         add_meta_box(
             'mgwpp_album_galleries',
             'Album Galleries',
@@ -48,15 +51,16 @@ class MGWPP_Album_Post_Type {
         );
     }
 
-    public static function render_album_galleries_meta_box($post) {
+    public static function render_album_galleries_meta_box($post)
+    {
         wp_nonce_field('mgwpp_album_galleries_nonce', 'mgwpp_album_galleries_nonce');
-        
+
         // Get currently selected galleries
         $selected_galleries = get_post_meta($post->ID, '_mgwpp_album_galleries', true);
         if (!is_array($selected_galleries)) {
             $selected_galleries = array();
         }
-        
+
         // Get all galleries
         $galleries = get_posts(array(
             'post_type' => 'mgwpp_soora',
@@ -64,7 +68,7 @@ class MGWPP_Album_Post_Type {
             'orderby' => 'title',
             'order' => 'ASC'
         ));
-        
+
         echo '<div class="mgwpp-album-galleries-container">';
         foreach ($galleries as $gallery) {
             $checked = in_array($gallery->ID, $selected_galleries) ? 'checked="checked"' : '';
@@ -78,10 +82,13 @@ class MGWPP_Album_Post_Type {
         echo '</div>';
     }
 
-    public static function save_album_galleries_meta($post_id) {
+    public static function save_album_galleries_meta($post_id)
+    {
         // Verify nonce
-        if (!isset($_POST['mgwpp_album_galleries_nonce']) || 
-            !wp_verify_nonce($_POST['mgwpp_album_galleries_nonce'], 'mgwpp_album_galleries_nonce')) {
+        if (
+            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+            !wp_verify_nonce($_POST['mgwpp_album_galleries_nonce'], 'mgwpp_album_galleries_nonce')
+        ) {
             return;
         }
 
@@ -96,7 +103,7 @@ class MGWPP_Album_Post_Type {
         }
 
         // Save galleries
-        $galleries = isset($_POST['mgwpp_album_galleries']) ? 
+        $galleries = isset($_POST['mgwpp_album_galleries']) ?
             array_map('intval', $_POST['mgwpp_album_galleries']) : array();
         update_post_meta($post_id, '_mgwpp_album_galleries', $galleries);
     }

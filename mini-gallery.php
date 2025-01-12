@@ -10,13 +10,20 @@
 
  if (!defined('ABSPATH')) exit;
 
- // Include necessary files
- require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-post-type.php';
- require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-capabilities.php';
+/* Include necessary files */
+ 
+// Galleries
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
  require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-upload.php';
+ // Albums
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-post-type.php';
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-submit.php';
+ // Functions
  require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
- require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-gallery-manager.php'; // Include the gallery manager class
  require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php'; // Include the uninstall class
+ require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-manager.php'; // Include the gallery manager class
  require_once plugin_dir_path(__FILE__) . 'public/mgwpp-gallery-shortcode.php'; // Include the gallery shortcode class
  
  // Initialize plugin
@@ -25,13 +32,18 @@
      add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
  
      // Call the static methods to initialize classes
-     MGWPP_Post_Type::mgwpp_register_post_type();
-     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-     MGWPP_Capabilities::mgwpp_capabilities();
+     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+     MGWPP_Capabilities::mgwpp_gallery_capabilities();
+
      MGWPP_Gallery_Manager::mgwpp_register_gallery_delete_action(); // Register gallery deletion
      MGWPP_Uninstall::mgwpp_register_uninstall_hook(); // Register the uninstall hook
+     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+
      MGWPP_Admin::mgwpp_register_menu(); // Register the admin menu
- }
+     //Albums
+     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
+     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
+    }
  add_action('init', 'mgwpp_initialize_plugin');
  
 // Enqueue front-end scripts and styles
@@ -40,6 +52,7 @@ function mgwpp_enqueue_assets()
     // Register scripts and styles
     wp_register_script('mg-carousel', plugin_dir_url(__FILE__) . 'public/js/carousel.js', array(), '1.0', true);
     wp_register_style('mg-styles', plugin_dir_url(__FILE__) . 'public/css/styles.css', array(), '1.0');
+    wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
 
     // Enqueue for front-end only
     if (!is_admin()) {
@@ -53,8 +66,8 @@ add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');
 function mgwpp_enqueue_admin_assets()
 {
     // Register scripts and styles
-    wp_register_script('mg-admin-carousel', plugin_dir_url(__FILE__) . 'admin/js/mg-scripts.js', array('jquery'), '1.0', true);
-    wp_register_style('mg-admin-styles', plugin_dir_url(__FILE__) . 'admin/css/mg-styles.css', array(), '1.0');
+    wp_register_script('mg-admin-carousel', plugin_dir_url(__FILE__) . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
+    wp_register_style('mg-admin-styles', plugin_dir_url(__FILE__) . 'admin/css/mg-admin-styles.css', array(), '1.0');
 
     // Enqueue for admin pages
     wp_enqueue_script('mg-admin-carousel');
@@ -141,9 +154,10 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
  // Activation & Deactivation Hooks
 function mgwpp_plugin_activate()
 {
-    MGWPP_Post_Type::mgwpp_register_post_type();
+    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-    MGWPP_Capabilities::mgwpp_capabilities();
+    MGWPP_Capabilities::mgwpp_gallery_capabilities();
     flush_rewrite_rules();
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
@@ -151,6 +165,7 @@ register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 function mgwpp_plugin_deactivate()
 {
     unregister_post_type('mgwpp_soora');
+    unregister_post_type('mgwpp_album');
     remove_role('marketing_team');
     flush_rewrite_rules();
 }
@@ -169,3 +184,10 @@ function mgwpp_plugin_uninstall()
     }
     remove_role('marketing_team');
 }
+
+
+/**Debugging  */
+add_action('admin_init', function() {
+    error_log('POST Data: ' . print_r($_POST, true));
+    error_log('REQUEST Data: ' . print_r($_REQUEST, true));
+});

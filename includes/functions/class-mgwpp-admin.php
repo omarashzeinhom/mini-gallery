@@ -48,7 +48,7 @@ class MGWPP_Admin
                 <!-- Album Creation Form -->
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="mgwpp_create_album">
-                    <?php wp_nonce_field('mgwpp_create_album', 'mgwpp_album_nonce'); ?>
+                    <input type="hidden" name="mgwpp_album_submit_nonce" value="<?php echo esc_attr(wp_create_nonce('mgwpp_album_submit_nonce')); ?>">
 
                     <table class="form-table">
                         <tr>
@@ -57,7 +57,7 @@ class MGWPP_Admin
                         </tr>
                         <tr>
                             <td><label for="album_description"><?php echo esc_html__('Album Description:', 'mini-gallery'); ?></label></td>
-                            <td><textarea id="album_description" name="album_description" rows="3"></textarea></td>
+                            <td><textarea id="album_description" name="album_description" rows="3" class="album__description"></textarea></td>
                         </tr>
                         <tr>
                             <td><label><?php echo esc_html__('Select Galleries:', 'mini-gallery'); ?></label></td>

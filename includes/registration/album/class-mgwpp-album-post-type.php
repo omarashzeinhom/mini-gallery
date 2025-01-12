@@ -6,7 +6,7 @@ class MGWPP_Album_Post_Type {
             //'label' => 'Gallery Albums',
             'description' => 'Organize your galleries into albums',
             'show_in_rest' => true,
-            'show_in_menu' => 'mini-gallery',
+            'show_in_menu' => false/*'mini-gallery' */,
             'rest_base' => 'album-api',
             'menu_icon' => 'dashicons-album',
             'has_archive' => true,

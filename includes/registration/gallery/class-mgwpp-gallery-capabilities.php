@@ -28,7 +28,7 @@ class MGWPP_Capabilities {
     }
 
     // Assign custom capabilities to roles
-    public static function mgwpp_capabilities() {
+    public static function mgwpp_gallery_capabilities() {
         $roles = ['administrator', 'marketing_team'];
         foreach ($roles as $role_name) {
             $role = get_role($role_name);
@@ -57,5 +57,5 @@ class MGWPP_Capabilities {
 add_action('init', array('MGWPP_Capabilities', 'mgwpp_add_marketing_team_role'));
 
 // Hook to assign custom capabilities after WordPress initializes the roles
-add_action('admin_init', array('MGWPP_Capabilities', 'mgwpp_capabilities'));
+add_action('admin_init', array('MGWPP_Capabilities', 'mgwpp_gallery_capabilities'));
 ?>

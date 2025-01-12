@@ -5,7 +5,7 @@ class MGWPP_Upload
     {
         // Verify nonce for security
         if (!isset($_POST['mgwpp_upload_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_upload_nonce'])), 'mgwpp_upload_nonce')) {
-            wp_die(esc_html__('Security check failed', 'mini-gallery'));
+            wp_die(esc_html__('Security check failed for Uploading Gallery', 'mini-gallery'));
         }
 
         // Check required fields

@@ -1,0 +1,13 @@
+{
+    "name": "omarabdelrahman/mini-gallery",
+    "description": "A Mini Gallery Plugin Designed to replace premium plugins with community support and various security checks , from phpunit, to pcp",
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Omarabdelrahman\\MiniGallery\\": "src/"
+        }
+    },
+    "require": {}
+}

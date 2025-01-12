@@ -47,7 +47,7 @@ class MGWPP_Admin
             __('Albums', 'mini-gallery'),
             'manage_options',
             'mgwpp_dashboard',
-            [__CLASS__, 'mgwpp_render_dashboard_page']
+            [__CLASS__, 'mgwpp_render_albums_page']
         );
 
         add_submenu_page(
@@ -94,11 +94,6 @@ class MGWPP_Admin
 
 
 
-
-
-
-
-
     public static function mgwpp_render_dashboard_page()
     {
         echo '<div class="wrap"><h1>' . esc_html__('Dashboard Overview', 'mini-gallery') . '</h1>';
@@ -111,7 +106,6 @@ class MGWPP_Admin
     ?>
         <div id="mgwpp_albums_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
-
             <!-- Album Creation Form -->
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="mgwpp_create_album">
@@ -357,7 +351,7 @@ class MGWPP_Admin
             <p><?php echo esc_html__('Security settings and role management will be available in future updates.', 'mini-gallery'); ?>
             </p>
         </div>
-    <?
+    <?php
     }
 
     public static function mgwpp_render_security_page()
@@ -376,3 +370,4 @@ class MGWPP_Admin
 
 
 MGWPP_Admin::init();
+?>

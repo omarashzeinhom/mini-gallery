@@ -8,7 +8,8 @@
  * License: GPLv2
  */
 
-if (!defined('ABSPATH')) { exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 /* Include necessary files */
@@ -108,8 +109,8 @@ function mgwpp_gallery_shortcode($atts)
             if ($gallery_type === 'single_carousel') {
                 $output .= '<div id="mg-carousel" class="mg-gallery-single-carousel">';
                 foreach ($all_images as $image) {
-                    $output .= '<div class="carousel-slide">' . 
-                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) . 
+                    $output .= '<div class="carousel-slide">' .
+                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) .
                         '</div>';
                 }
                 $output .= '</div>';
@@ -119,22 +120,21 @@ function mgwpp_gallery_shortcode($atts)
                 // Slice images for current page
                 $images = array_slice($all_images, $offset, $images_per_page);
                 foreach ($images as $image) {
-                    $output .= '<div class="mg-multi-carousel-slide">' . 
-                        wp_get_attachment_image($image->ID, 'medium', false, ['class' => 'mg-multi-carousel-slide', 'loading' => 'lazy']) . 
+                    $output .= '<div class="mg-multi-carousel-slide">' .
+                        wp_get_attachment_image($image->ID, 'medium', false, ['class' => 'mg-multi-carousel-slide', 'loading' => 'lazy']) .
                         '</div>';
                 }
                 $output .= '</div>';
             } elseif ($gallery_type === 'grid') {
                 $output .= '<div class="grid-layout">';
                 foreach ($all_images as $image) {
-                    $output .= '<div class="grid-item">' . 
-                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) . 
+                    $output .= '<div class="grid-item">' .
+                        wp_get_attachment_image($image->ID, 'medium', false, ['loading' => 'lazy']) .
                         '</div>';
                 }
                 $output .= '</div>';
             }
-        }
-        else {
+        } else {
             $output .= '<p>No images found for this gallery.</p>';
         }
  
@@ -196,12 +196,25 @@ function mgwpp_plugin_uninstall()
 
 
 /**
-* 
-* Debugging  
+*
+* Debugging
 */
 add_action(
-    'admin_init', function () {
+    'admin_init',
+    function () {
         error_log('POST Data: ' . print_r($_POST, true));
         error_log('REQUEST Data: ' . print_r($_REQUEST, true));
     }
 );
+
+
+/**
+ * Proper ob_end_flush() for all levels
+ *
+ * This replaces the WordPress `wp_ob_end_flush_all()` function
+ * with a replacement that doesn't cause PHP notices.
+ */
+remove_action('shutdown', 'wp_ob_end_flush_all', 1);
+add_action('shutdown', function () {
+    while (@ob_end_flush());
+});

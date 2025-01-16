@@ -60,6 +60,14 @@ You can upload images through the plugin's interface, and they will be displayed
 
 #### Unit testing
 
+- Phpunit testing without wp standards.
+
 ``` bash
 ./vendor/bin/phpunit --version
+```
+
+- Php Unit testing with wp standards.
+
+```bash
+ vendor/bin/phpcs -ps mini-gallery.php --standard=WordPress
 ```

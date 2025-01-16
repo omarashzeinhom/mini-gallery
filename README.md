@@ -57,3 +57,9 @@ You can upload images through the plugin's interface, and they will be displayed
 ### 1.1
 
 - Added `<table>` to Gallery Item.
+
+#### Unit testing
+
+``` bash
+./vendor/bin/phpunit --version
+```

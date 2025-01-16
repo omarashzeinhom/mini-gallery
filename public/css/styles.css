@@ -194,3 +194,9 @@
     background: #f5f5f5;
     border-radius: 4px;
 }
+
+.mgwpp-gallery-pagination {
+    display: flex;
+    border-radius: 100px;
+    border: 1px gray gray gray gray;
+}

@@ -141,12 +141,13 @@ function mgwpp_gallery_shortcode($atts)
         // Handle pagination if necessary for multi-carousel
         if ($gallery_type === 'multi_carousel' && count($all_images) > $images_per_page) {
             $total_pages = ceil(count($all_images) / $images_per_page);
-            $output .= '<div class="gallery-pagination">';
+            $output .= '<div class="mgwpp-gallery-pagination">';
+            // removed paging until adding paging
             if ($paged > 1) {
-                $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged - 1], get_permalink($post_id))) . '">Previous</a>';
+                //$output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged - 1], get_permalink($post_id))) . '">Previous</a>';
             }
             if ($paged < $total_pages) {
-                $output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged + 1], get_permalink($post_id))) . '">Next</a>';
+                //$output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged + 1], get_permalink($post_id))) . '">Next</a>';
             }
             $output .= '</div>';
         }

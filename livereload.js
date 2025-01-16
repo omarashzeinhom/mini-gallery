@@ -15,7 +15,7 @@ const browserSyncPort = 3000; // Change this to your desired port number
 console.log(chalk.yellow.bold('🔥 Livereload server is watching for changes 🔍'));
 console.log(chalk.cyan.bold('-----------------------------------------------'));
 console.log(chalk.green.bold(`  Livereload: http://localhost:${livereloadPort}`));
-console.log(chalk.green.bold(`  BrowserSync: http://localhost:${browserSyncPort}/wordpress`));
+console.log(chalk.green.bold(`  BrowserSync: http://localhost:${browserSyncPort}/wpreact`));
 console.log(chalk.cyan.bold('-----------------------------------------------'));
 console.log(chalk.blue.bold('UI: http://localhost:3001'));
 console.log(chalk.blue.bold('UI External: http://192.168.56.1:3001'));

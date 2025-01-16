@@ -35,8 +35,8 @@ gulp.task('scripts', function () {
 // Watch for changes and reload the browser
 gulp.task('watch', function () {
   browserSync.init({
-    host: "localhost/wordpress",
-    proxy: "localhost/wordpress",
+    host: "localhost/wpreact",
+    proxy: "localhost/wpreact",
     notify: true,
   });
   //TODO ADD LOADING STYLES FOR EACH PAGE TO INCREASE PERFORMANCE.

@@ -9,11 +9,10 @@ gulp.task('watch', function () {
     proxy: "localhost/wpreact",
     notify: true,
   });
-  //TODO ADD LOADING STYLES FOR EACH PAGE TO INCREASE PERFORMANCE.
-  gulp.watch('.**/*.css', gulp.series('styles')).on('change', browserSync.reload);
-  gulp.watch('**/*.js', gulp.series('scripts')).on('change', browserSync.reload); // Watch JS files
-  gulp.watch('**/*.php').on('change', browserSync.reload);
+  gulp.watch('.**/*.css').on('change', browserSync.reload); // Watch css files
+  gulp.watch('**/*.js').on('change', browserSync.reload); // Watch JS files
+  gulp.watch('**/*.php').on('change', browserSync.reload);// Watch Php files
 });
 
 // Default task
-gulp.task('default', gulp.series('styles', 'scripts', 'watch'));
+gulp.task('default', gulp.series( 'watch'));

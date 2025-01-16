@@ -9,14 +9,14 @@ server.watch(__dirname);
 
 // Define port numbers
 const livereloadPort = server.config.port;
-const browserSyncPort = 3000; // Change this to your desired port number
+const browserSyncPort = 3001; // Change this to your desired port number
 
 // Output messages with chalk colors and styles
 console.log(chalk.yellow.bold('🔥 Livereload server is watching for changes 🔍'));
 console.log(chalk.cyan.bold('-----------------------------------------------'));
-console.log(chalk.green.bold(`  Livereload: http://localhost:${livereloadPort}`));
-console.log(chalk.green.bold(`  BrowserSync: http://localhost:${browserSyncPort}/wpreact`));
+console.log(chalk.green.bold(`  Livereload: https://localhost:${livereloadPort}`));
+console.log(chalk.green.bold(`  BrowserSync: https://localhost:${browserSyncPort}/wpreact`));
 console.log(chalk.cyan.bold('-----------------------------------------------'));
-console.log(chalk.blue.bold('UI: http://localhost:3001'));
-console.log(chalk.blue.bold('UI External: http://192.168.56.1:3001'));
+console.log(chalk.blue.bold('UI: https://localhost:3001'));
+console.log(chalk.blue.bold('UI External: https://192.168.56.1:3001'));
 console.log(chalk.cyan.bold('-----------------------------------------------'));

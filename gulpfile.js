@@ -8,11 +8,12 @@ const uglify = require('gulp-uglify');
 const webpack = require('webpack-stream');
 
 // Compile SCSS to CSS
+/*
 gulp.task('styles', async function () {
   const autoprefixer = await import('gulp-autoprefixer'); // Dynamic import for autoprefixer
   const cleanCSS = await import('gulp-clean-css'); // Dynamic import for cleanCSS
 
-  return gulp.src('./src/scss/app.scss')
+   return gulp.src('./src/scss/app.scss')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer.default()) // Add vendor prefixes
@@ -22,15 +23,19 @@ gulp.task('styles', async function () {
     .pipe(browserSync.stream());
 });
 
+ */
 // Compile JS
-gulp.task('scripts', function () {
-  return gulp.src('./src/js/**/*.js')
-    .pipe(concat('app.js'))   // Concatenate all JS files into one
-    .pipe(webpack(require('./webpack.config.js')))
-    .pipe(uglify())            // Minify the JS file
-    .pipe(gulp.dest('./dist/js'))
-    .pipe(browserSync.stream());
-});
+
+//gulp.task('scripts', function () {
+//  return gulp.src('./src/js/**/*.js')
+//    .pipe(concat('app.js'))   // Concatenate all JS files into one
+//    .pipe(webpack(require('./webpack.config.js')))
+//    .pipe(uglify())            // Minify the JS file
+//    .pipe(gulp.dest('./dist/js'))
+//    .pipe(browserSync.stream());
+// });
+
+
 
 // Watch for changes and reload the browser
 gulp.task('watch', function () {

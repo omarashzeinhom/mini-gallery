@@ -9,7 +9,7 @@ server.watch(__dirname);
 
 // Define port numbers
 const livereloadPort = server.config.port;
-const browserSyncPort = 3001; // Change this to your desired port number
+const browserSyncPort = 3000; // Change this to your desired port number
 
 // Output messages with chalk colors and styles
 console.log(chalk.yellow.bold('🔥 Livereload server is watching for changes 🔍'));

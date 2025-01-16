@@ -8,6 +8,7 @@ gulp.task('watch', function () {
     host: "localhost/wpreact",
     proxy: "localhost/wpreact",
     notify: true,
+    open: true,
   });
   gulp.watch('.**/*.css').on('change', browserSync.reload); // Watch css files
   gulp.watch('**/*.js').on('change', browserSync.reload); // Watch JS files

@@ -1,0 +1,6 @@
+# Ignore nested 'node_modules' directories
+**/node_modules/
+./node_modules\
+node_modules
+TODO.md
+/vendor/

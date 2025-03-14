@@ -1,0 +1,202 @@
+/* mini-gallery-styles.css */
+
+.text-center {
+    text-align: center;
+}
+
+/* Single Carousel */
+.mg-gallery-single-carousel {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 600px; /* Adjusted max-width for consistency */
+    margin: 0 auto;
+}
+
+.mg-gallery-single-carousel .carousel-slide {
+    text-align: center;
+    width: 100%;
+    max-width: 250px; /* Adjusted max-width for consistency */
+    max-height: 250px; /* Adjusted max-height for consistency */
+    display: block;
+    flex-shrink: 0;
+}
+
+.mg-gallery-single-carousel .carousel-slide img {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width: 100%;
+    background: #f9f9f9;
+    opacity: 0.9;
+    transition: 0.2s ease-in-out;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
+    object-fit: cover;
+}
+
+.mg-gallery-single-carousel .carousel-slide img:hover {
+    opacity: 1;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
+}
+
+.mg-gallery-single-carousel .carousel-slide p {
+    margin: 5px 0;
+}
+
+.mg-gallery-single-carousel .carousel-slide a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.mg-gallery-single-carousel .carousel-slide a:hover {
+    text-decoration: underline;
+}
+
+/* Multi Carousel */
+.mg-gallery.multi-carousel {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 1920px; /* Adjusted max-width for consistency */
+    margin: 0 auto;
+    gap: 20px; /* Space between images */
+    align-items: center;
+    justify-content: center;
+}
+
+.mg-gallery.multi-carousel .mg-multi-carousel-slide {
+    flex: 1 1 calc(100% / 3); /* Adjust width based on the number of images per page */
+    max-width: 400px;
+    max-height: 400px;
+    text-align: center;
+}
+
+.mg-gallery.multi-carousel .mg-multi-carousel-slide img {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width: 100%;
+    background: #f9f9f9;
+    opacity: 0.9;
+    transition: 0.2s ease-in-out;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
+    object-fit: cover;
+}
+
+.mg-gallery.multi-carousel .mg-multi-carousel-slide img:hover {
+    opacity: 1;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
+}
+
+@media (max-width: 768px) {
+    .mg-gallery.multi-carousel .mg-multi-carousel-slide {
+        flex: 1 1 1 calc(100% / 1); /* 1 images per page on mobile */
+    }
+}
+
+
+
+/* Grid Layout */
+.grid-layout {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Adjusted max-width for consistency */
+    margin: 0 auto;
+}
+
+.grid-layout .grid-item {
+    padding: 10px;
+    opacity: 0.9;
+    max-width: 250px;
+    width: 100%;
+}
+
+.grid-layout .grid-item img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background: #f9f9f9;
+    opacity: 0.9;
+    transition: 0.2s ease-in-out;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
+    object-fit: cover;
+}
+
+.grid-layout .grid-item img:hover {
+    opacity: 1;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
+}
+
+
+
+
+
+
+/*Albums Basic CSS */
+
+.mgwpp-album-container {
+    margin: 2em 0;
+}
+
+.mgwpp-gallery-container {
+    margin-bottom: 2em;
+}
+
+.mgwpp-gallery-title {
+    margin-bottom: 1em;
+    font-size: 1.5em;
+}
+
+.mgwpp-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.mgwpp-gallery-item {
+    display: block;
+    position: relative;
+    padding-bottom: 100%;
+    overflow: hidden;
+}
+
+.mgwpp-gallery-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.mgwpp-gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.mgwpp-no-galleries {
+    text-align: center;
+    padding: 2em;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.mgwpp-gallery-pagination {
+    display: flex;
+    border-radius: 100px;
+    border: 1px gray gray gray gray;
+}

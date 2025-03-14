@@ -14,6 +14,10 @@ if (!defined('ABSPATH')) {
 
 /* Include necessary files */
  
+//Gallery Types 
+// Add this with your other requires at the top
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-slider.php';
+
 // Galleries
  require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
  require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
@@ -57,6 +61,7 @@ function mgwpp_enqueue_assets()
     wp_register_script('mg-carousel', plugin_dir_url(__FILE__) . 'public/js/carousel.js', array(), '1.0', true);
     wp_register_style('mg-styles', plugin_dir_url(__FILE__) . 'public/css/styles.css', array(), '1.0');
     wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
+    wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles', array(), '1.0');
 
     // Enqueue for front-end only
     if (!is_admin()) {
@@ -92,6 +97,7 @@ function mgwpp_gallery_shortcode($atts)
     $paged = max(1, intval($atts['paged']));
     $output = '';
  
+    
     if ($post_id) {
         // Retrieve the gallery type from post meta
         $gallery_type = get_post_meta($post_id, 'gallery_type', true);
@@ -155,6 +161,9 @@ function mgwpp_gallery_shortcode($atts)
         $output .= '<p>Invalid gallery ID.</p>';
     }
  
+    if ($gallery_type === 'neon_slider') {
+        $output .= MGWPP_Neon_Slider::render($post_id, $all_images);
+    }
     return $output;
 }
  

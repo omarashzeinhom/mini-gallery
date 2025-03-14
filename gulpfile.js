@@ -5,8 +5,8 @@ const browserSync = require('browser-sync').create();
 // Watch for changes and reload the browser
 gulp.task('watch', function () {
   browserSync.init({
-    host: "localhost/wpreact",
-    proxy: "localhost/wpreact",
+    host: "localhost/wordpress",
+    proxy: "localhost/wordpress",
     notify: true,
     open: true,
   });

@@ -1,0 +1,108 @@
+/* public/css/pro-carousel.css */
+.mg-pro-carousel {
+    --card-width: 300px;
+    --gap: 30px;
+    --active-scale: 1.05;
+    position: relative;
+    padding: 40px 0;
+    background: #f8f9fa;
+}
+
+.mg-pro-carousel__container {
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.mg-pro-carousel__track {
+    display: flex;
+    gap: var(--gap);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mg-pro-carousel__card {
+    flex: 0 0 var(--card-width);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.mg-pro-carousel__card:hover {
+    transform: translateY(-5px) scale(var(--active-scale));
+}
+
+.mg-pro-carousel__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--accent-color, #2563eb);
+}
+
+.mg-pro-carousel__content {
+    padding: 20px;
+}
+
+.mg-pro-carousel__title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.mg-pro-carousel__caption {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.mg-pro-carousel__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.mg-pro-carousel__nav--prev { left: 20px; }
+.mg-pro-carousel__nav--next { right: 20px; }
+
+/* Thumbnail Pagination */
+.mg-pro-carousel__thumbs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0;
+}
+
+.mg-pro-carousel__thumb {
+    width: 60px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.mg-pro-carousel__thumb.active {
+    opacity: 1;
+    box-shadow: 0 0 0 2px var(--accent-color, #2563eb);
+}
+
+@media (max-width: 768px) {
+    .mg-pro-carousel {
+        --card-width: 250px;
+        --gap: 20px;
+    }
+    
+    .mg-pro-carousel__nav {
+        width: 35px;
+        height: 35px;
+    }
+}

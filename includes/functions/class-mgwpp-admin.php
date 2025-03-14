@@ -73,7 +73,7 @@ class MGWPP_Admin
 
         $total_galleries = isset($gallery_post_statuses->publish) ? $gallery_post_statuses->publish : 0;
         $total_albums = isset($album_post_statuses->publish) ? $album_post_statuses->publish : 0;
-        ?>
+?>
         <div class="mgwpp-dashboard-stats">
             <div class="stat-box">
                 <h3><?php echo esc_html__('Total Galleries', 'mini-gallery'); ?></h3>
@@ -84,7 +84,7 @@ class MGWPP_Admin
                 <p class="stat-number"><?php echo esc_html($total_albums); ?></p>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     public static function mgwpp_render_dashboard_page()
@@ -96,7 +96,7 @@ class MGWPP_Admin
 
     public static function mgwpp_render_albums_page()
     {
-        ?>
+    ?>
         <div id="mgwpp_albums_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -164,11 +164,13 @@ class MGWPP_Admin
                         foreach ($albums as $album) {
                             $galleries = get_post_meta($album->ID, '_mgwpp_album_galleries', true);
                             $gallery_count = is_array($galleries) ? count($galleries) : 0;
-                            ?>
+                    ?>
                             <tr>
                                 <td><?php echo esc_html($album->post_title); ?></td>
                                 <td><?php echo esc_html($gallery_count); ?></td>
-                                <td><pre>[mgwpp_album id="<?php echo esc_attr($album->ID); ?>"]</pre></td>
+                                <td>
+                                    <pre>[mgwpp_album id="<?php echo esc_attr($album->ID); ?>"]</pre>
+                                </td>
                                 <td>
                                     <a href="<?php echo esc_url(get_edit_post_link($album->ID)); ?>" class="button button-secondary"><?php echo esc_html__('Edit', 'mini-gallery'); ?></a>
                                     <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $album->ID), 'mgwpp_delete_album_' . $album->ID)); ?>" class="button button-secondary" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to delete this album?', 'mini-gallery')); ?>')"><?php echo esc_html__('Delete', 'mini-gallery'); ?></a>
@@ -196,7 +198,7 @@ class MGWPP_Admin
                                     <hr style="border: 1px solid black;" />
                                 </td>
                             </tr>
-                            <?php
+                    <?php
                         }
                     } else {
                         echo '<tr><td colspan="4">' . esc_html__('No albums found.', 'mini-gallery') . '</td></tr>';
@@ -205,12 +207,12 @@ class MGWPP_Admin
                 </tbody>
             </table>
         </div>
-        <?php
+    <?php
     }
 
     public static function mgwpp_render_galleries_page()
     {
-        ?>
+    ?>
         <div id="mgwpp_galleries_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Gallery', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
@@ -233,6 +235,7 @@ class MGWPP_Admin
                                 <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
                                 <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
                                 <option value="neon_slider"><?php echo esc_html__('Neon Cyberpunk Slider', 'mini-gallery'); ?></option>
+                                <option value="pro_carousel"> <?php echo esc_html__('Modern Card Carousel', 'mini-gallery'); ?></option>
                             </select>
                         </td>
                     </tr>
@@ -264,11 +267,13 @@ class MGWPP_Admin
                     if ($galleries) {
                         foreach ($galleries as $gallery) {
                             $gallery_type = get_post_meta($gallery->ID, 'gallery_type', true);
-                            ?>
+                    ?>
                             <tr>
                                 <td><?php echo esc_html($gallery->post_title); ?> (ID: <?php echo esc_html($gallery->ID); ?>)</td>
                                 <td><?php echo esc_html(ucfirst($gallery_type)); ?></td>
-                                <td><pre>[mgwpp_gallery id="<?php echo esc_attr($gallery->ID); ?>"]</pre></td>
+                                <td>
+                                    <pre>[mgwpp_gallery id="<?php echo esc_attr($gallery->ID); ?>"]</pre>
+                                </td>
                                 <td>
                                     <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $gallery->ID), 'mgwpp_delete_gallery')); ?>" class="button button-secondary"><?php echo esc_html__('Delete Gallery', 'mini-gallery'); ?></a>
                                 </td>
@@ -285,7 +290,7 @@ class MGWPP_Admin
                                     <hr style="border: 1px solid black;" />
                                 </td>
                             </tr>
-                            <?php
+                    <?php
                         }
                     } else {
                         echo '<tr><td colspan="4">' . esc_html__('No galleries found.', 'mini-gallery') . '</td></tr>';
@@ -294,19 +299,19 @@ class MGWPP_Admin
                 </tbody>
             </table>
         </div>
-        <?php
+    <?php
     }
 
     public static function mgwpp_render_security_page()
     {
-        ?>
+    ?>
         <div id="mgwpp_security_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
             <div class="mgwpp-security-settings">
                 <p><?php echo esc_html__('Security settings and role management will be available in future updates.', 'mini-gallery'); ?></p>
             </div>
         </div>
-        <?php
+<?php
     }
 }
 

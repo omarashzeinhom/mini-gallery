@@ -1,20 +1,20 @@
 // Carousel for Single Gallery
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var singleCarousels = document.querySelectorAll(".mg-gallery-single-carousel");
 
-    singleCarousels.forEach(function(carousel) {
-        var slides = carousel.querySelectorAll(".carousel-slide");
+    singleCarousels?.forEach(function (carousel) {
+        var slides = carousel?.querySelectorAll(".carousel-slide");
         var currentIndex = 0;
 
         function showSlide(index) {
-            slides.forEach(function(slide) {
+            slides?.forEach(function (slide) {
                 slide.style.display = "none";
             });
-            slides[index].style.display = "block";
+            slides?.[index]?.style?.display = "block";
         }
 
         function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
+            currentIndex = (currentIndex + 1) % (slides?.length || 1);
             showSlide(currentIndex);
         }
 
@@ -23,16 +23,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-
 // Carousel for Multi Gallery
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var multiCarousels = document.querySelectorAll(".mg-gallery.multi-carousel");
 
-    multiCarousels.forEach(function(carousel) {
-        var slides = carousel.querySelectorAll(".mg-multi-carousel-slide");
+    multiCarousels?.forEach(function (carousel) {
+        var slides = carousel?.querySelectorAll(".mg-multi-carousel-slide");
         var currentIndex = 0;
         var imagesPerPage = 6; // Default number of images per page
-        var visibleSlides = [];
 
         // Function to update the number of images per page based on screen width
         function updateImagesPerPage() {
@@ -45,8 +43,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Function to show the current page of slides
         function showSlides() {
-            var totalSlides = slides.length;
-            slides.forEach(function(slide, index) {
+            var totalSlides = slides?.length || 0;
+            slides?.forEach(function (slide, index) {
                 if (index >= currentIndex * imagesPerPage && index < (currentIndex + 1) * imagesPerPage) {
                     slide.style.display = "flex";
                 } else {
@@ -58,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Function to go to the next page of slides
         function nextSlide() {
             updateImagesPerPage();
-            var totalSlides = slides.length;
+            var totalSlides = slides?.length || 0;
             currentIndex = (currentIndex + 1) % Math.ceil(totalSlides / imagesPerPage);
             showSlides();
         }
@@ -69,38 +67,35 @@ document.addEventListener("DOMContentLoaded", function() {
         // Set up an interval to automatically switch slides
         setInterval(nextSlide, 3000); // Change slide every 3 seconds
 
-        
         // Handle window resize to adjust images per page
-        window.addEventListener('resize', function() {
+        window.addEventListener("resize", function () {
             updateImagesPerPage();
             showSlides();
         });
     });
 });
 
-
-// Mega Carousel 
-
+// Mega Carousel
 class Slider {
     constructor() {
-        this.slider = document.querySelector('.hero-slider');
-        this.slides = Array.from(document.querySelectorAll('.slide'));
-        this.dotsContainer = document.querySelector('.dots-container');
+        this.slider = document.querySelector(".hero-slider");
+        this.slides = Array.from(document.querySelectorAll(".slide")) || [];
+        this.dotsContainer = document.querySelector(".dots-container");
         this.currentIndex = 0;
         this.touchStartX = 0;
         this.touchEndX = 0;
         this.autoPlayInterval = null;
 
         // Add 'active' class to the first slide immediately on page load
-        this.slides[0].classList.add('active');
-        this.slides[0].classList.add('first-slide'); // Prevent transition delay for first load
+        this.slides[0]?.classList?.add("active");
+        this.slides[0]?.classList?.add("first-slide"); // Prevent transition delay for first load
 
         // Force a reflow to apply the styles immediately
-        this.slides[0].offsetHeight; // Accessing height triggers a reflow
+        this.slides[0]?.offsetHeight; // Accessing height triggers a reflow
 
         // Remove the 'first-slide' class after a tiny delay to avoid animation delay
         setTimeout(() => {
-            this.slides[0].classList.remove('first-slide');
+            this.slides[0]?.classList?.remove("first-slide");
         }, 10); // Short delay after applying 'active'
 
         this.initDots();
@@ -108,45 +103,46 @@ class Slider {
         this.startAutoPlay();
 
         // Add event listener to the preview images
-        this.previewImages = document.querySelectorAll('.preview-images img');
-        this.previewImages.forEach((img, index) => {
-            img.addEventListener('click', () => {
+        this.previewImages = document.querySelectorAll(".preview-images img");
+        this.previewImages?.forEach((img, index) => {
+            img?.addEventListener("click", () => {
                 this.changeSlide(index);
             });
         });
     }
+
     // Function to initialize the dots for navigation
     initDots() {
-        this.slides.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if (index === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => this.goToSlide(index));
-            this.dotsContainer.appendChild(dot);
+        this.slides?.forEach((_, index) => {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (index === 0) dot.classList.add("active");
+            dot?.addEventListener("click", () => this.goToSlide(index));
+            this.dotsContainer?.appendChild(dot);
         });
     }
 
     // Adding event listeners for touch and mouse events
     addEventListeners() {
-        this.slider.addEventListener('touchstart', e => this.handleTouchStart(e));
-        this.slider.addEventListener('touchmove', e => this.handleTouchMove(e));
-        this.slider.addEventListener('touchend', () => this.handleTouchEnd());
+        this.slider?.addEventListener("touchstart", (e) => this.handleTouchStart(e));
+        this.slider?.addEventListener("touchmove", (e) => this.handleTouchMove(e));
+        this.slider?.addEventListener("touchend", () => this.handleTouchEnd());
 
-        this.slider.addEventListener('mousedown', e => this.handleMouseStart(e));
-        this.slider.addEventListener('mousemove', e => this.handleMouseMove(e));
-        this.slider.addEventListener('mouseup', () => this.handleMouseEnd());
-        this.slider.addEventListener('mouseleave', () => this.handleMouseEnd());
+        this.slider?.addEventListener("mousedown", (e) => this.handleMouseStart(e));
+        this.slider?.addEventListener("mousemove", (e) => this.handleMouseMove(e));
+        this.slider?.addEventListener("mouseup", () => this.handleMouseEnd());
+        this.slider?.addEventListener("mouseleave", () => this.handleMouseEnd());
     }
 
     // Function to handle touch start
     handleTouchStart(e) {
-        this.touchStartX = e.touches[0].clientX;
+        this.touchStartX = e?.touches?.[0]?.clientX || 0;
         this.resetAutoPlay();
     }
 
     // Function to handle touch move
     handleTouchMove(e) {
-        this.touchEndX = e.touches[0].clientX;
+        this.touchEndX = e?.touches?.[0]?.clientX || 0;
     }
 
     // Function to handle touch end and determine if swipe occurred
@@ -156,13 +152,13 @@ class Slider {
 
     // Function to handle mouse start
     handleMouseStart(e) {
-        this.touchStartX = e.clientX;
+        this.touchStartX = e?.clientX || 0;
         this.resetAutoPlay();
     }
 
     // Function to handle mouse move
     handleMouseMove(e) {
-        this.touchEndX = e.clientX;
+        this.touchEndX = e?.clientX || 0;
     }
 
     // Function to handle mouse end and determine if swipe occurred
@@ -183,18 +179,18 @@ class Slider {
 
     // Function to update the navigation dots
     updateDots() {
-        const dots = Array.from(this.dotsContainer.children);
-        dots.forEach(dot => dot.classList.remove('active'));
-        dots[this.currentIndex].classList.add('active');
+        const dots = Array.from(this.dotsContainer?.children || []);
+        dots?.forEach((dot) => dot?.classList?.remove("active"));
+        dots?.[this.currentIndex]?.classList?.add("active");
     }
 
     // Function to go to a specific slide
     goToSlide(index) {
         if (index === this.currentIndex) return;
 
-        this.slides[this.currentIndex].classList.remove('active');
-        this.currentIndex = (index + this.slides.length) % this.slides.length;
-        this.slides[this.currentIndex].classList.add('active');
+        this.slides?.[this.currentIndex]?.classList?.remove("active");
+        this.currentIndex = (index + this.slides?.length) % this.slides?.length;
+        this.slides?.[this.currentIndex]?.classList?.add("active");
         this.updateDots();
         this.resetAutoPlay();
     }
@@ -225,16 +221,17 @@ class Slider {
         this.goToSlide(index);
     }
 }
+
 // Add neon interaction to preview images
-document.querySelectorAll('.preview-images img').forEach(img => {
-    img.addEventListener('mouseover', () => {
-        img.style.transform = 'scale(1.1)';
-        img.style.filter = 'drop-shadow(0 0 10px #00f3ff)';
+document.querySelectorAll(".preview-images img")?.forEach((img) => {
+    img?.addEventListener("mouseover", () => {
+        img.style.transform = "scale(1.1)";
+        img.style.filter = "drop-shadow(0 0 10px #00f3ff)";
     });
 
-    img.addEventListener('mouseout', () => {
-        img.style.transform = 'scale(1)';
-        img.style.filter = 'none';
+    img?.addEventListener("mouseout", () => {
+        img.style.transform = "scale(1)";
+        img.style.filter = "none";
     });
 });
 

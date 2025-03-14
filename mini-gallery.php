@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 
 //Gallery Types 
 // Add this with your other requires at the top
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-slider.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 
 // Galleries
@@ -93,8 +93,7 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
 
 
 
-function mgwpp_gallery_shortcode($atts)
-{
+function mgwpp_gallery_shortcode($atts) {
     $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
     $post_id = max(0, intval($atts['id']));
     $paged = max(1, intval($atts['paged']));
@@ -141,8 +140,8 @@ function mgwpp_gallery_shortcode($atts)
                         '</div>';
                 }
                 $output .= '</div>';
-            } elseif ($gallery_type === 'neon_slider') {
-                $output .= MGWPP_Neon_Slider::render($post_id, $all_images);
+            } elseif ($gallery_type === 'mega_slider') {
+                $output .= MGWPP_Mega_Slider::render($post_id, $all_images);
             } elseif ($gallery_type === 'pro_carousel') {
                 wp_enqueue_style('mgwpp-pro-carousel-styles');
                 wp_enqueue_script('mgwpp-pro-carousel-js');
@@ -204,7 +203,6 @@ function mgwpp_gallery_shortcode($atts)
 
     return $output;
 }
-
 
 // Activation & Deactivation Hooks
 function mgwpp_plugin_activate()

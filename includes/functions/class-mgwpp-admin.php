@@ -234,7 +234,7 @@ class MGWPP_Admin
                                 <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?></option>
                                 <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?></option>
                                 <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
-                                <option value=="mega_slider"><?php echo esc_html__('Mega Slider', 'mini-gallery'); ?></option>
+                                <option value="mega_slider"><?php echo esc_html__('Mega Slider', 'mini-gallery'); ?></option>
                                 <option value="pro_carousel"> <?php echo esc_html__('Modern Card Carousel', 'mini-gallery'); ?></option>
                             </select>
                         </td>

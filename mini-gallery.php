@@ -66,11 +66,11 @@ function mgwpp_enqueue_assets()
     wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
     wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js',array(), '1.0', true);
     // Enqueue for front-end only
-    if (!is_admin()) {
+
         wp_enqueue_script('mg-carousel');
         wp_enqueue_style('mg-styles');
-    }
 }
+
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');
 
 
@@ -82,13 +82,21 @@ function mgwpp_enqueue_admin_assets()
     wp_register_script('mg-admin-carousel', plugin_dir_url(__FILE__) . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
     wp_register_style('mg-admin-styles', plugin_dir_url(__FILE__) . 'admin/css/mg-admin-styles.css', array(), '1.0');
 
+    // Register additional styles for admin area
+    wp_register_style('mg-styles', plugin_dir_url(__FILE__) . 'public/css/styles.css', array(), '1.0');
+    wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
+    wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
+    wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
+
     // Enqueue for admin pages
     wp_enqueue_script('mg-admin-carousel');
     wp_enqueue_style('mg-admin-styles');
+    wp_enqueue_style('mg-styles');
+    wp_enqueue_style('mg-album-styles');
+    wp_enqueue_style('mg-mega-carousel-styles');
+    wp_enqueue_style('mgwpp-pro-carousel-styles');
 }
 add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
-
-
 
 
 
@@ -155,7 +163,7 @@ function mgwpp_gallery_shortcode($atts) {
                 foreach ($all_images as $image) {
                     $output .= sprintf(
                         '<div class="mg-pro-carousel__card">
-                            <img class="mg-pro-carousel__image" src="%s" alt="%s">
+                            <img class="mg-pro-carousel__image" src="%s" alt="%s" loading="lazy">
                             <div class="mg-pro-carousel__content">
                                 <h3 class="mg-pro-carousel__title">%s</h3>
                                 <p class="mg-pro-carousel__caption">%s</p>
@@ -173,11 +181,12 @@ function mgwpp_gallery_shortcode($atts) {
 
                 foreach ($all_images as $thumb) {
                     $output .= sprintf(
-                        '<img class="mg-pro-carousel__thumb" src="%s" alt="%s">',
+                        '<img class="mg-pro-carousel__thumb" src="%s" alt="%s" loading="lazy">',
                         esc_url(wp_get_attachment_image_url($thumb->ID, 'thumbnail')),
                         esc_attr(get_post_meta($thumb->ID, '_wp_attachment_image_alt', true))
                     );
                 }
+                
 
                 $output .= '</div></div>';
             }

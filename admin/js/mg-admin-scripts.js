@@ -80,3 +80,26 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleCheckbox = document.getElementById("mode-toggle-checkbox");
+    const body = document.body;
+
+    // Check for saved theme in localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        body.setAttribute("data-theme", "dark");
+        toggleCheckbox.checked = true;
+    }
+
+    // Toggle theme on checkbox change
+    toggleCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+            body.setAttribute("data-theme", "dark");
+            localStorage.setItem("theme", "dark");
+        } else {
+            body.removeAttribute("data-theme");
+            localStorage.setItem("theme", "light");
+        }
+    });
+});

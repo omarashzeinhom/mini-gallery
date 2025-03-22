@@ -3,6 +3,6 @@
     "browser-sync": "^3.0.2",
     "gulp": "^5.0.0",
     "livereload": "^0.9.3"
-    },
+  },
   "dependencies": {}
 }

@@ -34,7 +34,7 @@ class MGWPP_Mega_Slider {
             <div class="dots-container"></div>
         </div>
 
-        <script><?php include plugin_dir_path(__FILE__) . '../../public/js/neon-slider.js'; ?></script>
+        <script><?php include plugin_dir_path(__FILE__) . '../../public/js/mg-mega-carousel.js'; ?></script>
         
         <?php
         return ob_get_clean();

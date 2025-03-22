@@ -1,8 +1,8 @@
 // Mega Carousel
 class Slider {
     constructor() {
-        this.slider = document.querySelector(".hero-slider");
-        this.slides = Array.from(document.querySelectorAll(".slide")) || [];
+        this.slider = document.querySelector(".neon-slider");
+        this.slides = Array.from(document.querySelectorAll(".neon-slide")) || [];
         this.dotsContainer = document.querySelector(".dots-container");
         this.currentIndex = 0;
         this.touchStartX = 0;
@@ -11,14 +11,14 @@ class Slider {
 
         // Add 'active' class to the first slide immediately on page load
         this.slides[0]?.classList?.add("active");
-        this.slides[0]?.classList?.add("first-slide"); // Prevent transition delay for first load
+        this.slides[0]?.classList?.add("first-neon-slide"); // Prevent transition delay for first load
 
         // Force a reflow to apply the styles immediately
         this.slides[0]?.offsetHeight; // Accessing height triggers a reflow
 
         // Remove the 'first-slide' class after a tiny delay to avoid animation delay
         setTimeout(() => {
-            this.slides[0]?.classList?.remove("first-slide");
+            this.slides[0]?.classList?.remove("first-neon-slide");
         }, 10); // Short delay after applying 'active'
 
         this.initDots();
@@ -26,7 +26,7 @@ class Slider {
         this.startAutoPlay();
 
         // Add event listener to the preview images
-        this.previewImages = document.querySelectorAll(".preview-images img");
+        this.previewImages = document.querySelectorAll(".neon-preview-images img");
         this.previewImages?.forEach((img, index) => {
             img?.addEventListener("click", () => {
                 this.changeSlide(index);

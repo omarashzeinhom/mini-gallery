@@ -19,8 +19,8 @@ class MGWPP_Mega_Slider
             </div>
 
             <div class="mg-carousel__controls">
-                <button class="mg-carousel__nav mg-prev">‹</button>
-                <button class="mg-carousel__nav mg-next">›</button>
+                <button class="mg-carousel__nav mg-prev">◄</button>
+                <button class="mg-carousel__nav mg-next">►</button>
                 <div class="mg-dots-container"></div>
             </div>
         </div>

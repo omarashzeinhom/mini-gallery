@@ -19,6 +19,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortco
 // Add this with your other requires at the top
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
 
 // Galleries
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
@@ -66,6 +67,20 @@ function mgwpp_enqueue_assets()
     wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
     wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
     wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js',array(), '1.0', true);
+    wp_register_style(
+        'mgwpp-neon-carousel-styles',
+        plugins_url('public/css/mg-neon-carousel.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-neon-carousel.css')
+    );
+    
+    wp_register_script(
+        'mgwpp-neon-carousel-js',
+        plugins_url('public/js/mg-neon-carousel.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-neon-carousel.js'),
+        true
+    );
     // Enqueue for front-end only
 
     wp_enqueue_script('mg-carousel');

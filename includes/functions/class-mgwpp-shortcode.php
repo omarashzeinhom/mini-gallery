@@ -106,6 +106,10 @@ function mgwpp_gallery_shortcode($atts) {
                 //$output .= '<a href="' . esc_url(add_query_arg(['paged' => $paged + 1], get_permalink($post_id))) . '">Next</a>';
             }
             $output .= '</div>';
+        } elseif ($gallery_type === 'neon_carousel') {
+            wp_enqueue_style('mgwpp-neon-carousel-styles');
+            wp_enqueue_script('mgwpp-neon-carousel-js');
+            $output .= MGWPP_Neon_Carousel::render($post_id, $all_images);
         }
     } else {
         $output .= '<p>Invalid gallery ID.</p>';

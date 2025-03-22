@@ -164,5 +164,3 @@ document.querySelectorAll(".neon-preview-images img")?.forEach((img) => {
         img.style.filter = "none";
     });
 });
-
-new NeonSlider();

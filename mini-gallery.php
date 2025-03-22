@@ -61,8 +61,18 @@ add_action('init', 'mgwpp_initialize_plugin');
 function mgwpp_enqueue_assets()
 {
     // Register scripts and styles
-    wp_register_script('mg-carousel', plugin_dir_url(__FILE__) . 'public/js/carousel.js', array(), '1.0', true);
-    wp_register_style('mg-styles', plugin_dir_url(__FILE__) . 'public/css/styles.css', array(), '1.0');
+   
+    wp_register_script('mg-single-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-single-carousel.js', array(), '1.0', true);
+    wp_register_style('mg-single-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-single-carousel.css', array(), '1.0');
+
+
+    wp_register_script('mg-multi-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-multi-carousel.js', array(), '1.0', true);
+    wp_register_style('mg-multi-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-multi-carousel.css', array(), '1.0');
+
+
+    wp_register_style('mg-grid-styles', plugin_dir_url(__FILE__) . 'public/css/mg-grid.css', array(), '1.0');
+
+
     wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
     wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
     wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
@@ -83,8 +93,14 @@ function mgwpp_enqueue_assets()
     );
     // Enqueue for front-end only
 
-    wp_enqueue_script('mg-carousel');
-    wp_enqueue_style('mg-styles');
+    wp_enqueue_script('mg-single-carousel-js');
+    wp_enqueue_script('mg-multi-carousel-js');
+
+    wp_enqueue_style('mg-single-carousel-styles');  // Add this line
+    wp_enqueue_style('mg-multi-carousel-styles');  // Add this line
+
+    wp_enqueue_style('mg-grid-styles');  // Add this line
+
     wp_enqueue_style('mg-mega-carousel-styles');  // Add this line
     wp_enqueue_style('mgwpp-pro-carousel-styles'); // Add this line
 }

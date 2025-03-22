@@ -68,8 +68,10 @@ function mgwpp_enqueue_assets()
     wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js',array(), '1.0', true);
     // Enqueue for front-end only
 
-        wp_enqueue_script('mg-carousel');
-        wp_enqueue_style('mg-styles');
+    wp_enqueue_script('mg-carousel');
+    wp_enqueue_style('mg-styles');
+    wp_enqueue_style('mg-mega-carousel-styles');  // Add this line
+    wp_enqueue_style('mgwpp-pro-carousel-styles'); // Add this line
 }
 
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');

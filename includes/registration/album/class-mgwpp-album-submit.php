@@ -62,7 +62,6 @@ class MGWPP_Album_Submit
         ));
         exit;
     }
-
     
     public static function save_album_submission($post_id, $post, $update)
     {

@@ -1,4 +1,3 @@
-// public/js/pro-carousel.js
 document.addEventListener('DOMContentLoaded', function() {
     const carousels = document.querySelectorAll('.mg-pro-carousel');
     
@@ -7,61 +6,49 @@ document.addEventListener('DOMContentLoaded', function() {
         const cards = carousel.querySelectorAll('.mg-pro-carousel__card');
         const prevBtn = carousel.querySelector('.mg-pro-carousel__nav--prev');
         const nextBtn = carousel.querySelector('.mg-pro-carousel__nav--next');
-        const thumbs = carousel.querySelectorAll('.mg-pro-carousel__thumb');
         
         let currentIndex = 0;
-        const cardWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--card-width'));
-        const gap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap'));
-        
+        const carouselStyles = getComputedStyle(carousel);
+        const cardWidth = parseInt(carouselStyles.getPropertyValue('--card-width'));
+        const gap = parseInt(carouselStyles.getPropertyValue('--gap'));
+
         function updateCarousel() {
             const offset = -(currentIndex * (cardWidth + gap));
             track.style.transform = `translateX(${offset}px)`;
-            thumbs.forEach(thumb => thumb.classList.remove('active'));
-            thumbs[currentIndex]?.classList.add('active');
         }
-        
+
         function nextSlide() {
-            currentIndex = (currentIndex + 1) % cards.length;
+            currentIndex = Math.min(currentIndex + 1, cards.length - 1);
             updateCarousel();
         }
-        
+
         function prevSlide() {
-            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            currentIndex = Math.max(currentIndex - 1, 0);
             updateCarousel();
         }
-        
-        // Navigation
+
+        // Button controls
         nextBtn?.addEventListener('click', nextSlide);
         prevBtn?.addEventListener('click', prevSlide);
-        
-        // Thumbnail click
-        thumbs.forEach((thumb, index) => {
-            thumb.addEventListener('click', () => {
-                currentIndex = index;
-                updateCarousel();
-            });
-        });
-        
-        // Auto-play
-        let autoplay = setInterval(nextSlide, 5000);
-        
-        carousel.addEventListener('mouseenter', () => clearInterval(autoplay));
-        carousel.addEventListener('mouseleave', () => {
-            autoplay = setInterval(nextSlide, 5000);
-        });
-        
-        // Touch/swipe
+
+        // Touch/swipe handling
         let touchStartX = 0;
         
         carousel.addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
         });
-        
+
         carousel.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].clientX;
             if (Math.abs(touchEndX - touchStartX) > 50) {
                 touchEndX < touchStartX ? nextSlide() : prevSlide();
             }
+        });
+
+        // Keyboard navigation
+        carousel.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
         });
     });
 });

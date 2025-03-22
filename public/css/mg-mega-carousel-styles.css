@@ -1,397 +1,125 @@
-    /* NEON CYBERPUNK STYLES */
-    :root {
-        --neon-primary: #00f3ff;
-        --neon-secondary: #ff007f;
-        --dark-bg: #0a0a0a;
+/* Material Design Inspired Carousel */
+.mg-material-carousel {
+    --primary-color: #2196F3;
+    --dot-size: 8px;
+    --dot-spacing: 12px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mg-carousel__viewport {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+}
+
+.mg-carousel__slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.mg-carousel__slide.mg-active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.mg-carousel__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Navigation Controls */
+.mg-carousel__controls {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 2;
+}
+
+.mg-carousel__nav {
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mg-carousel__nav:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Dot Navigation */
+.mg-dots-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 var(--dot-spacing);
+    background: rgba(255,255,255,0.9);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mg-dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    background: rgba(0,0,0,0.26);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: 0 calc(var(--dot-spacing)/2);
+}
+
+.mg-dot::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    bottom: -8px;
+    left: -8px;
+    right: -8px;
+}
+
+.mg-dot.active {
+    width: 32px;
+    height: var(--dot-size);
+    border-radius: 4px;
+    background: var(--primary-color);
+    transform-origin: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mg-carousel__viewport {
+        height: 400px;
     }
-
-
-    /* Hero Slider Container */
-    .hero-slider {
-        position: relative;
-        width: 100%;
-        height: 93vh;
-        /* Subtract menu height */
-        overflow: hidden;
-        touch-action: pan-y;
-        background: var(--dark-bg);
-        border-bottom: 3px solid var(--neon-primary);
-        box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+    
+    .mg-carousel__nav {
+        width: 36px;
+        height: 36px;
     }
-
-    .slides {
-        position: relative;
-        width: 100%;
-        height: 100%;
+    
+    .mg-dots-container {
+        padding: 0 8px;
+        height: 20px;
     }
-
-    /* Slide Styling */
-    .slide {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 1s ease-in-out;
-        pointer-events: none;
-
+    
+    .mg-dot.active {
+        width: 24px;
     }
-
-    .slide.active {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: all;
-        z-index: 2;
-    }
-
-    .slide.first-slide {
-        transition: none;
-        opacity: 1;
-        z-index: 2;
-        visibility: visible;
-        pointer-events: all;
-    }
-
-    .slide::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg,
-                rgba(0, 0, 0, 0.9) 0%,
-                rgba(0, 243, 255, 0.1) 100%);
-        z-index: 1;
-    }
-
-
-
-    .slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transform: scale(1);
-        transition: transform 10s ease-out;
-    }
-
-    .slide.active img {
-        transform: scale(1.1);
-    }
-
-    /* Slide Content Styling */
-    .slide-content {
-        position: absolute;
-        bottom: 15%;
-        color: white;
-        width: 100%;
-        max-width: 100%;
-        /* Property info and text take up 65% */
-        z-index: 3;
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        padding: 80px 80px 0px 80px;
-        align-items: flex-end;
-        justify-content: flex-end;
-    }
-
-    .property-header {
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        z-index: 4;
-        /* Make sure this content is above the background and images */
-
-
-    }
-
-    .property-title {
-        font-weight: 700;
-        font-size: 55px;
-        line-height: 73.32px;
-        margin-bottom: 1rem;
-        width: 100%;
-    }
-
-
-
-    /* Image Previews */
-    .preview-images {
-        display: flex;
-        gap: 24px;
-        justify-content: center;
-        margin-top: 1rem;
-    }
-
-    .preview-images img {
-        width: 100%;
-        height: 80px;
-        max-width: 80px;
-        max-height: 80px;
-        cursor: pointer;
-        border-radius: 8px;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-
-    }
-
-
-    .preview-images img:hover {
-        opacity: 1;
-    }
-
-    /* Dots Container for Slide Navigation */
-    .dots-container {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 2;
-        display: flex;
-        gap: 10px;
-    }
-
-    .dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 1px;
-        background: rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .dot.active {
-        background: #00f3ff;
-        transform: scale(1.2);
-    }
-
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-        .property-header {
-            max-height: 15vh;
-        }
-
-        .preview-images img {
-            height: 80px;
-            width: 80px;
-        }
-
-        .property-title {
-            font-weight: 700;
-            font-size: 25px;
-            line-height: 33.32px;
-            margin-bottom: 1rem;
-            font-family: 'Space Grotesk', sans-serif;
-            color: var(--neon-primary);
-            text-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-            letter-spacing: -0.03em;
-            width: 100%;
-        }
-
-        .slide-content {
-            flex-direction: column;
-            bottom: 10%;
-            gap: 20px;
-            width: 100%;
-            padding: 20px 20px 20px 20px;
-            align-items: center;
-            justify-content: center;
-            height: 90vh;
-
-        }
-
-        .reservation-panel {
-            width: 70%;
-            padding: 20px 20px 20px 20px;
-        }
-
-        .property-title {
-            font-size: 40px;
-            line-height: 50px;
-        }
-
-        .preview-images {
-            margin-top: 10px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .property-title {
-            font-weight: 700;
-            font-size: 25px;
-            line-height: 33.32px;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            width: 100%;
-        }
-
-        .property-details {
-            font-size: 14px;
-            flex-wrap: wrap;
-        }
-
-        .book-cta {
-            padding: 0.75rem 1.5rem;
-        }
-
-        /* Ensure inner container takes no more than 80vh on mobile */
-        .slide-content {
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .reservation-panel {
-            width: 99%;
-            padding: 0.1rem;
-        }
-    }
-
-    @media (max-width: 479px) {
-        .preview-images img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .property-header {
-            max-height: 25vh;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .property-details {
-            display: flex;
-            font-size: 0.7;
-            gap: 0.4rem;
-            padding: 10px 10px 10px 10px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .property-title {
-            font-weight: 700;
-            font-size: 25px;
-            line-height: 33.32px;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            width: 100%;
-        }
-
-        .slide-content {
-            flex-direction: column;
-            bottom: 10%;
-            width: 100%;
-            padding: 10px 10px 10px 10px;
-            height: 90vh;
-            gap: 16px;
-
-        }
-
-        .reservation-panel {
-            width: 99%;
-            padding: 0.1rem;
-        }
-
-        .reservation-panel {
-            padding: 10px 10px 10px 10px;
-            height: 50vh;
-            font-size: 0.7rem;
-        }
-
-        .reservation-title {
-            font-size: 0.8rem;
-        }
-
-        .form-group,
-        .form-label {
-            font-size: 0.6rem;
-        }
-
-        .form-input {
-            font-size: 0.6rem;
-
-        }
-
-        .rate-display {
-            font-size: 1rem;
-        }
-
-        .book-cta {
-            font-size: 1rem;
-        }
-
-        .price-section {
-            margin-top: -1.2rem
-        }
-
-
-    }
-
-    @media (min-height: 120px) and (max-height: 640px) {
-        .property-header {
-            max-height: 25vh;
-        }
-
-        .property-details {
-            display: flex;
-            font-size: 0.7;
-            gap: 0.4rem;
-        }
-
-        .property-title {
-            font-weight: 700;
-            font-size: 18px;
-            line-height: 33.32px;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            width: 100%;
-        }
-
-        .slide-content {
-            flex-direction: column;
-            bottom: 10%;
-            width: 100%;
-            padding: 10px 10px 10px 10px;
-            height: 90vh;
-            gap: 16px;
-
-        }
-
-        .preview-images img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .reservation-panel {
-            padding: 10px 10px 10px 10px;
-            height: 50vh;
-            font-size: 0.7rem;
-        }
-
-        .reservation-title {
-            font-size: 0.8rem;
-        }
-
-        .form-group,
-        .form-label {
-            font-size: 0.6rem;
-        }
-
-        .form-input {
-            font-size: 0.6rem;
-
-        }
-
-        .rate-display {
-            font-size: 1rem;
-        }
-
-        .book-cta {
-            font-size: 1rem;
-        }
-
-        .price-section {
-            margin-top: -1.2rem
-        }
-
-
-    }
+}

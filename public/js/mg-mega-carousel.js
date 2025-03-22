@@ -1,14 +1,24 @@
-class MaterialCarousel {
+class MegaCarousel {
     constructor() {
-        this.carousel = document.querySelector('.mg-material-carousel');
+        this.carousel = document.querySelector('.mg-mega-carousel');
         this.slides = Array.from(document.querySelectorAll('.mg-carousel__slide'));
         this.dotsContainer = document.querySelector('.mg-dots-container');
         this.currentIndex = 0;
         this.autoPlayInterval = null;
 
+        // Immediate first slide visibility
+        this.slides[0].style.opacity = '1';
+        this.slides[0].style.transform = 'scale(1)';
+        
+        // Enable transitions after 50ms
+        setTimeout(() => {
+            this.carousel.classList.add('loaded');
+        }, 50);
+
         this.initDots();
         this.addEventListeners();
         this.startAutoPlay();
+
     }
 
     initDots() {
@@ -71,5 +81,6 @@ class MaterialCarousel {
 
 // Initialize carousel
 document.addEventListener('DOMContentLoaded', () => {
-    new MaterialCarousel();
+    new MegaCarousel();
 });
+

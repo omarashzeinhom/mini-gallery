@@ -1,5 +1,5 @@
 /* Carousel with Neutral Colors */
-.mg-material-carousel {
+.mg-mega-carousel {
     --primary-color: #666; /* Medium gray */
     --dot-inactive: #ddd; /* Light gray */
     --dot-size: 8px;
@@ -10,6 +10,9 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+.mg-mega-carousel:not(.loaded) .mg-carousel__slide {
+    transition: none !important;
+}
 
 .mg-carousel__viewport {
     position: relative;

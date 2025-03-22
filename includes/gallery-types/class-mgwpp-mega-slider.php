@@ -6,7 +6,7 @@ class MGWPP_Mega_Slider
     public static function render($post_id, $images)
     {
         ob_start(); ?>
-        <div class="mg-material-carousel">
+        <div class="mg-mega-carousel">
             <div class="mg-carousel__viewport">
                 <?php foreach ($images as $index => $image): ?>
                     <div class="mg-carousel__slide <?php echo $index === 0 ? 'mg-active' : ''; ?>">

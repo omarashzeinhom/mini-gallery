@@ -18,23 +18,23 @@ class MGWPP_Album_Submit
         ) {
             wp_die('Security check failed for Submitting Album', 'Error', array('response' => 403));
         }
-
+    
         // Check permissions
         if (!current_user_can('create_mgwpp_albums')) {
             wp_die('Permission denied', 'Error', array('response' => 403));
         }
-
+    
         // Validate required fields
         if (empty($_POST['album_title'])) {
             wp_die('Album title is required', 'Error', array('response' => 400));
         }
-
+    
         // Sanitize input
         $album_title = sanitize_text_field(wp_unslash($_POST['album_title']));
         $album_description = isset($_POST['album_description']) ?
             sanitize_textarea_field(wp_unslash($_POST['album_description'])) : '';
         $galleries = isset($_POST['album_galleries']) ? array_map('intval', $_POST['album_galleries']) : array();
-
+    
         // Create post
         $new_album_id = wp_insert_post(array(
             'post_title' => $album_title,
@@ -42,22 +42,20 @@ class MGWPP_Album_Submit
             'post_status' => 'publish',
             'post_type' => 'mgwpp_album',
         ));
-
+    
         if (is_wp_error($new_album_id)) {
-
-
             wp_die(
                 esc_html__('Album Creation Failed', 'mini-gallery') . esc_html($new_album_id->get_error_message()),
-                esc_html('Error', 'mini-gallery'),
+                esc_html__('Error', 'mini-gallery'),
                 array('response' => 500)
             );
         }
-
+    
         // Save meta
         update_post_meta($new_album_id, '_mgwpp_album_galleries', $galleries);
-
+    
         // Redirect with success message
-        wp_redirect(add_query_arg(
+        wp_safe_redirect(add_query_arg(
             'message',
             'album-created',
             admin_url("post.php?post=$new_album_id&action=edit")
@@ -65,6 +63,7 @@ class MGWPP_Album_Submit
         exit;
     }
 
+    
     public static function save_album_submission($post_id, $post, $update)
     {
         // Early return if not our post type

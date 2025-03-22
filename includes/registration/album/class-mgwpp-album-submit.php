@@ -1,17 +1,21 @@
 <?php
-class MGWPP_Album_Submit {
-    public static function init() {
-        // Fix #1: Register both admin and public submission handlers
+class MGWPP_Album_Submit
+{
+    public static function init()
+    {
+        // Register both admin and public submission handlers
         add_action('admin_post_mgwpp_create_album', array(__CLASS__, 'handle_album_submission'));
         add_action('admin_post_nopriv_mgwpp_create_album', array(__CLASS__, 'handle_album_submission'));
         add_action('save_post_mgwpp_album', array(__CLASS__, 'save_album_submission'), 10, 3);
     }
 
-    // Fix #2: Renamed method to match the convention and added error logging
-    public static function handle_album_submission() {
+    public static function handle_album_submission()
+    {
         // Verify nonce
-        if (!isset($_POST['mgwpp_album_submit_nonce']) || 
-            !wp_verify_nonce($_POST['mgwpp_album_submit_nonce'], 'mgwpp_album_submit_nonce')) {
+        if (
+            !isset($_POST['mgwpp_album_submit_nonce']) ||
+            !wp_verify_nonce(wp_unslash($_POST['mgwpp_album_submit_nonce']), 'mgwpp_album_submit_nonce')
+        ) {
             wp_die('Security check failed for Submitting Album', 'Error', array('response' => 403));
         }
 
@@ -26,8 +30,9 @@ class MGWPP_Album_Submit {
         }
 
         // Sanitize input
-        $album_title = sanitize_text_field($_POST['album_title']);
-        $album_description = sanitize_textarea_field($_POST['album_description']);
+        $album_title = sanitize_text_field(wp_unslash($_POST['album_title']));
+        $album_description = isset($_POST['album_description']) ?
+            sanitize_textarea_field(wp_unslash($_POST['album_description'])) : '';
         $galleries = isset($_POST['album_galleries']) ? array_map('intval', $_POST['album_galleries']) : array();
 
         // Create post
@@ -39,8 +44,13 @@ class MGWPP_Album_Submit {
         ));
 
         if (is_wp_error($new_album_id)) {
-            error_log('Album creation failed: ' . $new_album_id->get_error_message());
-            wp_die('Error creating album', 'Error', array('response' => 500));
+
+
+            wp_die(
+                esc_html__('Album Creation Failed', 'mini-gallery') . esc_html($new_album_id->get_error_message()),
+                esc_html('Error', 'mini-gallery'),
+                array('response' => 500)
+            );
         }
 
         // Save meta
@@ -48,14 +58,15 @@ class MGWPP_Album_Submit {
 
         // Redirect with success message
         wp_redirect(add_query_arg(
-            'message', 
+            'message',
             'album-created',
             admin_url("post.php?post=$new_album_id&action=edit")
         ));
         exit;
     }
 
-    public static function save_album_submission($post_id, $post, $update) {
+    public static function save_album_submission($post_id, $post, $update)
+    {
         // Early return if not our post type
         if ($post->post_type !== 'mgwpp_album') {
             return;
@@ -67,8 +78,10 @@ class MGWPP_Album_Submit {
         }
 
         // Verify nonce
-        if (!isset($_POST['mgwpp_album_galleries_nonce']) ||
-            !wp_verify_nonce($_POST['mgwpp_album_galleries_nonce'], 'mgwpp_album_galleries_nonce')) {
+        if (
+            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+            !wp_verify_nonce(wp_unslash($_POST['mgwpp_album_galleries_nonce']), 'mgwpp_album_galleries_nonce')
+        ) {
             return;
         }
 

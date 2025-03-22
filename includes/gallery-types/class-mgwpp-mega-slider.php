@@ -17,7 +17,7 @@ class MGWPP_Mega_Slider {
                     ]); ?>
                     <div class="slide-content">
                         <div class="property-header">
-                            <h2 class="property-title"><?php echo get_the_title($post_id); ?></h2>
+                            <h2 class="property-title"><?php echo esc_html(get_the_title($post_id)); ?></h2>
                             <div class="preview-images">
                                 <?php foreach ($images as $thumb_index => $thumb): ?>
                                 <img 

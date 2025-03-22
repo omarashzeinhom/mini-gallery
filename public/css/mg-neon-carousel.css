@@ -131,7 +131,8 @@
         cursor: pointer;
         border-radius: 8px;
         opacity: 0.7;
-        transition: opacity 0.3s ease;
+        transition: all 0.3s ease !important;
+
 
     }
 

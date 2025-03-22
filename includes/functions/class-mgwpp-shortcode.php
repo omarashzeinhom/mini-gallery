@@ -1,8 +1,9 @@
 <?php
-if(!defined('ABSPATH')){
+if (!defined('ABSPATH')) {
     exit;
-} 
-function mgwpp_gallery_shortcode($atts) {
+}
+function mgwpp_gallery_shortcode($atts)
+{
     $atts = shortcode_atts(['id' => '', 'paged' => 1], $atts);
     $post_id = max(0, intval($atts['id']));
     $paged = max(1, intval($atts['paged']));
@@ -78,16 +79,16 @@ function mgwpp_gallery_shortcode($atts) {
                 }
 
                 $output .= '</div></div>';
-                $output .= '<div class="mg-pro-carousel__thumbs">';
-
+                // In your PHP render method
+                $output .= '<div class="mg-pro-carousel__thumbs" style="display: none;">'; // Hidden but exists
                 foreach ($all_images as $thumb) {
                     $output .= sprintf(
-                        '<img class="mg-pro-carousel__thumb" src="%s" alt="%s" loading="lazy">',
+                        '<img class="mg-pro-carousel__thumb" src="%s" alt="%s">',
                         esc_url(wp_get_attachment_image_url($thumb->ID, 'thumbnail')),
                         esc_attr(get_post_meta($thumb->ID, '_wp_attachment_image_alt', true))
                     );
                 }
-                
+                $output .= '</div>';
 
                 $output .= '</div></div>';
             }

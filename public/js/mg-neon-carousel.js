@@ -143,10 +143,16 @@ class Slider {
     changeSlide(index) {
         this.goToSlide(index);
     }
+
+
+
+
+
+    
 }
 
 // Add neon interaction to preview images
-document.querySelectorAll(".preview-images img")?.forEach((img) => {
+document.querySelectorAll(".neon-preview-images img")?.forEach((img) => {
     img?.addEventListener("mouseover", () => {
         img.style.transform = "scale(1.1)";
         img.style.filter = "drop-shadow(0 0 10px #00f3ff)";

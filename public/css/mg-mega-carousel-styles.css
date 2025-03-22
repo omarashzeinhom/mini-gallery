@@ -102,8 +102,12 @@
 .mg-dot {
     width: var(--dot-size);
     height: var(--dot-size);
-    background: var(--dot-inactive);
-    border-radius: 50%;
+    background: 
+    linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--dot-inactive), white 15%),
+        color-mix(in srgb, var(--dot-inactive), black 10%)
+    );    border-radius: 50%;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -117,14 +121,22 @@
     bottom: -8px;
     left: -8px;
     right: -8px;
+    
 }
 
 .mg-dot.active {
     width: 32px;
     height: var(--dot-size);
     border-radius: 4px;
-    background: var(--primary-color);
+    background: #666;
     transform-origin: center;
+    background: 
+    linear-gradient(
+        90deg,
+        color-mix(in srgb, #666, white 15%),
+        #666,
+        color-mix(in srgb, #666, black 15%)
+    );
 }
 
 /* Responsive Design */

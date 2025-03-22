@@ -1,9 +1,9 @@
 // Mega Carousel
-class Slider {
-    constructor() {
-        this.slider = document.querySelector(".neon-slider");
-        this.slides = Array.from(document.querySelectorAll(".neon-slide")) || [];
-        this.dotsContainer = document.querySelector(".dots-container");
+class NeonSlider {
+    constructor(container) {
+        this.slider = container;
+        this.slides = Array.from(this.slider.querySelectorAll(".neon-slide")) || [];
+        this.dotsContainer = this.slider.querySelector(".dots-container");
         this.currentIndex = 0;
         this.touchStartX = 0;
         this.touchEndX = 0;
@@ -26,14 +26,13 @@ class Slider {
         this.startAutoPlay();
 
         // Add event listener to the preview images
-        this.previewImages = document.querySelectorAll(".neon-preview-images img");
+        this.previewImages = this.slider.querySelectorAll(".neon-preview-images img");
         this.previewImages?.forEach((img, index) => {
             img?.addEventListener("click", () => {
                 this.changeSlide(index);
             });
         });
     }
-
     // Function to initialize the dots for navigation
     initDots() {
         this.slides?.forEach((_, index) => {
@@ -150,7 +149,9 @@ class Slider {
 
     
 }
-
+document.querySelectorAll('.neon-slider').forEach(slider => {
+    new NeonSlider(slider);
+});
 // Add neon interaction to preview images
 document.querySelectorAll(".neon-preview-images img")?.forEach((img) => {
     img?.addEventListener("mouseover", () => {
@@ -164,4 +165,4 @@ document.querySelectorAll(".neon-preview-images img")?.forEach((img) => {
     });
 });
 
-new Slider();
+new NeonSlider();

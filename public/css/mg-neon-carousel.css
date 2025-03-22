@@ -121,9 +121,11 @@
         gap: 24px;
         justify-content: center;
         margin-top: 1rem;
+
     }
 
     .neon-preview-images img {
+        object-fit: cover;
         width: 100%;
         height: 80px;
         max-width: 80px;

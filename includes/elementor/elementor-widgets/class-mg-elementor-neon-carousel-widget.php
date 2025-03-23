@@ -196,24 +196,25 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
-    
+        
         if (!$gallery_id) {
             echo esc_html__('Please select a gallery.', 'mini-gallery');
             return;
         }
     
-        // Use the same method as Pro Carousel
         $images = get_attached_media('image', $gallery_id);
         
-        $options = [
+        // Pass ALL settings to the renderer
+        echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode([
             'autoplay' => $settings['autoplay'] === 'yes',
             'autoplay_speed' => $settings['autoplay_speed'],
             'show_dots' => $settings['show_dots'] === 'yes',
             'show_previews' => $settings['show_previews'] === 'yes',
             'zoom_effect' => $settings['zoom_effect'] === 'yes',
-        ];
-    
-        echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode($options)).'">';
+            'neon_primary' => $settings['neon_primary_color'],
+            'neon_secondary' => $settings['neon_secondary_color']
+        ])).'">';
+        
         echo MGWPP_Neon_Carousel::render($gallery_id, $images);
         echo '</div>';
     }

@@ -2,7 +2,7 @@ class NeonSlider {
     constructor(container) {
         this.slider = container;
         this.isElementor = container.closest('.elementor-widget-mg_neon_carousel');
-        
+
         // Initialize elements
         this.slides = Array.from(this.slider.querySelectorAll(".neon-slide")) || [];
         this.dotsContainer = this.createDotsContainer();
@@ -14,12 +14,12 @@ class NeonSlider {
         // Initial setup
         this.initializeFirstSlide();
         this.initDots();
-        
+
         // Conditional features
         if (this.shouldShowPreviews()) {
             this.initPreviews();
         }
-        
+
         this.addEventListeners();
         this.startAutoPlay();
     }
@@ -36,15 +36,15 @@ class NeonSlider {
     initDots() {
         // Clear existing dots
         this.dotsContainer.innerHTML = '';
-        
+
         this.slides?.forEach((_, index) => {
             const dot = document.createElement("div");
             dot.className = "neon-dot";
             if (index === 0) dot.classList.add("active");
-            
+
             // Click handler using arrow function
             dot.addEventListener("click", () => this.goToSlide(index));
-            
+
             this.dotsContainer.appendChild(dot);
         });
     }

@@ -34,7 +34,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwp
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php'; // Include the uninstall class
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-manager.php'; // Include the gallery manager class
-require_once plugin_dir_path(__FILE__) . 'public/mgwpp-gallery-shortcode.php'; // Include the gallery shortcode class
+
+
+//require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-widgets.php';
+require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-integration.php';
 
 // Initialize plugin
 function mgwpp_initialize_plugin()
@@ -61,7 +64,7 @@ add_action('init', 'mgwpp_initialize_plugin');
 function mgwpp_enqueue_assets()
 {
     // Register scripts and styles
-   
+
     wp_register_script('mg-single-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-single-carousel.js', array(), '1.0', true);
     wp_register_style('mg-single-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-single-carousel.css', array(), '1.0');
 
@@ -76,14 +79,14 @@ function mgwpp_enqueue_assets()
     wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
     wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
     wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
-    wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js',array(), '1.0', true);
+    wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js', array(), '1.0', true);
     wp_register_style(
         'mgwpp-neon-carousel-styles',
         plugins_url('public/css/mg-neon-carousel.css', __FILE__),
         [],
         filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-neon-carousel.css')
     );
-    
+
     wp_register_script(
         'mgwpp-neon-carousel-js',
         plugins_url('public/js/mg-neon-carousel.js', __FILE__),
@@ -134,12 +137,63 @@ add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
 
 
 
+class MGWPP_Elementor_Assets
+{
 
-// Register the shortcode
-function mgwpp_register_shortcodes() {
-    add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
+    public function __construct()
+    {
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+    }
+
+    public function enqueue_assets()
+    {
+        if (!class_exists('\Elementor\Plugin')) {
+            return;
+        }
+
+        if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
+            //wp_enqueue_style('mg-mega-carousel-styles');
+            // wp_enqueue_script('mg-mega-carousel-js');
+        }
+    }
 }
-add_action('init', 'mgwpp_register_shortcodes');
+
+// Initialize only if Elementor is active
+if (did_action('elementor/loaded')) {
+    new MGWPP_Elementor_Assets();
+}
+
+function mgwpp_enqueue_elementor_assets()
+{
+    if (!class_exists('\Elementor\Plugin')) {
+        return;
+    }
+
+    if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
+        //wp_enqueue_style('mg-neon-carousel-styles');
+        //wp_enqueue_script('mg-neon-carousel-js');
+    }
+}
+add_action('wp_enqueue_scripts', 'mgwpp_enqueue_elementor_assets');
+
+
+
+
+function mgwpp_add_elementor_category($elements_manager)
+{
+    $elements_manager->add_category(
+        'minigallery',
+        [
+            'title' => __('Mini Gallery', 'mgwpp'),
+            'icon' => 'fa fa-images',
+        ]
+    );
+}
+add_action('elementor/elements/categories_registered', 'mgwpp_add_elementor_category');
+
+
+
+
 
 
 // Activation & Deactivation Hooks

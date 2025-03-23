@@ -141,10 +141,11 @@
 
     .neon-preview-images img:hover {
         opacity: 1;
+        filter: drop-shadow(0 0 10px var(--neon-primary)); /* Use CSS variable */
     }
 
     /* Dots Container for neon-slide Navigation */
-    .dots-container {
+    .neon-dots-container {
         position: absolute;
         bottom: 30px;
         left: 50%;
@@ -153,8 +154,9 @@
         display: flex;
         gap: 10px;
     }
-
-    .dot {
+    
+    /* Change from .dot to .neon-dot */
+    .neon-dot {
         width: 12px;
         height: 12px;
         border-radius: 1px;
@@ -162,9 +164,9 @@
         cursor: pointer;
         transition: all 0.3s ease;
     }
-
-    .dot.active {
-        background: #00f3ff;
+    
+    .neon-dot.active {
+        background: var(--neon-primary); /* Use CSS variable */
         transform: scale(1.2);
     }
 
@@ -377,3 +379,14 @@
 
 
     }
+
+    // Elementor Overrides 
+
+    /* Elementor-Specific Overrides */
+.elementor-widget-mg_neon_carousel .neon-dots-container {
+    display: var(--show-dots, flex); /* Controlled by Elementor */
+}
+
+.elementor-widget-mg_neon_carousel .neon-preview-images {
+    display: var(--show-previews, flex); /* Controlled by Elementor */
+}

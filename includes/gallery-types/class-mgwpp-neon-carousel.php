@@ -67,7 +67,7 @@ class MGWPP_Neon_Carousel {
                 </div>
                 <?php endforeach; ?>
             </div>
-            <div class="dots-container"></div>
+            <div class="neon-dots-container"></div>
         </div>
         <?php
         

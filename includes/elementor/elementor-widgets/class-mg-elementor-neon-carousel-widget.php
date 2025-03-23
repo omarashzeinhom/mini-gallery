@@ -193,7 +193,6 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
     }
-
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
@@ -203,10 +202,9 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             return;
         }
     
-        // Get gallery images from the selected gallery
-        $images = get_post_meta($gallery_id, 'mgwpp_gallery_images', true);
-        $images = is_array($images) ? $images : [];
-    
+        // Use the same method as Pro Carousel
+        $images = get_attached_media('image', $gallery_id);
+        
         $options = [
             'autoplay' => $settings['autoplay'] === 'yes',
             'autoplay_speed' => $settings['autoplay_speed'],
@@ -216,10 +214,9 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
         ];
     
         echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode($options)).'">';
-        echo MGWPP_Neon_Carousel::render($gallery_id, $images); // Pass images array
+        echo MGWPP_Neon_Carousel::render($gallery_id, $images);
         echo '</div>';
     }
-
 
     private function get_galleries() {
         $galleries = get_posts([

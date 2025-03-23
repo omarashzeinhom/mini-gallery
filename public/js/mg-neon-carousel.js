@@ -164,3 +164,11 @@ document.querySelectorAll(".neon-preview-images img")?.forEach((img) => {
         img.style.filter = "none";
     });
 });
+
+// mg-neon-carousel.js
+jQuery(window).on('elementor/frontend/init', function() {
+    elementorFrontend.hooks.addAction('frontend/element_ready/mg_neon_carousel.default', function($scope) {
+        const slider = $scope.find('.neon-slider')[0];
+        if (slider) new NeonSlider(slider);
+    });
+});

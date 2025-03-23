@@ -12,6 +12,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('MG_PLUGIN_URL', plugins_url('', __FILE__));
+
+
+
 /* Include necessary files */
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';
 

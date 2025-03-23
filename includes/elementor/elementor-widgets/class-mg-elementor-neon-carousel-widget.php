@@ -1,6 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+
 class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
     public function get_name() {
@@ -196,12 +197,16 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
-
+    
         if (!$gallery_id) {
-            echo __('Please select a gallery.', 'mini-gallery');
+            echo esc_html__('Please select a gallery.', 'mini-gallery');
             return;
         }
-
+    
+        // Get gallery images from the selected gallery
+        $images = get_post_meta($gallery_id, 'mgwpp_gallery_images', true);
+        $images = is_array($images) ? $images : [];
+    
         $options = [
             'autoplay' => $settings['autoplay'] === 'yes',
             'autoplay_speed' => $settings['autoplay_speed'],
@@ -209,11 +214,12 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             'show_previews' => $settings['show_previews'] === 'yes',
             'zoom_effect' => $settings['zoom_effect'] === 'yes',
         ];
-
-        echo '<div id="mg-neon-carousel-' . esc_attr($this->get_id()) . '">';
-        echo MGWPP_Neon_Carousel::render($gallery_id, $options);
+    
+        echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode($options)).'">';
+        echo MGWPP_Neon_Carousel::render($gallery_id, $images); // Pass images array
         echo '</div>';
     }
+
 
     private function get_galleries() {
         $galleries = get_posts([
@@ -231,38 +237,39 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
     public function __construct($data = [], $args = null) {
         parent::__construct($data, $args);
+        
+        // Load scripts on frontend AND editor
         add_action('elementor/frontend/before_enqueue_scripts', [$this, 'enqueue_neon_scripts']);
         add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_editor_scripts']);
     }
+    
+// In MG_Elementor_Neon_Carousel class:
 
-    public function enqueue_neon_scripts() {
-        if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
-            wp_enqueue_style(
-                'mg-neon-carousel-styles',
-                plugins_url('public/css/mg-neon-carousel.css', __FILE__),
-                [],
-                filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-neon-carousel.css')
-            );
+public function enqueue_neon_scripts() {
+    wp_enqueue_style(
+        'mg-neon-carousel-styles',
+        MG_PLUGIN_URL . '/public/css/mg-neon-carousel.css',
+        [],
+        filemtime(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css')
+    );
 
-            wp_enqueue_script(
-                'mg-neon-carousel-scripts',
-                plugins_url('public/js/mg-neon-carousel.js', __FILE__),
-                ['jquery'],
-                filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-neon-carousel.js'),
-                true
-            );
-        }
-    }
+    wp_enqueue_script(
+        'mg-neon-carousel-scripts',
+        MG_PLUGIN_URL . '/public/js/mg-neon-carousel.js',
+        ['elementor-frontend'],
+        filemtime(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js'),
+        true
+    );
+}
 
-    public function enqueue_editor_scripts() {
-        wp_enqueue_style(
-            'mg-neon-carousel-editor',
-            plugins_url('admin/css/editor.css', __FILE__),
-            [],
-            filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
-        );
-    }
-
+public function enqueue_editor_scripts() {
+    wp_enqueue_style(
+        'mg-neon-carousel-editor',
+        plugins_url('admin/css/editor.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
+    );
+}
 
 
 

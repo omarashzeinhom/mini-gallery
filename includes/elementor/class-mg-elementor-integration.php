@@ -13,7 +13,7 @@ class MG_Elementor_Integration
     {
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-mega-carousel-widget.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-pro-carousel-widget.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-neon-carousel-widget.php';
+        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-neon-carousel-widget.php';
 
         $widgets_manager->register(new MG_Elementor_Mega_Carousel());
         $widgets_manager->register(new MG_Elementor_Pro_Carousel());

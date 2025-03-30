@@ -145,37 +145,36 @@ class MG_Elementor_Mega_Carousel extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
     }
-
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
-
+    
         if (!$gallery_id) {
-            echo __('Please select a gallery.', 'mini-gallery');
+            // Use esc_html__() to escape plain text.
+            echo esc_html__('Please select a gallery.', 'mini-gallery');
             return;
         }
-
-        // Include the file where MGWPP_Mega_Slider is defined.
-        //require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
-
+    
         // Get the images from the gallery post.
         $images = get_attached_media('image', $gallery_id);
-
-        // Render your gallery using MGWPP_Mega_Slider.
-        echo MGWPP_Mega_Slider::render($gallery_id, $images); // Pass both $gallery_id and $images
+    
+        // Wrap the rendered output in wp_kses_post() to allow safe HTML markup.
+        echo wp_kses_post( MGWPP_Mega_Slider::render($gallery_id, $images) );
     }
-
+    
     private function get_galleries() {
         $galleries = get_posts([
-            'post_type' => 'mgwpp_soora',
-            'numberposts' => -1,
+            'post_type'    => 'mgwpp_soora',
+            'numberposts'  => -1,
         ]);
-
+    
         $options = [];
         foreach ($galleries as $gallery) {
-            $options[$gallery->ID] = $gallery->post_title;
+            // Escape the gallery title to ensure safe output.
+            $options[$gallery->ID] = esc_html($gallery->post_title);
         }
-
+    
         return $options;
     }
+    
 }

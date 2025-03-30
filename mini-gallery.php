@@ -189,7 +189,7 @@ function mgwpp_add_elementor_category($elements_manager)
     $elements_manager->add_category(
         'minigallery',
         [
-            'title' => __('Mini Gallery', 'mgwpp'),
+            'title' => __('Mini Gallery', 'mini-gallery'),
             'icon' => 'fa fa-images',
         ]
     );

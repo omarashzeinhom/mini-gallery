@@ -215,8 +215,9 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             'neon_secondary' => $settings['neon_secondary_color']
         ])).'">';
         
-        echo MGWPP_Neon_Carousel::render($gallery_id, $images);
+        echo wp_kses_post( MGWPP_Neon_Carousel::render( $gallery_id, $images ) );
         echo '</div>';
+        
     }
 
     private function get_galleries() {

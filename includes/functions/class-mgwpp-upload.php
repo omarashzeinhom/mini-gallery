@@ -80,7 +80,7 @@ class MGWPP_Upload
                                 );
                             }
                         } else {
-                            /* translators: %d is the index of the file that failed validation */
+                            // translators: %d is the index of the file that failed validation 
                             return new WP_Error(
                                 'file_data_validation_failed',
                                 sprintf(__('File data validation failed for index: %d', 'mini-gallery'), $index)

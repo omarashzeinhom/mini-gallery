@@ -111,12 +111,12 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
         $gallery_id = $settings['gallery_id'];
 
         if (!$gallery_id) {
-            echo __('Please select a gallery.', 'mini-gallery');
+            echo esc_html__('Please select a gallery.', 'mini-gallery');
             return;
         }
 
         $images = get_attached_media('image', $gallery_id);
-        echo MGWPP_Pro_Carousel::render($gallery_id, $images);
+        echo wp_kses_post(MGWPP_Pro_Carousel::render($gallery_id, $images));
     }
 
     private function get_galleries()

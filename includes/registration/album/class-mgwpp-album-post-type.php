@@ -74,10 +74,11 @@ class MGWPP_Album_Post_Type
             $checked = in_array($gallery->ID, $selected_galleries) ? 'checked="checked"' : '';
             echo sprintf(
                 '<label><input type="checkbox" name="mgwpp_album_galleries[]" value="%d" %s> %s</label><br>',
-                $gallery->ID,
-                $checked,
-                esc_html($gallery->post_title)
+                absint( $gallery->ID ),
+                esc_attr( $checked ),
+                esc_html( $gallery->post_title )
             );
+            
         }
         echo '</div>';
     }
@@ -86,11 +87,12 @@ class MGWPP_Album_Post_Type
     {
         // Verify nonce
         if (
-            !isset($_POST['mgwpp_album_galleries_nonce']) ||
-            !wp_verify_nonce($_POST['mgwpp_album_galleries_nonce'], 'mgwpp_album_galleries_nonce')
+            !isset( $_POST['mgwpp_album_galleries_nonce'] ) ||
+            !wp_verify_nonce( wp_unslash( sanitize_text_field( $_POST['mgwpp_album_galleries_nonce'] ) ), 'mgwpp_album_galleries_nonce' )
         ) {
             return;
         }
+        
 
         // Check autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {

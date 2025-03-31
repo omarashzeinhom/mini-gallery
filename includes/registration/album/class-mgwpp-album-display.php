@@ -33,7 +33,6 @@ class MGWPP_Album_Display
                 );
 
                 foreach ($attachments as $index => $attachment) {
-                    $image_src = wp_get_attachment_image_src($attachment->ID, 'large');
                     $full_src = wp_get_attachment_image_src($attachment->ID, 'full');
                     $caption = wp_get_attachment_caption($attachment->ID);
 
@@ -41,15 +40,20 @@ class MGWPP_Album_Display
                         '<a href="%s" class="mgwpp-gallery-item" 
                             data-caption="%s" 
                             data-gallery="gallery-%d"
-                            aria-label="View image %s">
-                            <img src="%s" alt="%s" loading="lazy">
-                        </a>',
+                            aria-label="%s">%s</a>',
                         esc_url($full_src[0]),
                         esc_attr($caption),
                         $gallery_id,
-                        esc_attr($index + 1),
-                        esc_url($image_src[0]),
-                        esc_attr(get_post_meta($attachment->ID, '_wp_attachment_image_alt', true))
+                        esc_attr(sprintf(__('View image %d', 'mini-gallery'), $index + 1)),
+                        wp_get_attachment_image(
+                            $attachment->ID,
+                            'medium',
+                            false,
+                            [
+                                'loading' => 'lazy',
+                                'class' => 'mgwpp-album-thumbnail'
+                            ]
+                        )
                     );
                 }
 
@@ -67,7 +71,7 @@ class MGWPP_Album_Display
         <div id="mgwpp-lightbox" class="mgwpp-lightbox">
             <span class="mgwpp-close">&times;</span>
             <div class="mgwpp-lightbox-content">
-                <img class="mgwpp-lightbox-image" src="" alt="">
+                <?php echo wp_get_attachment_image(0, 'full', false, ['class' => 'mgwpp-lightbox-image']); ?>
                 <div class="mgwpp-lightbox-caption"></div>
             </div>
             <a class="mgwpp-prev">&#10094;</a>
@@ -88,7 +92,9 @@ class MGWPP_Album_Display
             function openLightbox(index) {
                 currentIndex = index;
                 const item = items[index];
-                lightbox.querySelector('.mgwpp-lightbox-image').src = item.href;
+                const img = lightbox.querySelector('.mgwpp-lightbox-image');
+                img.src = item.href;
+                img.alt = item.querySelector('img').alt;
                 lightbox.querySelector('.mgwpp-lightbox-caption').textContent = item.dataset.caption;
                 lightbox.classList.add('active');
                 updateBodyScroll(true);
@@ -143,7 +149,6 @@ class MGWPP_Album_Display
         <?php
     }
 
-
     public static function album_shortcode($atts)
     {
         $atts = shortcode_atts(array(
@@ -158,7 +163,6 @@ class MGWPP_Album_Display
     }
 }
 
-// Register shortcode
 add_shortcode('mgwpp_album', array('MGWPP_Album_Display', 'album_shortcode'));
 
 

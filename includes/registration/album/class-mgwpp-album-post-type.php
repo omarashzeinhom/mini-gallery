@@ -5,10 +5,9 @@ class MGWPP_Album_Post_Type
     {
         $args = array(
             'public' => true,
-            //'label' => 'Gallery Albums',
             'description' => 'Organize your galleries into albums',
             'show_in_rest' => true,
-            'show_in_menu' => false/*'mini-gallery' */,
+            'show_in_menu' => false,
             'rest_base' => 'album-api',
             'menu_icon' => 'dashicons-album',
             'has_archive' => true,
@@ -74,11 +73,10 @@ class MGWPP_Album_Post_Type
             $checked = in_array($gallery->ID, $selected_galleries) ? 'checked="checked"' : '';
             echo sprintf(
                 '<label><input type="checkbox" name="mgwpp_album_galleries[]" value="%d" %s> %s</label><br>',
-                absint( $gallery->ID ),
-                esc_attr( $checked ),
-                esc_html( $gallery->post_title )
+                absint($gallery->ID),
+                esc_attr($checked),
+                esc_html($gallery->post_title)
             );
-            
         }
         echo '</div>';
     }
@@ -86,14 +84,10 @@ class MGWPP_Album_Post_Type
     public static function save_album_galleries_meta($post_id)
     {
         // Verify nonce
-        if (
-            !isset( $_POST['mgwpp_album_galleries_nonce'] ) ||
-            !wp_verify_nonce( wp_unslash( sanitize_text_field( $_POST['mgwpp_album_galleries_nonce'] ) ), 'mgwpp_album_galleries_nonce' )
-        ) {
+        if (!isset($_POST['mgwpp_album_galleries_nonce']) || 
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')) {
             return;
         }
-        
-        
 
         // Check autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -106,7 +100,7 @@ class MGWPP_Album_Post_Type
         }
 
         // Save galleries
-        $galleries = isset($_POST['mgwpp_album_galleries']) ?
+        $galleries = isset($_POST['mgwpp_album_galleries']) ? 
             array_map('intval', $_POST['mgwpp_album_galleries']) : array();
         update_post_meta($post_id, '_mgwpp_album_galleries', $galleries);
     }

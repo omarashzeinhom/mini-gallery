@@ -65,17 +65,17 @@ function mgwpp_gallery_shortcode($atts)
                 foreach ($all_images as $image) {
                     $output .= sprintf(
                         '<div class="mg-pro-carousel__card">
-                            <img class="mg-pro-carousel__image" src="%s" alt="%s" loading="lazy">
+                            %s
                             <div class="mg-pro-carousel__content">
                                 <h3 class="mg-pro-carousel__title">%s</h3>
                                 <p class="mg-pro-carousel__caption">%s</p>
                             </div>
-                        </div>',
-                        esc_url(wp_get_attachment_image_url($image->ID, 'large')),
-                        esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true)),
-                        esc_html($image->post_title),
-                        esc_html(wp_trim_words($image->post_content, 15))
+                        </div>',  
+                        wp_get_attachment_image($image->ID, 'medium', false, ['class' => 'mg-pro-carousel__image', 'loading' => 'lazy']),
+                        esc_html(get_the_title($image->ID)),  
+                        esc_html(get_post_meta($image->ID, '_wp_attachment_image_alt', true))
                     );
+                    
                 }
 
                 $output .= '</div></div>';
@@ -83,9 +83,8 @@ function mgwpp_gallery_shortcode($atts)
                 $output .= '<div class="mg-pro-carousel__thumbs" style="display: none;">'; // Hidden but exists
                 foreach ($all_images as $thumb) {
                     $output .= sprintf(
-                        '<img class="mg-pro-carousel__thumb" src="%s" alt="%s">',
-                        esc_url(wp_get_attachment_image_url($thumb->ID, 'thumbnail')),
-                        esc_attr(get_post_meta($thumb->ID, '_wp_attachment_image_alt', true))
+                        '<div class="mg-pro-carousel__thumb-wrapper">%s</div>',
+                        wp_get_attachment_image($thumb->ID, 'thumbnail', false, ['class' => 'mg-pro-carousel__thumb'])
                     );
                 }
                 $output .= '</div>';

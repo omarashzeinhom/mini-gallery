@@ -17,6 +17,18 @@ define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 
 
 
+// Activation & Deactivation Hooks
+function mgwpp_plugin_activate()
+{
+    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
+    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+    MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    flush_rewrite_rules(false); // causes error on true
+}
+register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
+
+
 /* Include necessary files */
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';
 
@@ -200,18 +212,6 @@ add_action('elementor/elements/categories_registered', 'mgwpp_add_elementor_cate
 
 
 
-
-// Activation & Deactivation Hooks
-function mgwpp_plugin_activate()
-{
-    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
-    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
-    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-    MGWPP_Capabilities::mgwpp_gallery_capabilities();
-    flush_rewrite_rules(false); // causes error on true
-}
-register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
-
 function mgwpp_plugin_deactivate()
 {
     unregister_post_type('mgwpp_soora');
@@ -236,19 +236,17 @@ function mgwpp_plugin_uninstall()
     }
     remove_role('marketing_team');
 }
-
-
 /**
  *
  * Debugging
  */
-add_action(
-    'admin_init',
-    function () {
+//add_action(
+//    'admin_init',
+//    function () {
         //error_log('POST Data: ' . print_r($_POST, true));
         //error_log('REQUEST Data: ' . print_r($_REQUEST, true));
-    }
-);
+//    }
+//);
 
 
 /**

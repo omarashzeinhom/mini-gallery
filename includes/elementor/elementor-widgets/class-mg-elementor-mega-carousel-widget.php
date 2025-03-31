@@ -1,7 +1,23 @@
 <?php
 if (!defined('ABSPATH')) exit;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
 
 class MG_Elementor_Mega_Carousel extends \Elementor\Widget_Base {
+    public function __construct($data = [], $args = null) {
+        parent::__construct($data, $args);
+        add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
+    }
+    
+    public function register_scripts() {
+        wp_register_script(
+            'mg-mega-carousel',
+            plugins_url('assets/js/mg-mega-carousel.js', __FILE__),
+            [],
+            '1.0.0',
+            true
+        );
+    }
 
     public function get_name() {
         return 'mg_mega_carousel';
@@ -24,16 +40,16 @@ class MG_Elementor_Mega_Carousel extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __('Content', 'mini-gallery'),
-                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+                'label' => esc_html__('Content', 'mini-gallery'),
+                'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
-
+        
         $this->add_control(
             'gallery_id',
             [
-                'label' => __('Select Gallery', 'mini-gallery'),
-                'type' => \Elementor\Controls_Manager::SELECT,
+                'label' => esc_html__('Select Gallery', 'mini-gallery'),
+                'type' => Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
             ]
@@ -146,35 +162,56 @@ class MG_Elementor_Mega_Carousel extends \Elementor\Widget_Base {
         $this->end_controls_section();
     }
     protected function render() {
+        wp_enqueue_script('mg-mega-carousel');
         $settings = $this->get_settings_for_display();
-        $gallery_id = $settings['gallery_id'];
-    
-        if (!$gallery_id) {
-            // Use esc_html__() to escape plain text.
+        
+        if (empty($settings['gallery_id'])) {
+            echo '<div class="elementor-alert elementor-alert-info">';
             echo esc_html__('Please select a gallery.', 'mini-gallery');
+            echo '</div>';
             return;
         }
-    
-        // Get the images from the gallery post.
-        $images = get_attached_media('image', $gallery_id);
-    
-        // Wrap the rendered output in wp_kses_post() to allow safe HTML markup.
-        echo wp_kses_post( MGWPP_Mega_Slider::render($gallery_id, $images) );
+
+        $images = get_attached_media('image', absint($settings['gallery_id']));
+        
+        if (empty($images)) {
+            echo '<div class="elementor-alert elementor-alert-warning">';
+            echo esc_html__('No images found in selected gallery.', 'mini-gallery');
+            echo '</div>';
+            return;
+        }
+
+        if (!class_exists('MGWPP_Mega_Slider')) {
+            echo '<div class="elementor-alert elementor-alert-danger">';
+            echo esc_html__('Mega Slider class not available.', 'mini-gallery');
+            echo '</div>';
+            return;
+        }
+
+        // Get safe HTML output
+        $output = MGWPP_Mega_Slider::render(
+            absint($settings['gallery_id']), 
+            $images
+        );
+        
+        echo wp_kses_post($output);
     }
     
     private function get_galleries() {
+        $post_type = apply_filters('mg_carousel_gallery_post_type', 'mgwpp_soora');
+        
         $galleries = get_posts([
-            'post_type'    => 'mgwpp_soora',
-            'numberposts'  => -1,
+            'post_type'    => sanitize_key($post_type),
+            'numberposts' => 100, // Limit for performance
+            'post_status' => 'publish',
         ]);
     
-        $options = [];
+        $options = ['' => esc_html__('Select Gallery', 'mini-gallery')];
+        
         foreach ($galleries as $gallery) {
-            // Escape the gallery title to ensure safe output.
             $options[$gallery->ID] = esc_html($gallery->post_title);
         }
     
         return $options;
     }
-    
 }

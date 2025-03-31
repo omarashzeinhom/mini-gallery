@@ -18,24 +18,21 @@ class MGWPP_Mega_Slider
                 <?php endforeach; ?>
             </div>
             <div class="mg-carousel__controls">
-    <button class="mg-carousel__nav mg-prev" aria-label="Previous slide">
-        <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15 18l-6-6 6-6"/>
-        </svg>
-    </button>
-    
-    <button class="mg-carousel__nav mg-next" aria-label="Next slide">
-        <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 18l6-6-6-6"/>
-        </svg>
-    </button>
-    
-    <div class="mg-dots-container"></div>
-</div>
+                <button class="mg-carousel__nav mg-prev" aria-label="Previous slide">
+                    <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+
+                <button class="mg-carousel__nav mg-next" aria-label="Next slide">
+                    <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+
+                <div class="mg-dots-container"></div>
+            </div>
         </div>
-        <script>
-            <?php include plugin_dir_path(__FILE__) . '../../public/js/mg-mega-carousel.js'; ?>
-        </script>
 
 <?php
         return ob_get_clean();

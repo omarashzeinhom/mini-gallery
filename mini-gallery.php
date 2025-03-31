@@ -95,6 +95,13 @@ function mgwpp_enqueue_assets()
 
     wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
     wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
+    wp_register_script(
+        'mg-mega-carousel-js',
+        plugin_dir_url(__FILE__) . 'public/js/mg-mega-carousel.js',
+        array(),
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-mega-carousel.js'),
+        true
+    );
     wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
     wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js', array(), '1.0', true);
     wp_register_style(
@@ -120,6 +127,7 @@ function mgwpp_enqueue_assets()
     wp_enqueue_style('mg-multi-carousel-styles');  // Add this line
 
     wp_enqueue_style('mg-grid-styles');  // Add this line
+    wp_enqueue_script('mg-mega-carousel-js');  // Add this line
 
     wp_enqueue_style('mg-mega-carousel-styles');  // Add this line
     wp_enqueue_style('mgwpp-pro-carousel-styles'); // Add this line
@@ -243,8 +251,8 @@ function mgwpp_plugin_uninstall()
 //add_action(
 //    'admin_init',
 //    function () {
-        //error_log('POST Data: ' . print_r($_POST, true));
-        //error_log('REQUEST Data: ' . print_r($_REQUEST, true));
+//error_log('POST Data: ' . print_r($_POST, true));
+//error_log('REQUEST Data: ' . print_r($_REQUEST, true));
 //    }
 //);
 

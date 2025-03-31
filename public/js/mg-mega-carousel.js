@@ -79,8 +79,8 @@ class MegaCarousel {
     }
 }
 
-// Initialize carousel
 document.addEventListener('DOMContentLoaded', () => {
-    new MegaCarousel();
+    if (document.querySelector('.mg-mega-carousel')) {
+        new MegaCarousel();
+    }
 });
-

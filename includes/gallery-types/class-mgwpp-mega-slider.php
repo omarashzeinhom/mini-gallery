@@ -6,7 +6,7 @@ class MGWPP_Mega_Slider {
         // Check if we're in Elementor
         $is_elementor = did_action('elementor/loaded');
 
-        // Default settings for shortcode (fallback)
+        // Default settings
         $default_settings = [
             'placeholder_image' => ['url' => ''],
             'viewport_height'   => ['size' => '600', 'unit' => 'px'],
@@ -14,6 +14,7 @@ class MGWPP_Mega_Slider {
             'show_dots'         => 'yes',
             'autoplay'          => 'yes',
             'autoplay_delay'    => ['size' => '3000', 'unit' => ''],
+            'lazy_load_first'   => 'yes', // NEW OPTION
         ];
 
         // Merge Elementor settings if present, otherwise use defaults
@@ -26,6 +27,7 @@ class MGWPP_Mega_Slider {
         $show_dots        = $settings['show_dots'] === 'yes';
         $autoplay         = $settings['autoplay'] === 'yes';
         $autoplay_delay   = !empty($settings['autoplay_delay']['size']) ? $settings['autoplay_delay']['size'] . $settings['autoplay_delay']['unit'] : '3000';
+        $lazy_load_first  = $settings['lazy_load_first'] === 'yes';
 
         ob_start(); ?>
         <div class="mg-mega-carousel"
@@ -35,14 +37,18 @@ class MGWPP_Mega_Slider {
                 <?php foreach ($images as $index => $image) : ?>
                     <div class="mg-carousel__slide <?php echo $index === 0 ? 'mg-active' : ''; ?>">
                         <?php 
-                        $img_html = wp_get_attachment_image($image->ID, 'full', false, [
-                            'class' => 'mg-carousel__image',
-                            'alt'   => esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true))
-                        ]);
-                        if (empty($img_html) && $placeholder) {
-                            $img_html = '<img class="mg-carousel__image" src="' . esc_url($placeholder) . '" alt="">';
+                        if ($index === 0 && $lazy_load_first) {
+                            // FIRST IMAGE: Use a placeholder until page loads
+                            echo '<img class="mg-carousel__image lazy-first" data-src="' . esc_url(wp_get_attachment_url($image->ID)) . '" src="' . esc_url($placeholder) . '" alt="">';
+                        } else {
+                            // OTHER IMAGES: Lazy load
+                            echo wp_get_attachment_image($image->ID, 'full', false, [
+                                'class' => 'mg-carousel__image lazy-load',
+                                'data-src' => esc_url(wp_get_attachment_url($image->ID)), // Lazy load src
+                                'alt' => esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true)),
+                                'loading' => 'lazy' // Native lazy loading
+                            ]);
                         }
-                        echo $img_html;
                         ?>
                     </div>
                 <?php endforeach; ?>

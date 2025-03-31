@@ -1,37 +1,42 @@
-
-/*Albums Basic CSS */
-
+/* Albums Basic CSS - Updated */
 .mgwpp-album-container {
     margin: 2em 0;
 }
 
 .mgwpp-gallery-container {
     margin-bottom: 2em;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
 }
 
 .mgwpp-gallery-title {
     margin-bottom: 1em;
     font-size: 1.5em;
+    color: #333;
+    border-bottom: 2px solid #06b6d4;
+    padding-bottom: 0.5em;
 }
 
 .mgwpp-gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1em;
-    margin-bottom: 2em;
+    margin: 0;
 }
 
+/* Updated gallery item to work with lightbox */
 .mgwpp-gallery-item {
     display: block;
     position: relative;
-    padding-bottom: 100%;
     overflow: hidden;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+    aspect-ratio: 1;
 }
 
 .mgwpp-gallery-item img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -41,10 +46,104 @@
 .mgwpp-gallery-item:hover img {
     transform: scale(1.1);
 }
+/* Fix lightbox display */
+.mgwpp-lightbox {
+    display: none !important;
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 999999;
+}
 
-.mgwpp-no-galleries {
+.mgwpp-lightbox.active {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Prevent body scroll when lightbox is open */
+body.lightbox-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.mgwpp-lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
     text-align: center;
-    padding: 2em;
-    background: #f5f5f5;
-    border-radius: 4px;
+}
+
+.mgwpp-lightbox-image {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.mgwpp-lightbox-caption {
+    color: #fff;
+    padding: 10px;
+    font-size: 1.2em;
+    margin-top: 1em;
+}
+
+/* Navigation Controls */
+.mgwpp-close,
+.mgwpp-prev,
+.mgwpp-next {
+    position: absolute;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+    padding: 15px;
+    transition: opacity 0.3s ease;
+    opacity: 0.8;
+}
+
+.mgwpp-close:hover,
+.mgwpp-prev:hover,
+.mgwpp-next:hover {
+    opacity: 1;
+}
+
+.mgwpp-close {
+    top: 20px;
+    right: 30px;
+}
+
+.mgwpp-prev {
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.mgwpp-next {
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+    .mgwpp-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .mgwpp-prev,
+    .mgwpp-next {
+        font-size: 25px;
+        padding: 10px;
+    }
+    
+    .mgwpp-lightbox-image {
+        max-height: 60vh;
+    }
 }

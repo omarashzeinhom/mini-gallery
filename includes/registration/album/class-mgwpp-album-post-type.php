@@ -93,6 +93,7 @@ class MGWPP_Album_Post_Type
             return;
         }
         
+        
 
         // Check autosave
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {

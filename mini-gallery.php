@@ -208,7 +208,7 @@ function mgwpp_plugin_activate()
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
-    flush_rewrite_rules();
+    flush_rewrite_rules(false); // causes error on true
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
@@ -217,7 +217,7 @@ function mgwpp_plugin_deactivate()
     unregister_post_type('mgwpp_soora');
     unregister_post_type('mgwpp_album');
     remove_role('marketing_team');
-    flush_rewrite_rules();
+    flush_rewrite_rules(false); // causes error on true
 }
 register_deactivation_hook(__FILE__, 'mgwpp_plugin_deactivate');
 
@@ -245,8 +245,8 @@ function mgwpp_plugin_uninstall()
 add_action(
     'admin_init',
     function () {
-        error_log('POST Data: ' . print_r($_POST, true));
-        error_log('REQUEST Data: ' . print_r($_REQUEST, true));
+        //error_log('POST Data: ' . print_r($_POST, true));
+        //error_log('REQUEST Data: ' . print_r($_REQUEST, true));
     }
 );
 

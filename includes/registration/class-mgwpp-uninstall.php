@@ -1,5 +1,4 @@
- 
-<?php
+ <?php
 class MGWPP_Uninstall {
 
     // Cleanup process when the plugin is uninstalled

@@ -33,16 +33,21 @@ register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';
 
 //Gallery Types 
-// Add this with your other requires at the top
+
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-single-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-multi-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
+
+// Slider Types 
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
 
-// Galleries
+// Galleries Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-upload.php';
-// Albums
+// Albums Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-display.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';

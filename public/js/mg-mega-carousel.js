@@ -84,3 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         new MegaCarousel();
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let firstImage = document.querySelector('.lazy-first');
+    if (firstImage) {
+        firstImage.src = firstImage.getAttribute('data-src');
+        firstImage.classList.remove('lazy-first');
+    }
+});

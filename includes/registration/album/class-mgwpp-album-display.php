@@ -3,15 +3,13 @@ class MGWPP_Album_Display
 {
     public static function render_album($post_id)
     {
-        add_action('wp_footer', [__CLASS__, 'init_lightbox'], 100);
-
         $galleries = get_post_meta($post_id, '_mgwpp_album_galleries', true);
         if (!is_array($galleries) || empty($galleries)) {
             return '<p class="mgwpp-no-galleries">' . esc_html__('No galleries in this album.', 'mini-gallery') . '</p>';
         }
 
         $output = '<div class="mgwpp-album-container">';
-        
+
         foreach ($galleries as $gallery_id) {
             $gallery = get_post($gallery_id);
             if (!$gallery || $gallery->post_type !== 'mgwpp_soora') continue;
@@ -36,117 +34,63 @@ class MGWPP_Album_Display
                     $full_src = wp_get_attachment_image_src($attachment->ID, 'full');
                     $caption = wp_get_attachment_caption($attachment->ID);
 
+                    // Generate image HTML with wp_get_attachment_image()
+                    $image_html = wp_get_attachment_image(
+                        $attachment->ID,
+                        'medium', // You can change the size here as needed
+                        false,
+                        [
+                            'loading' => 'lazy',
+                            'class' => 'mgwpp-album-thumbnail'
+                        ]
+                    );
+
+                    // Add the gallery item and image
                     $output .= sprintf(
                         '<a href="%s" class="mgwpp-gallery-item" 
                             data-caption="%s" 
                             data-gallery="gallery-%d"
+                            data-image-id="%d" 
                             aria-label="%s">%s</a>',
-                        esc_url($full_src[0]),
+                        esc_url($full_src[0]), // Use the full image URL for the lightbox
                         esc_attr($caption),
                         $gallery_id,
+                        $attachment->ID,
                         esc_attr(sprintf(__('View image %d', 'mini-gallery'), $index + 1)),
-                        wp_get_attachment_image(
-                            $attachment->ID,
-                            'medium',
-                            false,
-                            [
-                                'loading' => 'lazy',
-                                'class' => 'mgwpp-album-thumbnail'
-                            ]
-                        )
+                        $image_html // Use the generated image HTML here
                     );
                 }
 
                 $output .= '</div></div>';
             }
         }
+
+        // Add lightbox HTML at the bottom
+        $output .= self::get_lightbox_html();
+
         $output .= '</div>';
 
         return $output;
     }
 
-    public static function init_lightbox()
+    // Lightbox HTML structure (note no src in the image tag initially)
+    public static function get_lightbox_html()
     {
-        ?>
+        ob_start();
+?>
         <div id="mgwpp-lightbox" class="mgwpp-lightbox">
             <span class="mgwpp-close">&times;</span>
+            <div class="mgwpp-lightbox-overlay"></div> <!-- Overlay for album title -->
             <div class="mgwpp-lightbox-content">
-                <?php echo wp_get_attachment_image(0, 'full', false, ['class' => 'mgwpp-lightbox-image']); ?>
+                <!-- Image container where the image will be added dynamically -->
+                <div class="mgwpp-lightbox-image-container"></div>
                 <div class="mgwpp-lightbox-caption"></div>
             </div>
             <a class="mgwpp-prev">&#10094;</a>
             <a class="mgwpp-next">&#10095;</a>
         </div>
-        
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const lightbox = document.getElementById('mgwpp-lightbox');
-            const body = document.body;
-            const items = Array.from(document.querySelectorAll('.mgwpp-gallery-item'));
-            let currentIndex = 0;
-    
-            function updateBodyScroll(state) {
-                body.classList[state ? 'add' : 'remove']('lightbox-open');
-            }
-    
-            function openLightbox(index) {
-                currentIndex = index;
-                const item = items[index];
-                const img = lightbox.querySelector('.mgwpp-lightbox-image');
-                img.src = item.href;
-                img.alt = item.querySelector('img').alt;
-                lightbox.querySelector('.mgwpp-lightbox-caption').textContent = item.dataset.caption;
-                lightbox.classList.add('active');
-                updateBodyScroll(true);
-            }
-    
-            function closeLightbox() {
-                lightbox.classList.remove('active');
-                updateBodyScroll(false);
-            }
-    
-            function navigate(direction) {
-                currentIndex = (currentIndex + direction + items.length) % items.length;
-                openLightbox(currentIndex);
-            }
-    
-            // Event listeners
-            items.forEach((item, index) => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openLightbox(index);
-                });
-            });
-    
-            lightbox.querySelector('.mgwpp-close').addEventListener('click', closeLightbox);
-            lightbox.querySelector('.mgwpp-prev').addEventListener('click', () => navigate(-1));
-            lightbox.querySelector('.mgwpp-next').addEventListener('click', () => navigate(1));
-    
-            document.addEventListener('keydown', (e) => {
-                if (lightbox.classList.contains('active')) {
-                    switch(e.key) {
-                        case 'Escape':
-                            closeLightbox();
-                            break;
-                        case 'ArrowLeft':
-                            navigate(-1);
-                            break;
-                        case 'ArrowRight':
-                            navigate(1);
-                            break;
-                    }
-                }
-            });
-    
-            // Close when clicking outside image
-            lightbox.addEventListener('click', (e) => {
-                if (e.target === lightbox) {
-                    closeLightbox();
-                }
-            });
-        });
-        </script>
-        <?php
+<?php
+        return ob_get_clean();
     }
 
     public static function album_shortcode($atts)
@@ -165,4 +109,10 @@ class MGWPP_Album_Display
 
 add_shortcode('mgwpp_album', array('MGWPP_Album_Display', 'album_shortcode'));
 
+// Enqueue the lightbox JavaScript file
+function mgwpp_enqueue_lightbox_script()
+{
+    wp_enqueue_script('mgwpp-lightbox', get_template_directory_uri() . '/js/mg-lightbox.js', array(), 1.0, true);
+}
 
+add_action('wp_enqueue_scripts', 'mgwpp_enqueue_lightbox_script');

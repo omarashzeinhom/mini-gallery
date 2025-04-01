@@ -39,6 +39,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mul
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
 
 // Slider Types 
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-threed-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
@@ -123,19 +124,49 @@ function mgwpp_enqueue_assets()
         filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-neon-carousel.js'),
         true
     );
-    // Enqueue for front-end only
 
+
+
+    wp_register_style(
+        'mgwpp-threed-carousel-styles',
+        plugins_url('public/css/mg-threed-carousel.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-threed-carousel.css')
+    );
+
+    wp_register_script(
+        'mgwpp-threed-carousel-js',
+        plugins_url('public/js/mg-threed-carousel.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-threed-carousel.js'),
+        true
+    );
+
+
+    // Single Carousel
     wp_enqueue_script('mg-single-carousel-js');
+    wp_enqueue_style('mg-single-carousel-styles');
+
+    // Multi Carousel
     wp_enqueue_script('mg-multi-carousel-js');
+    wp_enqueue_style('mg-multi-carousel-styles');
 
-    wp_enqueue_style('mg-single-carousel-styles');  // Add this line
-    wp_enqueue_style('mg-multi-carousel-styles');  // Add this line
+    // Grid
+    wp_enqueue_style('mg-grid-styles');
 
-    wp_enqueue_style('mg-grid-styles');  // Add this line
-    wp_enqueue_script('mg-mega-carousel-js');  // Add this line
+    // Mega Slider/Carousel
+    wp_enqueue_script('mg-mega-carousel-js');
+    wp_enqueue_style('mg-mega-carousel-styles');
 
-    wp_enqueue_style('mg-mega-carousel-styles');  // Add this line
-    wp_enqueue_style('mgwpp-pro-carousel-styles'); // Add this line
+    // Pro Carousel
+    wp_enqueue_style('mgwpp-pro-carousel-styles');
+
+    // 3D Carousel
+    wp_enqueue_style('mgwpp-threed-carousel-styles');
+    wp_enqueue_script('mgwpp-threed-carousel-js');
+
+
+
 }
 
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');

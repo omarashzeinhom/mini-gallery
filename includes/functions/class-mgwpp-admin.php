@@ -251,6 +251,8 @@ class MGWPP_Admin
                                 <option value="pro_carousel"> <?php echo esc_html__('Pro Multi Card Carousel', 'mini-gallery'); ?>
                                 </option>
                                 <option value="neon_carousel"> <?php echo esc_html__('Neon Carousel', 'mini-gallery'); ?>
+                                <option value="threed_carousel"> <?php echo esc_html__('3D Carousel', 'mini-gallery'); ?>
+
                             </select>
                         </td>
                     </tr>

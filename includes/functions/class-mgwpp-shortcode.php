@@ -44,7 +44,6 @@ function mgwpp_gallery_shortcode( $atts ) {
                     $output .= MGWPP_Gallery_Grid::render( $post_id, $all_images );
                     break;
 
-                // Other types (mega_slider, pro_carousel, neon_carousel) remain unchanged.
                 case 'mega_slider':
                     $output .= MGWPP_Mega_Slider::render( $post_id, $all_images );
                     break;
@@ -59,6 +58,13 @@ function mgwpp_gallery_shortcode( $atts ) {
                     wp_enqueue_style( 'mgwpp-neon-carousel-styles' );
                     wp_enqueue_script( 'mgwpp-neon-carousel-js' );
                     $output .= MGWPP_Neon_Carousel::render( $post_id, $all_images );
+                    break;
+                    
+                case 'threed_carousel':
+                    if ( ! class_exists( 'MGWPP_3D_Carousel' ) ) {
+                        include_once plugin_dir_path( __FILE__ ) . 'includes/gallery-types/class-mgwpp-3d-carousel.php';
+                    }
+                    $output .= MGWPP_3D_Carousel::render( $post_id, $all_images );
                     break;
             }
         } else {

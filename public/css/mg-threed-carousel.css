@@ -1,0 +1,67 @@
+.mg-3d-carousel-container {
+  position: relative;
+  width: 100vw;
+  height: 75vh;
+  overflow: hidden;
+  touch-action: none;
+  align-items: center;
+  margin: auto;
+}
+
+.mg-drag-container,
+.mg-spin-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateX(-10deg);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mg-3d-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-width: 250px;
+  max-height: 250px;
+  transition: transform 1s ease;
+  transform-origin: center center;
+}
+
+.mg-3d-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+.mg-3d-item:hover img {
+  box-shadow: 0 0 15px rgba(255,255,255,0.9);
+}
+
+.mg-3d-ground {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotateX(90deg);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(153,153,153,0.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.mg-music-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+/* Keyframe for auto-rotation */
+@keyframes carousel-spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}

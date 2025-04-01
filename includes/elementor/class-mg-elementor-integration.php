@@ -10,12 +10,16 @@ class MG_Elementor_Integration
 
     public function register_widgets($widgets_manager)
     {
+        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-threed-carousel.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-mega-carousel-widget.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-pro-carousel-widget.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-neon-carousel-widget.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-single.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-grid.php';
         require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-multi.php';
+
+
+        $widgets_manager->register(new MG_Elementor_3D_Carousel());
 
         $widgets_manager->register(new MG_Elementor_Mega_Carousel());
         $widgets_manager->register(new MG_Elementor_Pro_Carousel());

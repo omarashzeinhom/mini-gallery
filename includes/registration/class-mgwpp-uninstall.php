@@ -1,4 +1,7 @@
- <?php
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Uninstall {
 
     // Cleanup process when the plugin is uninstalled

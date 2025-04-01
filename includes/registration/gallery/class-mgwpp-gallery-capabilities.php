@@ -1,5 +1,7 @@
-<?php 
-
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Capabilities {
 
     // Add a custom "Marketing Team" role

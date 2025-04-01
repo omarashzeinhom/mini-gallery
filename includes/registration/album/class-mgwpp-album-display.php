@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Album_Display
 {
     public static function render_album($post_id)

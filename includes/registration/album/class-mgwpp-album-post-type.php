@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Album_Post_Type
 {
     public static function mgwpp_register_album_post_type()

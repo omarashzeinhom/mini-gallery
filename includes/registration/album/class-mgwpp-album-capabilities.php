@@ -1,5 +1,7 @@
-<?php 
-
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Album_Capabilities {
     public static function mgwpp_album_capabilities() {
         // Get the administrator role

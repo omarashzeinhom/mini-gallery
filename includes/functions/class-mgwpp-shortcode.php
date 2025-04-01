@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
 function mgwpp_gallery_shortcode( $atts ) {
     $atts = shortcode_atts( [ 'id' => '', 'paged' => 1 ], $atts );
     $post_id = max( 0, intval( $atts['id'] ) );

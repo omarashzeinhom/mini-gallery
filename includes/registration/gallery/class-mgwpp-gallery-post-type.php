@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class MGWPP_Gallery_Post_Type { 
 
     public static function mgwpp_register_gallery_post_type()

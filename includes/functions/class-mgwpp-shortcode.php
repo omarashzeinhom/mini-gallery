@@ -66,6 +66,13 @@ function mgwpp_gallery_shortcode( $atts ) {
                     }
                     $output .= MGWPP_3D_Carousel::render( $post_id, $all_images );
                     break;
+
+               case 'testimonials_carousel': 
+                if (! class_exists ('MGWPP_Testimonial_Carousel') ) {
+                    include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
+                }     
+                $output .= MGWPP_Testimonial_Carousel::render( $post_id, $all_images);
+                break;
             }
         } else {
             $output .= '<p>No images found for this gallery.</p>';

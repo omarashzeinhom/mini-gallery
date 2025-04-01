@@ -38,7 +38,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-sin
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-multi-gallery.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
 
-// Slider Types 
+// Slider Types
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-threed-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
@@ -143,6 +144,29 @@ function mgwpp_enqueue_assets()
     );
 
 
+
+    // Testimonials Carousel Styles and Scripts
+    wp_register_style(
+        'mgwpp-testimonial-carousel-styles',
+        plugins_url('public/css/mgwpp-testimonial-carousel.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/css/mgwpp-testimonial-carousel.css')
+    );
+
+    wp_register_script(
+        'mgwpp-testimonial-carousel-js',
+        plugins_url('public/js/mgwpp-testimonial-carousel.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mgwpp-testimonial-carousel.js'),
+        true
+    );
+
+
+
+
+
+
+
     // Single Carousel
     wp_enqueue_script('mg-single-carousel-js');
     wp_enqueue_style('mg-single-carousel-styles');
@@ -165,6 +189,10 @@ function mgwpp_enqueue_assets()
     wp_enqueue_style('mgwpp-threed-carousel-styles');
     wp_enqueue_script('mgwpp-threed-carousel-js');
 
+
+    // Testimonials Carousel 
+    wp_enqueue_style('mgwpp-testimonial-styles');
+    wp_enqueue_script('mgwpp-testimonial-carousel-js');
 
 
 }

@@ -5,7 +5,7 @@
   overflow: hidden;
   touch-action: none;
   align-items: center;
-  margin: auto;
+  margin-left: -100px;
 }
 
 .mg-drag-container,
@@ -15,8 +15,8 @@
   left: 50%;
   transform-style: preserve-3d;
   transform: translate(-50%, -50%) rotateX(-10deg);
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
   pointer-events: none;
 }
 

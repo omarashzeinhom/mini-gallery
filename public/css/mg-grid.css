@@ -23,7 +23,6 @@
   
   .grid-layout .grid-item img {
     max-width: 100%;
-    height: auto;
     border: 1px solid #ccc;
     padding: 5px;
     background: #f9f9f9;

@@ -1,0 +1,70 @@
+.mgwpp-testimonial-carousel {
+    position: relative;
+    overflow: hidden;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.mgwpp-carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.mgwpp-carousel-item {
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.mgwpp-testimonial {
+    background: #f7f7f7;
+    padding: 30px 20px;
+    border-radius: 8px;
+    font-style: italic;
+    text-align: center;
+    position: relative;
+    color: #333;
+}
+
+.mgwpp-testimonial::before {
+    content: "“";
+    font-size: 50px;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    color: #ccc;
+}
+
+.mgwpp-testimonial-content {
+    margin-bottom: 20px;
+}
+
+.mgwpp-testimonial-author {
+    font-weight: bold;
+    color: #555;
+}
+
+.mgwpp-carousel-prev,
+.mgwpp-carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #06b6d4;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.mgwpp-carousel-prev {
+    left: 10px;
+}
+
+.mgwpp-carousel-next {
+    right: 10px;
+}

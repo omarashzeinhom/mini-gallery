@@ -206,3 +206,63 @@
 .mode-toggle input[type="checkbox"]:checked + .slider::before {
     transform: translateX(20px);
 }
+
+
+/* Gallery Type Item */
+.mgwpp-gallery-item {
+    position: relative;
+    display: inline-block;
+    margin: 15px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+}
+
+.mgwpp-gallery-item:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--hover-color);
+}
+
+/* Hide preview and demo link initially */
+.mgwpp-gallery-preview {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    padding: 10px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    z-index: 10;
+}
+
+.mgwpp-gallery-item:hover .mgwpp-gallery-preview {
+    display: block;
+}
+
+/* Image Styling */
+.mgwpp-gallery-preview img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+/* Demo Link */
+.mgwpp-gallery-preview a {
+    display: block;
+    margin-top: 8px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.mgwpp-gallery-preview a:hover {
+    text-decoration: underline;
+}

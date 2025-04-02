@@ -93,13 +93,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Toggle theme on checkbox change
-    toggleCheckbox.addEventListener("change", function () {
+    toggleCheckbox?.addEventListener("change", function () {
         if (this.checked) {
             body.setAttribute("data-theme", "dark");
             localStorage.setItem("theme", "dark");
         } else {
             body.removeAttribute("data-theme");
             localStorage.setItem("theme", "light");
+        }
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let selectElement = document.getElementById("gallery_type");
+    let previewContainer = document.getElementById("gallery_preview");
+    let previewImg = document.getElementById("preview_img");
+    let previewDemo = document.getElementById("preview_demo");
+
+    selectElement.addEventListener("change", function () {
+        let selectedOption = selectElement.options[selectElement.selectedIndex];
+        let imageUrl = selectedOption.getAttribute("data-image");
+        let demoUrl = selectedOption.getAttribute("data-demo");
+
+        if (imageUrl) {
+            previewImg.src = imageUrl;
+            previewDemo.href = demoUrl;
+            previewContainer.style.display = "block";
+        } else {
+            previewContainer.style.display = "none";
         }
     });
 });

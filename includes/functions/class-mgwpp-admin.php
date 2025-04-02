@@ -239,24 +239,33 @@ class MGWPP_Admin
                         <td><input type="text" id="image_title" name="image_title" required></td>
                     </tr>
                     <tr>
-                        <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
-                        <td>
-                            <select id="gallery_type" name="gallery_type" required>
-                                <option value="single_carousel"><?php echo esc_html__('Single Carousel', 'mini-gallery'); ?>
-                                </option>
-                                <option value="multi_carousel"><?php echo esc_html__('Multi Carousel', 'mini-gallery'); ?>
-                                </option>
-                                <option value="grid"><?php echo esc_html__('Grid Layout', 'mini-gallery'); ?></option>
-                                <option value="mega_slider"><?php echo esc_html__('Mega Slider', 'mini-gallery'); ?></option>
-                                <option value="pro_carousel"> <?php echo esc_html__('Pro Multi Card Carousel', 'mini-gallery'); ?>
-                                </option>
-                                <option value="neon_carousel"> <?php echo esc_html__('Neon Carousel', 'mini-gallery'); ?>
-                                <option value="threed_carousel"> <?php echo esc_html__('3D Carousel', 'mini-gallery'); ?>
-                                <option value="testimonials_carousel"> <?php echo esc_html__('Testimonials Carousel', 'mini-gallery'); ?>
+    <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
+    <td>
+        <select id="gallery_type" name="gallery_type" required>
+            <?php 
+            $gallery_types = [
+                "single_carousel" => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
+                "multi_carousel" => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
+                "grid" => ["Grid Layout", "grid.webp", "demo-grid"],
+                "mega_slider" => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
+                "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
+                "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
+                "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
+                "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
+            ];
 
-                            </select>
-                        </td>
-                    </tr>
+            foreach ($gallery_types as $key => $info) {
+                echo '<option value="' . esc_attr($key) . '" data-image="' . plugin_dir_url(__FILE__) . 'admin/images/' . esc_attr($info[1]) . '" data-demo="https://your-demo-site.com/' . esc_attr($info[2]) . '">' . esc_html($info[0]) . '</option>';
+            }
+            ?>
+        </select>
+        <div id="gallery_preview" style="display: none; margin-top: 10px;">
+            <img id="preview_img" src="" alt="" style="max-width: 200px; display: block; border-radius: 5px;">
+            <a id="preview_demo" href="" target="_blank" style="display: block; margin-top: 5px; text-decoration: none; color: #0073aa; font-weight: bold;"><?php echo esc_html__('View Demo', 'mini-gallery'); ?></a>
+        </div>
+    </td>
+</tr>
+
                     <tr>
                         <td colspan="2" style="text-align: center;">
                             <input type="submit" class="button button-primary"
@@ -338,6 +347,9 @@ class MGWPP_Admin
         </div>
 <?php
     }
+
+
+    
 }
 
 MGWPP_Admin::init();

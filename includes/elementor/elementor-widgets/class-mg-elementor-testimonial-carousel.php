@@ -23,18 +23,27 @@ class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __( 'Content', 'mgwpp' ),
+                'label' => __( 'Content', 'mini-gallery' ),
                 'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+        
+        $this->add_control(
+            'testimonial_count',
+            [
+                'label' => __('Number of Testimonials', 'mini-gallery'),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'default' => 5
             ]
         );
         
         $this->add_control(
             'autoplay',
             [
-                'label' => __( 'Autoplay', 'mgwpp' ),
+                'label' => __( 'Autoplay', 'mini-gallery' ),
                 'type' => \Elementor\Controls_Manager::SWITCHER,
-                'label_on' => __( 'Yes', 'mgwpp' ),
-                'label_off' => __( 'No', 'mgwpp' ),
+                'label_on' => __( 'Yes', 'mini-gallery' ),
+                'label_off' => __( 'No', 'mini-gallery' ),
                 'return_value' => 'yes',
                 'default' => 'yes',
             ]
@@ -43,7 +52,7 @@ class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base {
         $this->add_control(
             'interval',
             [
-                'label' => __( 'Autoplay Interval (ms)', 'mgwpp' ),
+                'label' => __( 'Autoplay Interval (ms)', 'mini-gallery' ),
                 'type' => \Elementor\Controls_Manager::NUMBER,
                 'min' => 1000,
                 'max' => 10000,

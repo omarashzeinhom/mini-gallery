@@ -12,10 +12,10 @@ class MGWPP_Admin
 
     public static function mgwpp_enqueue_admin_assets()
     {
-        wp_register_script('mgwpp-admin-scripts', plugin_dir_url(__FILE__) . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
+        wp_register_script('mgwpp-admin-scripts', MG_PLUGIN_URL . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
         wp_enqueue_script('mgwpp-admin-scripts');
 
-        wp_register_style('mgwpp-admin-styles', plugin_dir_url(__FILE__) . 'admin/css/mg-admin-styles.css', array(), '1.0');
+        wp_register_style('mgwpp-admin-styles', MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css', array(), '1.0');
         wp_enqueue_style('mgwpp-admin-styles');
     }
 
@@ -86,12 +86,12 @@ class MGWPP_Admin
                 <p class="stat-number"><?php echo esc_html($total_albums); ?></p>
             </div>
             <div class="stat-box">
-  <h3><?php echo esc_html__('Toggle Dark/Light Mode', 'mini-gallery'); ?></h3>
-  <label class="inline-mode-toggle">
-    <input type="checkbox" id="mode-toggle-checkbox">
-    <span class="slider"></span>
-  </label>
-</div>
+                <h3><?php echo esc_html__('Toggle Dark/Light Mode', 'mini-gallery'); ?></h3>
+                <label class="inline-mode-toggle">
+                    <input type="checkbox" id="mode-toggle-checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
 
         </div>
 
@@ -247,27 +247,28 @@ class MGWPP_Admin
                         <td><label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
                         <td><input type="text" id="image_title" name="image_title" required></td>
                     </tr>
-                    <tr>
+                    <tr >
                         <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
                         <td>
                             <select id="gallery_type" name="gallery_type" required>
                                 <?php
                                 $gallery_types = [
-                                    "single_carousel" => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
-                                    "multi_carousel" => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
-                                    "grid" => ["Grid Layout", "grid.webp", "demo-grid"],
-                                    "mega_slider" => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
-                                    "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
-                                    "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
-                                    "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
+                                    "single_carousel"     => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
+                                    "multi_carousel"      => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
+                                    "grid"                => ["Grid Layout", "grid.webp", "demo-grid"],
+                                    "mega_slider"         => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
+                                    "pro_carousel"        => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
+                                    "neon_carousel"       => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
+                                    "threed_carousel"     => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
                                     "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
                                 ];
 
                                 foreach ($gallery_types as $key => $info) {
-                                    echo '<option value="' . esc_attr($key) . '" data-image="' . plugin_dir_url(__FILE__) . 'admin/images/' . esc_attr($info[1]) . '" data-demo="https://your-demo-site.com/' . esc_attr($info[2]) . '">' . esc_html($info[0]) . '</option>';
+                                    echo '<option value="' . esc_attr($key) . '" data-image="' . MG_PLUGIN_URL . '/admin/images/' . esc_attr($info[1]) . '" data-demo="https://your-demo-site.com/' . esc_attr($info[2]) . '">' . esc_html($info[0]) . '</option>';
                                 }
                                 ?>
                             </select>
+
                             <div id="gallery_preview" style="display: none; margin-top: 10px;">
                                 <img id="preview_img" src="" alt="" style="max-width: 200px; display: block; border-radius: 5px;">
                                 <a id="preview_demo" href="" target="_blank" style="display: block; margin-top: 5px; text-decoration: none; color: #0073aa; font-weight: bold;"><?php echo esc_html__('View Demo', 'mini-gallery'); ?></a>

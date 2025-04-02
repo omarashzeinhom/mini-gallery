@@ -280,34 +280,6 @@
 
         }
 
-        
-        .reservation-title {
-            font-size: 0.8rem;
-        }
-
-        .form-group,
-        .form-label {
-            font-size: 0.6rem;
-        }
-
-        .form-input {
-            font-size: 0.6rem;
-
-        }
-
-        .rate-display {
-            font-size: 1rem;
-        }
-
-        .book-cta {
-            font-size: 1rem;
-        }
-
-        .price-section {
-            margin-top: -1.2rem
-        }
-
-
     }
 
     @media (min-height: 120px) and (max-height: 640px) {
@@ -344,39 +316,6 @@
             width: 40px;
             height: 40px;
         }
-
-        .reservation-panel {
-            padding: 10px 10px 10px 10px;
-            height: 50vh;
-            font-size: 0.7rem;
-        }
-
-        .reservation-title {
-            font-size: 0.8rem;
-        }
-
-        .form-group,
-        .form-label {
-            font-size: 0.6rem;
-        }
-
-        .form-input {
-            font-size: 0.6rem;
-
-        }
-
-        .rate-display {
-            font-size: 1rem;
-        }
-
-        .book-cta {
-            font-size: 1rem;
-        }
-
-        .price-section {
-            margin-top: -1.2rem
-        }
-
 
     }
 

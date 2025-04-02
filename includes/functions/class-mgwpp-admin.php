@@ -12,10 +12,10 @@ class MGWPP_Admin
 
     public static function mgwpp_enqueue_admin_assets()
     {
-        wp_register_script('mgwpp-admin-scripts', MG_PLUGIN_URL . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
+        wp_register_script('mgwpp-admin-scripts', MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
         wp_enqueue_script('mgwpp-admin-scripts');
 
-        wp_register_style('mgwpp-admin-styles', MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css', array(), '1.0');
+        wp_register_style('mgwpp-admin-styles', MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css', array(), '1.0');
         wp_enqueue_style('mgwpp-admin-styles');
     }
 
@@ -270,7 +270,7 @@ class MGWPP_Admin
                             </select>
 
                             <div id="gallery_preview" style="display: none; margin-top: 10px;">
-                                <img id="preview_img" src="" alt="" style="max-width: 200px; display: block; border-radius: 5px;">
+                                <img id="preview_img" src="" alt="" style="">
                                 <a id="preview_demo" href="" target="_blank" style="display: block; margin-top: 5px; text-decoration: none; color: #0073aa; font-weight: bold;"><?php echo esc_html__('View Demo', 'mini-gallery'); ?></a>
                             </div>
                         </td>

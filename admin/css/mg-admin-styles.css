@@ -6,55 +6,64 @@
     --border-color: #e5e7eb;
     --hover-color: #f3f4f6;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-/* Dark Mode */
-[data-theme="dark"] {
+  }
+  
+  /* Dark Mode */
+  [data-theme="dark"] {
     --background-color: #1a1a1a;
     --text-color: #e5e7eb;
     --primary-color: #3b82f6;
     --border-color: #333333;
     --hover-color: #2d2d2d;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* General Admin Styles */
-#mgwpp_galleries_content {
-    font-family: 'Inter', sans-serif;
+  }
+  
+  /* General Admin Styles */
+  #mgwpp_galleries_content {
+    font-family: "Inter", sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
-    padding: 30px;
+    padding: 30px 50px; /* Increased horizontal padding for a more spacious layout */
     border-radius: 12px;
     box-shadow: var(--shadow);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-#mgwpp_galleries_content h2 {
+    transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Responsive Padding */
+  @media (max-width: 768px) {
+    #mgwpp_galleries_content {
+      padding: 20px 20px;
+    }
+  }
+  
+  #mgwpp_galleries_content h2 {
     color: var(--primary-color);
     font-size: 26px;
     margin-bottom: 25px;
     font-weight: 600;
-}
-
-/* Form Styles */
-#mgwpp_galleries_content form {
+  }
+  
+  /* Form Styles */
+  #mgwpp_galleries_content form {
     background-color: var(--background-color);
     padding: 25px;
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
-}
-
-#mgwpp_galleries_content .form-table th {
+  }
+  
+  #mgwpp_galleries_content .form-table th {
     color: var(--primary-color);
     font-weight: 500;
     padding: 15px 0;
-}
-
-#mgwpp_galleries_content input[type="text"],
-#mgwpp_galleries_content input[type="file"],
-#mgwpp_galleries_content select {
+  }
+  
+  #mgwpp_galleries_content input[type="text"],
+  #mgwpp_galleries_content input[type="file"],
+  #mgwpp_galleries_content select {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
@@ -64,17 +73,17 @@
     margin-bottom: 15px;
     font-size: 14px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#mgwpp_galleries_content input[type="text"]:focus,
-#mgwpp_galleries_content input[type="file"]:focus,
-#mgwpp_galleries_content select:focus {
+  }
+  
+  #mgwpp_galleries_content input[type="text"]:focus,
+  #mgwpp_galleries_content input[type="file"]:focus,
+  #mgwpp_galleries_content select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     outline: none;
-}
-
-#mgwpp_galleries_content input[type="submit"] {
+  }
+  
+  #mgwpp_galleries_content input[type="submit"] {
     background-color: var(--primary-color);
     color: #fff;
     border: none;
@@ -83,46 +92,55 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s ease;
-}
-
-#mgwpp_galleries_content input[type="submit"]:hover {
+  }
+  
+  #mgwpp_galleries_content input[type="submit"]:hover {
     background-color: #1d4ed8;
-}
-
-/* Table Styles */
-#mgwpp_galleries_content .wp-list-table {
+  }
+  
+  /* Table Styles */
+  #mgwpp_galleries_content .wp-list-table {
     background-color: var(--background-color);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
-}
-
-#mgwpp_galleries_content .wp-list-table th,
-#mgwpp_galleries_content .wp-list-table td {
+  }
+  
+  /* New: Table Row Styles */
+  #mgwpp_galleries_content .wp-list-table tr {
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
+  }
+  #mgwpp_galleries_content .wp-list-table tr:hover {
+    background-color: var(--hover-color);
+  }
+  
+  #mgwpp_galleries_content .wp-list-table th,
+  #mgwpp_galleries_content .wp-list-table td {
     padding: 15px;
     border-bottom: 1px solid var(--border-color);
-}
-
-#mgwpp_galleries_content .wp-list-table th {
+  }
+  
+  #mgwpp_galleries_content .wp-list-table th {
     background-color: var(--hover-color);
     color: var(--primary-color);
     font-weight: 500;
-}
-
-#mgwpp_galleries_content .wp-list-table td {
+  }
+  
+  #mgwpp_galleries_content .wp-list-table td {
     color: var(--text-color);
-}
-
-#mgwpp_galleries_content .wp-list-table pre {
+  }
+  
+  #mgwpp_galleries_content .wp-list-table pre {
     background-color: var(--hover-color);
     padding: 5px 10px;
     border-radius: 5px;
     color: var(--primary-color);
     margin: 0;
-}
-
-#mgwpp_galleries_content .wp-list-table .button {
+  }
+  
+  #mgwpp_galleries_content .wp-list-table .button {
     background-color: var(--primary-color);
     color: #fff;
     border: none;
@@ -131,64 +149,59 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s ease;
-}
-
-#mgwpp_galleries_content .wp-list-table .button:hover {
+  }
+  
+  #mgwpp_galleries_content .wp-list-table .button:hover {
     background-color: #1d4ed8;
-}
-
-/* Gallery Preview Styles */
-#mgwpp_galleries_content details {
+  }
+  
+  /* Gallery Preview Styles */
+  #mgwpp_galleries_content details {
     margin-top: 20px;
-}
-
-#mgwpp_galleries_content details summary {
+  }
+  
+  #mgwpp_galleries_content details summary {
     color: var(--primary-color);
     cursor: pointer;
     font-weight: 500;
     margin-bottom: 10px;
-}
-
-#mgwpp_galleries_content .mgwpp-gallery-preview {
+  }
+  
+  #mgwpp_galleries_content .mgwpp-gallery-preview {
     background-color: var(--hover-color);
     padding: 20px;
     border-radius: 12px;
     margin-top: 10px;
-}
-
-#mgwpp_galleries_content .mgwpp-gallery-preview h3 {
+  }
+  
+  #mgwpp_galleries_content .mgwpp-gallery-preview h3 {
     color: var(--primary-color);
     margin-bottom: 15px;
-}
-
-/* Mode Toggle */
-.mode-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.mode-toggle label {
-    display: flex;
+  }
+  
+  /* Mode Toggle */
+  .inline-mode-toggle {
+    display: inline-flex;
     align-items: center;
     cursor: pointer;
-}
-
-.mode-toggle input[type="checkbox"] {
+  }
+  
+  .inline-mode-toggle input[type="checkbox"] {
     display: none;
-}
-
-.mode-toggle .slider {
+  }
+  
+  .inline-mode-toggle .slider {
     width: 40px;
     height: 20px;
     background-color: #ccc;
     border-radius: 20px;
     position: relative;
     transition: background-color 0.3s ease;
-}
-
-.mode-toggle .slider::before {
-    content: '';
+    margin-left: 10px;
+  }
+  
+  .inline-mode-toggle .slider::before {
+    content: "";
     width: 16px;
     height: 16px;
     background-color: #fff;
@@ -197,19 +210,18 @@
     top: 2px;
     left: 2px;
     transition: transform 0.3s ease;
-}
-
-.mode-toggle input[type="checkbox"]:checked + .slider {
+  }
+  
+  .inline-mode-toggle input[type="checkbox"]:checked + .slider {
     background-color: var(--primary-color);
-}
-
-.mode-toggle input[type="checkbox"]:checked + .slider::before {
+  }
+  
+  .inline-mode-toggle input[type="checkbox"]:checked + .slider::before {
     transform: translateX(20px);
-}
-
-
-/* Gallery Type Item */
-.mgwpp-gallery-item {
+  }
+  
+  /* Gallery Type Item */
+  .mgwpp-gallery-item {
     position: relative;
     display: inline-block;
     margin: 15px;
@@ -220,15 +232,15 @@
     transition: box-shadow 0.3s ease, background-color 0.3s ease;
     text-align: center;
     cursor: pointer;
-}
-
-.mgwpp-gallery-item:hover {
+  }
+  
+  .mgwpp-gallery-item:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: var(--hover-color);
-}
-
-/* Hide preview and demo link initially */
-.mgwpp-gallery-preview {
+  }
+  
+  /* Hide preview and demo link initially */
+  .mgwpp-gallery-preview {
     display: none;
     position: absolute;
     top: 100%;
@@ -242,27 +254,28 @@
     box-shadow: var(--shadow);
     text-align: center;
     z-index: 10;
-}
-
-.mgwpp-gallery-item:hover .mgwpp-gallery-preview {
+  }
+  
+  .mgwpp-gallery-item:hover .mgwpp-gallery-preview {
     display: block;
-}
-
-/* Image Styling */
-.mgwpp-gallery-preview img {
+  }
+  
+  /* Image Styling */
+  .mgwpp-gallery-preview img {
     max-width: 100%;
     border-radius: 5px;
-}
-
-/* Demo Link */
-.mgwpp-gallery-preview a {
+  }
+  
+  /* Demo Link */
+  .mgwpp-gallery-preview a {
     display: block;
     margin-top: 8px;
     text-decoration: none;
     color: var(--primary-color);
     font-weight: 500;
-}
-
-.mgwpp-gallery-preview a:hover {
+  }
+  
+  .mgwpp-gallery-preview a:hover {
     text-decoration: underline;
-}
+  }
+  

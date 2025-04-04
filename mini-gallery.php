@@ -19,7 +19,7 @@ define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 
 // Activation & Deactivation Hooks
 function mgwpp_plugin_activate()
-{
+{   MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
@@ -71,7 +71,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.p
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
 
-//require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-widgets.php';
 require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-integration.php';
 
 // Initialize plugin
@@ -208,7 +207,7 @@ function mgwpp_enqueue_assets()
 
 
     // Testimonials Carousel 
-    wp_enqueue_style('mgwpp-testimonial-styles');
+    wp_enqueue_style('mgwpp-testimonial-carousel-styles'); // Corrected handle
     wp_enqueue_script('mgwpp-testimonial-carousel-js');
 }
 

@@ -10,11 +10,42 @@ class MGWPP_Testimonial_Manager {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
-    public function enqueue_admin_assets() {
-        wp_enqueue_media();
-        wp_enqueue_script('mgwpp-testimonial-js', MG_PLUGIN_URL.'/public/js/mgwpp-testimonial-carousel.js', ['jquery'], '1.0', true);
-        wp_enqueue_style('mgwpp-testimonial-css', MG_PLUGIN_URL.'/public/css/mgwpp-testimonial-carousel.css', '1.0', true);
 
+
+
+    public function enqueue_admin_assets($hook) {
+        global $post_type;
+        
+        // Only load on testimonial edit screens
+        if (('post.php' !== $hook && 'post-new.php' !== $hook) || 'testimonial' !== $post_type) {
+            return;
+        }
+
+        // Enqueue WordPress media uploader
+        wp_enqueue_media();
+        
+        // Enqueue our admin JS
+        wp_enqueue_script(
+            'mgwpp-testimonial-admin-js', 
+            plugins_url('mini-gallery/public/js/mgwpp-testimonial-carousel.js'), 
+            ['jquery', 'media-upload'], 
+            filemtime(plugin_dir_path(__FILE__) . 'public/js/mgwpp-testimonial-carousel.js'), 
+            true
+        );
+
+        // Enqueue our admin CSS
+        wp_enqueue_style(
+            'mgwpp-testimonial-admin-css',
+            plugins_url('mini-gallery/public/css/mgwpp-testimonial-carousel.css'),
+            [],
+            filemtime(plugin_dir_path(__FILE__) . 'public/css/mgwpp-testimonial-carousel.css')
+        );
+
+        // Localize script
+        wp_localize_script('mgwpp-testimonial-admin-js', 'mgwppTestimonial', [
+            'title'  => __('Choose Author Photo', 'mini-gallery'),
+            'button' => __('Use as Author Photo', 'mini-gallery'),
+        ]);
     }
 
     public function add_meta_boxes() {

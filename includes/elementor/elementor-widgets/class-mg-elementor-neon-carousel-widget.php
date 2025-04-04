@@ -262,13 +262,16 @@ public function enqueue_neon_scripts() {
 }
 
 public function enqueue_editor_scripts() {
+    $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';
     wp_enqueue_style(
         'mg-neon-carousel-editor',
-        plugins_url('admin/css/editor.css', __FILE__),
+        MG_PLUGIN_URL . '/admin/css/editor.css',
         [],
-        filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
+        filemtime($editor_css_path)
     );
 }
+
+
 
 
 

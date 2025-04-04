@@ -204,7 +204,7 @@ class MGWPP_Admin
     public static function mgwpp_render_albums_page()
     {
     ?>
-        <div id="mgwpp_albums_content" class="mgwpp-tab-content">
+        <div id="mgwpp_albums_content"  class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="mgwpp_create_album">

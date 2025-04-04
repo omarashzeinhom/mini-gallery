@@ -1,0 +1,6 @@
+{
+    "editor.defaultFormatter": "zobo.php-intellisense",
+    "intelephense.environment.includePaths": [
+        "C:/xampp/htdocs/wordpress/wp-content/plugins/elementor"
+      ]
+}

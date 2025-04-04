@@ -2,6 +2,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
 class MGWPP_Testimonial_Manager {
 
     public function __construct() {
@@ -9,9 +10,6 @@ class MGWPP_Testimonial_Manager {
         add_action('save_post_testimonial', [$this, 'save_testimonial'], 10, 2);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
-
-
-
 
     public function enqueue_admin_assets($hook) {
         global $post_type;
@@ -23,7 +21,6 @@ class MGWPP_Testimonial_Manager {
 
         // Enqueue WordPress media uploader
         wp_enqueue_media();
-       
     }
 
     public function add_meta_boxes() {
@@ -48,22 +45,23 @@ class MGWPP_Testimonial_Manager {
         
         <div class="mgwpp-meta-field">
             <label for="mgwpp_author"><?php esc_html_e('Author Name:', 'mini-gallery'); ?></label>
-            <input type="text" id="mgwpp_author" name="mgwpp_author" value="<?php echo esc_attr($author); ?>" class="widefat">
+            <input type="text" id="mgwpp_author" name="mgwpp_author" 
+                   value="<?php echo esc_attr($author); ?>" class="widefat">
         </div>
 
         <div class="mgwpp-meta-field" style="margin-top:15px;">
             <label for="mgwpp_position"><?php esc_html_e('Position/Company:', 'mini-gallery'); ?></label>
-            <input type="text" id="mgwpp_position" name="mgwpp_position" value="<?php echo esc_attr($position); ?>" class="widefat">
-        </div>
-
-      
+            <input type="text" id="mgwpp_position" name="mgwpp_position" 
+                   value="<?php echo esc_attr($position); ?>" class="widefat">
         </div>
         <?php
     }
 
     public function save_testimonial($post_id, $post) {
-        if (!isset($_POST['mgwpp_testimonial_nonce']) || 
-            !wp_verify_nonce($_POST['mgwpp_testimonial_nonce'], 'mgwpp_testimonial_nonce') ||
+        // Verify nonce with proper unslashing
+        $nonce = isset($_POST['mgwpp_testimonial_nonce']) ? wp_unslash($_POST['mgwpp_testimonial_nonce']) : '';
+        
+        if (!wp_verify_nonce($nonce, 'mgwpp_testimonial_nonce') ||
             !current_user_can('edit_post', $post_id) ||
             wp_is_post_autosave($post_id) ||
             wp_is_post_revision($post_id)
@@ -71,9 +69,23 @@ class MGWPP_Testimonial_Manager {
             return;
         }
 
-        update_post_meta($post_id, '_mgwpp_author', sanitize_text_field($_POST['mgwpp_author']));
-        update_post_meta($post_id, '_mgwpp_position', sanitize_text_field($_POST['mgwpp_position']));
-        update_post_meta($post_id, '_mgwpp_image_id', absint($_POST['mgwpp_image_id']));
+        // Validate and sanitize inputs
+        $author = isset($_POST['mgwpp_author']) 
+                ? sanitize_text_field(wp_unslash($_POST['mgwpp_author'])) 
+                : '';
+
+        $position = isset($_POST['mgwpp_position']) 
+                  ? sanitize_text_field(wp_unslash($_POST['mgwpp_position'])) 
+                  : '';
+
+        $image_id = isset($_POST['mgwpp_image_id']) 
+                  ? absint(wp_unslash($_POST['mgwpp_image_id'])) 
+                  : 0;
+
+        // Update meta values
+        update_post_meta($post_id, '_mgwpp_author', $author);
+        update_post_meta($post_id, '_mgwpp_position', $position);
+        update_post_meta($post_id, '_mgwpp_image_id', $image_id);
     }
 }
 

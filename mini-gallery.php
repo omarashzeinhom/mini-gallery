@@ -19,7 +19,8 @@ define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 
 // Activation & Deactivation Hooks
 function mgwpp_plugin_activate()
-{   MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
+{
+    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
@@ -303,7 +304,8 @@ function mgwpp_add_elementor_category($elements_manager)
 }
 add_action('elementor/elements/categories_registered', 'mgwpp_add_elementor_category');
 
-function mgwpp_add_theme_support() {
+function mgwpp_add_theme_support()
+{
     if (!current_theme_supports('post-thumbnails')) {
         add_theme_support('post-thumbnails');
     }

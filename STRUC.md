@@ -35,3 +35,17 @@ admin/                              // Admin assets
 ├── css/
 │   ├── mg-admin-styles.css
 ```
+
+
+## Elementor Notices
+
+1- To Disable Elementor errors correctly for intelphisense when developing for elementor 
+
+```json
+{
+    "editor.defaultFormatter": "zobo.php-intellisense",
+    "intelephense.environment.includePaths": [
+        "C:/xampp/htdocs/wordpress/wp-content/plugins/elementor"
+      ]
+}
+```

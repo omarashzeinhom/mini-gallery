@@ -1,214 +1,452 @@
-/* Album Container */
+/* 
+ * Mini Gallery WordPress Plugin - Enhanced Styling
+ * Modern, responsive gallery and album display with lightbox
+ */
+
+/* ===== Base Styles ===== */
 .mgwpp-album-container {
-    margin: 2em 0;
-    max-width: 1200px;
-    padding: 0 15px;
-}
-
-/* Album Grid View */
-.mgwpp-album-grid {
+    margin: 3rem auto;
+    max-width: 1400px;
+    padding: 0 1.5rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* ===== Album Gallery List View ===== */
+  .mgwpp-album-gallery-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
-}
-
-.mgwpp-album-card {
-    background: #fff;
-    border-radius: 8px;
+    margin: 2rem 0;
+  }
+  
+  .mgwpp-album-gallery-item {
+    position: relative;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.mgwpp-album-card:hover {
-    transform: translateY(-5px);
-}
-
-.mgwpp-album-card-link {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background-color: #fff;
+    height: 100%;
+  }
+  
+  .mgwpp-album-gallery-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mgwpp-album-gallery-link {
     display: block;
     text-decoration: none;
     color: inherit;
-}
-
-.mgwpp-album-thumbnail {
+    height: 100%;
+  }
+  
+  .mgwpp-album-gallery-link img {
     width: 100%;
-    height: 200px;
+    height: 280px;
     object-fit: cover;
-}
-
-.mgwpp-album-card-title {
+    transition: transform 0.6s ease;
+  }
+  
+  .mgwpp-album-gallery-item:hover img {
+    transform: scale(1.05);
+  }
+  
+  .mgwpp-album-gallery-title {
     margin: 0;
-    padding: 1rem;
-    font-size: 1.2rem;
-    text-align: center;
-}
-
-/* Single Gallery View */
-.mgwpp-gallery-container {
-    margin-bottom: 2em;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-}
-
-.mgwpp-gallery-title {
-    margin-bottom: 1em;
-    font-size: 1.5em;
-    color: #333;
-    border-bottom: 2px solid #06b6d4;
-    padding-bottom: 0.5em;
-}
-
-.mgwpp-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1em;
-    margin: 0;
-}
-
-.mgwpp-album-gallery-item {
-    display: block;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a202c;
     position: relative;
+  }
+  
+  .mgwpp-album-gallery-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1.5rem;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    transition: width 0.3s ease;
+  }
+  
+  .mgwpp-album-gallery-item:hover .mgwpp-album-gallery-title::after {
+    width: 60px;
+  }
+  
+  .mgwpp-no-preview {
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa, #e4e8ed);
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  /* ===== Single Gallery View ===== */
+  .mgwpp-gallery-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    margin-bottom: 3rem;
+  }
+  
+  .mgwpp-gallery-title {
+    margin: 0.5rem 0 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+  
+  .mgwpp-gallery-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    border-radius: 2px;
+  }
+  
+  .mgwpp-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0 0;
+  }
+  
+  .mgwpp-gallery-item {
+    position: relative;
+    display: block;
+    border-radius: 8px;
     overflow: hidden;
-    border-radius: 5px;
-    transition: transform 0.3s ease;
     aspect-ratio: 1;
-}
-
-.mgwpp-album-gallery-item img {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .mgwpp-gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mgwpp-gallery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.mgwpp-album-gallery-item:hover img {
-    transform: scale(1.1);
-}
-
-.mgwpp-back-to-album {
-    display: inline-block;
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 1rem;
-    background: #06b6d4;
+    transition: transform 0.5s ease;
+  }
+  
+  .mgwpp-gallery-item:hover img {
+    transform: scale(1.08);
+  }
+  
+  .mgwpp-gallery-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .mgwpp-gallery-item:hover::after {
+    opacity: 1;
+  }
+  
+  .mgwpp-back-to-album {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
     color: white;
     text-decoration: none;
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-.mgwpp-back-to-album:hover {
-    background: #0891b2;
-}
-
-.mgwpp-lightbox {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  }
+  
+  .mgwpp-back-to-album:hover {
+    background: linear-gradient(90deg, #0891b2, #0e7490);
+    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  /* ===== Lightbox ===== */
+  .mgwpp-lightbox {
     display: none;
     position: fixed;
     top: 0 !important;
     left: 0 !important;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 10000;
-}
-
-.mgwpp-lightbox.active {
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .mgwpp-lightbox.active {
     display: flex !important;
     justify-content: center;
     align-items: center;
-}
-
-/* Overlay with album title */
-.mgwpp-lightbox-overlay {
+    opacity: 1;
+  }
+  
+  .mgwpp-lightbox-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    padding: 1.5rem;
     background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: white;
-    font-size: 2em;
-    z-index: 1000;
-    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
     text-align: center;
-}
-
-.mgwpp-lightbox-content {
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+  }
+  
+  .mgwpp-lightbox-content {
     position: relative;
     max-width: 90%;
     max-height: 90%;
     text-align: center;
-    z-index: 2; /* Make sure the image is above the overlay */
-}
-
-.mgwpp-lightbox-image {
+    z-index: 2;
+    transition: transform 0.3s ease;
+  }
+  
+  .mgwpp-lightbox-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .mgwpp-lightbox-image {
     max-width: 100%;
     max-height: 80vh;
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
-.mgwpp-lightbox-caption {
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  .active .mgwpp-lightbox-image {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .mgwpp-lightbox-caption {
     color: #fff;
-    padding: 10px;
-    font-size: 1.2em;
-    margin-top: 1em;
-}
-
-
-/* Navigation Controls */
-.mgwpp-close,
-.mgwpp-prev,
-.mgwpp-next {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    backdrop-filter: blur(5px);
+  }
+  
+  /* Navigation Controls */
+  .mgwpp-close,
+  .mgwpp-prev,
+  .mgwpp-next {
     position: absolute;
     color: white;
-    font-size: 35px;
     cursor: pointer;
-    padding: 15px;
-    transition: opacity 0.3s ease;
-    opacity: 0.8;
-}
-
-.mgwpp-close:hover,
-.mgwpp-prev:hover,
-.mgwpp-next:hover {
-    opacity: 1;
-}
-
-.mgwpp-close {
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+  }
+  
+  .mgwpp-close {
     top: 20px;
-    right: 30px;
-}
-
-.mgwpp-prev {
-    left: 30px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+  }
+  
+  .mgwpp-prev,
+  .mgwpp-next {
     top: 50%;
     transform: translateY(-50%);
-}
-
-.mgwpp-next {
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-/* Responsive Fixes */
-@media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+  }
+  
+  .mgwpp-prev {
+    left: 20px;
+  }
+  
+  .mgwpp-next {
+    right: 20px;
+  }
+  
+  .mgwpp-close:hover,
+  .mgwpp-prev:hover,
+  .mgwpp-next:hover {
+    opacity: 1;
+    background: rgba(6, 182, 212, 0.8);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .mgwpp-close:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Loading animation for images */
+  .mgwpp-lightbox-image-container::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #06b6d4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 0;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .mgwpp-lightbox-image[src] + .mgwpp-lightbox-image-container::before {
+    display: none;
+  }
+  
+  /* ===== Responsive Styles ===== */
+  @media (max-width: 1024px) {
+    .mgwpp-album-gallery-list {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
     .mgwpp-gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .mgwpp-album-gallery-list {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .mgwpp-gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    
+    .mgwpp-gallery-title {
+      font-size: 1.75rem;
     }
     
     .mgwpp-prev,
     .mgwpp-next {
-        font-size: 25px;
-        padding: 10px;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
     }
     
-    .mgwpp-lightbox-image {
-        max-height: 60vh;
+    .mgwpp-lightbox-overlay {
+      font-size: 1.25rem;
     }
-}
+  }
+  
+  @media (max-width: 480px) {
+    .mgwpp-album-gallery-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .mgwpp-gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+    
+    .mgwpp-gallery-title {
+      font-size: 1.5rem;
+    }
+    
+    .mgwpp-lightbox-caption {
+      font-size: 1rem;
+      padding: 1rem;
+    }
+    
+    .mgwpp-prev,
+    .mgwpp-next {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+    
+    .mgwpp-close {
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+    }
+  }
+  
+  /* ===== Accessibility Enhancements ===== */
+  .mgwpp-gallery-item:focus,
+  .mgwpp-album-gallery-link:focus,
+  .mgwpp-back-to-album:focus,
+  .mgwpp-close:focus,
+  .mgwpp-prev:focus,
+  .mgwpp-next:focus {
+    outline: 3px solid #06b6d4;
+    outline-offset: 3px;
+  }
+  
+  /* Screen reader only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* No images message styling */
+  .mgwpp-no-galleries,
+  .mgwpp-no-gallery,
+  .mgwpp-no-images {
+    padding: 3rem;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    border: 1px dashed #cbd5e1;
+  }
+  

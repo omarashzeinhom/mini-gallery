@@ -93,10 +93,6 @@ class MGWPP_Admin
 
 
         <div class="dashboard-stats theme-light" id="dashboard-stats">
-            <?php
-            // Temporary test in your PHP
-            $test_url = MG_PLUGIN_URL . '/admin/images/single-carousel.webp';
-            echo '<img src="' . esc_url($test_url) . '" style="width:100px">';; ?>
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
                 <button
@@ -107,14 +103,14 @@ class MGWPP_Admin
                         id="theme-icon-moon"
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>"
                         alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
-                        class="h-5 w-5"
+                        class="h-10 w-10"
                         height="125"
                         width="125">
                     <img
                         id="theme-icon-sun"
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>"
                         alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
-                        class="h-5 w-5 hidden">
+                        class="h-10 w-10 hidden">
                 </button>
             </div>
 

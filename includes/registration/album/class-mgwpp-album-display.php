@@ -163,6 +163,6 @@ class MGWPP_Album_Display
 add_shortcode('mgwpp_album', ['MGWPP_Album_Display', 'album_shortcode']);
 
 function mgwpp_enqueue_lightbox_script() {
-    wp_enqueue_script('mgwpp-lightbox', MG_PLUGIN_URL . '/js/mg-lightbox.js', [], '1.0', true);
+    wp_enqueue_script('mgwpp-lightbox', MG_PLUGIN_URL . '/public/js/mg-lightbox.js', [], '1.0', true);
 }
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_lightbox_script');

@@ -349,8 +349,8 @@
   .tracking-tight { letter-spacing: -0.025em; }
   .text-gray-900 { color: #111827; }
   .h-12 { height: 3rem; }
-  .h-10 { height: 2.75rem; }
-  .w-10 { width: 2.75rem; }
+  .h-10 { height:100%; max-height: 2.75rem; object-fit:cover; align-items: center; padding: 2.5px;}
+  .w-10 { width:100%; max-width: 2.75rem; object-fit:cover;  align-items: center; padding: 2.5px;}
 
 
   .w-12 { width: 3rem; }

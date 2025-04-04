@@ -178,6 +178,15 @@ function mgwpp_enqueue_assets()
     );
 
 
+    wp_register_script(
+        'mgwpp-testimonial-carousel-js',
+        plugins_url('public/js/mg-lightbox.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-lightbox.js'),
+        true
+    );
+
+
 
 
 

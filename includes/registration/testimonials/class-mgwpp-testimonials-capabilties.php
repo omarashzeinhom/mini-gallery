@@ -8,8 +8,8 @@ class MGWPP_Testimonial_Capabilities {
         // Get the administrator role
         $admin = get_role('administrator');
         
-        // Add testimonial management capabilities to administrator
-        $capabilities = array(
+        // Core testimonial management capabilities
+        $testimonial_caps = array(
             'edit_testimonial',
             'read_testimonial',
             'delete_testimonial',
@@ -26,16 +26,34 @@ class MGWPP_Testimonial_Capabilities {
             'create_testimonials'
         );
 
-        foreach ($capabilities as $cap) {
+        // Media/attachment specific capabilities
+        $media_caps = array(
+            'upload_files',                  // Allow file uploads
+            'edit_attachments',             // Allow editing media
+            'delete_attachments',           // Allow deleting media
+            'edit_others_attachments',     // Allow editing others' media
+            'delete_others_attachments'    // Allow deleting others' media
+        );
+
+        // Add all capabilities to admin
+        foreach (array_merge($testimonial_caps, $media_caps) as $cap) {
             $admin->add_cap($cap);
         }
 
-        // Add testimonial capabilities to marketing team role if it exists
+        // Add capabilities to marketing team role
         $marketing = get_role('marketing_team');
         if ($marketing) {
-            foreach ($capabilities as $cap) {
+            // Full testimonial capabilities
+            foreach ($testimonial_caps as $cap) {
                 $marketing->add_cap($cap);
             }
+            
+            // Limited media capabilities (only upload and edit their own)
+            $marketing->add_cap('upload_files');
+            $marketing->add_cap('edit_attachments');
         }
+
+        // Add featured image support for testimonials
+        add_post_type_support('testimonial', 'thumbnail');
     }
 }

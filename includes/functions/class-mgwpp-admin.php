@@ -87,10 +87,18 @@ class MGWPP_Admin
     
         $testimonial_counts = wp_count_posts('testimonial');
         $total_testimonials = isset($testimonial_counts->publish) ? $testimonial_counts->publish : 0;
-        
+       
         ?>
+
+
+
 <div class="dashboard-stats theme-light" id="dashboard-stats">
-    <div class="mb-4 flex items-center justify-between">
+    <?php
+       // Temporary test in your PHP
+$test_url = MG_PLUGIN_URL . '/admin/images/single-carousel.webp';
+echo '<img src="'.esc_url($test_url).'" style="width:100px">';
+;?>
+        <div class="mb-4 flex items-center justify-between">
         <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
         <button 
             onclick="toggleDashboardTheme()"
@@ -102,6 +110,8 @@ class MGWPP_Admin
                 src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-toggle-icon.webp'); ?>" 
                 alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
                 class="h-5 w-5"
+                height="125"
+                width="125"
             >
             <img 
                 id="theme-icon-sun" 
@@ -369,7 +379,6 @@ class MGWPP_Admin
                                         esc_html($info[0])
                                     );
                                 }
-                                ?>
                                 ?>
                             </select>
 

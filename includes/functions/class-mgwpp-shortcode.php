@@ -69,8 +69,7 @@ function mgwpp_gallery_shortcode( $atts ) {
                     break;
 
                 case 'testimonials_carousel': 
-                    // Testimonials carousel is not available yet – coming soon.
-                    /*
+               
                     $testimonials = get_posts([
                         'post_type' => 'testimonial',
                         'posts_per_page' => -1,
@@ -81,8 +80,6 @@ function mgwpp_gallery_shortcode( $atts ) {
                         require_once plugin_dir_path(__FILE__).'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
                     }
                     $gallery_html = MGWPP_Testimonial_Carousel::render($post_id, $testimonials);
-                    */
-                    $gallery_html = '<p>Testimonials Carousel: Coming Soon</p>';
                     break;
 
                 default:

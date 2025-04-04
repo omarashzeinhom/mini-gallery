@@ -1,50 +1,132 @@
-(function($){
-    'use strict';
-    $(document).ready(function(){
-        $('.mgwpp-testimonial-carousel').each(function(){
-            var $carousel = $(this);
-            var $inner = $carousel.find('.mgwpp-carousel-inner');
-            var $items = $inner.find('.mgwpp-carousel-item');
-            var totalItems = $items.length;
-            var currentIndex = 0;
-            var autoplay = $carousel.data('autoplay') === 'yes';
-            var intervalTime = parseInt($carousel.data('interval'), 10) || 5000;
-            var autoPlayInterval;
-
-            function updateCarousel(){
-                var translateX = -currentIndex * 100;
-                $inner.css('transform', 'translateX(' + translateX + '%)');
-            }
-
-            $carousel.find('.mgwpp-carousel-prev').on('click', function(){
-                currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalItems - 1;
-                updateCarousel();
-                resetAutoplay();
-            });
-
-            $carousel.find('.mgwpp-carousel-next').on('click', function(){
-                currentIndex = (currentIndex < totalItems - 1) ? currentIndex + 1 : 0;
-                updateCarousel();
-                resetAutoplay();
-            });
-
-            function startAutoplay(){
-                if(autoplay){
-                    autoPlayInterval = setInterval(function(){
-                        currentIndex = (currentIndex < totalItems - 1) ? currentIndex + 1 : 0;
-                        updateCarousel();
-                    }, intervalTime);
-                }
-            }
-
-            function resetAutoplay(){
-                if(autoplay){
-                    clearInterval(autoPlayInterval);
-                    startAutoplay();
-                }
-            }
-
-            startAutoplay();
-        });
-    });
-})(jQuery);
+;(($) => {
+    $(document).ready(() => {
+      $(".mgwpp-testimonial-carousel").each(function () {
+        const $carousel = $(this)
+        const $inner = $carousel.find(".mgwpp-carousel-inner")
+        const $items = $carousel.find(".mgwpp-carousel-item")
+        const itemCount = $items.length
+        let currentIndex = 0
+  
+        // Add indicators
+        const $indicators = $('<div class="mgwpp-carousel-indicators"></div>')
+        for (let i = 0; i < itemCount; i++) {
+          const $indicator = $(
+            '<button class="mgwpp-carousel-indicator" aria-label="Go to slide ' + (i + 1) + '"></button>',
+          )
+          if (i === 0) $indicator.addClass("active")
+          $indicator.data("slide-to", i)
+          $indicators.append($indicator)
+        }
+        $carousel.append($indicators)
+  
+        // Update indicators
+        function updateIndicators() {
+          $carousel.find(".mgwpp-carousel-indicator").removeClass("active")
+          $carousel.find(".mgwpp-carousel-indicator").eq(currentIndex).addClass("active")
+        }
+  
+        // Move to specific slide
+        function goToSlide(index) {
+          if (index < 0) index = itemCount - 1
+          if (index >= itemCount) index = 0
+  
+          currentIndex = index
+          $inner.css("transform", "translateX(" + -currentIndex * 100 + "%)")
+          updateIndicators()
+        }
+  
+        // Next slide
+        function nextSlide() {
+          goToSlide(currentIndex + 1)
+        }
+  
+        // Previous slide
+        function prevSlide() {
+          goToSlide(currentIndex - 1)
+        }
+  
+        // Click events
+        $carousel.find(".mgwpp-carousel-next").on("click", () => {
+          nextSlide()
+          resetAutoplay()
+        })
+  
+        $carousel.find(".mgwpp-carousel-prev").on("click", () => {
+          prevSlide()
+          resetAutoplay()
+        })
+  
+        // Indicator clicks
+        $carousel.on("click", ".mgwpp-carousel-indicator", function () {
+          const index = $(this).data("slide-to")
+          goToSlide(index)
+          resetAutoplay()
+        })
+  
+        // Autoplay
+        let autoplayInterval
+        const autoplay = $carousel.data("autoplay") === "yes"
+        const interval = $carousel.data("interval") || 5000
+  
+        function startAutoplay() {
+          if (autoplay && itemCount > 1) {
+            autoplayInterval = setInterval(nextSlide, interval)
+          }
+        }
+  
+        function resetAutoplay() {
+          if (autoplayInterval) {
+            clearInterval(autoplayInterval)
+            startAutoplay()
+          }
+        }
+  
+        // Touch support
+        let touchStartX = 0
+        let touchEndX = 0
+  
+        $carousel.on("touchstart", (e) => {
+          touchStartX = e.originalEvent.touches[0].clientX
+        })
+  
+        $carousel.on("touchend", (e) => {
+          touchEndX = e.originalEvent.changedTouches[0].clientX
+          handleSwipe()
+        })
+  
+        function handleSwipe() {
+          const swipeThreshold = 50
+          if (touchEndX < touchStartX - swipeThreshold) {
+            nextSlide()
+            resetAutoplay()
+          } else if (touchEndX > touchStartX + swipeThreshold) {
+            prevSlide()
+            resetAutoplay()
+          }
+        }
+  
+        // Check for dark mode
+        function checkTheme() {
+          const savedTheme = localStorage.getItem("dashboard-theme")
+          if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            $carousel.closest(".dashboard-stats, body").addClass("theme-dark")
+          }
+        }
+  
+        // Initialize
+        startAutoplay()
+        checkTheme()
+  
+        // Listen for theme changes
+        $(document).on("themeChanged", (e, isDark) => {
+          if (isDark) {
+            $carousel.closest(".dashboard-stats, body").addClass("theme-dark")
+          } else {
+            $carousel.closest(".dashboard-stats, body").removeClass("theme-dark")
+          }
+        })
+      })
+    })
+  })(jQuery)
+  
+  

@@ -140,3 +140,30 @@ function toggleDashboardTheme() {
       sunIcon.classList.remove('hidden');
     }
   });
+
+
+
+
+  
+// JavaScript (admin/js/testimonial-admin.js)
+jQuery(document).ready(function($) {
+    $('#mgwpp_upload_image').click(function(e) {
+        e.preventDefault();
+        var image = wp.media({ 
+            title: 'Upload Author Photo',
+            multiple: false
+        }).open().on('select', function() {
+            var uploaded_image = image.state().get('selection').first();
+            $('#mgwpp_image_id').val(uploaded_image.id);
+            $('#mgwpp_image_preview').html('<img src="'+uploaded_image.attributes.url+'" style="max-width:200px;">');
+            $('#mgwpp_remove_image').show();
+        });
+    });
+
+    $('#mgwpp_remove_image').click(function(e) {
+        e.preventDefault();
+        $('#mgwpp_image_id').val('');
+        $('#mgwpp_image_preview').html('');
+        $(this).hide();
+    });
+});

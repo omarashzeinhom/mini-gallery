@@ -23,29 +23,7 @@ class MGWPP_Testimonial_Manager {
 
         // Enqueue WordPress media uploader
         wp_enqueue_media();
-        
-        // Enqueue our admin JS
-        wp_enqueue_script(
-            'mgwpp-testimonial-admin-js', 
-            plugins_url('mini-gallery/public/js/mgwpp-testimonial-carousel.js'), 
-            ['jquery', 'media-upload'], 
-            filemtime(plugin_dir_path(__FILE__) . 'public/js/mgwpp-testimonial-carousel.js'), 
-            true
-        );
-
-        // Enqueue our admin CSS
-        wp_enqueue_style(
-            'mgwpp-testimonial-admin-css',
-            plugins_url('mini-gallery/public/css/mgwpp-testimonial-carousel.css'),
-            [],
-            filemtime(plugin_dir_path(__FILE__) . 'public/css/mgwpp-testimonial-carousel.css')
-        );
-
-        // Localize script
-        wp_localize_script('mgwpp-testimonial-admin-js', 'mgwppTestimonial', [
-            'title'  => __('Choose Author Photo', 'mini-gallery'),
-            'button' => __('Use as Author Photo', 'mini-gallery'),
-        ]);
+       
     }
 
     public function add_meta_boxes() {
@@ -78,20 +56,7 @@ class MGWPP_Testimonial_Manager {
             <input type="text" id="mgwpp_position" name="mgwpp_position" value="<?php echo esc_attr($position); ?>" class="widefat">
         </div>
 
-        <div class="mgwpp-meta-field" style="margin-top:15px;">
-            <label><?php esc_html_e('Author Photo:', 'mini-gallery'); ?></label>
-            <input type="hidden" id="mgwpp_image_id" name="mgwpp_image_id" value="<?php echo esc_attr($image_id); ?>">
-            <div id="mgwpp_image_preview" style="margin:10px 0;">
-                <?php if ($image_url) : ?>
-                    <img src="<?php echo esc_url($image_url); ?>" style="max-width:200px;">
-                <?php endif; ?>
-            </div>
-            <button type="button" class="button" id="mgwpp_upload_image">
-                <?php esc_html_e('Upload Image', 'mini-gallery'); ?>
-            </button>
-            <button type="button" class="button" id="mgwpp_remove_image" style="<?php echo !$image_id ? 'display:none;' : ''; ?>">
-                <?php esc_html_e('Remove Image', 'mini-gallery'); ?>
-            </button>
+      
         </div>
         <?php
     }

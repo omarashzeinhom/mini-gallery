@@ -1,61 +1,76 @@
 (function($) {
-  $(document).ready(() => {
-      $(".mgwpp-testimonial-carousel").each(function() {
-          const $carousel = $(this);
-          const $inner = $carousel.find(".mgwpp-carousel-inner");
-          const $items = $carousel.find(".mgwpp-carousel-item");
-          let currentIndex = 0;
-          let itemsPerView = getItemsPerView();
-
-          function getItemsPerView() {
-              const width = window.innerWidth;
-              if (width >= 1024) return 3;
-              if (width >= 768) return 2;
-              return 1;
-          }
-
-          function updateCarousel() {
-              const itemWidth = 100 / itemsPerView;
-              const translateX = -currentIndex * itemWidth;
-              $inner.css("transform", `translateX(${translateX}%)`);
-              updateIndicators();
-          }
-
-
-          function updateIndicators() {
-              const totalSlides = Math.ceil($items.length / itemsPerView);
-              $carousel.find(".mgwpp-carousel-indicator").removeClass("active");
-              $carousel.find(".mgwpp-carousel-indicator").eq(Math.floor(currentIndex / itemsPerView)).addClass("active");
-          }
-
-          function handleResize() {
-              itemsPerView = getItemsPerView();
-              updateCarousel();
-          }
-
-          // Initialize indicators
-          const totalSlides = Math.ceil($items.length / itemsPerView);
-          const $indicators = $('<div class="mgwpp-carousel-indicators"></div>');
-          for (let i = 0; i < totalSlides; i++) {
-              $indicators.append(`<button class="mgwpp-carousel-indicator" data-slide-to="${i}"></button>`);
-          }
-          $carousel.append($indicators);
-
-          // Navigation handlers
-          $carousel.on("click", ".mgwpp-carousel-next", () => {
-              currentIndex = Math.min(currentIndex + itemsPerView, $items.length - itemsPerView);
-              updateCarousel();
-          });
-
-          $carousel.on("click", ".mgwpp-carousel-prev", () => {
-              currentIndex = Math.max(currentIndex - itemsPerView, 0);
-              updateCarousel();
-          });
-
-          // Handle window resize
-          $(window).on("resize", handleResize);
-          handleResize(); // Initial calculation
+    $(document).ready(function() {
+      const $carousel = $('.mgwpp-carousel-testimonials');
+      const $track = $carousel.find('.mgwpp-carousel-testimonials-track');
+      const $slides = $track.find('.mgwpp-carousel-testimonials-slide');
+      const slideCount = $slides.length;
+      let currentIndex = 0;
+  
+      function updateCarousel() {
+        const slideWidth = $slides.first().outerWidth(true);
+        $track.css('transform', 'translateX(' + (-currentIndex * slideWidth) + 'px)');
+      }
+  
+      $carousel.find('.mgwpp-carousel-testimonials-next').on('click', function() {
+        if (currentIndex < slideCount - 1) {
+          currentIndex++;
+          updateCarousel();
+        }
       });
-  });
-})(jQuery);
+  
+      $carousel.find('.mgwpp-carousel-testimonials-prev').on('click', function() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCarousel();
+        }
+      });
+  
+      $(window).on('resize', updateCarousel);
+    });
+  })(jQuery);
+  
 
+  document.addEventListener("DOMContentLoaded", function () {
+    // Dark Mode Toggle for the Testimonials Carousel
+    const carousel = document.querySelector('.mgwpp-carousel-testimonials');
+    // Check for saved theme in localStorage or system preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark" || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      carousel.classList.add("dark-mode");
+    }
+    
+    // Basic Carousel Functionality
+    const track = carousel.querySelector('.mgwpp-carousel-testimonials-track');
+    const slides = track.querySelectorAll('.mgwpp-carousel-testimonials-slide');
+    let currentIndex = 0;
+    
+    function updateCarousel() {
+      const slideWidth = slides[0].offsetWidth;
+      track.style.transform = `translateX(${-currentIndex * slideWidth}px)`;
+    }
+    
+    // Next/Previous Buttons
+    carousel.querySelector('.mgwpp-carousel-testimonials-next').addEventListener('click', function() {
+      if (currentIndex < slides.length - 1) {
+        currentIndex++;
+        updateCarousel();
+      }
+    });
+    
+    carousel.querySelector('.mgwpp-carousel-testimonials-prev').addEventListener('click', function() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
+    });
+    
+    // Optional: Autoplay functionality
+    setInterval(function() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateCarousel();
+    }, parseInt(carousel.getAttribute('data-interval'), 10) || 3000);
+    
+    // Update carousel on window resize
+    window.addEventListener('resize', updateCarousel);
+  });
+  

@@ -106,9 +106,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 function toggleDashboardTheme() {
-    const dashboardEl = document.getElementById('dashboard-stats');
-    const moonIcon = document.getElementById('theme-icon-moon');
-    const sunIcon = document.getElementById('theme-icon-sun');
+    const dashboardEl = document?.getElementById('dashboard-stats');
+    const moonIcon = document?.getElementById('theme-icon-moon');
+    const sunIcon = document?.getElementById('theme-icon-sun');
     
     if (dashboardEl.classList.contains('theme-light')) {
       dashboardEl.classList.remove('theme-light');

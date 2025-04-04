@@ -81,131 +81,122 @@ class MGWPP_Admin
     {
         $gallery_post_statuses = wp_count_posts('mgwpp_soora');
         $album_post_statuses = wp_count_posts('mgwpp_album');
-    
+
         $total_galleries = isset($gallery_post_statuses->publish) ? $gallery_post_statuses->publish : 0;
         $total_albums = isset($album_post_statuses->publish) ? $album_post_statuses->publish : 0;
-    
+
         $testimonial_counts = wp_count_posts('testimonial');
         $total_testimonials = isset($testimonial_counts->publish) ? $testimonial_counts->publish : 0;
-       
-        ?>
+
+?>
 
 
 
-<div class="dashboard-stats theme-light" id="dashboard-stats">
+        <div class="dashboard-stats theme-light" id="dashboard-stats">
+            <?php
+            // Temporary test in your PHP
+            $test_url = MG_PLUGIN_URL . '/admin/images/single-carousel.webp';
+            echo '<img src="' . esc_url($test_url) . '" style="width:100px">';; ?>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
+                <button
+                    onclick="toggleDashboardTheme()"
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    aria-label="<?php esc_attr_e('Toggle theme', 'mini-gallery'); ?>">
+                    <img
+                        id="theme-icon-moon"
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>"
+                        alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
+                        class="h-5 w-5"
+                        height="125"
+                        width="125">
+                    <img
+                        id="theme-icon-sun"
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>"
+                        alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
+                        class="h-5 w-5 hidden">
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Galleries Card -->
+                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Galleries', 'mini-gallery'); ?></p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <?php echo absint($total_galleries); ?>
+                            </h3>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-300">
+                            <img
+                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-galleries-icon-dashboard.webp'); ?>"
+                                alt="<?php esc_attr_e('Galleries icon', 'mini-gallery'); ?>"
+                                class="h-10 w-10">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+                </div>
+
+                <!-- Albums Card -->
+                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Albums', 'mini-gallery'); ?></p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <?php echo absint($total_albums); ?>
+                            </h3>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-300">
+                            <img
+                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-albums-icon-dashboard.webp'); ?>"
+                                alt="<?php esc_attr_e('Albums icon', 'mini-gallery'); ?>"
+                                class="h-10 w-10">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+                </div>
+
+                <!-- Testimonials Card -->
+                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Testimonials', 'mini-gallery'); ?></p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <?php echo absint($total_testimonials); ?>
+                            </h3>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:bg-green-400/20 dark:text-green-300">
+                            <img
+                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-testimonials-icon-dashboard.webp'); ?>"
+                                alt="<?php esc_attr_e('Testimonials icon', 'mini-gallery'); ?>"
+                                class="h-10 w-10">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+                </div>
+
+                <!-- Total Items Card -->
+                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Total Items', 'mini-gallery'); ?></p>
+                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                <?php echo absint($total_galleries + $total_albums + $total_testimonials); ?>
+                            </h3>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300">
+                            <img
+                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-total-items-icon-dashboard.webp'); ?>"
+                                alt="<?php esc_attr_e('Total items icon', 'mini-gallery'); ?>"
+                                class="h-10 w-10 items-center">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+                </div>
+            </div>
+        </div>
     <?php
-       // Temporary test in your PHP
-$test_url = MG_PLUGIN_URL . '/admin/images/single-carousel.webp';
-echo '<img src="'.esc_url($test_url).'" style="width:100px">';
-;?>
-        <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
-        <button 
-            onclick="toggleDashboardTheme()"
-            class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            aria-label="<?php esc_attr_e('Toggle theme', 'mini-gallery'); ?>"
-        >
-            <img 
-                id="theme-icon-moon" 
-                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>" 
-                alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
-                class="h-5 w-5"
-                height="125"
-                width="125"
-            >
-            <img 
-                id="theme-icon-sun" 
-                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>" 
-                alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
-                class="h-5 w-5 hidden"
-            >
-        </button>
-    </div>
-    
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <!-- Galleries Card -->
-        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Galleries', 'mini-gallery'); ?></p>
-                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <?php echo absint($total_galleries); ?>
-                    </h3>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-300">
-                    <img 
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-galleries-icon-dashboard.webp'); ?>" 
-                        alt="<?php esc_attr_e('Galleries icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10"
-                    >
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-        </div>
-        
-        <!-- Albums Card -->
-        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Albums', 'mini-gallery'); ?></p>
-                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <?php echo absint($total_albums); ?>
-                    </h3>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-300">
-                    <img 
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-albums-icon-dashboard.webp'); ?>" 
-                        alt="<?php esc_attr_e('Albums icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10"
-                    >
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-        </div>
-        
-        <!-- Testimonials Card -->
-        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Testimonials', 'mini-gallery'); ?></p>
-                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <?php echo absint($total_testimonials); ?>
-                    </h3>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:bg-green-400/20 dark:text-green-300">
-                    <img 
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-testimonials-icon-dashboard.webp'); ?>" 
-                        alt="<?php esc_attr_e('Testimonials icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10"
-                    >
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-        </div>
-        
-        <!-- Total Items Card -->
-        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Total Items', 'mini-gallery'); ?></p>
-                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <?php echo absint($total_galleries + $total_albums + $total_testimonials); ?>
-                    </h3>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300">
-                    <img 
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-total-items-icon-dashboard.webp'); ?>" 
-                        alt="<?php esc_attr_e('Total items icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10 items-center"
-                        
-                    >
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-        </div>
-    </div>
-</div>
-        <?php
     }
     public static function mgwpp_render_dashboard_page()
     {
@@ -474,16 +465,16 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
 
     public static function mgwpp_render_testimonials_page()
     {
-        ?>
+    ?>
         <div id="mgwpp_testimonials_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Manage Testimonials', 'mini-gallery'); ?></h2>
-    
+
             <div class="mgwpp-testimonial-actions">
                 <a href="<?php echo esc_url(admin_url('post-new.php?post_type=testimonial')); ?>" class="button button-primary">
                     <?php echo esc_html__('Add New Testimonial', 'mini-gallery'); ?>
                 </a>
             </div>
-    
+
             <h3><?php echo esc_html__('Existing Testimonials', 'mini-gallery'); ?></h3>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
@@ -501,7 +492,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                         'posts_per_page' => -1,
                         'post_status' => 'publish'
                     ]);
-    
+
                     if ($testimonials) {
                         foreach ($testimonials as $testimonial) {
                             $author = sanitize_text_field(get_post_meta($testimonial->ID, '_mgwpp_author', true));
@@ -517,9 +508,9 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                                         <?php echo esc_html__('Edit', 'mini-gallery'); ?>
                                     </a>
                                     <a href="<?php echo esc_url(wp_nonce_url(
-                                        admin_url('post.php?post=' . $testimonial->ID . '&action=delete'),
-                                        'delete-post_' . $testimonial->ID
-                                    )); ?>" class="button button-danger">
+                                                    admin_url('post.php?post=' . $testimonial->ID . '&action=delete'),
+                                                    'delete-post_' . $testimonial->ID
+                                                )); ?>" class="button button-danger">
                                         <?php echo esc_html__('Delete', 'mini-gallery'); ?>
                                     </a>
                                 </td>
@@ -533,7 +524,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                 </tbody>
             </table>
         </div>
-        <?php
+<?php
     }
 }
 

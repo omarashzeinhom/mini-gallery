@@ -27,9 +27,10 @@ class MGWPP_Admin
             'manage_options',
             'mgwpp_dashboard',
             [__CLASS__, 'mgwpp_render_dashboard_page'],
-            'dashicons-format-gallery',
+            MG_PLUGIN_URL . '/admin/images/mgwpp-logo-panel.png',
             20
         );
+        
 
         add_submenu_page(
             'mgwpp_dashboard',

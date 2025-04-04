@@ -15,7 +15,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
     }
 
     public function get_icon() {
-        return 'eicon-slider';
+        return 'eicon-slider-device';
     }
 
     public function get_categories() {

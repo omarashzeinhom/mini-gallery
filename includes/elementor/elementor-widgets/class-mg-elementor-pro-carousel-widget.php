@@ -1,27 +1,34 @@
 <?php
 if (!defined('ABSPATH')) exit;
+
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base {
+class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
+{
 
-    public function get_name() {
+    public function get_name()
+    {
         return 'mg_pro_carousel';
     }
 
-    public function get_title() {
+    public function get_title()
+    {
         return __('Mini Gallery Pro Carousel', 'mini-gallery');
     }
 
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-carousel';
     }
 
-    public function get_categories() {
+    public function get_categories()
+    {
         return ['minigallery'];
     }
 
-    protected function _register_controls() {
+    protected function _register_controls()
+    {
         // Content Tab
         $this->start_controls_section(
             'content_section',
@@ -153,7 +160,8 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings   = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
 
@@ -166,7 +174,8 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base {
         echo wp_kses_post(MGWPP_Pro_Carousel::render($gallery_id, $images, $settings));
     }
 
-    private function get_galleries() {
+    private function get_galleries()
+    {
         $galleries = get_posts([
             'post_type'   => 'mgwpp_soora',
             'numberposts' => -1,
@@ -180,14 +189,16 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base {
         return $options;
     }
 
-    public function __construct($data = [], $args = null) {
+    public function __construct($data = [], $args = null)
+    {
         parent::__construct($data, $args);
 
         add_action('elementor/frontend/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_frontend_scripts']);
         add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_editor_scripts']);
     }
 
-    public function enqueue_pro_carousel_frontend_scripts() {
+    public function enqueue_pro_carousel_frontend_scripts()
+    {
         wp_enqueue_style(
             'mgwpp-pro-carousel-styles',
             MG_PLUGIN_URL . '/public/css/mg-pro-carousel.css',
@@ -204,12 +215,14 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base {
         );
     }
 
-    public function enqueue_pro_carousel_editor_scripts() {
+    public function enqueue_pro_carousel_editor_scripts()
+    {
+        $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';
         wp_enqueue_style(
-            'mgwpp-pro-carousel-editor',
-            plugins_url('admin/css/editor.css', __FILE__),
+            'mg-neon-carousel-editor',
+            MG_PLUGIN_URL . '/admin/css/editor.css',
             [],
-            filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
+            filemtime($editor_css_path)
         );
     }
 }

@@ -30,7 +30,7 @@ class MGWPP_Admin
             MG_PLUGIN_URL . '/admin/images/mgwpp-logo-panel.png',
             20
         );
-        
+
 
         add_submenu_page(
             'mgwpp_dashboard',
@@ -77,123 +77,223 @@ class MGWPP_Admin
             [__CLASS__, 'mgwpp_render_security_page']
         );
     }
-
+    private static function get_storage_data() {
+        $upload_dir = wp_upload_dir();
+        $upload_path = $upload_dir['basedir'];
+    
+        $total_size = 0;
+        $file_types = [];
+        $file_count = 0;
+    
+        // Recursively iterate through upload folder
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($upload_path, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+    
+        foreach ($iterator as $file) {
+            if ($file->isFile()) {
+                $file_size = $file->getSize();
+                $ext = strtolower($file->getExtension());
+    
+                $total_size += $file_size;
+                $file_types[$ext] = isset($file_types[$ext]) ? $file_types[$ext] + 1 : 1;
+                $file_count++;
+            }
+        }
+    
+        // Total allowed storage (set to 1GB here, you can change it or fetch from settings)
+        $storage_total = 1024 * 1024 * 1024; // 1 GB in bytes
+    
+        return [
+            'used' => size_format($total_size, 2),
+            'total' => size_format($storage_total, 2),
+            'percent' => round(($total_size / $storage_total) * 100, 2),
+            'file_types' => $file_types,
+            'files' => $file_count
+        ];
+    }
+    
     private static function render_dashboard_stats()
     {
-        $gallery_post_statuses = wp_count_posts('mgwpp_soora');
-        $album_post_statuses = wp_count_posts('mgwpp_album');
+        // Get counts
+        $total_galleries = self::get_post_count('mgwpp_soora');
+        $total_albums = self::get_post_count('mgwpp_album');
+        $total_testimonials = self::get_post_count('testimonial');
+        $total_items = $total_galleries + $total_albums + $total_testimonials;
 
-        $total_galleries = isset($gallery_post_statuses->publish) ? $gallery_post_statuses->publish : 0;
-        $total_albums = isset($album_post_statuses->publish) ? $album_post_statuses->publish : 0;
-
-        $testimonial_counts = wp_count_posts('testimonial');
-        $total_testimonials = isset($testimonial_counts->publish) ? $testimonial_counts->publish : 0;
-
+        // Get storage data (you'll need to implement these methods)
+        $storage_data = self::get_storage_data();
+        $storage_used = $storage_data['used'];
+        $storage_total = $storage_data['total'];
+        $storage_percent = $storage_data['percent'];
+        $file_types = $storage_data['file_types'];
+        $files = $storage_data['files'];
 ?>
 
-
-
         <div class="dashboard-stats theme-light" id="dashboard-stats">
+            <!-- Header Section -->
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
-                <button
-                    onclick="toggleDashboardTheme()"
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                    aria-label="<?php esc_attr_e('Toggle theme', 'mini-gallery'); ?>">
-                    <img
-                        id="theme-icon-moon"
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>"
-                        alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10"
-                        height="125"
-                        width="125">
-                    <img
-                        id="theme-icon-sun"
-                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>"
-                        alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
-                        class="h-10 w-10 hidden">
-                </button>
+                <?php self::render_theme_toggle(); ?>
             </div>
 
+            <!-- Statistics Cards -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <!-- Galleries Card -->
-                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Galleries', 'mini-gallery'); ?></p>
-                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                <?php echo absint($total_galleries); ?>
-                            </h3>
-                        </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-300">
-                            <img
-                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-galleries-icon-dashboard.webp'); ?>"
-                                alt="<?php esc_attr_e('Galleries icon', 'mini-gallery'); ?>"
-                                class="h-10 w-10">
-                        </div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-                </div>
+                <?php
+                self::render_stat_card(
+                    __('Galleries', 'mini-gallery'),
+                    $total_galleries,
+                    'blue',
+                    'mgwpp-galleries-icon-dashboard.webp'
+                );
 
-                <!-- Albums Card -->
-                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Albums', 'mini-gallery'); ?></p>
-                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                <?php echo absint($total_albums); ?>
-                            </h3>
-                        </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-300">
-                            <img
-                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-albums-icon-dashboard.webp'); ?>"
-                                alt="<?php esc_attr_e('Albums icon', 'mini-gallery'); ?>"
-                                class="h-10 w-10">
-                        </div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-                </div>
+                self::render_stat_card(
+                    __('Albums', 'mini-gallery'),
+                    $total_albums,
+                    'purple',
+                    'mgwpp-albums-icon-dashboard.webp'
+                );
 
-                <!-- Testimonials Card -->
-                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Testimonials', 'mini-gallery'); ?></p>
-                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                <?php echo absint($total_testimonials); ?>
-                            </h3>
-                        </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:bg-green-400/20 dark:text-green-300">
-                            <img
-                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-testimonials-icon-dashboard.webp'); ?>"
-                                alt="<?php esc_attr_e('Testimonials icon', 'mini-gallery'); ?>"
-                                class="h-10 w-10">
-                        </div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-                </div>
+                self::render_stat_card(
+                    __('Testimonials', 'mini-gallery'),
+                    $total_testimonials,
+                    'green',
+                    'mgwpp-testimonials-icon-dashboard.webp'
+                );
 
-                <!-- Total Items Card -->
-                <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Total Items', 'mini-gallery'); ?></p>
-                            <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                <?php echo absint($total_galleries + $total_albums + $total_testimonials); ?>
-                            </h3>
-                        </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300">
-                            <img
-                                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-total-items-icon-dashboard.webp'); ?>"
-                                alt="<?php esc_attr_e('Total items icon', 'mini-gallery'); ?>"
-                                class="h-10 w-10 items-center">
-                        </div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
-                </div>
+                self::render_stat_card(
+                    __('Total Items', 'mini-gallery'),
+                    $total_items,
+                    'amber',
+                    'mgwpp-total-items-icon-dashboard.webp'
+                );
+                ?>
             </div>
+
+            <!-- Storage Visualization Section -->
+            <?php self::render_storage_section($storage_used, $storage_total, $storage_percent, $file_types, $files); ?>
         </div>
     <?php
+    }
+
+    private static function get_post_count($post_type)
+    {
+        $counts = wp_count_posts($post_type);
+        return isset($counts->publish) ? $counts->publish : 0;
+    }
+
+    private static function render_theme_toggle()
+    {
+    ?>
+        <button onclick="toggleDashboardTheme()"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            aria-label="<?php esc_attr_e('Toggle theme', 'mini-gallery'); ?>">
+            <img id="theme-icon-moon"
+                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>"
+                alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
+                class="h-6 w-6">
+            <img id="theme-icon-sun"
+                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>"
+                alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
+                class="h-6 w-6 hidden">
+        </button>
+    <?php
+    }
+
+    private static function render_stat_card($title, $count, $color, $icon)
+    {
+    ?>
+        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php echo esc_html($title); ?></p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <?php echo absint($count); ?>
+                    </h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-<?php echo $color; ?>-500/10 text-<?php echo $color; ?>-500 dark:bg-<?php echo $color; ?>-400/20 dark:text-<?php echo $color; ?>-300">
+                    <img src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/' . $icon); ?>"
+                        alt="<?php echo esc_attr($title); ?>"
+                        class="h-10 w-10">
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+        </div>
+    <?php
+    }
+
+    private static function render_storage_section($used, $total, $percent, $file_types, $files)
+    {
+    ?>
+        <div class="mt-8 p-5 bg-white rounded-lg shadow-sm dark:bg-gray-800">
+            <h3 class="text-lg font-semibold mb-4"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h3>
+
+            <div class="radial-progress" style="--progress: <?php echo absint($percent); ?>%">
+                <div class="progress-text">
+                    <?php echo esc_html($used); ?> / <?php echo esc_html($total); ?>
+                </div>
+            </div>
+
+            <div class="size-breakdown mt-6">
+                <?php foreach ($file_types as $type => $data): ?>
+                    <div class="size-item" style="--color: <?php echo esc_attr($data['color']); ?>">
+                        <span class="type"><?php echo esc_html($type); ?></span>
+                        <span class="size"><?php echo esc_html($data['size']); ?></span>
+                        <div class="size-bar" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="file-list mt-6">
+                <select class="file-selector">
+                    <?php foreach ($files as $file): ?>
+                        <option value="<?php echo esc_attr($file['id']); ?>">
+                            <?php echo esc_html($file['name']); ?> (<?php echo esc_html($file['size']); ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <style>
+            .radial-progress {
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background:
+                    radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                    conic-gradient(var(--color-primary) calc(var(--progress)*1%), #eee 0);
+                animation: progress-grow 1.5s ease-out;
+            }
+
+            @keyframes progress-grow {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .size-bar {
+                height: 4px;
+                background: var(--color);
+                transition: width 0.5s ease-out;
+            }
+
+            .file-selector {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+        </style>
+
+        </div>
+    <?php
+
     }
     public static function mgwpp_render_dashboard_page()
     {
@@ -205,7 +305,7 @@ class MGWPP_Admin
     public static function mgwpp_render_albums_page()
     {
     ?>
-        <div id="mgwpp_albums_content"  class="mgwpp-tab-content">
+        <div id="mgwpp_albums_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="mgwpp_create_album">

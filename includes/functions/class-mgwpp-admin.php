@@ -77,41 +77,89 @@ class MGWPP_Admin
             [__CLASS__, 'mgwpp_render_security_page']
         );
     }
-    private static function get_storage_data() {
+    private static function get_storage_data()
+    {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
+        $plugin_image_ids = [];
     
-        $total_size = 0;
-        $file_types = [];
+        // Get attachment IDs used in plugin post types
+        $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
+        $plugin_query = new WP_Query([
+            'post_type' => $post_types,
+            'posts_per_page' => -1,
+            'post_status' => 'any',
+            'fields' => 'ids',
+        ]);
+    
+        foreach ($plugin_query->posts as $post_id) {
+            $attachments = get_attached_media('image', $post_id);
+            foreach ($attachments as $media) {
+                $plugin_image_ids[] = $media->ID;
+            }
+        }
+    
+        $plugin_images_total = 0;
+        $all_file_types = [];
         $file_count = 0;
+        $suspicious_files = [];
     
-        // Recursively iterate through upload folder
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($upload_path, RecursiveDirectoryIterator::SKIP_DOTS)
         );
     
         foreach ($iterator as $file) {
             if ($file->isFile()) {
-                $file_size = $file->getSize();
                 $ext = strtolower($file->getExtension());
+                $file_size = $file->getSize();
+                $filepath = $file->getPathname();
     
-                $total_size += $file_size;
-                $file_types[$ext] = isset($file_types[$ext]) ? $file_types[$ext] + 1 : 1;
+                // Tally total uploads folder usage
+                $plugin_images_total += $file_size;
                 $file_count++;
+                if (!isset($all_file_types[$ext])) {
+                    $all_file_types[$ext] = ['count' => 0, 'size' => 0];
+                }
+                $all_file_types[$ext]['count'] += 1;
+                $all_file_types[$ext]['size'] += $file_size;
+                
+
+
+                // Suspicious file scan (basic)
+                if (in_array($ext, ['php', 'js'])) {
+                    $content = @file_get_contents($filepath);
+                    if ($content && preg_match('/(base64_decode|eval|gzinflate|shell_exec|system)/i', $content)) {
+                        $suspicious_files[] = [
+                            'path' => str_replace($upload_path, '', $filepath),
+                            'extension' => $ext,
+                        ];
+                    }
+                }
             }
         }
     
-        // Total allowed storage (set to 1GB here, you can change it or fetch from settings)
-        $storage_total = 1024 * 1024 * 1024; // 1 GB in bytes
+        $storage_total = 1024 * 1024 * 1024; // 1GB
+        $used_percent = round(($plugin_images_total / $storage_total) * 100, 2);
     
+        foreach ($all_file_types as $ext => &$data) {
+            $data['size_formatted'] = size_format($data['size'], 2);
+            $data['percent'] = round(($data['size'] / $plugin_images_total) * 100, 2);
+        }
+        
         return [
-            'used' => size_format($total_size, 2),
+            'used' => size_format($plugin_images_total, 2),
             'total' => size_format($storage_total, 2),
-            'percent' => round(($total_size / $storage_total) * 100, 2),
-            'file_types' => $file_types,
-            'files' => $file_count
+            'percent' => $used_percent,
+            'file_types' => $all_file_types,
+            'files' => $file_count,
+            'suspicious' => $suspicious_files,
         ];
+
+    
     }
+    
+
+    
     
     private static function render_dashboard_stats()
     {
@@ -222,79 +270,60 @@ class MGWPP_Admin
     <?php
     }
 
-    private static function render_storage_section($used, $total, $percent, $file_types, $files)
+    private static function render_storage_section($used, $total, $percent, $file_types, $file_count)
     {
     ?>
         <div class="mt-8 p-5 bg-white rounded-lg shadow-sm dark:bg-gray-800">
             <h3 class="text-lg font-semibold mb-4"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h3>
-
-            <div class="radial-progress" style="--progress: <?php echo absint($percent); ?>%">
-                <div class="progress-text">
-                    <?php echo esc_html($used); ?> / <?php echo esc_html($total); ?>
+    
+            <div class="mb-6">
+                <strong><?php esc_html_e('Used:', 'mini-gallery'); ?></strong>
+                <?php echo esc_html($used); ?> /
+                <?php echo esc_html($total); ?> (<?php echo esc_html($percent); ?>%)
+                <div class="h-4 w-full bg-gray-200 rounded mt-1">
+                    <div class="h-4 bg-green-500 rounded" style="width: <?php echo esc_attr($percent); ?>%"></div>
                 </div>
             </div>
-
-            <div class="size-breakdown mt-6">
-                <?php foreach ($file_types as $type => $data): ?>
-                    <div class="size-item" style="--color: <?php echo esc_attr($data['color']); ?>">
-                        <span class="type"><?php echo esc_html($type); ?></span>
-                        <span class="size"><?php echo esc_html($data['size']); ?></span>
-                        <div class="size-bar" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <div class="file-list mt-6">
-                <select class="file-selector">
-                    <?php foreach ($files as $file): ?>
-                        <option value="<?php echo esc_attr($file['id']); ?>">
-                            <?php echo esc_html($file['name']); ?> (<?php echo esc_html($file['size']); ?>)
-                        </option>
+    
+            <h4 class="text-md font-semibold mt-6 mb-2"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
+            <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
+                <thead>
+                    <tr class="border-b dark:border-gray-700">
+                        <th class="py-2 pr-4"><?php esc_html_e('Extension', 'mini-gallery'); ?></th>
+                        <th class="py-2 pr-4"><?php esc_html_e('Count', 'mini-gallery'); ?></th>
+                        <th class="py-2 pr-4"><?php esc_html_e('Size', 'mini-gallery'); ?></th>
+                        <th class="py-2"><?php esc_html_e('Usage %', 'mini-gallery'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($file_types as $ext => $data): ?>
+                        <tr class="border-b dark:border-gray-700">
+                            <td class="py-1 pr-4"><?php echo esc_html($ext); ?></td>
+                            <td class="py-1 pr-4"><?php echo esc_html($data['count']); ?></td>
+                            <td class="py-1 pr-4"><?php echo esc_html($data['size_formatted']); ?></td>
+                            <td class="py-1">
+                                <div class="w-full bg-gray-200 rounded h-3 relative">
+                                    <div class="absolute top-0 left-0 h-3 bg-blue-500 rounded" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
+                                    <span class="absolute left-2 top-0 text-xs text-white leading-3"><?php echo $data['percent']; ?>%</span>
+                                </div>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
-                </select>
-            </div>
+                </tbody>
+            </table>
+
+
+            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                <?php echo esc_html($file_count); ?> <?php esc_html_e('files scanned.', 'mini-gallery'); ?>
+            </p>
         </div>
-        <style>
-            .radial-progress {
-                width: 200px;
-                height: 200px;
-                border-radius: 50%;
-                background:
-                    radial-gradient(closest-side, white 79%, transparent 80% 100%),
-                    conic-gradient(var(--color-primary) calc(var(--progress)*1%), #eee 0);
-                animation: progress-grow 1.5s ease-out;
-            }
 
-            @keyframes progress-grow {
-                from {
-                    transform: scale(0.8);
-                    opacity: 0;
-                }
 
-                to {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
-
-            .size-bar {
-                height: 4px;
-                background: var(--color);
-                transition: width 0.5s ease-out;
-            }
-
-            .file-selector {
-                width: 100%;
-                padding: 0.5rem;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-            }
-        </style>
-
-        </div>
     <?php
-
     }
+    
+
+
     public static function mgwpp_render_dashboard_page()
     {
         echo '<div class="wrap"><h1>' . esc_html__('Dashboard Overview', 'mini-gallery') . '</h1>';
@@ -547,18 +576,29 @@ class MGWPP_Admin
     <?php
     }
 
-    public static function mgwpp_render_security_page()
-    {
+public static function mgwpp_render_security_page()
+{
+    $upload_dir = wp_upload_dir();
+    $upload_path = $upload_dir['basedir'];
+
+    // Scan the uploads folder for suspicious files
+    $suspicious_files = MGWPP_Security_Uploads_Scanner::scan_directory($upload_path);
     ?>
-        <div id="mgwpp_security_content" class="mgwpp-tab-content">
-            <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
-            <div class="mgwpp-security-settings">
-                <p><?php echo esc_html__('Security settings and role management will be available in future updates.', 'mini-gallery'); ?>
-                </p>
-            </div>
+    <div id="mgwpp_security_content" class="mgwpp-tab-content">
+        <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
+
+        <div class="mgwpp-security-settings">
+            <p><?php echo esc_html__('This section includes security scan results and will include more options in future updates.', 'mini-gallery'); ?></p>
         </div>
+
+        <div class="mgwpp-scan-results mt-6">
+            <h3 class="text-md font-semibold"><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
+            <?php MGWPP_Security_Uploads_Scanner::render_suspicious_report($suspicious_files); ?>
+        </div>
+    </div>
     <?php
-    }
+}
+
 
     public static function mgwpp_render_testimonials_page()
     {

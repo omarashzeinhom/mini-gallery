@@ -32,6 +32,8 @@ register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
 /* Include necessary files */
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';
+require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-security-uploads-scanner.php';
+
 
 //Gallery Types 
 

@@ -317,6 +317,7 @@
   /* Tailwind-like utility classes */
   .mb-4 { margin-bottom: 1rem; }
   .flex { display: flex; }
+  .text-center {text-align: center;}
   .items-center { align-items: center; }
   .justify-between { justify-content: space-between; }
   .text-lg { font-size: 1.125rem; }
@@ -348,6 +349,10 @@
   .tracking-tight { letter-spacing: -0.025em; }
   .text-gray-900 { color: #111827; }
   .h-12 { height: 3rem; }
+  .h-10 { height: 2.75rem; }
+  .w-10 { width: 2.75rem; }
+
+
   .w-12 { width: 3rem; }
   .h-6 { height: 1.5rem; }
   .w-6 { width: 1.5rem; }

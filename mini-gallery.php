@@ -294,12 +294,18 @@ function mgwpp_add_elementor_category($elements_manager)
 }
 add_action('elementor/elements/categories_registered', 'mgwpp_add_elementor_category');
 
-
+function mgwpp_add_theme_support() {
+    if (!current_theme_supports('post-thumbnails')) {
+        add_theme_support('post-thumbnails');
+    }
+}
+add_action('after_setup_theme', 'mgwpp_add_theme_support');
 
 
 
 function mgwpp_plugin_deactivate()
 {
+    unregister_post_type('mgwpp_testimonials');
     unregister_post_type('mgwpp_soora');
     unregister_post_type('mgwpp_album');
     remove_role('marketing_team');

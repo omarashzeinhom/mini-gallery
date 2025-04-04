@@ -107,7 +107,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
         >
             <img 
                 id="theme-icon-moon" 
-                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-toggle-icon.webp'); ?>" 
+                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-icon.webp'); ?>" 
                 alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
                 class="h-5 w-5"
                 height="125"
@@ -136,7 +136,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                     <img 
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-galleries-icon-dashboard.webp'); ?>" 
                         alt="<?php esc_attr_e('Galleries icon', 'mini-gallery'); ?>"
-                        class="h-6 w-6"
+                        class="h-10 w-10"
                     >
                 </div>
             </div>
@@ -156,7 +156,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                     <img 
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-albums-icon-dashboard.webp'); ?>" 
                         alt="<?php esc_attr_e('Albums icon', 'mini-gallery'); ?>"
-                        class="h-6 w-6"
+                        class="h-10 w-10"
                     >
                 </div>
             </div>
@@ -176,7 +176,7 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                     <img 
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-testimonials-icon-dashboard.webp'); ?>" 
                         alt="<?php esc_attr_e('Testimonials icon', 'mini-gallery'); ?>"
-                        class="h-6 w-6"
+                        class="h-10 w-10"
                     >
                 </div>
             </div>
@@ -196,7 +196,8 @@ echo '<img src="'.esc_url($test_url).'" style="width:100px">';
                     <img 
                         src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-total-items-icon-dashboard.webp'); ?>" 
                         alt="<?php esc_attr_e('Total items icon', 'mini-gallery'); ?>"
-                        class="h-6 w-6"
+                        class="h-10 w-10 items-center"
+                        
                     >
                 </div>
             </div>

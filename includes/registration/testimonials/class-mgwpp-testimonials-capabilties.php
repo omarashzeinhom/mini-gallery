@@ -1,13 +1,15 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-class MGWPP_Testimonial_Capabilities {
-    public static function mgwpp_testimonial_capabilities() {
+class MGWPP_Testimonial_Capabilities
+{
+    public static function mgwpp_testimonial_capabilities()
+    {
         // Get the administrator role
         $admin = get_role('administrator');
-        
+
         // Core testimonial management capabilities
         $testimonial_caps = array(
             'edit_testimonial',
@@ -47,7 +49,7 @@ class MGWPP_Testimonial_Capabilities {
             foreach ($testimonial_caps as $cap) {
                 $marketing->add_cap($cap);
             }
-            
+
             // Limited media capabilities (only upload and edit their own)
             $marketing->add_cap('upload_files');
             $marketing->add_cap('edit_attachments');

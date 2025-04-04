@@ -60,6 +60,15 @@ class MGWPP_Admin
 
         add_submenu_page(
             'mgwpp_dashboard',
+            __('Testimonials', 'mini-gallery'),
+            __('Testimonials', 'mini-gallery'),
+            'manage_options',
+            'mgwpp_testimonials',
+            [__CLASS__, 'mgwpp_render_testimonials_page']
+        );
+
+        add_submenu_page(
+            'mgwpp_dashboard',
             __('Security', 'mini-gallery'),
             __('Security', 'mini-gallery'),
             'manage_options',
@@ -72,32 +81,288 @@ class MGWPP_Admin
     {
         $gallery_post_statuses = wp_count_posts('mgwpp_soora');
         $album_post_statuses = wp_count_posts('mgwpp_album');
-
+    
         $total_galleries = isset($gallery_post_statuses->publish) ? $gallery_post_statuses->publish : 0;
         $total_albums = isset($album_post_statuses->publish) ? $album_post_statuses->publish : 0;
-?>
-        <div class="mgwpp-dashboard-stats">
-            <div class="stat-box">
-                <h3><?php echo esc_html__('Total Galleries', 'mini-gallery'); ?></h3>
-                <p class="stat-number"><?php echo esc_html($total_galleries); ?></p>
+    
+        $testimonial_counts = wp_count_posts('testimonial');
+        $total_testimonials = isset($testimonial_counts->publish) ? $testimonial_counts->publish : 0;
+        
+        ?>
+        <div class="dashboard-stats theme-light" id="dashboard-stats">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Dashboard Statistics</h2>
+            <button 
+              onclick="toggleDashboardTheme()"
+              class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              aria-label="Toggle theme"
+            >
+              <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+              <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 hidden"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Galleries</p>
+                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <?php echo $total_galleries; ?>
+                  </h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                </div>
+              </div>
+              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-            <div class="stat-box">
-                <h3><?php echo esc_html__('Total Albums', 'mini-gallery'); ?></h3>
-                <p class="stat-number"><?php echo esc_html($total_albums); ?></p>
+            
+            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Albums</p>
+                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <?php echo $total_albums; ?>
+                  </h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                </div>
+              </div>
+              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-            <div class="stat-box">
-                <h3><?php echo esc_html__('Toggle Dark/Light Mode', 'mini-gallery'); ?></h3>
-                <label class="inline-mode-toggle">
-                    <input type="checkbox" id="mode-toggle-checkbox">
-                    <span class="slider"></span>
-                </label>
+            
+            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Testimonials</p>
+                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <?php echo $total_testimonials; ?>
+                  </h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:bg-green-400/20 dark:text-green-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+              </div>
+              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-
+            
+            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Items</p>
+                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <?php echo $total_galleries + $total_albums + $total_testimonials; ?>
+                  </h3>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+              </div>
+              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+            </div>
+          </div>
+          
+          <script>
+            function toggleDashboardTheme() {
+              const dashboardEl = document.getElementById('dashboard-stats');
+              const moonIcon = document.getElementById('theme-icon-moon');
+              const sunIcon = document.getElementById('theme-icon-sun');
+              
+              if (dashboardEl.classList.contains('theme-light')) {
+                dashboardEl.classList.remove('theme-light');
+                dashboardEl.classList.add('theme-dark');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                localStorage.setItem('dashboard-theme', 'dark');
+              } else {
+                dashboardEl.classList.remove('theme-dark');
+                dashboardEl.classList.add('theme-light');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                localStorage.setItem('dashboard-theme', 'light');
+              }
+            }
+            
+            // Check for saved theme preference
+            document.addEventListener('DOMContentLoaded', function() {
+              const savedTheme = localStorage.getItem('dashboard-theme');
+              const dashboardEl = document.getElementById('dashboard-stats');
+              const moonIcon = document.getElementById('theme-icon-moon');
+              const sunIcon = document.getElementById('theme-icon-sun');
+              
+              if (savedTheme === 'dark' || 
+                  (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                dashboardEl.classList.remove('theme-light');
+                dashboardEl.classList.add('theme-dark');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+              }
+            });
+          </script>
+          
+          <style>
+            .dashboard-stats {
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+            
+            .stat-card {
+              transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            
+            .stat-card:hover {
+              transform: translateY(-2px);
+            }
+            
+            .theme-dark {
+              color-scheme: dark;
+            }
+            
+            .theme-dark .dark\:bg-gray-800 {
+              background-color: #1f2937;
+            }
+            
+            .theme-dark .dark\:border-gray-700 {
+              border-color: #374151;
+            }
+            
+            .theme-dark .dark\:text-white {
+              color: #ffffff;
+            }
+            
+            .theme-dark .dark\:text-gray-400 {
+              color: #9ca3af;
+            }
+            
+            .theme-dark .dark\:text-gray-300 {
+              color: #d1d5db;
+            }
+            
+            .theme-dark .dark\:bg-blue-400\/20 {
+              background-color: rgba(96, 165, 250, 0.2);
+            }
+            
+            .theme-dark .dark\:text-blue-300 {
+              color: #93c5fd;
+            }
+            
+            .theme-dark .dark\:bg-purple-400\/20 {
+              background-color: rgba(192, 132, 252, 0.2);
+            }
+            
+            .theme-dark .dark\:text-purple-300 {
+              color: #d8b4fe;
+            }
+            
+            .theme-dark .dark\:bg-green-400\/20 {
+              background-color: rgba(74, 222, 128, 0.2);
+            }
+            
+            .theme-dark .dark\:text-green-300 {
+              color: #86efac;
+            }
+            
+            .theme-dark .dark\:bg-amber-400\/20 {
+              background-color: rgba(251, 191, 36, 0.2);
+            }
+            
+            .theme-dark .dark\:text-amber-300 {
+              color: #fcd34d;
+            }
+            
+            .theme-dark .dark\:via-gray-600 {
+              --tw-gradient-stops: var(--tw-gradient-from), #4b5563, var(--tw-gradient-to, rgba(75, 85, 99, 0));
+            }
+            
+            .theme-dark .dark\:hover\:bg-gray-700:hover {
+              background-color: #374151;
+            }
+            
+            .hidden {
+              display: none;
+            }
+            
+            @media (max-width: 640px) {
+              .stat-card {
+                margin-bottom: 1rem;
+              }
+            }
+            
+            /* Tailwind-like utility classes */
+            .mb-4 { margin-bottom: 1rem; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .justify-between { justify-content: space-between; }
+            .text-lg { font-size: 1.125rem; }
+            .font-semibold { font-weight: 600; }
+            .h-9 { height: 2.25rem; }
+            .w-9 { width: 2.25rem; }
+            .rounded-full { border-radius: 9999px; }
+            .bg-gray-100 { background-color: #f3f4f6; }
+            .text-gray-600 { color: #4b5563; }
+            .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+            .hover\:bg-gray-200:hover { background-color: #e5e7eb; }
+            .h-5 { height: 1.25rem; }
+            .w-5 { width: 1.25rem; }
+            .grid { display: grid; }
+            .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .gap-4 { gap: 1rem; }
+            .rounded-lg { border-radius: 0.5rem; }
+            .border { border-width: 1px; border-color: #e5e7eb; }
+            .bg-white { background-color: white; }
+            .p-5 { padding: 1.25rem; }
+            .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+            .hover\:shadow-md:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+            .text-sm { font-size: 0.875rem; }
+            .font-medium { font-weight: 500; }
+            .text-gray-500 { color: #6b7280; }
+            .mt-1 { margin-top: 0.25rem; }
+            .text-2xl { font-size: 1.5rem; }
+            .font-bold { font-weight: 700; }
+            .tracking-tight { letter-spacing: -0.025em; }
+            .text-gray-900 { color: #111827; }
+            .h-12 { height: 3rem; }
+            .w-12 { width: 3rem; }
+            .h-6 { height: 1.5rem; }
+            .w-6 { width: 1.5rem; }
+            .absolute { position: absolute; }
+            .relative { position: relative; }
+            .bottom-0 { bottom: 0; }
+            .left-0 { left: 0; }
+            .h-1 { height: 0.25rem; }
+            .w-full { width: 100%; }
+            .opacity-0 { opacity: 0; }
+            .group:hover .group-hover\:opacity-100 { opacity: 1; }
+            .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+            .overflow-hidden { overflow: hidden; }
+            .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+            
+            /* Color utilities */
+            .bg-blue-500\/10 { background-color: rgba(59, 130, 246, 0.1); }
+            .text-blue-500 { color: #3b82f6; }
+            .bg-purple-500\/10 { background-color: rgba(168, 85, 247, 0.1); }
+            .text-purple-500 { color: #a855f7; }
+            .bg-green-500\/10 { background-color: rgba(34, 197, 94, 0.1); }
+            .text-green-500 { color: #22c55e; }
+            .bg-amber-500\/10 { background-color: rgba(245, 158, 11, 0.1); }
+            .text-amber-500 { color: #f59e0b; }
+            .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+            .from-transparent { --tw-gradient-from: transparent; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(0, 0, 0, 0)); }
+            .via-gray-200 { --tw-gradient-stops: var(--tw-gradient-from), #e5e7eb, var(--tw-gradient-to, rgba(229, 231, 235, 0)); }
+            .to-transparent { --tw-gradient-to: transparent; }
+            
+            @media (min-width: 640px) {
+              .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            }
+            
+            @media (min-width: 1024px) {
+              .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            }
+          </style>
         </div>
-
-    <?php
+        <?php
     }
-
     public static function mgwpp_render_dashboard_page()
     {
         echo '<div class="wrap"><h1>' . esc_html__('Dashboard Overview', 'mini-gallery') . '</h1>';
@@ -247,7 +512,7 @@ class MGWPP_Admin
                         <td><label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
                         <td><input type="text" id="image_title" name="image_title" required></td>
                     </tr>
-                    <tr >
+                    <tr>
                         <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
                         <td>
                             <select id="gallery_type" name="gallery_type" required>
@@ -262,10 +527,16 @@ class MGWPP_Admin
                                     "threed_carousel"     => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
                                     "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
                                 ];
-
                                 foreach ($gallery_types as $key => $info) {
-                                    echo '<option value="' . esc_attr($key) . '" data-image="' . MG_PLUGIN_URL . '/admin/images/' . esc_attr($info[1]) . '" data-demo="https://your-demo-site.com/' . esc_attr($info[2]) . '">' . esc_html($info[0]) . '</option>';
+                                    echo sprintf(
+                                        '<option value="%s" data-image="%s" data-demo="%s">%s</option>',
+                                        esc_attr($key),
+                                        esc_url(MG_PLUGIN_URL . '/admin/images/' . $info[1]),
+                                        esc_url('https://your-demo-site.com/' . $info[2]),
+                                        esc_html($info[0])
+                                    );
                                 }
+                                ?>
                                 ?>
                             </select>
 
@@ -354,6 +625,71 @@ class MGWPP_Admin
                 <p><?php echo esc_html__('Security settings and role management will be available in future updates.', 'mini-gallery'); ?>
                 </p>
             </div>
+        </div>
+    <?php
+    }
+
+    public static function mgwpp_render_testimonials_page()
+    {
+    ?>
+        <div id="mgwpp_testimonials_content" class="mgwpp-tab-content">
+            <h2><?php echo esc_html__('Manage Testimonials', 'mini-gallery'); ?></h2>
+
+            <div class="mgwpp-testimonial-actions">
+                <a href="<?php echo esc_url(admin_url('post-new.php?post_type=testimonial')); ?>" class="button button-primary">
+                    <?php echo esc_html__('Add New Testimonial', 'mini-gallery'); ?>
+                </a>
+            </div>
+
+            <h3><?php echo esc_html__('Existing Testimonials', 'mini-gallery'); ?></h3>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php echo esc_html__('Author', 'mini-gallery'); ?></th>
+                        <th><?php echo esc_html__('Position/Company', 'mini-gallery'); ?></th>
+                        <th><?php echo esc_html__('Testimonial', 'mini-gallery'); ?></th>
+                        <th><?php echo esc_html__('Actions', 'mini-gallery'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $testimonials = get_posts([
+                        'post_type' => 'testimonial',
+                        'posts_per_page' => -1,
+                        'post_status' => 'publish'
+                    ]);
+
+                    if ($testimonials) {
+                        foreach ($testimonials as $testimonial) {
+                            $author = sanitize_text_field(get_post_meta($testimonial->ID, '_mgwpp_testimonial_author', true));
+                            $position = sanitize_text_field(get_post_meta($testimonial->ID, '_mgwpp_testimonial_position', true));
+                    ?>
+                            <tr>
+                                <td><?php echo esc_html($author); ?></td>
+                                <td><?php echo esc_html($position); ?></td>
+                                <td><?php echo wp_kses_post(wp_trim_words($testimonial->post_content, 20)); ?></td>
+                                <td><?php echo esc_html($author); ?></td>
+                                <td><?php echo esc_html($position); ?></td>
+                                <td><?php echo wp_kses_post(wp_trim_words($testimonial->post_content, 20)); ?></td>
+                                <td><?php echo wp_kses_post(wp_trim_words($testimonial->post_content, 20)); ?></td>
+                                <td><?php echo wp_kses_post(wp_trim_words($testimonial->post_content, 20)); ?></td>
+                                <td>
+                                    <a href="<?php echo esc_url(get_edit_post_link($testimonial->ID)); ?>" class="button button-primary">
+                                        <?php echo esc_html__('Edit', 'mini-gallery'); ?>
+                                    </a>
+                                    <a href="<?php echo esc_url(wp_nonce_url(admin_url('post.php?post=' . $testimonial->ID . '&action=delete'), 'delete-post_' . $testimonial->ID)); ?>" class="button button-danger">
+                                        <?php echo esc_html__('Delete', 'mini-gallery'); ?>
+                                    </a>
+                                </td>
+                            </tr>
+                    <?php
+                        }
+                    } else {
+                        echo '<tr><td colspan="4">' . esc_html__('No testimonials found.', 'mini-gallery') . '</td></tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
 <?php
     }

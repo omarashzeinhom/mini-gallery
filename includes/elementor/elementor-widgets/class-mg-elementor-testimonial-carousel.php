@@ -8,7 +8,7 @@ class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base {
     }
 
     public function get_title() {
-        return __( 'Testimonial Carousel', 'mgwpp' );
+        return __( 'Testimonial Carousel', 'mini-gallery' );
     }
 
     public function get_icon() {

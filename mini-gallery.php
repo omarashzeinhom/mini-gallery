@@ -45,19 +45,30 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-meg
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
 
+
+
+// Capabilities and Post Types
+
 // Galleries Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
+require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-manager.php';
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-upload.php';
 // Albums Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-display.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-submit.php';
-// Functions
+// Testimonials Registrations for Capabilties and Post Type 
+
+require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-post-type.php';
+require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-capabilties.php';
+require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-manager.php';
+
+
+// Functions Admin Uninstall 
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
-require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php'; // Include the uninstall class
-require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-manager.php'; // Include the gallery manager class
+require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
 
 //require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-widgets.php';
@@ -81,6 +92,12 @@ function mgwpp_initialize_plugin()
     //Albums
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
+
+
+    //MGWPP_Admin::mgwpp_register_admin_menu(); // Register the admin menu
+    //Testimonials
+    MGWPP_Testimonial_Post_Type::mgwpp_register_testimonial_post_type();
+    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
 }
 add_action('init', 'mgwpp_initialize_plugin');
 
@@ -193,8 +210,6 @@ function mgwpp_enqueue_assets()
     // Testimonials Carousel 
     wp_enqueue_style('mgwpp-testimonial-styles');
     wp_enqueue_script('mgwpp-testimonial-carousel-js');
-
-
 }
 
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');

@@ -105,3 +105,38 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+function toggleDashboardTheme() {
+    const dashboardEl = document.getElementById('dashboard-stats');
+    const moonIcon = document.getElementById('theme-icon-moon');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    
+    if (dashboardEl.classList.contains('theme-light')) {
+      dashboardEl.classList.remove('theme-light');
+      dashboardEl.classList.add('theme-dark');
+      moonIcon.classList.add('hidden');
+      sunIcon.classList.remove('hidden');
+      localStorage.setItem('dashboard-theme', 'dark');
+    } else {
+      dashboardEl.classList.remove('theme-dark');
+      dashboardEl.classList.add('theme-light');
+      moonIcon.classList.remove('hidden');
+      sunIcon.classList.add('hidden');
+      localStorage.setItem('dashboard-theme', 'light');
+    }
+  }
+  
+  // Check for saved theme preference
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('dashboard-theme');
+    const dashboardEl = document.getElementById('dashboard-stats');
+    const moonIcon = document.getElementById('theme-icon-moon');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    
+    if (savedTheme === 'dark' || 
+        (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      dashboardEl.classList.remove('theme-light');
+      dashboardEl.classList.add('theme-dark');
+      moonIcon.classList.add('hidden');
+      sunIcon.classList.remove('hidden');
+    }
+  });

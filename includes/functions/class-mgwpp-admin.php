@@ -89,81 +89,111 @@ class MGWPP_Admin
         $total_testimonials = isset($testimonial_counts->publish) ? $testimonial_counts->publish : 0;
         
         ?>
-        <div class="dashboard-stats theme-light" id="dashboard-stats">
-          <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Dashboard Statistics</h2>
-            <button 
-              onclick="toggleDashboardTheme()"
-              class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              aria-label="Toggle theme"
+<div class="dashboard-stats theme-light" id="dashboard-stats">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold"><?php echo esc_html__('Dashboard Statistics', 'mini-gallery'); ?></h2>
+        <button 
+            onclick="toggleDashboardTheme()"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            aria-label="<?php esc_attr_e('Toggle theme', 'mini-gallery'); ?>"
+        >
+            <img 
+                id="theme-icon-moon" 
+                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-moon-toggle-icon.webp'); ?>" 
+                alt="<?php esc_attr_e('Theme toggle icon', 'mini-gallery'); ?>"
+                class="h-5 w-5"
             >
-              <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
-              <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 hidden"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
-            </button>
-          </div>
-          
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-              <div class="flex items-center justify-between">
+            <img 
+                id="theme-icon-sun" 
+                src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-sun-icon.webp'); ?>" 
+                alt="<?php esc_attr_e('Sun icon', 'mini-gallery'); ?>"
+                class="h-5 w-5 hidden"
+            >
+        </button>
+    </div>
+    
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Galleries Card -->
+        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Galleries</p>
-                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <?php echo $total_galleries; ?>
-                  </h3>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Galleries', 'mini-gallery'); ?></p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <?php echo absint($total_galleries); ?>
+                    </h3>
                 </div>
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <img 
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-galleries-icon-dashboard.webp'); ?>" 
+                        alt="<?php esc_attr_e('Galleries icon', 'mini-gallery'); ?>"
+                        class="h-6 w-6"
+                    >
                 </div>
-              </div>
-              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-            
-            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-              <div class="flex items-center justify-between">
+            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+        </div>
+        
+        <!-- Albums Card -->
+        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Albums</p>
-                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <?php echo $total_albums; ?>
-                  </h3>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Albums', 'mini-gallery'); ?></p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <?php echo absint($total_albums); ?>
+                    </h3>
                 </div>
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                    <img 
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-albums-icon-dashboard.webp'); ?>" 
+                        alt="<?php esc_attr_e('Albums icon', 'mini-gallery'); ?>"
+                        class="h-6 w-6"
+                    >
                 </div>
-              </div>
-              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-            
-            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-              <div class="flex items-center justify-between">
+            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+        </div>
+        
+        <!-- Testimonials Card -->
+        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Testimonials</p>
-                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <?php echo $total_testimonials; ?>
-                  </h3>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Testimonials', 'mini-gallery'); ?></p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <?php echo absint($total_testimonials); ?>
+                    </h3>
                 </div>
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:bg-green-400/20 dark:text-green-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <img 
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-testimonials-icon-dashboard.webp'); ?>" 
+                        alt="<?php esc_attr_e('Testimonials icon', 'mini-gallery'); ?>"
+                        class="h-6 w-6"
+                    >
                 </div>
-              </div>
-              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-            
-            <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-              <div class="flex items-center justify-between">
+            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
+        </div>
+        
+        <!-- Total Items Card -->
+        <div class="stat-card group relative overflow-hidden rounded-lg border bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Items</p>
-                  <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    <?php echo $total_galleries + $total_albums + $total_testimonials; ?>
-                  </h3>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><?php esc_html_e('Total Items', 'mini-gallery'); ?></p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <?php echo absint($total_galleries + $total_albums + $total_testimonials); ?>
+                    </h3>
                 </div>
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <img 
+                        src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-total-items-icon-dashboard.webp'); ?>" 
+                        alt="<?php esc_attr_e('Total items icon', 'mini-gallery'); ?>"
+                        class="h-6 w-6"
+                    >
                 </div>
-              </div>
-              <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
             </div>
-          </div>
+            <div class="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-0 transition-opacity group-hover:opacity-100 dark:via-gray-600"></div>
         </div>
+    </div>
+</div>
         <?php
     }
     public static function mgwpp_render_dashboard_page()

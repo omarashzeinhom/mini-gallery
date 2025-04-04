@@ -145,7 +145,7 @@ class MGWPP_Admin
             $data['size_formatted'] = size_format($data['size'], 2);
             $data['percent'] = round(($data['size'] / $plugin_images_total) * 100, 2);
         }
-        
+
         return [
             'used' => size_format($plugin_images_total, 2),
             'total' => size_format($storage_total, 2),

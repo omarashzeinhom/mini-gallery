@@ -1,32 +1,36 @@
-
+// mgwpp-spotlight-carousel.js
 document.addEventListener('DOMContentLoaded', () => {
     // Spotlight Effect
     document.addEventListener('mousemove', (e) => {
-        document.documentElement.style.setProperty('--x', `${e.clientX}px`);
-        document.documentElement.style.setProperty('--y', `${e.clientY}px`);
+        document.documentElement.style.setProperty('--mgwpp-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--mgwpp-y', `${e.clientY}px`);
     });
 
     // Carousel Functionality
-    const slides = document.querySelectorAll('.carousel-slide');
-    const navBtns = document.querySelectorAll('.nav-btn');
-    let currentSlide = 0;
+    const carouselSlides = document.querySelectorAll('.mgwpp-carousel-slide');
+    const navButtons = document.querySelectorAll('.mgwpp-nav-btn');
+    let currentSlideIndex = 0;
 
-    function showSlide(index) {
-        slides[currentSlide].classList.remove('active');
-        navBtns[currentSlide].classList.remove('active');
+    function activateSlide(index) {
+        // Remove active classes
+        carouselSlides[currentSlideIndex].classList.remove('mgwpp-active');
+        navButtons[currentSlideIndex].classList.remove('mgwpp-active');
 
-        slides[index].classList.add('active');
-        navBtns[index].classList.add('active');
-        currentSlide = index;
+        // Add active classes to new slide
+        carouselSlides[index].classList.add('mgwpp-active');
+        navButtons[index].classList.add('mgwpp-active');
+        
+        // Update current index
+        currentSlideIndex = index;
     }
 
-    navBtns.forEach((btn, index) => {
-        btn.addEventListener('click', () => showSlide(index));
+    navButtons.forEach((button, index) => {
+        button.addEventListener('click', () => activateSlide(index));
     });
 
     // Auto-advance
     setInterval(() => {
-        const nextSlide = (currentSlide + 1) % slides.length;
-        showSlide(nextSlide);
+        const nextIndex = (currentSlideIndex + 1) % carouselSlides.length;
+        activateSlide(nextIndex);
     }, 8000);
 });

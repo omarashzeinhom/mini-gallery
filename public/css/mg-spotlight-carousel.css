@@ -1,11 +1,13 @@
-.spotlight-carousel {
+/* mgwpp-spotlight-carousel.css */
+.mgwpp-spotlight-carousel {
     position: relative;
     height: 100vh;
     background: #0a0a0a;
     overflow: hidden;
+    isolation: isolate;
 }
 
-.light-overlay {
+.mgwpp-light-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,64 +15,91 @@
     height: 100%;
     pointer-events: none;
     background: radial-gradient(
-        circle at var(--x) var(--y),
+        circle at var(--mgwpp-x) var(--mgwpp-y),
         rgba(255,215,0,0.4) 0%,
         rgba(255,215,0,0.2) 30%,
-        rgba(0,0,0,0.9) 70%
+        rgba(0,0,0,0.7) 70%
     );
     mix-blend-mode: lighten;
     z-index: 2;
 }
 
-.carousel-slide {
+.mgwpp-carousel-viewport {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+}
+
+.mgwpp-carousel-slide {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     opacity: 0;
     transition: opacity 1s ease;
+    z-index: 1;
 }
 
-.carousel-slide.active {
+.mgwpp-carousel-slide.mgwpp-active {
     opacity: 1;
+    z-index: 2;
 }
 
-.slide-content {
+.mgwpp-slide-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 100vh;
+    height: 100%;
     align-items: center;
     padding: 5%;
+    gap: 40px;
 }
 
-.text-content {
+.mgwpp-text-content {
     position: relative;
     z-index: 3;
     color: #fff;
     max-width: 600px;
     transform: translateX(-50px);
     opacity: 0;
-    transition: all 0.8s ease;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.active .text-content {
+.mgwpp-active .mgwpp-text-content {
     transform: translateX(0);
     opacity: 1;
 }
 
-.slide-title {
+.mgwpp-slide-title {
     font-size: 4rem;
     margin-bottom: 1.5rem;
     text-shadow: 0 0 15px rgba(255,215,0,0.3);
 }
 
-.image-container img {
-    max-width: 100%;
-    height: auto;
-    filter: brightness(0.8);
-    transition: filter 0.3s ease;
+.mgwpp-image-container {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin-left: auto;
 }
 
-.carousel-nav {
+.mgwpp-carousel-image {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transform: scale(0.95);
+    transition: all 0.6s ease;
+}
+
+.mgwpp-active .mgwpp-carousel-image {
+    transform: scale(1);
+    filter: brightness(1);
+}
+
+.mgwpp-carousel-nav {
     position: fixed;
     bottom: 5%;
     left: 50%;
@@ -80,7 +109,7 @@
     z-index: 4;
 }
 
-.nav-btn {
+.mgwpp-nav-btn {
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -90,7 +119,8 @@
     transition: all 0.3s ease;
 }
 
-.nav-btn.active {
+.mgwpp-nav-btn.mgwpp-active {
     background: #ffd700;
     transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(255,215,0,0.5);
 }

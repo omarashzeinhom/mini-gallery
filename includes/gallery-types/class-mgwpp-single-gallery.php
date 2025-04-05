@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
 class MGWPP_Gallery_Single {
     public static function render( $post_id, $images, $settings = [] ) {
         $output = '<div id="mg-carousel" class="mg-gallery-single-carousel">';

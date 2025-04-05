@@ -2,7 +2,6 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-
 class MGWPP_Testimonial_Capabilities
 {
     public static function mgwpp_testimonial_capabilities()

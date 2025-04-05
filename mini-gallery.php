@@ -7,15 +7,12 @@
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */
-
 if (!defined('ABSPATH')) {
     exit;
 }
 
 define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('MG_PLUGIN_URL', plugins_url('', __FILE__));
-
-
 
 // Activation & Deactivation Hooks
 function mgwpp_plugin_activate()
@@ -47,11 +44,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-thr
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
-
-
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
 
 // Capabilities and Post Types
-
 // Galleries Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
@@ -63,7 +58,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwp
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-submit.php';
 // Testimonials Registrations for Capabilties and Post Type 
-
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-capabilties.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-manager.php';
@@ -189,11 +183,21 @@ function mgwpp_enqueue_assets()
         true
     );
 
+    // Fullpage Slider Assets
+    wp_register_style(
+        'mg-fullpage-slider-styles',
+        plugins_url('public/css/mg-full-page-slider.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-full-page-slider.css')
+    );
 
-
-
-
-
+    wp_register_script(
+        'mg-fullpage-slider-js',
+        plugins_url('public/js/mg-full-page-slider.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-full-page-slider.js'),
+        true
+    );
 
     // Single Carousel
     wp_enqueue_script('mg-single-carousel-js');
@@ -217,6 +221,9 @@ function mgwpp_enqueue_assets()
     wp_enqueue_style('mgwpp-threed-carousel-styles');
     wp_enqueue_script('mgwpp-threed-carousel-js');
 
+    //FullPage Slider
+    wp_enqueue_script('mg-fullpage-slider-js');
+    wp_enqueue_style('mg-fullpage-slider-styles');
 
     // Testimonials Carousel 
     wp_enqueue_style('mgwpp-testimonial-carousel-styles'); // Corrected handle
@@ -249,6 +256,7 @@ function mgwpp_enqueue_admin_assets()
     wp_enqueue_style('mgwpp-pro-carousel-styles');
 }
 add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
+
 
 
 

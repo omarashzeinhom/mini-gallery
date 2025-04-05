@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
 class MGWPP_Testimonial_Post_Type {
 
     public static function mgwpp_register_testimonial_post_type() {

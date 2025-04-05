@@ -478,16 +478,17 @@ class MGWPP_Admin
                         <td>
                             <select id="gallery_type" name="gallery_type" required>
                                 <?php
-                                $gallery_types = [
-                                    "single_carousel"     => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
-                                    "multi_carousel"      => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
-                                    "grid"                => ["Grid Layout", "grid.webp", "demo-grid"],
-                                    "mega_slider"         => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
-                                    "pro_carousel"        => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
-                                    "neon_carousel"       => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
-                                    "threed_carousel"     => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
-                                    "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
-                                ];
+                               $gallery_types = [
+                                "single_carousel" => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
+                                "multi_carousel" => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
+                                "grid" => ["Grid Layout", "grid.webp", "demo-grid"],
+                                "mega_slider" => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
+                                "full_page_slider" => ["Full Page Slider", "full-page-slider.webp", "demo-full-page-slider"], // New entry
+                                "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
+                                "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
+                                "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
+                                "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
+                            ];
                                 foreach ($gallery_types as $key => $info) {
                                     echo sprintf(
                                         '<option value="%s" data-image="%s" data-demo="%s">%s</option>',

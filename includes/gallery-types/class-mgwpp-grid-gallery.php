@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
 class MGWPP_Gallery_Grid {
     public static function render( $post_id, $images ) {
         $output = '<div class="grid-layout">';

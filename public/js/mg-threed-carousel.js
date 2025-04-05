@@ -32,7 +32,7 @@
         setSizes();
         positionItems();
         setupEventListeners();
-        if(config.autoRotate) startAutoRotate();
+        //if(config.autoRotate) startAutoRotate();
       }
 
       // Set dynamic sizes

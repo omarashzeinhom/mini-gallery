@@ -1,7 +1,5 @@
 <?php
-
 if (! defined('ABSPATH')) exit;
-
 class MGWPP_Testimonial_Carousel
 {
 

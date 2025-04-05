@@ -1,12 +1,14 @@
 <?php
 if (!defined('ABSPATH')) exit;
-
-class MGWPP_3D_Carousel {
-    public static function init() {
+class MGWPP_3D_Carousel
+{
+    public static function init()
+    {
         add_action('wp_enqueue_scripts', [__CLASS__, 'register_assets']);
     }
 
-    public static function register_assets() {
+    public static function register_assets()
+    {
         wp_register_style(
             'mg-3d-carousel-style',
             plugins_url('public/css/mg-threed-carousel.css', __FILE__),
@@ -23,7 +25,8 @@ class MGWPP_3D_Carousel {
         );
     }
 
-    public static function render($post_id, $images, $settings = []) {
+    public static function render($post_id, $images, $settings = [])
+    {
         // Default settings with numeric values where applicable
         $default_settings = [
             'radius'         => 240,
@@ -55,14 +58,14 @@ class MGWPP_3D_Carousel {
             'imgWidth'       => $img_width,
             'imgHeight'      => $img_height,
             'bgMusic'        => $bg_music,
-            'bgMusicControls'=> $bg_music_controls
+            'bgMusicControls' => $bg_music_controls
         ]);
 
         ob_start(); ?>
         <div class="mg-3d-carousel-container" data-post-id="<?php echo esc_attr($post_id); ?>">
             <div class="mg-drag-container">
                 <div class="mg-spin-container">
-                    <?php foreach ($images as $image) : 
+                    <?php foreach ($images as $image) :
                         $img_url = wp_get_attachment_url($image->ID);
                         $img_alt = esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true));
                     ?>
@@ -81,7 +84,7 @@ class MGWPP_3D_Carousel {
                 </div>
             <?php endif; ?>
         </div>
-        <?php
+<?php
         return ob_get_clean();
     }
 }

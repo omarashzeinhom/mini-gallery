@@ -2,7 +2,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
 class MGWPP_Testimonial_Manager {
 
     public function __construct() {

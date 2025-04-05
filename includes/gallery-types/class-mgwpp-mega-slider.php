@@ -1,6 +1,5 @@
 <?php
 if (!defined('ABSPATH')) exit;
-
 class MGWPP_Mega_Slider {
     public static function render( $post_id, $images, $settings = [] ) {
         // Check if we're in Elementor

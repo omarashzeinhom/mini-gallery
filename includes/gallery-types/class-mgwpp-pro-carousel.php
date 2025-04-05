@@ -1,6 +1,5 @@
 <?php
 if (!defined('ABSPATH')) exit;
-
 class MGWPP_Pro_Carousel {
     public static function render($post_id, $images, $settings = []) {
         if (empty($images) || !is_array($images)) {

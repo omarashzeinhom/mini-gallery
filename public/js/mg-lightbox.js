@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       lightbox.classList.add("active")
       document.body.classList.add("lightbox-open")
-      document.body.style.overflow = "hidden" // Prevent scrolling
+      //document.body.style.overflow = "hidden" // Prevent scrolling
       currentIndex = index
   
       // Announce to screen readers
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeLightbox() {
       lightbox.classList.remove("active")
       document.body.classList.remove("lightbox-open")
-      document.body.style.overflow = "" // Restore scrolling
+      //document.body.style.overflow = "" // Restore scrolling
   
       // Announce to screen readers
       announceForScreenReaders("Lightbox closed")

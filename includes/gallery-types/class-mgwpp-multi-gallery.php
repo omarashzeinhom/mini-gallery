@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
 class MGWPP_Gallery_Multi {
     public static function render( $post_id, $images, $paged = 1, $images_per_page = 6 ) {
         $offset = ( $paged - 1 ) * $images_per_page;

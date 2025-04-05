@@ -2,7 +2,6 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-
 class MGWPP_Neon_Carousel {
     public static function render($post_id, $images) {
         // Validate inputs

@@ -49,3 +49,49 @@ admin/                              // Admin assets
       ]
 }
 ```
+
+## WPBakery Notices
+
+Styles:
+
+- mg-single-carousel-styles
+
+- mg-multi-carousel-styles
+
+- mg-grid-styles
+
+- mg-mega-carousel-styles
+
+- mgwpp-pro-carousel-styles
+
+- mgwpp-neon-carousel-styles
+
+- mgwpp-threed-carousel-styles
+
+- mg-fullpage-slider-styles
+
+- mg-spotlight-slider-styles
+
+- mgwpp-testimonial-carousel-styles
+
+Scripts:
+
+- mg-single-carousel-js
+
+- mg-multi-carousel-js
+
+- mg-mega-carousel-js
+
+- mgwpp-pro-carousel-js
+
+- mgwpp-neon-carousel-js
+
+- mgwpp-threed-carousel-js
+
+- mg-fullpage-slider-js
+
+- mg-spotlight-slider-js
+
+- mgwpp-testimonial-carousel-js
+
+- mg-universal-init

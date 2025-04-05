@@ -48,10 +48,11 @@
 
 .mgwpp-slide-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     height: 100%;
     align-items: center;
-    padding: 5%;
+    width: 100%;
+    padding: 0%;
     gap: 40px;
 }
 

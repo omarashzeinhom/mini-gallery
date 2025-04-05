@@ -69,8 +69,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/cla
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
-
+// Elementor Integration
 require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-integration.php';
+// WPBakery Page Builder Integration
+require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration.php';
 
 // Initialize plugin
 function mgwpp_initialize_plugin()
@@ -220,6 +222,17 @@ function mgwpp_enqueue_assets()
         true
     );
 
+    wp_register_script(
+        'mg-universal-init',
+        plugins_url('public/js/mg-universal-init.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-universal-init.js'),
+        true
+    );
+
+    // Enqueue universal init script
+    wp_enqueue_script('mg-universal-init');
+
 
 
     // Single Carousel
@@ -256,6 +269,47 @@ function mgwpp_enqueue_assets()
     // Testimonials Carousel 
     wp_enqueue_style('mgwpp-testimonial-carousel-styles'); // Corrected handle
     wp_enqueue_script('mgwpp-testimonial-carousel-js');
+
+
+
+    // Load all assets in WPBakery editor
+    if (function_exists('vc_is_page_editable') && vc_is_page_editable()) {
+        // Enqueue all styles
+        foreach (
+            [
+                'mg-single-carousel-styles',
+                'mg-multi-carousel-styles',
+                'mg-grid-styles',
+                'mg-mega-carousel-styles',
+                'mgwpp-pro-carousel-styles',
+                'mgwpp-neon-carousel-styles',
+                'mgwpp-threed-carousel-styles',
+                'mg-fullpage-slider-styles',
+                'mg-spotlight-slider-styles',
+                'mgwpp-testimonial-carousel-styles'
+            ] as $style
+        ) {
+            wp_enqueue_style($style);
+        }
+
+        // Enqueue all scripts
+        foreach (
+            [
+                'mg-single-carousel-js',
+                'mg-multi-carousel-js',
+                'mg-mega-carousel-js',
+                'mgwpp-pro-carousel-js',
+                'mgwpp-neon-carousel-js',
+                'mgwpp-threed-carousel-js',
+                'mg-fullpage-slider-js',
+                'mg-spotlight-slider-js',
+                'mgwpp-testimonial-carousel-js',
+                'mg-universal-init'
+            ] as $script
+        ) {
+            wp_enqueue_script($script);
+        }
+    }
 }
 
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');

@@ -1,6 +1,6 @@
 /* Modern Full-Page Slider CSS */
 :root {
-    --primary-accent: #FF4D00;
+    --mgwpp-primary-accent: #FF4D00;
     --text-primary: #FFFFFF;
     --overlay-gradient: linear-gradient(220deg, 
       rgba(0,0,0,0.8) 0%, 
@@ -124,7 +124,7 @@
     z-index: 100;
   }
   
-  .mg-dot {
+  .mg-full-page-dot {
     width: 14px;
     height: 14px;
     border-radius: 50%;
@@ -136,8 +136,8 @@
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .mg-dot.active {
-    background: var(--primary-accent);
+  .mg-full-page-dot.active {
+    background: var(--mgwpp-primary-accent);
     transform: scale(1.4);
   }
   
@@ -146,7 +146,7 @@
     bottom: 5vh;
     right: 5vw;
     padding: 1rem 2.5rem;
-    border: 2px solid var(--primary-accent);
+    border: 2px solid var(--mgwpp-primary-accent);
     background: rgba(255 255 255 / 0.1);
     color: var(--text-primary);
     font-weight: 600;
@@ -158,7 +158,7 @@
   }
   
   .mg-fullpage-buy:hover {
-    background: var(--primary-accent);
+    background: var(--mgwpp-primary-accent);
     transform: translateY(-2px);
   }
   

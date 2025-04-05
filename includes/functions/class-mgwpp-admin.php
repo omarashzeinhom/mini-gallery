@@ -487,6 +487,7 @@ class MGWPP_Admin
                                 "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
                                 "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
                                 "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
+                                "spotlight_carousel" => ["Spotlight Carousel", "spotlight-carousel.webp", "demo-spotlight-carousel"],
                                 "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
                             ];
                                 foreach ($gallery_types as $key => $info) {

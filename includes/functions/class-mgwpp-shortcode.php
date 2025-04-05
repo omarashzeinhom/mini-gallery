@@ -74,6 +74,12 @@ function mgwpp_gallery_shortcode($atts)
                     $gallery_html = MGWPP_Full_Page_Slider::render($post_id, $all_images);
                     break;
 
+                case 'spotlight_carousel':
+                    if (!class_exists('MGWPP_Spotlight_Carousel')) {
+                        require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
+                    }
+                    $gallery_html = MGWPP_Spotlight_Carousel::render($post_id, $all_images);
+                    break;
                 case 'testimonials_carousel':
                     $testimonials = get_posts([
                         'post_type' => 'testimonial',

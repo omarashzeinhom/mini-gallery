@@ -45,6 +45,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-meg
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
+
 
 // Capabilities and Post Types
 // Galleries Registration for Capabilties
@@ -199,6 +201,27 @@ function mgwpp_enqueue_assets()
         true
     );
 
+
+
+
+    // SpotLight Slider Assets
+    wp_register_style(
+        'mg-spotlight-slider-styles',
+        plugins_url('public/css/mg-spotlight-carousel.css', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-spotlight-carousel.css')
+    );
+
+    wp_register_script(
+        'mg-spotlight-slider-js',
+        plugins_url('public/js/mg-spotlight-carousel.js', __FILE__),
+        [],
+        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-spotlight-carousel.js'),
+        true
+    );
+
+
+
     // Single Carousel
     wp_enqueue_script('mg-single-carousel-js');
     wp_enqueue_style('mg-single-carousel-styles');
@@ -224,6 +247,11 @@ function mgwpp_enqueue_assets()
     //FullPage Slider
     wp_enqueue_script('mg-fullpage-slider-js');
     wp_enqueue_style('mg-fullpage-slider-styles');
+
+    //Spotlight Slider
+    wp_enqueue_script('mg-spotlight-slider-js');
+    wp_enqueue_style('mg-spotlight-slider-styles');
+
 
     // Testimonials Carousel 
     wp_enqueue_style('mgwpp-testimonial-carousel-styles'); // Corrected handle

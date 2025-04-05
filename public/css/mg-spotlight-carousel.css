@@ -1,0 +1,96 @@
+.spotlight-carousel {
+    position: relative;
+    height: 100vh;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+.light-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at var(--x) var(--y),
+        rgba(255,215,0,0.4) 0%,
+        rgba(255,215,0,0.2) 30%,
+        rgba(0,0,0,0.9) 70%
+    );
+    mix-blend-mode: lighten;
+    z-index: 2;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.slide-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100vh;
+    align-items: center;
+    padding: 5%;
+}
+
+.text-content {
+    position: relative;
+    z-index: 3;
+    color: #fff;
+    max-width: 600px;
+    transform: translateX(-50px);
+    opacity: 0;
+    transition: all 0.8s ease;
+}
+
+.active .text-content {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.slide-title {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    filter: brightness(0.8);
+    transition: filter 0.3s ease;
+}
+
+.carousel-nav {
+    position: fixed;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 4;
+}
+
+.nav-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,215,0,0.3);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn.active {
+    background: #ffd700;
+    transform: scale(1.3);
+}

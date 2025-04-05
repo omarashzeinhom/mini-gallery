@@ -94,7 +94,7 @@ class MG_Elementor_Integration
                         $(document).on('click', '.mg-pro-elements-notice .notice-dismiss', function(){
                             $.post(ajaxurl, {
                                 action: 'mg_dismiss_pro_elements_notice',
-                                user_id: <?php echo get_current_user_id(); ?>
+                                user_id: <?php echo esc_js( get_current_user_id() ); ?>
                             });
                         });
                     })(jQuery);

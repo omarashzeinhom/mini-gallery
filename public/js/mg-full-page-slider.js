@@ -71,7 +71,8 @@ class MGWPP_FullPageSlider {
       this.dotsContainer.appendChild(dot);
     });
 
-    document.body.appendChild(this.dotsContainer);
+    // ⬇️ Append to the slider container, NOT the body
+    this.container.parentElement.appendChild(this.dotsContainer);
   }
 
   updateDots(index) {
@@ -79,7 +80,7 @@ class MGWPP_FullPageSlider {
     this.dotsContainer.querySelectorAll('.mg-full-page-slider-dot').forEach((dot, i) => {
       dot.classList.toggle('active', i === index);
     });
-    
+
   }
 
   goToSlide(index) {
@@ -106,9 +107,11 @@ class MGWPP_FullPageSlider {
   }
 
   addEventListeners() {
-    // Mouse events
-    document.querySelector('.mg-prev').addEventListener('click', () => this.goToSlide(this.currentIndex - 1));
-    document.querySelector('.mg-next').addEventListener('click', () => this.goToSlide(this.currentIndex + 1));
+    const navPrev = document.querySelector('.mg-prev');
+    const navNext = document.querySelector('.mg-next');
+
+    navPrev.addEventListener('click', () => this.goToSlide(this.currentIndex - 1));
+    navNext.addEventListener('click', () => this.goToSlide(this.currentIndex + 1));
 
     // Touch events
     this.container.addEventListener('touchstart', e => {
@@ -120,7 +123,37 @@ class MGWPP_FullPageSlider {
       this.handleSwipe();
     });
 
-    // Pause on interaction
+    // Mouse drag events
+    let isDragging = false;
+    let startX = 0;
+
+    this.container.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX;
+      this.container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      this.container.style.cursor = '';
+
+      const endX = e.clientX;
+      const diff = startX - endX;
+
+      if (Math.abs(diff) > 50) {
+        diff > 0
+          ? this.goToSlide(this.currentIndex + 1)
+          : this.goToSlide(this.currentIndex - 1);
+      }
+    });
+
+    this.container.addEventListener('mouseleave', () => {
+      isDragging = false;
+      this.container.style.cursor = '';
+    });
+
+    // Autoplay pause/resume
     this.container.addEventListener('mouseenter', () => clearInterval(this.autoplayInterval));
     this.container.addEventListener('mouseleave', () => this.startAutoplay(5000));
   }

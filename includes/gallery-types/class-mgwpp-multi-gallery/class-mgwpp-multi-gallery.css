@@ -1,0 +1,43 @@
+
+/* Multi Carousel */
+.mg-gallery.multi-carousel {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 1920px; /* Adjusted max-width for consistency */
+    margin: 0 auto;
+    gap: 20px; /* Space between images */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mg-gallery.multi-carousel .mg-multi-carousel-slide {
+    flex: 1 1 calc(100% / 3); /* Adjust width based on the number of images per page */
+    max-width: 400px;
+    max-height: 400px;
+    text-align: center;
+  }
+  
+  .mg-gallery.multi-carousel .mg-multi-carousel-slide img {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width: 100%;
+    background: #f9f9f9;
+    opacity: 0.9;
+    transition: 0.2s ease-in-out;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
+    object-fit: cover;
+  }
+  
+  .mg-gallery.multi-carousel .mg-multi-carousel-slide img:hover {
+    opacity: 1;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
+  }
+  
+  @media (max-width: 768px) {
+    .mg-gallery.multi-carousel .mg-multi-carousel-slide {
+      flex: 1 1 1 calc(100% / 1); /* 1 images per page on mobile */
+    }
+  }
+  

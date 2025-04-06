@@ -1,0 +1,68 @@
+/* Core Carousel Styles */
+.mg-pro-carousel {
+    --card-width: 300px;
+    --gap: 30px;
+    position: relative;
+    padding: 2rem 0;
+}
+
+.mg-pro-carousel__container {
+    overflow: hidden;
+    padding: 0 2rem;
+}
+
+.mg-pro-carousel__track {
+    display: flex;
+    gap: var(--gap);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mg-pro-carousel__card {
+    flex: 0 0 var(--card-width);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.mg-pro-carousel__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Navigation Controls */
+.mg-pro-carousel__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.mg-pro-carousel__nav--prev { left: 1rem; }
+.mg-pro-carousel__nav--next { right: 1rem; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mg-pro-carousel {
+        --card-width: min(250px, 80vw);
+        --gap: 15px;
+        padding: 1rem 0;
+    }
+    
+    .mg-pro-carousel__nav {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mg-pro-carousel__container {
+        padding: 0 1rem;
+    }
+}

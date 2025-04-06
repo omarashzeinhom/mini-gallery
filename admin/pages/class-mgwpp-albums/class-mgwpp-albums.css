@@ -1,0 +1,48 @@
+//class-mgwpp-albums.css
+
+#mgwpp_albums_content {
+    padding: 20px;
+}
+
+/* Light Theme */
+.theme-light #mgwpp_albums_content {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.theme-light table {
+    border: 1px solid #ddd;
+}
+
+.theme-light th {
+    background-color: #f4f4f4;
+}
+
+/* Dark Theme */
+.theme-dark #mgwpp_albums_content {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.theme-dark table {
+    border: 1px solid #444;
+}
+
+.theme-dark th {
+    background-color: #555555;
+}
+
+/* General table styles */
+table.widefat {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.widefat th, table.widefat td {
+    padding: 10px;
+    text-align: left;
+}
+
+table.widefat th {
+    font-weight: bold;
+}

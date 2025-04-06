@@ -156,7 +156,32 @@ class MGWPP_Admin
         ];
     }
 
-
+    private static function get_installed_gallery_modules()
+    {
+        $modules = [];
+        $gallery_path = plugin_dir_path(__FILE__) . 'includes/gallery-types/';
+    
+        // Debugging: Output the directory path
+        echo '<p>Checking gallery path: ' . esc_html($gallery_path) . '</p>';
+    
+        if (is_dir($gallery_path)) {
+            $files = glob($gallery_path . 'class-mgwpp-*.php');
+            
+            // Debugging: Output the files found
+            echo '<p>Files found: </p><pre>';
+            var_dump($files);
+            echo '</pre>';
+    
+            foreach ($files as $file) {
+                $filename = basename($file, '.php');
+                $type = str_replace(['class-mgwpp-', '-gallery', '-carousel', '-slider'], '', $filename);
+                $modules[] = ucfirst(str_replace('_', ' ', $type));
+            }
+        }
+    
+        return $modules;
+    }
+    
 
 
     private static function render_dashboard_stats()
@@ -174,6 +199,9 @@ class MGWPP_Admin
         $storage_percent = $storage_data['percent'];
         $file_types = $storage_data['file_types'];
         $files = $storage_data['files'];
+        // Modules installed
+        $installed_modules = self::get_installed_gallery_modules();
+
 ?>
 
         <div class="dashboard-stats theme-light" id="dashboard-stats">
@@ -218,6 +246,12 @@ class MGWPP_Admin
 
             <!-- Storage Visualization Section -->
             <?php self::render_storage_section($storage_used, $storage_total, $storage_percent, $file_types, $files); ?>
+            <h4>Installed Gallery Modules:</h4>
+            <ul>
+                <?php foreach ($installed_modules as $module): ?>
+                    <li>✅ <?php echo esc_html($module); ?></li>
+                <?php endforeach; ?>
+            </ul>
         </div>
     <?php
     }

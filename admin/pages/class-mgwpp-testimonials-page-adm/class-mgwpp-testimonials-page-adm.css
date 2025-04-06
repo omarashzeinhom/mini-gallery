@@ -1,0 +1,14 @@
+/* Testimonials admin styles */
+#mgwpp_testimonials_content .wp-list-table td {
+  vertical-align: middle;
+}
+
+#mgwpp_testimonials_content .button-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+#mgwpp_testimonials_content .button-danger:hover {
+  background-color: #bb2d3b;
+}

@@ -1,10 +1,12 @@
 <?php
-
 namespace MGWPP\Admin\Pages;
+if (! defined('ABSPATH')) {
+    exit;
+}
 
 use WP_List_Table;
 
-class MGWPP_Admin_Albums extends WP_List_Table
+class MGWPP_Albums_Page extends WP_List_Table
 {
     public function __construct()
     {
@@ -15,7 +17,22 @@ class MGWPP_Admin_Albums extends WP_List_Table
         ]);
     }
 
-    public static function render_page()
+    /**
+     * Enqueue CSS and JS for the Albums page.
+     */
+    public static function mgwpp_enqueue_albums_assets()
+    {
+        // Enqueue the CSS for the albums page
+        wp_enqueue_style('mgwpp-albums-css', plugin_dir_url(__FILE__) . 'css/class-mgwpp-albums-page-adm.css');
+
+        // Enqueue the JS for the albums page
+        wp_enqueue_script('mgwpp-albums-js', plugin_dir_url(__FILE__) . 'js/class-mgwpp-albums-page-adm.js', [], false, true);
+    }
+
+    /**
+     * Render the Albums page content.
+     */
+    public static function mgwpp_render_albums_page()
     {
         ?>
         <div id="mgwpp_albums_content" class="mgwpp-tab-content">
@@ -74,7 +91,10 @@ class MGWPP_Admin_Albums extends WP_List_Table
         <?php
     }
 
-    public function get_columns()
+    /**
+     * Get the columns for the Albums table.
+     */
+    public function mgwpp_get_columns()
     {
         return [
             'cb'               => '<input type="checkbox" />',
@@ -85,7 +105,10 @@ class MGWPP_Admin_Albums extends WP_List_Table
         ];
     }
 
-    public function column_default($item, $column_name)
+    /**
+     * Display the default content for the columns.
+     */
+    public function mgwpp_column_default($item, $column_name)
     {
         switch ($column_name) {
             case 'album_title':
@@ -96,13 +119,16 @@ class MGWPP_Admin_Albums extends WP_List_Table
             case 'shortcode':
                 return '<pre>[mgwpp_album id="' . esc_attr($item->ID) . '"]</pre>';
             case 'actions':
-                return $this->get_action_links($item->ID);
+                return $this->mgwpp_get_action_links($item->ID);
             default:
                 return '';
         }
     }
 
-    public function get_action_links($album_id)
+    /**
+     * Get the action links for each album.
+     */
+    public function mgwpp_get_action_links($album_id)
     {
         $edit_link = get_edit_post_link($album_id);
         $delete_link = wp_nonce_url(admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $album_id), 'mgwpp_delete_album_' . $album_id);
@@ -110,9 +136,12 @@ class MGWPP_Admin_Albums extends WP_List_Table
                 <a href="' . esc_url($delete_link) . '" class="button button-secondary" onclick="return confirm(\'' . esc_js(__('Are you sure you want to delete this album?', 'mini-gallery')) . '\')">' . esc_html__('Delete', 'mini-gallery') . '</a>';
     }
 
-    public function prepare_items()
+    /**
+     * Prepare the items to display in the albums table.
+     */
+    public function mgwpp_prepare_items()
     {
-        $this->_column_headers = [$this->get_columns(), [], []];
+        $this->_column_headers = [$this->mgwpp_get_columns(), [], []];
         $this->items = get_posts(['post_type' => 'mgwpp_album', 'numberposts' => -1]);
     }
 }

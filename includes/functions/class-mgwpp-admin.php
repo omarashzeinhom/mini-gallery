@@ -82,7 +82,7 @@ class MGWPP_Admin
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $plugin_image_ids = [];
-    
+
         // Get attachment IDs used in plugin post types
         $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
         $plugin_query = new WP_Query([
@@ -91,29 +91,29 @@ class MGWPP_Admin
             'post_status' => 'any',
             'fields' => 'ids',
         ]);
-    
+
         foreach ($plugin_query->posts as $post_id) {
             $attachments = get_attached_media('image', $post_id);
             foreach ($attachments as $media) {
                 $plugin_image_ids[] = $media->ID;
             }
         }
-    
+
         $plugin_images_total = 0;
         $all_file_types = [];
         $file_count = 0;
         $suspicious_files = [];
-    
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($upload_path, RecursiveDirectoryIterator::SKIP_DOTS)
         );
-    
+
         foreach ($iterator as $file) {
             if ($file->isFile()) {
                 $ext = strtolower($file->getExtension());
                 $file_size = $file->getSize();
                 $filepath = $file->getPathname();
-    
+
                 // Tally total uploads folder usage
                 $plugin_images_total += $file_size;
                 $file_count++;
@@ -122,7 +122,7 @@ class MGWPP_Admin
                 }
                 $all_file_types[$ext]['count'] += 1;
                 $all_file_types[$ext]['size'] += $file_size;
-                
+
 
 
                 // Suspicious file scan (basic)
@@ -137,10 +137,10 @@ class MGWPP_Admin
                 }
             }
         }
-    
+
         $storage_total = 1024 * 1024 * 1024; // 1GB
         $used_percent = round(($plugin_images_total / $storage_total) * 100, 2);
-    
+
         foreach ($all_file_types as $ext => &$data) {
             $data['size_formatted'] = size_format($data['size'], 2);
             $data['percent'] = round(($data['size'] / $plugin_images_total) * 100, 2);
@@ -154,13 +154,11 @@ class MGWPP_Admin
             'files' => $file_count,
             'suspicious' => $suspicious_files,
         ];
-
-    
     }
-    
 
-    
-    
+
+
+
     private static function render_dashboard_stats()
     {
         // Get counts
@@ -259,7 +257,7 @@ class MGWPP_Admin
                         <?php echo absint($count); ?>
                     </h3>
                 </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-<?php echo $color; ?>-500/10 text-<?php echo $color; ?>-500 dark:bg-<?php echo $color; ?>-400/20 dark:text-<?php echo $color; ?>-300">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-<?php echo esc_attr(sanitize_html_class($color)); ?>-500/10 text-<?php echo esc_attr(sanitize_html_class($color)); ?>-500 dark:bg-<?php echo esc_attr(sanitize_html_class($color)); ?>-400/20 dark:text-<?php echo esc_attr(sanitize_html_class($color)); ?>-300">
                     <img src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/' . $icon); ?>"
                         alt="<?php echo esc_attr($title); ?>"
                         class="h-10 w-10">
@@ -270,12 +268,13 @@ class MGWPP_Admin
     <?php
     }
 
+
     private static function render_storage_section($used, $total, $percent, $file_types, $file_count)
     {
     ?>
         <div class="mt-8 p-5 bg-white rounded-lg shadow-sm dark:bg-gray-800">
             <h3 class="text-lg font-semibold mb-4"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h3>
-    
+
             <div class="mb-6">
                 <strong><?php esc_html_e('Used:', 'mini-gallery'); ?></strong>
                 <?php echo esc_html($used); ?> /
@@ -284,7 +283,7 @@ class MGWPP_Admin
                     <div class="h-4 bg-green-500 rounded" style="width: <?php echo esc_attr($percent); ?>%"></div>
                 </div>
             </div>
-    
+
             <h4 class="text-md font-semibold mt-6 mb-2"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
             <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
                 <thead>
@@ -304,7 +303,7 @@ class MGWPP_Admin
                             <td class="py-1">
                                 <div class="w-full bg-gray-200 rounded h-3 relative">
                                     <div class="absolute top-0 left-0 h-3 bg-blue-500 rounded" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
-                                    <span class="absolute left-2 top-0 text-xs text-white leading-3"><?php echo $data['percent']; ?>%</span>
+                                    <span class="absolute left-2 top-0 text-xs text-white leading-3"><?php echo esc_attr($data['percent']); ?>%</span>
                                 </div>
                             </td>
                         </tr>
@@ -321,7 +320,7 @@ class MGWPP_Admin
 
     <?php
     }
-    
+
 
 
     public static function mgwpp_render_dashboard_page()
@@ -478,18 +477,18 @@ class MGWPP_Admin
                         <td>
                             <select id="gallery_type" name="gallery_type" required>
                                 <?php
-                               $gallery_types = [
-                                "single_carousel" => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
-                                "multi_carousel" => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
-                                "grid" => ["Grid Layout", "grid.webp", "demo-grid"],
-                                "mega_slider" => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
-                                "full_page_slider" => ["Full Page Slider", "full-page-slider.webp", "demo-full-page-slider"], // New entry
-                                "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
-                                "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
-                                "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
-                                "spotlight_carousel" => ["Spotlight Carousel", "spotlight-carousel.webp", "demo-spotlight-carousel"],
-                                "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
-                            ];
+                                $gallery_types = [
+                                    "single_carousel" => ["Single Carousel", "single-carousel.webp", "demo-single-carousel"],
+                                    "multi_carousel" => ["Multi Carousel", "multi-carousel.webp", "demo-multi-carousel"],
+                                    "grid" => ["Grid Layout", "grid.webp", "demo-grid"],
+                                    "mega_slider" => ["Mega Slider", "mega-slider.webp", "demo-mega-slider"],
+                                    "full_page_slider" => ["Full Page Slider", "full-page-slider.webp", "demo-full-page-slider"], // New entry
+                                    "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp", "demo-pro-carousel"],
+                                    "neon_carousel" => ["Neon Carousel", "neon-carousel.webp", "demo-neon-carousel"],
+                                    "threed_carousel" => ["3D Carousel", "3d-carousel.webp", "demo-3d-carousel"],
+                                    "spotlight_carousel" => ["Spotlight Carousel", "spotlight-carousel.webp", "demo-spotlight-carousel"],
+                                    "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp", "demo-testimonials"]
+                                ];
                                 foreach ($gallery_types as $key => $info) {
                                     echo sprintf(
                                         '<option value="%s" data-image="%s" data-demo="%s">%s</option>',
@@ -578,28 +577,28 @@ class MGWPP_Admin
     <?php
     }
 
-public static function mgwpp_render_security_page()
-{
-    $upload_dir = wp_upload_dir();
-    $upload_path = $upload_dir['basedir'];
+    public static function mgwpp_render_security_page()
+    {
+        $upload_dir = wp_upload_dir();
+        $upload_path = $upload_dir['basedir'];
 
-    // Scan the uploads folder for suspicious files
-    $suspicious_files = MGWPP_Security_Uploads_Scanner::scan_directory($upload_path);
+        // Scan the uploads folder for suspicious files
+        $suspicious_files = MGWPP_Security_Uploads_Scanner::scan_directory($upload_path);
     ?>
-    <div id="mgwpp_security_content" class="mgwpp-tab-content">
-        <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
+        <div id="mgwpp_security_content" class="mgwpp-tab-content">
+            <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
 
-        <div class="mgwpp-security-settings">
-            <p><?php echo esc_html__('This section includes security scan results and will include more options in future updates.', 'mini-gallery'); ?></p>
-        </div>
+            <div class="mgwpp-security-settings">
+                <p><?php echo esc_html__('This section includes security scan results and will include more options in future updates.', 'mini-gallery'); ?></p>
+            </div>
 
-        <div class="mgwpp-scan-results mt-6">
-            <h3 class="text-md font-semibold"><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
-            <?php MGWPP_Security_Uploads_Scanner::render_suspicious_report($suspicious_files); ?>
+            <div class="mgwpp-scan-results mt-6">
+                <h3 class="text-md font-semibold"><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
+                <?php MGWPP_Security_Uploads_Scanner::render_suspicious_report($suspicious_files); ?>
+            </div>
         </div>
-    </div>
     <?php
-}
+    }
 
 
     public static function mgwpp_render_testimonials_page()

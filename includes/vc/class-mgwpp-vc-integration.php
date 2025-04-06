@@ -22,7 +22,7 @@ class MGWPP_VC_Integration {
         vc_map([
             'name' => 'MiniGallery',
             'base' => 'mgwpp_vc_gallery',
-            'category' => esc_html__('Content', 'js_composer'),
+            'category' => esc_html__('Content', 'mini-gallery'),
             'params' => [
                 [
                     'type' => 'dropdown',

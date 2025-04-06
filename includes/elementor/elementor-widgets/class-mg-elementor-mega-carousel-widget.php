@@ -129,9 +129,9 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
                 'type'      => Controls_Manager::COLOR,
                 'default'   => '#666',
                 'selectors' => [
-                    '{{WRAPPER}} .mg-dot.active'              => 'background: {{VALUE}};',
+                    '{{WRAPPER}} .mg-mega-carousel-dot.active'              => 'background: {{VALUE}};',
                     '{{WRAPPER}} .mg-carousel__nav:hover'       => 'background: rgba(0, 0, 0, 0.9);',
-                    '{{WRAPPER}} .mg-dot.active'              => 'background: linear-gradient(90deg, color-mix(in srgb, {{VALUE}}, white 15%), {{VALUE}}, color-mix(in srgb, {{VALUE}}, black 15%));',
+                    '{{WRAPPER}} .mg-mega-carousel-dot.active'              => 'background: linear-gradient(90deg, color-mix(in srgb, {{VALUE}}, white 15%), {{VALUE}}, color-mix(in srgb, {{VALUE}}, black 15%));',
                 ],
             ]
         );
@@ -143,7 +143,7 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
                 'type'      => Controls_Manager::COLOR,
                 'default'   => '#ddd',
                 'selectors' => [
-                    '{{WRAPPER}} .mg-dot' => 'background: linear-gradient(145deg, color-mix(in srgb, {{VALUE}}, white 15%), color-mix(in srgb, {{VALUE}}, black 10%));',
+                    '{{WRAPPER}} .mg-mega-carousel-dot' => 'background: linear-gradient(145deg, color-mix(in srgb, {{VALUE}}, white 15%), color-mix(in srgb, {{VALUE}}, black 10%));',
                 ],
             ]
         );
@@ -165,7 +165,7 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
                     'size' => 8,
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .mg-dot' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .mg-mega-carousel-dot' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -187,8 +187,8 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
                     'size' => 12,
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .mg-dots-container' => 'padding: 0 {{SIZE}}{{UNIT}};',
-                    '{{WRAPPER}} .mg-dot'            => 'margin: 0 calc({{SIZE}}{{UNIT}}/2);',
+                    '{{WRAPPER}} .mg-mega-carousel-dots-container' => 'padding: 0 {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .mg-mega-carousel-dot'            => 'margin: 0 calc({{SIZE}}{{UNIT}}/2);',
                 ],
             ]
         );

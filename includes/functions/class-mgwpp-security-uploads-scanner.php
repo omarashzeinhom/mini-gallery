@@ -1,11 +1,9 @@
 <?php
-class MGWPP_Security_Uploads_Scanner
-{
+class MGWPP_Security_Uploads_Scanner {
     const SCAN_THRESHOLD = 5242880; // 5MB
     const DANGEROUS_PERMISSIONS = '0777';
 
-    public static function scan_directory($directory)
-    {
+    public static function scan_directory($directory) {
         $suspicious_files = [];
         if (!is_dir($directory) || !is_readable($directory)) return $suspicious_files;
 
@@ -74,15 +72,13 @@ class MGWPP_Security_Uploads_Scanner
                     ];
                 }
             } catch (Exception $e) {
-                error_log("Security scan error: " . $e->getMessage());
-            }
+                return new WP_Error( 'mgwpp_scan_error', __( 'An error occurred during the security scan.', 'mini-gallery' ), $e->getMessage() );            }
         }
 
         return $suspicious_files;
     }
 
-    public static function render_scanner_ui()
-    {
+    public static function render_scanner_ui() {
 ?>
         <div class="mgwpp-scanner-container">
             <div class="mgwpp-scanner-header">
@@ -93,7 +89,7 @@ class MGWPP_Security_Uploads_Scanner
                 <button
                     id="start-scan"
                     class="mgwpp-scan-button"
-                    data-nonce="<?php echo wp_create_nonce('security_scan_nonce'); ?>">
+                    data-nonce="<?php echo esc_attr( wp_create_nonce('security_scan_nonce') ); ?>">
                     <span class="scan-icon">🔍</span> Start Security Scan
                 </button>
                 <div id="scan-status" class="mgwpp-scan-status">
@@ -235,7 +231,6 @@ class MGWPP_Security_Uploads_Scanner
             }
         </style>
 
-
         <script>
             jQuery(document).ready(function($) {
                 $('#start-scan').click(function() {
@@ -261,7 +256,7 @@ class MGWPP_Security_Uploads_Scanner
                 });
             });
         </script>
-    <?php
+<?php
     }
 
     public static function render_suspicious_report($suspicious_files) {
@@ -285,7 +280,7 @@ class MGWPP_Security_Uploads_Scanner
                         <?php foreach ($suspicious_files as $file) : ?>
                         <tr class="mgwpp-file-row">
                             <td class="mgwpp-file-path"><?php echo esc_html($file['path']); ?></td>
-                            <td><span class="mgwpp-badge mgwpp-red"><?php echo strtoupper($file['extension']); ?></span></td>
+                            <td><span class="mgwpp-badge mgwpp-red"><?php echo esc_html( strtoupper( $file['extension'] ) ); ?></span></td>
                             <td><?php echo esc_html($file['perms']); ?></td>
                             <td><?php echo esc_html($file['size']); ?></td>
                         </tr>

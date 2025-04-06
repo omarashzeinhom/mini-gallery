@@ -65,7 +65,7 @@ class MGWPP_FullPageSlider {
 
     this.slides.forEach((_, i) => {
       const dot = document.createElement('button');
-      dot.className = `mg-dot ${i === 0 ? 'active' : ''}`;
+      dot.className = `mg-full-page-slider-dot ${i === 0 ? 'active' : ''}`;
       dot.addEventListener('click', () => this.goToSlide(i));
       dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
       this.dotsContainer.appendChild(dot);
@@ -75,7 +75,7 @@ class MGWPP_FullPageSlider {
   }
 
   updateDots(index) {
-    this.dotsContainer.querySelectorAll('.mg-dot').forEach((dot, i) => {
+    this.dotsContainer.querySelectorAll('.mg-full-page-slider-dot').forEach((dot, i) => {
       dot.classList.toggle('active', i === index);
     });
   }

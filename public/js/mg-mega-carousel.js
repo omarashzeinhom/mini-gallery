@@ -2,7 +2,7 @@ class MegaCarousel {
     constructor() {
         this.carousel = document.querySelector('.mg-mega-carousel');
         this.slides = Array.from(document.querySelectorAll('.mg-carousel__slide'));
-        this.dotsContainer = document.querySelector('.mg-dots-container');
+        this.dotsContainer = document.querySelector('.mg-mega-carousel-dots-container');
         this.currentIndex = 0;
         this.autoPlayInterval = null;
 
@@ -24,7 +24,7 @@ class MegaCarousel {
     initDots() {
         this.slides.forEach((_, index) => {
             const dot = document.createElement('div');
-            dot.classList.add('mg-dot');
+            dot.classList.add('mg-mega-carousel-dot');
             if (index === 0) dot.classList.add('active');
             dot.addEventListener('click', () => this.goToSlide(index));
             this.dotsContainer.appendChild(dot);

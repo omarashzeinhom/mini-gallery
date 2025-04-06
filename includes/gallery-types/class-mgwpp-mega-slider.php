@@ -23,7 +23,7 @@ class MGWPP_Mega_Slider {
         $placeholder      = ! empty( $settings['placeholder_image']['url'] ) ? $settings['placeholder_image']['url'] : '';
         $viewport_height  = ! empty( $settings['viewport_height']['size'] ) ? $settings['viewport_height']['size'] . $settings['viewport_height']['unit'] : '600px';
         $show_arrows      = $settings['show_arrows'] === 'yes';
-        $show_dots        = $settings['show_s'] === 'yes';
+        $show_dots = $settings['show_dots'] === 'yes';
         $autoplay         = $settings['autoplay'] === 'yes';
         $autoplay_delay   = ! empty( $settings['autoplay_delay']['size'] ) ? $settings['autoplay_delay']['size'] . $settings['autoplay_delay']['unit'] : '3000';
         $lazy_load_first  = $settings['lazy_load_first'] === 'yes';

@@ -8,11 +8,6 @@ class MGWPP_Spotlight_Carousel {
         if ( empty( $images ) || ! is_array( $images ) ) {
             return '<div class="mgwpp-error">' . esc_html__( 'No images found in gallery', 'mini-gallery' ) . '</div>';
         }
-
-        // Enqueue assets
-        wp_enqueue_style( 'mgwpp-spotlight-carousel' );
-        wp_enqueue_script( 'mgwpp-spotlight-carousel' );
-
         ob_start();
         ?>
         <div class="mgwpp-spotlight-carousel">

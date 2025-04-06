@@ -6,7 +6,6 @@ class MGWPP_Testimonial_Carousel
     public static function init()
     {
         add_action('init', [__CLASS__, 'register_image_sizes']);
-        add_action('wp_enqueue_scripts', [__CLASS__, 'register_assets']);
         add_shortcode('mgwpp_testimonials', [__CLASS__, 'shortcode_handler']);
     }
     public static function register_image_sizes()
@@ -14,23 +13,6 @@ class MGWPP_Testimonial_Carousel
         add_image_size('mgwpp-testimonial', 400, 400, true); // 400x400 cropped
 
 
-    }
-    public static function register_assets()
-    {
-        wp_register_style(
-            'mgwpp-testimonial-carousel-style',
-            plugins_url('public/css/mgwpp-testimonial-carousel.css', __FILE__),
-            [],
-            '1.0.1'
-        );
-
-        wp_register_script(
-            'mgwpp-testimonial-carousel',
-            plugins_url('public/js/mgwpp-testimonial-carousel.js', __FILE__),
-            ['jquery'],
-            '1.0.1',
-            true
-        );
     }
 
     public static function shortcode_handler($atts)

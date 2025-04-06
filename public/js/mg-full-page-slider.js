@@ -61,7 +61,7 @@ class MGWPP_FullPageSlider {
 
   createDots() {
     this.dotsContainer = document.createElement('div');
-    this.dotsContainer.className = 'mg-fullpage-dots';
+    this.dotsContainer.className = 'mg-fullpage-slider-dots';
 
     this.slides.forEach((_, i) => {
       const dot = document.createElement('button');
@@ -75,9 +75,11 @@ class MGWPP_FullPageSlider {
   }
 
   updateDots(index) {
+    if (!this.dotsContainer) return;
     this.dotsContainer.querySelectorAll('.mg-full-page-slider-dot').forEach((dot, i) => {
       dot.classList.toggle('active', i === index);
     });
+    
   }
 
   goToSlide(index) {

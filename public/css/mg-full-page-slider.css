@@ -114,7 +114,7 @@
   .mg-prev { left: 3vw; }
   .mg-next { right: 3vw; }
   
-  .mg-fullpage-dots {
+  .mg-fullpage-slider-dots {
     position: absolute;
     bottom: 5vh;
     left: 50%;
@@ -124,7 +124,7 @@
     z-index: 100;
   }
   
-  .mg-full-page-dot {
+  .mg-full-page-slider-dot {
     width: 14px;
     height: 14px;
     border-radius: 50%;
@@ -136,7 +136,7 @@
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .mg-full-page-dot.active {
+  .mg-full-page-slider-dot.active {
     background: var(--mgwpp-primary-accent);
     transform: scale(1.4);
   }
@@ -175,7 +175,7 @@
       padding: 0.5rem;
     }
     
-    .mg-fullpage-dots {
+    .mg-fullpage-slider-dots {
       bottom: 8vh;
     }
   }

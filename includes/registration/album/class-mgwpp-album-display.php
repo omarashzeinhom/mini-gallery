@@ -129,7 +129,7 @@ class MGWPP_Album_Display {
                 esc_attr( $caption ),
                 $gallery_id,
                 $attachment->ID,
-                esc_attr( sprintf( __( 'View image %d', 'mini-gallery' ), $index + 1 ) ),
+                esc_attr( sprintf( 'View image %d', $index + 1 ) ),
                 wp_get_attachment_image(
                     $attachment->ID,
                     'medium',

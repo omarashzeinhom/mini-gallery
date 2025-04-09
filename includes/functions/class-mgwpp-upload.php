@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 class MGWPP_Upload
@@ -76,17 +76,17 @@ class MGWPP_Upload
                                     return new WP_Error('attachment_creation_failed', __('Attachment creation failed: ', 'mini-gallery') . $attachment_id->get_error_message());
                                 }
                             } else {
-                            // translators: %d is the index of the file that failed validation.
+                                // translators: %d is the index of the file that failed validation.
                                 return new WP_Error(
                                     'file_upload_failed',
                                     __('File upload failed. Please try again.', 'mini-gallery')
                                 );
                             }
                         } else {
-                        // translators: %s is the error message from WP_Error.
+                            // translators: %d is the index of the file that failed validation.
                             return new WP_Error(
                                 'file_data_validation_failed',
-                                sprintf(__('File data validation failed for index: %d', 'mini-gallery'), $index)
+                                sprintf('File data validation failed for index: %d', 'mini-gallery')
                             );
                         }
                     }

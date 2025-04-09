@@ -1,142 +1,154 @@
-// Carousel for Single Gallery
-document.addEventListener("DOMContentLoaded", function () {
-    var singleCarousels = document.querySelectorAll(".mg-gallery-single-carousel");
-
-    singleCarousels.forEach(function (carousel) {
-        var slides = carousel.querySelectorAll(".carousel-slide");
-        var currentIndex = 0;
-
-        function showSlide(index) {
-            slides.forEach(function (slide) {
-                slide.style.display = "none";
-            });
-            slides[index].style.display = "block";
+jQuery(document).ready(function($) {
+    // =============================================
+    // Gallery Preview Functionality
+    // =============================================
+    $('#gallery_type').on('change', function() {
+        var selectedOption = $(this).find('option:selected');
+        var previewImg = selectedOption.data('image');
+        var demoUrl = selectedOption.data('demo');
+        
+        if (previewImg) {
+            $('#preview_img').attr('src', previewImg);
+            $('#preview_demo').attr('href', demoUrl);
+            $('#gallery_preview').show();
+        } else {
+            $('#gallery_preview').hide();
         }
-
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
-        }
-
-        showSlide(currentIndex);
-        setInterval(nextSlide, 3000); // Change slide every 3 seconds
     });
-});
 
-
-
-// Carousel for Multi Gallery
-document.addEventListener("DOMContentLoaded", function () {
-    var multiCarousels = document.querySelectorAll(".mg-gallery.multi-carousel");
-
-    multiCarousels.forEach(function (carousel) {
-        var slides = carousel.querySelectorAll(".mg-multi-carousel-slide");
-        var currentIndex = 0;
-        var imagesPerPage = 6; // Default number of images per page
-        var visibleSlides = [];
-
-        // Function to update the number of images per page based on screen width
-        function updateImagesPerPage() {
-            if (window.innerWidth < 768) {
-                imagesPerPage = 2; // 2 images per page on mobile
-            } else {
-                imagesPerPage = 6; // 6 images per page otherwise
-            }
-        }
-
-        // Function to show the current page of slides
-        function showSlides() {
-            var totalSlides = slides.length;
-            slides.forEach(function (slide, index) {
-                if (index >= currentIndex * imagesPerPage && index < (currentIndex + 1) * imagesPerPage) {
-                    slide.style.display = "flex";
-                } else {
-                    slide.style.display = "none";
+    // =============================================
+    // Gallery Form Submission (with file upload)
+    // =============================================
+    $('#mgwpp_galleries_content form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var formData = new FormData(this);
+        var notice = $('#mgwpp-gallery-notice');
+        
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                notice.hide().removeClass('success error');
+                form.find('input[type="submit"]').prop('disabled', true).val('Uploading...');
+            },
+            success: function(response) {
+                // Show success message
+                notice.addClass('success').html(`
+                    <p>Gallery created successfully!</p>
+                    <p>You can view it in the "Existing Galleries" section below.</p>
+                `).show();
+                
+                // Reset form
+                form[0].reset();
+                form.find('input[type="submit"]').prop('disabled', false).val('Upload Images');
+                
+                // Hide preview if shown
+                $('#gallery_preview').hide();
+                
+                // Refresh galleries list
+                location.reload(); // Simple solution - reload the page
+                
+                // Scroll to notice
+                $('html, body').animate({
+                    scrollTop: notice.offset().top - 20
+                }, 500);
+            },
+            error: function(xhr) {
+                var errorMsg = 'An error occurred while creating the gallery.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    errorMsg = xhr.responseText;
                 }
-            });
-        }
-
-        // Function to go to the next page of slides
-        function nextSlide() {
-            updateImagesPerPage();
-            var totalSlides = slides.length;
-            currentIndex = (currentIndex + 1) % Math.ceil(totalSlides / imagesPerPage);
-            showSlides();
-        }
-
-        // Show the initial set of slides
-        showSlides();
-
-        // Set up an interval to automatically switch slides
-        setInterval(nextSlide, 3000); // Change slide every 3 seconds
-
-
-        // Handle window resize to adjust images per page
-        window.addEventListener('resize', function () {
-            updateImagesPerPage();
-            showSlides();
+                
+                notice.addClass('error').html(`
+                    <p>${errorMsg}</p>
+                    <p>Please try again or check your file selections.</p>
+                `).show();
+                
+                form.find('input[type="submit"]').prop('disabled', false).val('Upload Images');
+                
+                $('html, body').animate({
+                    scrollTop: notice.offset().top - 20
+                }, 500);
+            }
         });
     });
-});
 
+    // =============================================
+    // Album Form Submission
+    // =============================================
+    $('#mgwpp_albums_content form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var notice = $('#mgwpp-album-notice');
+        
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            beforeSend: function() {
+                notice.hide().removeClass('success error');
+                form.find('input[type="submit"]').prop('disabled', true).val('Creating...');
+            },
+            success: function(response) {
+                notice.addClass('success').html(`
+                    <p>Album created successfully!</p>
+                    <p>You can view it in the "Existing Albums" section below.</p>
+                `).show();
+                
+                form[0].reset();
+                form.find('input[type="submit"]').prop('disabled', false).val('Create Album');
+                
+                // Refresh albums list
+                location.reload();
+                
+                $('html, body').animate({
+                    scrollTop: notice.offset().top - 20
+                }, 500);
+            },
+            error: function(xhr) {
+                var errorMsg = 'An error occurred while creating the album.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    errorMsg = xhr.responseText;
+                }
+                
+                notice.addClass('error').html(`
+                    <p>${errorMsg}</p>
+                    <p>Please check your selections and try again.</p>
+                `).show();
+                
+                form.find('input[type="submit"]').prop('disabled', false).val('Create Album');
+                
+                $('html, body').animate({
+                    scrollTop: notice.offset().top - 20
+                }, 500);
+            }
+        });
+    });
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleCheckbox = document.getElementById("mode-toggle-checkbox");
-    const body = document.body;
-
-    // Check for saved theme in localStorage
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-        body.setAttribute("data-theme", "dark");
-        toggleCheckbox.checked = true;
+    // =============================================
+    // Theme Toggle Functionality
+    // =============================================
+    function toggleDashboardTheme() {
+        $('body').toggleClass('dark');
+        localStorage.setItem('mgwpp-theme', $('body').hasClass('dark') ? 'dark' : 'light');
+        $('#theme-icon-moon').toggleClass('hidden');
+        $('#theme-icon-sun').toggleClass('hidden');
     }
 
-    // Toggle theme on checkbox change
-    toggleCheckbox?.addEventListener("change", function () {
-        if (this.checked) {
-            body.setAttribute("data-theme", "dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            body.removeAttribute("data-theme");
-            localStorage.setItem("theme", "light");
-        }
-    });
+    // Initialize theme from localStorage
+    if (localStorage.getItem('mgwpp-theme') === 'dark') {
+        $('body').addClass('dark');
+        $('#theme-icon-moon').addClass('hidden');
+        $('#theme-icon-sun').removeClass('hidden');
+    }
+
+    window.toggleDashboardTheme = toggleDashboardTheme;
 });
-
-
-     function toggleDashboardTheme() {
-              const dashboardEl = document.getElementById('dashboard-stats');
-              const moonIcon = document.getElementById('theme-icon-moon');
-              const sunIcon = document.getElementById('theme-icon-sun');
-              
-              if (dashboardEl.classList.contains('theme-light')) {
-                dashboardEl.classList.remove('theme-light');
-                dashboardEl.classList.add('theme-dark');
-                moonIcon.classList.add('hidden');
-                sunIcon.classList.remove('hidden');
-                localStorage.setItem('dashboard-theme', 'dark');
-              } else {
-                dashboardEl.classList.remove('theme-dark');
-                dashboardEl.classList.add('theme-light');
-                moonIcon.classList.remove('hidden');
-                sunIcon.classList.add('hidden');
-                localStorage.setItem('dashboard-theme', 'light');
-              }
-            }
-            
-            // Check for saved theme preference
-            document.addEventListener('DOMContentLoaded', function() {
-              const savedTheme = localStorage.getItem('dashboard-theme');
-              const dashboardEl = document.getElementById('dashboard-stats');
-              const moonIcon = document.getElementById('theme-icon-moon');
-              const sunIcon = document.getElementById('theme-icon-sun');
-              
-              if (savedTheme === 'dark' || 
-                  (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                dashboardEl.classList.remove('theme-light');
-                dashboardEl.classList.add('theme-dark');
-                moonIcon.classList.add('hidden');
-                sunIcon.classList.remove('hidden');
-              }
-            });

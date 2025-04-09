@@ -370,7 +370,8 @@ class MGWPP_Admin
         <div id="mgwpp_albums_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="mgwpp_create_album">
+            <div id="mgwpp-album-notice" class="mgwpp-notice" style="display: none;"></div> 
+            <input type="hidden" name="action" value="mgwpp_create_album">
                 <input type="hidden" name="mgwpp_album_submit_nonce"
                     value="<?php echo esc_attr(wp_create_nonce('mgwpp_album_submit_nonce')); ?>">
                 <table class="form-table">
@@ -494,7 +495,8 @@ class MGWPP_Admin
         <div id="mgwpp_galleries_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Gallery', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="mgwpp_upload">
+            <div id="mgwpp-gallery-notice" class="mgwpp-notice" style="display: none;"></div>   
+            <input type="hidden" name="action" value="mgwpp_upload">
                 <input type="hidden" name="mgwpp_upload_nonce"
                     value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
                 <table class="form-table">

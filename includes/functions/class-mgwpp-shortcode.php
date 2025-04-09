@@ -16,11 +16,12 @@ function mgwpp_gallery_shortcode($atts)
         $all_images = get_attached_media('image', $post_id);
 
         if ($all_images) {
-            // Initialize gallery_html with default value
             $gallery_html = '<p>Gallery type not recognized.</p>';
 
             switch ($gallery_type) {
                 case 'single_carousel':
+                    wp_enqueue_style('mg-single-carousel-styles');
+                    wp_enqueue_script('mg-single-carousel-js');
                     if (!class_exists('MGWPP_Gallery_Single')) {
                         include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-single-gallery.php';
                     }
@@ -28,6 +29,8 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'multi_carousel':
+                    wp_enqueue_style('mg-multi-carousel-styles');
+                    wp_enqueue_script('mg-multi-carousel-js');
                     if (!class_exists('MGWPP_Gallery_Multi')) {
                         include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-multi-gallery.php';
                     }
@@ -35,6 +38,7 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'grid':
+                    wp_enqueue_style('mg-grid-styles');
                     if (!class_exists('MGWPP_Gallery_Grid')) {
                         include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
                     }
@@ -42,6 +46,8 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'mega_slider':
+                    wp_enqueue_style('mg-mega-carousel-styles');
+                    wp_enqueue_script('mg-mega-carousel-js');
                     if (!class_exists('MGWPP_Mega_Slider')) {
                         include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
                     }
@@ -61,6 +67,8 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'threed_carousel':
+                    wp_enqueue_style('mgwpp-threed-carousel-styles');
+                    wp_enqueue_script('mgwpp-threed-carousel-js');
                     if (!class_exists('MGWPP_3D_Carousel')) {
                         include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-3d-carousel.php';
                     }
@@ -68,6 +76,8 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'full_page_slider':
+                    wp_enqueue_style('mg-fullpage-slider-styles');
+                    wp_enqueue_script('mg-fullpage-slider-js');
                     if (!class_exists('MGWPP_Full_Page_Slider')) {
                         require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
                     }
@@ -75,12 +85,17 @@ function mgwpp_gallery_shortcode($atts)
                     break;
 
                 case 'spotlight_carousel':
+                    wp_enqueue_style('mg-spotlight-slider-styles');
+                    wp_enqueue_script('mg-spotlight-slider-js');
                     if (!class_exists('MGWPP_Spotlight_Carousel')) {
                         require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
                     }
                     $gallery_html = MGWPP_Spotlight_Carousel::render($post_id, $all_images);
                     break;
+
                 case 'testimonials_carousel':
+                    wp_enqueue_style('mgwpp-testimonial-carousel-styles');
+                    wp_enqueue_script('mgwpp-testimonial-carousel-js');
                     $testimonials = get_posts([
                         'post_type' => 'testimonial',
                         'posts_per_page' => -1,
@@ -110,9 +125,21 @@ function mgwpp_gallery_shortcode($atts)
         if ('multi_carousel' === $gallery_type && count($all_images) > $images_per_page) {
             $total_pages = ceil(count($all_images) / $images_per_page);
             $output .= '<div class="mgwpp-gallery-pagination">';
-            // Pagination logic here
+        
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $active_class = $i === $paged ? ' active' : '';
+                $output .= sprintf(
+                    '<a class="mgwpp-page-number%s" href="?id=%d&paged=%d">%d</a>',
+                    esc_attr($active_class),
+                    esc_attr($post_id),
+                    esc_attr($i),
+                    esc_html($i)
+                );
+            }
+        
             $output .= '</div>';
         }
+        
     } else {
         $output .= '<p>Invalid gallery ID.</p>';
     }

@@ -1,27 +1,49 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
-
-class MGWPP_Assets {
+class MGWPP_Assets
+{
 
     /**
-     * Returns a version string based on the file modification time.
-     * Falls back to a default version if file doesn't exist.
+     * Static flag to force assets loading when the shortcode is used.
      *
-     * @param string $file Absolute file path.
-     * @param string $default Default version string.
-     * @return string Version.
+     * @var bool
      */
-    private function get_file_version( $file, $default = '1.0' ) {
-        return file_exists( $file ) ? filemtime( $file ) : $default;
+    private static $load_assets = false;
+
+    /**
+     * Static value for gallery type provided via shortcode.
+     *
+     * @var string
+     */
+    private static $shortcode_gallery_type = '';
+
+    /**
+     * Enable asset loading via shortcode.
+     *
+     * Call this method in your shortcode function before output.
+     */
+    public static function enable_assets()
+    {
+        self::$load_assets = true;
+    }
+
+    /**
+     * Set the gallery type to be used when enqueuing assets.
+     *
+     * @param string $type The gallery type as defined in your code, e.g., 'single_carousel'
+     */
+    public static function set_gallery_type($type)
+    {
+        self::$shortcode_gallery_type = $type;
     }
 
     /**
      * Registers frontend assets.
      */
-    public function register_assets() {
-        // Use the constants to build paths relative to the plugin root.
+    public function register_assets()
+    {
         $base_url  = MG_PLUGIN_URL . '/public/';
         $base_path = MG_PLUGIN_PATH . 'public/';
 
@@ -74,7 +96,7 @@ class MGWPP_Assets {
             'mg-mega-carousel-js',
             $base_url . 'js/mg-mega-carousel.js',
             array(),
-            $this->get_file_version( $base_path . 'js/mg-mega-carousel.js' ),
+            file_exists($base_path . 'js/mg-mega-carousel.js') ? filemtime($base_path . 'js/mg-mega-carousel.js') : '1.0',
             true
         );
 
@@ -96,132 +118,154 @@ class MGWPP_Assets {
         // Neon Carousel
         wp_register_style(
             'mgwpp-neon-carousel-styles',
-            MG_PLUGIN_URL . '/public/css/mg-neon-carousel.css',
+            $base_url . 'css/mg-neon-carousel.css',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css' )
+            file_exists(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-neon-carousel-js',
-            MG_PLUGIN_URL . '/public/js/mg-neon-carousel.js',
+            $base_url . 'js/mg-neon-carousel.js',
             array('jquery'),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js') : '1.0',
             true
         );
 
         // 3D Carousel
         wp_register_style(
             'mgwpp-threed-carousel-styles',
-            MG_PLUGIN_URL . '/public/css/mg-threed-carousel.css',
+            $base_url . 'css/mg-threed-carousel.css',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/css/mg-threed-carousel.css' )
+            file_exists(MG_PLUGIN_PATH . 'public/css/mg-threed-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-threed-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-threed-carousel-js',
-            MG_PLUGIN_URL . '/public/js/mg-threed-carousel.js',
+            $base_url . 'js/mg-threed-carousel.js',
             array('jquery'),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mg-threed-carousel.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-threed-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-threed-carousel.js') : '1.0',
             true
         );
 
         // Testimonials Carousel
         wp_register_style(
             'mgwpp-testimonial-carousel-styles',
-            MG_PLUGIN_URL . '/public/css/mgwpp-testimonial-carousel.css',
+            $base_url . 'css/mgwpp-testimonial-carousel.css',
             array('jquery'),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/css/mgwpp-testimonial-carousel.css' )
+            file_exists(MG_PLUGIN_PATH . 'public/css/mgwpp-testimonial-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mgwpp-testimonial-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-testimonial-carousel-js',
-            MG_PLUGIN_URL . '/public/js/mgwpp-testimonial-carousel.js',
+            $base_url . 'js/mgwpp-testimonial-carousel.js',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') : '1.0',
             true
         );
 
         // Lightbox for Testimonials
         wp_register_script(
             'mgwpp-lightbox-js',
-            MG_PLUGIN_URL . '/public/js/mg-lightbox.js',
+            $base_url . 'js/mg-lightbox.js',
             array('jquery'),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mg-lightbox.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-lightbox.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-lightbox.js') : '1.0',
             true
         );
 
         // FullPage Slider
         wp_register_style(
             'mg-fullpage-slider-styles',
-            MG_PLUGIN_URL . '/public/css/mg-full-page-slider.css',
+            $base_url . 'css/mg-full-page-slider.css',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/css/mg-full-page-slider.css' )
+            file_exists(MG_PLUGIN_PATH . 'public/css/mg-full-page-slider.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-full-page-slider.css') : '1.0'
         );
         wp_register_script(
             'mg-fullpage-slider-js',
-            MG_PLUGIN_URL . '/public/js/mg-full-page-slider.js',
+            $base_url . 'js/mg-full-page-slider.js',
             array('jquery'),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mg-full-page-slider.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-full-page-slider.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-full-page-slider.js') : '1.0',
             true
         );
 
         // Spotlight Slider
         wp_register_style(
             'mg-spotlight-slider-styles',
-            MG_PLUGIN_URL . '/public/css/mg-spotlight-carousel.css',
+            $base_url . 'css/mg-spotlight-carousel.css',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/css/mg-spotlight-carousel.css' )
+            file_exists(MG_PLUGIN_PATH . 'public/css/mg-spotlight-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-spotlight-carousel.css') : '1.0'
         );
         wp_register_script(
             'mg-spotlight-slider-js',
-            MG_PLUGIN_URL . '/public/js/mg-spotlight-carousel.js',
+            $base_url . 'js/mg-spotlight-carousel.js',
             array(),
-            $this->get_file_version( MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js' ),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') : '1.0',
             true
         );
     }
 
     /**
      * Enqueues frontend assets conditionally.
+     *
+     * Assets will be enqueued if either the page is a singular mgwpp_gallery
+     * or if the MGWPP_Assets::enable_assets() flag has been set by the shortcode.
      */
-    public function enqueue_assets() {
+    public function enqueue_assets()
+    {
         // Always enqueue the universal init script.
-        wp_enqueue_script( 'mg-universal-init' );
+        wp_enqueue_script('mg-universal-init');
 
-        // Only load gallery assets on singular gallery posts.
-        if ( is_singular( 'mgwpp_gallery' ) ) {
-            $gallery_type = get_post_meta( get_the_ID(), 'gallery_type', true );
-            switch ( $gallery_type ) {
+
+        // Check if we are on a single gallery page or if the shortcode flag is set.
+        if (is_singular('mgwpp_gallery') || self::$load_assets) {
+
+            // When using the shortcode, we might not have the proper post meta available.
+            // If a gallery type was set via the shortcode, use that instead.
+            if (self::$shortcode_gallery_type) {
+                $gallery_type = self::$shortcode_gallery_type;
+
+                // ✅ ADD DEBUG LOG HERE
+                error_log('MGWPP: Enqueueing assets for gallery type: ' . $gallery_type);
+            } else {
+                // Otherwise, try the post meta.
+                $gallery_type = get_post_meta(get_the_ID(), 'gallery_type', true);
+            }
+
+            // Fallback to a default type if still empty.
+            if (empty($gallery_type)) {
+                $gallery_type = 'single_carousel';
+            }
+
+            switch ($gallery_type) {
                 case 'single_carousel':
-                    wp_enqueue_script( 'mg-single-carousel-js' );
-                    wp_enqueue_style( 'mg-single-carousel-styles' );
+                    wp_enqueue_script('mg-single-carousel-js');
+                    wp_enqueue_style('mg-single-carousel-styles');
                     break;
                 case 'multi_carousel':
-                    wp_enqueue_script( 'mg-multi-carousel-js' );
-                    wp_enqueue_style( 'mg-multi-carousel-styles' );
+                    wp_enqueue_script('mg-multi-carousel-js');
+                    wp_enqueue_style('mg-multi-carousel-styles');
                     break;
                 case 'grid':
-                    wp_enqueue_style( 'mg-grid-styles' );
+                    wp_enqueue_style('mg-grid-styles');
                     break;
                 case 'mega_slider':
-                    wp_enqueue_script( 'mg-mega-carousel-js' );
-                    wp_enqueue_style( 'mg-mega-carousel-styles' );
+                    wp_enqueue_script('mg-mega-carousel-js');
+                    wp_enqueue_style('mg-mega-carousel-styles');
                     break;
                 case 'pro_carousel':
-                    wp_enqueue_style( 'mgwpp-pro-carousel-styles' );
-                    wp_enqueue_script( 'mgwpp-pro-carousel-js' );
+                    wp_enqueue_style('mgwpp-pro-carousel-styles');
+                    wp_enqueue_script('mgwpp-pro-carousel-js');
                     break;
                 case 'neon_carousel':
-                    wp_enqueue_script( 'mgwpp-neon-carousel-js' );
-                    wp_enqueue_style( 'mgwpp-neon-carousel-styles' );
+                    wp_enqueue_script('mgwpp-neon-carousel-js');
+                    wp_enqueue_style('mgwpp-neon-carousel-styles');
                     break;
                 case 'threed_carousel':
-                    wp_enqueue_script( 'mgwpp-threed-carousel-js' );
-                    wp_enqueue_style( 'mgwpp-threed-carousel-styles' );
+                    wp_enqueue_script('mgwpp-threed-carousel-js');
+                    wp_enqueue_style('mgwpp-threed-carousel-styles');
                     break;
                 case 'testimonials_carousel':
-                    wp_enqueue_script( 'mgwpp-testimonial-carousel-js' );
-                    wp_enqueue_style( 'mgwpp-testimonial-carousel-styles' );
+                    wp_enqueue_script('mgwpp-testimonial-carousel-js');
+                    wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                     break;
                 default:
-                    // No recognized gallery type; no additional assets enqueued.
+                    // No additional assets enqueued if the gallery type is not recognized.
                     break;
             }
         }
@@ -232,14 +276,15 @@ class MGWPP_Assets {
      *
      * @param string $hook_suffix Current admin page hook.
      */
-    public function enqueue_admin_assets( $hook_suffix ) {
+    public function enqueue_admin_assets($hook_suffix)
+    {
         // Only load assets on post editing screens.
-        if ( in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
+        if (in_array($hook_suffix, array('post.php', 'post-new.php'), true)) {
             $screen = get_current_screen();
-            if ( $screen && ( 'post' === $screen->base || 'page' === $screen->base ) ) {
-                wp_enqueue_script( 'mg-admin-carousel' );
-                wp_enqueue_style( 'mg-admin-styles' );
-                wp_enqueue_style( 'mg-styles' );
+            if ($screen && ('post' === $screen->base || 'page' === $screen->base)) {
+                wp_enqueue_script('mg-admin-carousel');
+                wp_enqueue_style('mg-admin-styles');
+                wp_enqueue_style('mg-styles');
             }
         }
     }
@@ -247,15 +292,30 @@ class MGWPP_Assets {
     /**
      * Hooks registration and enqueue functions into WordPress.
      */
-    public function init() {
-        add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ), 20 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+    public function init()
+    {
+        add_action('wp_enqueue_scripts', array($this, 'register_assets'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'), 20);
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+    }
+
+    public static function enqueue_assets_for($gallery_type)
+    {
+        $style_handle  = 'mgwpp-' . $gallery_type . '-styles';
+        $script_handle = 'mgwpp-' . $gallery_type . '-js';
+
+        if (wp_style_is($style_handle, 'registered')) {
+            wp_enqueue_style($style_handle);
+        }
+
+        if (wp_script_is($script_handle, 'registered')) {
+            wp_enqueue_script($script_handle);
+        }
     }
 }
 
-// Hook the class initialization on 'init' so that all hooks and conditions are ready.
-add_action( 'init', function() {
+// Hook the class initialization on 'init' so that all hooks are ready.
+add_action('init', function () {
     $mgwpp_assets = new MGWPP_Assets();
     $mgwpp_assets->init();
 });

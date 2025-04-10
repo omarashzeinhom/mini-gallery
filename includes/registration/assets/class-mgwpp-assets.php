@@ -156,13 +156,13 @@ class MGWPP_Assets
         wp_register_style(
             'mgwpp-testimonial-carousel-styles',
             $base_url . 'css/mgwpp-testimonial-carousel.css',
-            array('jquery'),
+            array(),
             file_exists(MG_PLUGIN_PATH . 'public/css/mgwpp-testimonial-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mgwpp-testimonial-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-testimonial-carousel-js',
             $base_url . 'js/mgwpp-testimonial-carousel.js',
-            array(),
+            array('jquery'),
             file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') : '1.0',
             true
         );
@@ -205,6 +205,24 @@ class MGWPP_Assets
             file_exists(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') : '1.0',
             true
         );
+
+
+
+
+        // Album Styles
+        wp_register_style(
+            'mg-album-styles.css',
+            $base_url . 'css/mg-album-styles.css',
+            array(),
+            file_exists(MG_PLUGIN_PATH . 'public/css/mg-album-styles.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-album-styles.css') : '1.0'
+        );
+        wp_register_script(
+            'mg-albums-styles.js',
+            $base_url . 'js/mg-albums-styles.js',
+            array(),
+            file_exists(MG_PLUGIN_PATH . 'public/js/mg-albums-styles.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-albums-styles.js') : '1.0',
+            true
+        );
     }
 
     /**
@@ -217,6 +235,10 @@ class MGWPP_Assets
     {
         // Always enqueue the universal init script.
         wp_enqueue_script('mg-universal-init');
+        // Albums always enqueue d
+        wp_enqueue_script('mg-album-styles.css');
+        wp_enqueue_style('mg-album-styles.js');
+
 
 
         // Check if we are on a single gallery page or if the shortcode flag is set.

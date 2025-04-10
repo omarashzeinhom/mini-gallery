@@ -68,6 +68,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
 
+
+
 // When enqueueing:
 
 // Activation & Deactivation Hooks

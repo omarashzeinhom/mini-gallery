@@ -3,60 +3,51 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Gallery_Grid {
     public static function render($post_id, $images) {
-        // Get unique categories
-        $categories = self::get_image_categories($images);
-        
         ob_start(); ?>
-        
-        <div class="mgwpp-gallery-container multi-carousel" data-auto-rotate="3000" data-images-per-page="3">
-            <!-- Filter Controls -->
-            <div class="mgwpp-filter-controls">
-                <button class="mgwpp-filter-btn active" data-category="all">All</button>
-                <?php foreach ($categories as $slug => $name): ?>
-                    <button class="mgwpp-filter-btn" data-category="<?= esc_attr($slug) ?>">
-                        <?= esc_html($name) ?>
-                    </button>
-                <?php endforeach; ?>
+
+        <div class="mgwpp-gallery-container">
+            <!-- Layout Switch Buttons -->
+            <div class="mgwpp-layout-controls">
+                <button class="mgwpp-layout-btn active" data-layout="grid">Grid</button>
+                <button class="mgwpp-layout-btn" data-layout="masonry">Masonry</button>
+                <button class="mgwpp-layout-btn" data-layout="minimal">Minimal</button>
             </div>
 
-            <!-- Carousel Slides Wrapper -->
-            <div class="mgwpp-slides-wrapper">
-                <?php foreach ($images as $index => $image): 
-                    $terms = wp_get_post_terms($image->ID, 'media_category', ['fields' => 'slugs']);
-                    $categories = !is_wp_error($terms) ? implode(' ', $terms) : '';
-                ?>
-                    <div class="mgwpp-grid-item <?= esc_attr($categories) ?>" 
-                         data-index="<?= esc_attr($index) ?>"
-                         data-categories="<?= esc_attr($categories) ?>">
-                        <div class="grid-item">
-                            <?= wp_get_attachment_image($image->ID, 'large', false, [
-                                'loading' => 'lazy',
-                                'class' => 'mgwpp-grid-gallery--image',
-                                'data-full' => wp_get_attachment_image_url($image->ID, 'full')
-                            ]) ?>
-                            
-                            <?php if ($caption = wp_get_attachment_caption($image->ID)): ?>
-                                <div class="mgwpp-image-caption"><?= esc_html($caption) ?></div>
-                            <?php endif; ?>
-                        </div>
+            <!-- Image Grid Container -->
+            <div class="mgwpp-grid-container" data-layout="grid">
+                <?php foreach ($images as $image): ?>
+                    <div class="mgwpp-grid-item">
+                        <?= wp_get_attachment_image($image->ID, 'large', false, [
+                            'class' => 'mgwpp-grid-image',
+                            'loading' => 'lazy',
+                            'data-full' => wp_get_attachment_image_url($image->ID, 'full')
+                        ]) ?>
+                        
+                        <?php if ($caption = wp_get_attachment_caption($image->ID)): ?>
+                            <div class="mgwpp-image-caption"><?= esc_html($caption) ?></div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
-        <?php return ob_get_clean();
-    }
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const layoutBtns = document.querySelectorAll(".mgwpp-layout-btn");
+            const gridContainer = document.querySelector(".mgwpp-grid-container");
 
-    private static function get_image_categories($images) {
-        $categories = [];
-        foreach ($images as $image) {
-            $terms = wp_get_post_terms($image->ID, 'media_category');
-            if (!is_wp_error($terms)) {
-                foreach ($terms as $term) {
-                    $categories[$term->slug] = $term->name;
-                }
-            }
-        }
-        return array_unique($categories);
+            layoutBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    layoutBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+
+                    const layout = btn.getAttribute("data-layout");
+                    gridContainer.setAttribute("data-layout", layout);
+                });
+            });
+        });
+        </script>
+
+        <?php return ob_get_clean();
     }
 }

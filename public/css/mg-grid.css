@@ -44,17 +44,30 @@
   transition: all 0.3s ease;
 }
 
+.mgwpp-grid-container[data-layout="minimal"] {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
 .mgwpp-grid-container[data-layout="grid"] {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
+
 .mgwpp-grid-container[data-layout="masonry"] {
-  columns: 300px;
+  display: block;
+  column-count: 3;
   column-gap: 1.5rem;
 }
 
-.mgwpp-grid-container[data-layout="minimal"] {
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+@media (max-width: 1024px) {
+  .mgwpp-grid-container[data-layout="masonry"] {
+    column-count: 2;
+  }
+}
+@media (max-width: 768px) {
+  .mgwpp-grid-container[data-layout="masonry"] {
+    column-count: 1;
+  }
 }
 
 .mgwpp-grid-item {
@@ -63,6 +76,10 @@
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s ease;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
 }
 
 .mgwpp-grid-item:hover {
@@ -71,9 +88,27 @@
 
 .mgwpp-grid-image {
   width: 100%;
-  height: 100%;
   object-fit: cover;
   border-radius: 8px;
+}
+
+/* Fixed height for grid + minimal layout */
+.mgwpp-grid-container[data-layout="grid"] .mgwpp-grid-image,
+.mgwpp-grid-container[data-layout="minimal"] .mgwpp-grid-image {
+  height: 250px;
+}
+
+/* Let masonry be natural height */
+.mgwpp-grid-container[data-layout="masonry"] .mgwpp-grid-image {
+  height: auto;
+}
+
+/* Responsive height adjustment */
+@media (max-width: 768px) {
+  .mgwpp-grid-container[data-layout="grid"] .mgwpp-grid-image,
+  .mgwpp-grid-container[data-layout="minimal"] .mgwpp-grid-image {
+    height: 180px;
+  }
 }
 
 /* =========================

@@ -1,59 +1,101 @@
-/* mini-gallery-styles.css */
+/* Revised CSS for proper image display */
+.mgwpp-single-gallery {
+  max-width: 800px;
+  margin: 2rem auto;
+  position: relative;
+  overflow: hidden;
+}
 
-.text-center {
-    text-align: center;
-  }
-  
-  /* Single Carousel */
-  .mg-gallery-single-carousel {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    max-width: 600px; /* Adjusted max-width for consistency */
-    margin: 0 auto;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide {
-    text-align: center;
-    width: 100%;
-    max-width: 250px; /* Adjusted max-width for consistency */
-    max-height: 250px; /* Adjusted max-height for consistency */
-    display: block;
-    flex-shrink: 0;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide img {
-    border: 1px solid #ccc;
-    padding: 5px;
-    width: 100%;
-    background: #f9f9f9;
-    opacity: 0.9;
-    transition: 0.2s ease-in-out;
-    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
-    object-fit: cover;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide img:hover {
-    opacity: 1;
-    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide p {
-    margin: 5px 0;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide a {
-    color: #0073aa;
-    text-decoration: none;
-  }
-  
-  .mg-gallery-single-carousel .carousel-slide a:hover {
-    text-decoration: underline;
-  }
-  
+.gallery-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa; /* Fallback background */
+}
+
+.main-image {
+  position: relative;
+  aspect-ratio: 16/9;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Navigation controls */
+.gallery-controls {
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 2;
+}
+
+.nav-prev, .nav-next {
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-prev:hover, .nav-next:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.image-counter {
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* Touch controls */
+.gallery-container {
+  touch-action: pan-y;
+}
+
+.carousel-slide {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Empty state */
+.no-images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px; /* Fixed height for empty state */
+  color: #666;
+  font-style: italic;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+}

@@ -1,154 +1,97 @@
-jQuery(document).ready(function($) {
-    // =============================================
-    // Gallery Preview Functionality
-    // =============================================
-    $('#gallery_type').on('change', function() {
-        var selectedOption = $(this).find('option:selected');
-        var previewImg = selectedOption.data('image');
-        var demoUrl = selectedOption.data('demo');
-        
-        if (previewImg) {
-            $('#preview_img').attr('src', previewImg);
-            $('#preview_demo').attr('href', demoUrl);
-            $('#gallery_preview').show();
-        } else {
-            $('#gallery_preview').hide();
+// In mg-admin-scripts.js
+jQuery(document).ready(function ($) {
+    let mediaFrame;
+
+    $('.mgwpp-media-upload').click(function (e) {
+        e.preventDefault();
+
+        if (mediaFrame) {
+            mediaFrame.open();
+            return;
         }
-    });
 
-    // =============================================
-    // Gallery Form Submission (with file upload)
-    // =============================================
-    $('#mgwpp_galleries_content form').on('submit', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var formData = new FormData(this);
-        var notice = $('#mgwpp-gallery-notice');
-        
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                notice.hide().removeClass('success error');
-                form.find('input[type="submit"]').prop('disabled', true).val('Uploading...');
-            },
-            success: function(response) {
-                // Show success message
-                notice.addClass('success').html(`
-                    <p>Gallery created successfully!</p>
-                    <p>You can view it in the "Existing Galleries" section below.</p>
-                `).show();
-                
-                // Reset form
-                form[0].reset();
-                form.find('input[type="submit"]').prop('disabled', false).val('Upload Images');
-                
-                // Hide preview if shown
-                $('#gallery_preview').hide();
-                
-                // Refresh galleries list
-                location.reload(); // Simple solution - reload the page
-                
-                // Scroll to notice
-                $('html, body').animate({
-                    scrollTop: notice.offset().top - 20
-                }, 500);
-            },
-            error: function(xhr) {
-                var errorMsg = 'An error occurred while creating the gallery.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMsg = xhr.responseJSON.message;
-                } else if (xhr.responseText) {
-                    errorMsg = xhr.responseText;
-                }
-                
-                notice.addClass('error').html(`
-                    <p>${errorMsg}</p>
-                    <p>Please try again or check your file selections.</p>
-                `).show();
-                
-                form.find('input[type="submit"]').prop('disabled', false).val('Upload Images');
-                
-                $('html, body').animate({
-                    scrollTop: notice.offset().top - 20
-                }, 500);
-            }
+        mediaFrame = wp.media({
+            title: mgwppMedia.text_title,
+            button: { text: mgwppMedia.text_select },
+            library: { type: 'image' },
+            multiple: true
         });
+
+        mediaFrame.on('select', function () {
+            const attachments = mediaFrame.state().get('selection').toJSON();
+            const mediaIds = attachments.map(attachment => attachment.id);
+            $('#selected_media').val(mediaIds.join(','));
+
+            // Update preview
+            const preview = $('.media-preview').empty();
+            attachments.forEach(attachment => {
+                preview.append(`
+                    <div class="media-thumbnail">
+                        <img src="${attachment.sizes.thumbnail.url}" 
+                             alt="${attachment.alt}" 
+                             style="width: 80px; height: 80px;">
+                    </div>
+                `);
+            });
+        });
+
+        mediaFrame.open();
     });
 
-    // =============================================
-    // Album Form Submission
-    // =============================================
-    $('#mgwpp_albums_content form').on('submit', function(e) {
+    // Form submission handler
+    $('form').on('submit', function (e) {
         e.preventDefault();
-        var form = $(this);
-        var notice = $('#mgwpp-album-notice');
-        
+        const form = $(this);
+        const notice = $('#mgwpp-gallery-notice');
+
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
             data: form.serialize(),
-            beforeSend: function() {
+            beforeSend: () => {
                 notice.hide().removeClass('success error');
-                form.find('input[type="submit"]').prop('disabled', true).val('Creating...');
             },
-            success: function(response) {
-                notice.addClass('success').html(`
-                    <p>Album created successfully!</p>
-                    <p>You can view it in the "Existing Albums" section below.</p>
-                `).show();
-                
-                form[0].reset();
-                form.find('input[type="submit"]').prop('disabled', false).val('Create Album');
-                
-                // Refresh albums list
-                location.reload();
-                
-                $('html, body').animate({
-                    scrollTop: notice.offset().top - 20
-                }, 500);
+            success: (response) => {
+                notice.addClass('success').html(mgwppMedia.gallery_success).show();
+                setTimeout(() => {
+                    window.location.href = 'admin.php?page=mgwpp_galleries';
+                }, 1500);
             },
-            error: function(xhr) {
-                var errorMsg = 'An error occurred while creating the album.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMsg = xhr.responseJSON.message;
-                } else if (xhr.responseText) {
-                    errorMsg = xhr.responseText;
-                }
-                
-                notice.addClass('error').html(`
-                    <p>${errorMsg}</p>
-                    <p>Please check your selections and try again.</p>
-                `).show();
-                
-                form.find('input[type="submit"]').prop('disabled', false).val('Create Album');
-                
-                $('html, body').animate({
-                    scrollTop: notice.offset().top - 20
-                }, 500);
+            error: (xhr) => {
+                const errorMsg = xhr.responseJSON?.message ||
+                    xhr.responseText ||
+                    mgwppMedia.generic_error;
+                notice.addClass('error').html(errorMsg).show();
             }
         });
     });
 
-    // =============================================
-    // Theme Toggle Functionality
-    // =============================================
-    function toggleDashboardTheme() {
-        $('body').toggleClass('dark');
-        localStorage.setItem('mgwpp-theme', $('body').hasClass('dark') ? 'dark' : 'light');
-        $('#theme-icon-moon').toggleClass('hidden');
-        $('#theme-icon-sun').toggleClass('hidden');
-    }
 
-    // Initialize theme from localStorage
+    // Theme toggler
+    window.toggleDashboardTheme = () => {
+        $('body').toggleClass('dark');
+        localStorage.setItem('mgwpp-theme',
+            $('body').hasClass('dark') ? 'dark' : 'light'
+        );
+        $('#theme-icon-moon, #theme-icon-sun').toggleClass('hidden');
+    };
+
+    // Initial theme check
     if (localStorage.getItem('mgwpp-theme') === 'dark') {
         $('body').addClass('dark');
         $('#theme-icon-moon').addClass('hidden');
         $('#theme-icon-sun').removeClass('hidden');
     }
 
-    window.toggleDashboardTheme = toggleDashboardTheme;
+
+    // Gallery type preview
+    $('#gallery_type').change(function () {
+        const option = $(this).find('option:selected');
+        $('#preview_img').attr('src', option.data('image') || '');
+        $('#preview_demo').attr('href', option.data('demo') || '#');
+        $('#gallery_preview').toggle(!!option.data('image'));
+    });
 });
+
+
+

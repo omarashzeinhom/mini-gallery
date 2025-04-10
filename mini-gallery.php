@@ -15,19 +15,6 @@ define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 define('MGWPP_ASSET_VERSION', filemtime(__FILE__));
 
-// When enqueueing:
-
-// Activation & Deactivation Hooks
-function mgwpp_plugin_activate()
-{
-    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
-    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
-    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
-    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-    MGWPP_Capabilities::mgwpp_gallery_capabilities();
-    flush_rewrite_rules(false); // causes error on true
-}
-register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
 
 /* Include necessary files */
@@ -79,6 +66,22 @@ require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration
 
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
+//require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
+
+// When enqueueing:
+
+// Activation & Deactivation Hooks
+function mgwpp_plugin_activate()
+{
+    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
+    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
+    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+    MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    flush_rewrite_rules(false); // causes error on true
+}
+register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
+
 
 // Initialize plugin
 function mgwpp_initialize_plugin()

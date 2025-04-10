@@ -2,21 +2,39 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+
 class MGWPP_Admin
 {
     public static function init()
     {
         add_action('admin_menu', [__CLASS__, 'mgwpp_register_admin_menu']);
-        add_action('admin_enqueue_scripts', [__CLASS__, 'mgwpp_enqueue_admin_assets']);
+        add_action('admin_enqueue_scripts', [__CLASS__, 'mgwpp_enqueue_admin_assets'], 20);
     }
 
     public static function mgwpp_enqueue_admin_assets()
     {
-        wp_register_script('mgwpp-admin-scripts', MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
-        wp_enqueue_script('mgwpp-admin-scripts');
+        // Load media scripts first
+        wp_enqueue_media();
 
-        wp_register_style('mgwpp-admin-styles', MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css', array(), '1.0');
-        wp_enqueue_style('mgwpp-admin-styles');
+        // Register main script
+        wp_register_script(
+            'mgwpp-admin-scripts',
+            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            ['jquery'], // Only explicit dependency
+            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            true
+        );
+
+        // Localization
+        wp_localize_script('mgwpp-admin-scripts', 'mgwppMedia', [
+            'text_title' => __('Select Gallery Images', 'mini-gallery'),
+            'text_select' => __('Add to Gallery', 'mini-gallery'),
+            'gallery_success' => __('Gallery saved successfully!', 'mini-gallery'),
+            'album_success' => __('Album updated successfully!', 'mini-gallery'),
+            'generic_error' => __('An error occurred. Please try again.', 'mini-gallery')
+        ]);
+
+        wp_enqueue_script('mgwpp-admin-scripts');
     }
 
     public static function mgwpp_register_admin_menu()
@@ -160,28 +178,28 @@ class MGWPP_Admin
     {
         $modules = [];
         $gallery_path = plugin_dir_path(__FILE__) . 'includes/gallery-types/';
-    
+
         // Debugging: Output the directory path
         echo '<p>Checking gallery path: ' . esc_html($gallery_path) . '</p>';
-    
+
         if (is_dir($gallery_path)) {
             $files = glob($gallery_path . 'class-mgwpp-*.php');
-            
+
             // Debugging: Output the files found
             echo '<p>Files found: </p><pre>';
             var_dump($files);
             echo '</pre>';
-    
+
             foreach ($files as $file) {
                 $filename = basename($file, '.php');
                 $type = str_replace(['class-mgwpp-', '-gallery', '-carousel', '-slider'], '', $filename);
                 $modules[] = ucfirst(str_replace('_', ' ', $type));
             }
         }
-    
+
         return $modules;
     }
-    
+
 
 
     private static function render_dashboard_stats()
@@ -370,8 +388,8 @@ class MGWPP_Admin
         <div id="mgwpp_albums_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Album', 'mini-gallery'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-            <div id="mgwpp-album-notice" class="mgwpp-notice" style="display: none;"></div> 
-            <input type="hidden" name="action" value="mgwpp_create_album">
+                <div id="mgwpp-album-notice" class="mgwpp-notice" style="display: none;"></div>
+                <input type="hidden" name="action" value="mgwpp_create_album">
                 <input type="hidden" name="mgwpp_album_submit_nonce"
                     value="<?php echo esc_attr(wp_create_nonce('mgwpp_album_submit_nonce')); ?>">
                 <table class="form-table">
@@ -494,19 +512,25 @@ class MGWPP_Admin
     ?>
         <div id="mgwpp_galleries_content" class="mgwpp-tab-content">
             <h2><?php echo esc_html__('Create New Gallery', 'mini-gallery'); ?></h2>
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-            <div id="mgwpp-gallery-notice" class="mgwpp-notice" style="display: none;"></div>   
-            <input type="hidden" name="action" value="mgwpp_upload">
-                <input type="hidden" name="mgwpp_upload_nonce"
-                    value="<?php echo esc_attr(wp_create_nonce('mgwpp_upload_nonce')); ?>">
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+    <input type="hidden" name="action" value="mgwpp_create_gallery">
+    <?php wp_nonce_field('mgwpp_create_gallery', 'mgwpp_gallery_nonce'); ?>
                 <table class="form-table">
                     <tr>
-                        <td><label for="sowar"><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label></td>
-                        <td><input type="file" id="sowar" name="sowar[]" accept="image/*" required multiple></td>
+                        <td><label for="gallery_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
+                        <td><input type="text" id="gallery_title" name="gallery_title" required></td>
                     </tr>
                     <tr>
-                        <td><label for="image_title"><?php echo esc_html__('Gallery Title:', 'mini-gallery'); ?></label></td>
-                        <td><input type="text" id="image_title" name="image_title" required></td>
+                        <td><label><?php echo esc_html__('Select Images:', 'mini-gallery'); ?></label></td>
+                        <td>
+                            <div class="media-selection">
+                                <input type="hidden" name="selected_media" id="selected_media" value="">
+                                <button type="button" class="button button-primary mgwpp-media-upload">
+                                    <?php esc_html_e('Choose Images', 'mini-gallery'); ?>
+                                </button>
+                                <div class="media-preview" style="margin-top: 10px;"></div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="gallery_type"><?php echo esc_html__('Gallery Type:', 'mini-gallery'); ?></label></td>
@@ -547,12 +571,64 @@ class MGWPP_Admin
                     <tr>
                         <td colspan="2" style="text-align: center;">
                             <input type="submit" class="button button-primary"
-                                value="<?php echo esc_attr__('Upload Images', 'mini-gallery'); ?>">
+                                value="<?php echo esc_attr__('Create Gallery', 'mini-gallery'); ?>">
                         </td>
                     </tr>
                 </table>
             </form>
+            <script>
+                jQuery(document).ready(function($) {
+                    let mediaFrame;
+                    const selectedMedia = [];
 
+                    $('.mgwpp-media-upload').click(function(e) {
+                        e.preventDefault();
+
+                        if (mediaFrame) {
+                            mediaFrame.open();
+                            return;
+                        }
+
+                        mediaFrame = wp.media({
+                            title: '<?php esc_html_e("Select Gallery Images", "mini-gallery"); ?>',
+                            multiple: true,
+                            library: {
+                                type: 'image'
+                            },
+                            button: {
+                                text: '<?php esc_html_e("Select", "mini-gallery"); ?>'
+                            }
+                        });
+
+                        mediaFrame.on('select', function() {
+                            const attachments = mediaFrame.state().get('selection').toJSON();
+                            selectedMedia.length = 0;
+
+                            attachments.forEach(attachment => {
+                                selectedMedia.push(attachment.id);
+                            });
+
+                            $('#selected_media').val(selectedMedia.join(','));
+                            updateMediaPreview(attachments);
+                        });
+
+                        mediaFrame.open();
+                    });
+
+                    function updateMediaPreview(attachments) {
+                        const preview = $('.media-preview').empty();
+                        attachments.forEach(attachment => {
+                            preview.append(`
+                        <div class="media-thumbnail">
+                            <img src="${attachment.sizes.thumbnail.url}" 
+                                 alt="${attachment.alt}" 
+                                 style="width: 80px; height: 80px; object-fit: cover; margin: 5px;">
+                        </div>
+                    `);
+                        });
+                    }
+                });
+            </script>
             <h2><?php echo esc_html__('Existing Galleries', 'mini-gallery'); ?></h2>
             <table class="wp-list-table widefat fixed striped">
                 <thead>

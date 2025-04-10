@@ -5,6 +5,7 @@
 
 /* ===== Base Styles ===== */
 .mgwpp-album-container {
+  display: flex;
     margin: 3rem auto;
     max-width: 1400px;
     padding: 0 1.5rem;

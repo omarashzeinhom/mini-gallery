@@ -55,7 +55,7 @@ class MegaCarousel {
     }
 
     addEventListeners() {
-        // Navigation arrows using the new class names.
+        // Navigation arrows using new class names.
         const prevArrow = this.carousel.querySelector('.mgwpp__prev-mega-slider');
         const nextArrow = this.carousel.querySelector('.mgwpp__next-mega-slider');
 
@@ -69,6 +69,7 @@ class MegaCarousel {
         // Use pointer events for both mouse and touch interactions.
         let pointerStartX = 0;
         let isDragging = false;
+        const swipeThreshold = 30; // Lower threshold for swipe
 
         this.carousel.addEventListener('pointerdown', e => {
             pointerStartX = e.clientX;
@@ -76,10 +77,10 @@ class MegaCarousel {
             this.carousel.setPointerCapture(e.pointerId);
         });
 
-        // Optionally, you can add pointermove for live feedback.
+        // Optional: add pointermove for live feedback during drag.
         this.carousel.addEventListener('pointermove', e => {
             if (!isDragging) return;
-            // (Optional visual feedback can be added here)
+            // Optionally, add visual feedback during dragging.
         });
 
         const pointerUpHandler = e => {
@@ -87,7 +88,7 @@ class MegaCarousel {
             isDragging = false;
             const pointerEndX = e.clientX;
             const delta = pointerEndX - pointerStartX;
-            if (Math.abs(delta) > 50) { // Swipe threshold.
+            if (Math.abs(delta) >= swipeThreshold) {
                 delta < 0 ? this.nextSlide() : this.prevSlide();
             }
         };
@@ -107,8 +108,10 @@ class MegaCarousel {
     startAutoPlay() {
         const autoplayEnabled = this.carousel.getAttribute('data-autoplay') === 'true';
         if (autoplayEnabled) {
-            this.autoPlayInterval = setInterval(() => this.nextSlide(), 
-                parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000);
+            this.autoPlayInterval = setInterval(
+                () => this.nextSlide(),
+                parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000
+            );
         }
     }
 
@@ -120,7 +123,7 @@ class MegaCarousel {
     }
 }
 
-// Initialize the carousel once the DOM is fully loaded.
+// Initialize the carousel after the DOM is loaded.
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.mg-mega-carousel')) {
         new MegaCarousel();

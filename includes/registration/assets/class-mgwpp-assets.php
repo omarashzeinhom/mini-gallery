@@ -214,13 +214,13 @@ class MGWPP_Assets
             'mg-album-styles.css',
             $base_url . 'css/mg-album-styles.css',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/css/mg-album-styles.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-album-styles.css') : '1.0'
+            file_exists(MG_PLUGIN_PATH . '/public/css/mg-album-styles.css') ? filemtime(MG_PLUGIN_PATH . '/public/css/mg-album-styles.css') : '1.0'
         );
         wp_register_script(
             'mg-albums-styles.js',
             $base_url . 'js/mg-albums-styles.js',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/js/mg-albums-styles.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-albums-styles.js') : '1.0',
+            file_exists(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js') ? filemtime(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js') : '1.0',
             true
         );
     }

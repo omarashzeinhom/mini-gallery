@@ -1,6 +1,4 @@
-/* mega-carousel.css */
-
-/* Carousel Container */
+/* Carousel with Neutral Colors */
 .mg-mega-carousel {
   --primary-color: #666; /* Medium gray */
   --dot-inactive: #ddd; /* Light gray */
@@ -12,18 +10,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Disable transitions until loaded */
 .mg-mega-carousel:not(.loaded) .mg-carousel__slide {
   transition: none !important;
 }
 
-/* Viewport */
 .mg-carousel__viewport {
   position: relative;
   height: 600px;
 }
 
-/* Each Slide */
 .mg-carousel__slide {
   position: absolute;
   width: 100%;
@@ -35,14 +30,12 @@
   will-change: opacity, transform;
 }
 
-/* Active Slide */
 .mg-carousel__slide.mg-active {
   opacity: 1;
   transform: scale(1);
   z-index: 1;
 }
 
-/* Image Styling */
 .mg-carousel__image {
   width: 100%;
   height: 100%;
@@ -168,7 +161,7 @@
               width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Fade In/Out Animations */
+/* Fade Animations */
 @keyframes mg-fade-in {
   from {
     opacity: 0;
@@ -199,7 +192,6 @@
   animation: mg-fade-in 0.8s forwards;
 }
 
-/* Pointer (arrow) hover effect */
 .mg-carousel__arrow {
   cursor: pointer;
 }

@@ -1,82 +1,155 @@
+/* Gallery Container */
+.mg-gallery-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Filter Controls */
+.mg-filter-controls {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mg-filter-btn {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mg-filter-btn.active,
+.mg-filter-btn:hover {
+  background: #0073aa;
+  color: white;
+  border-color: #0073aa;
+}
 
 /* Grid Layout */
-.grid-layout {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    max-width: 800px; /* Adjusted max-width for consistency */
-    margin: 0 auto;
-  }
-  
-  .grid-layout .grid-item {
-    padding: 10px;
-    opacity: 0.9;
-    max-width: 250px;
-    width: 100%;
-  }
-  
-  .grid-layout .grid-item img {
-    max-width: 100%;
-    border: 1px solid #ccc;
-    padding: 5px;
-    background: #f9f9f9;
-    opacity: 0.9;
-    transition: 0.2s ease-in-out;
-    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem gray;
-    object-fit: cover;
-  }
-  
-  .grid-layout .grid-item img:hover {
-    opacity: 1;
-    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem black;
-  }
-  
-  /*Albums Basic CSS */
-  
-  .mgwpp-album-container {
-    margin: 2em 0;
-  }
-  
-  .mgwpp-gallery-container {
-    margin-bottom: 2em;
-  }
-  
-  .mgwpp-gallery-title {
-    margin-bottom: 1em;
-    font-size: 1.5em;
-  }
-  
-  .mgwpp-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1em;
-    margin-bottom: 2em;
-  }
-  
-  .mgwpp-grid-gallery-item {
-    display: block;
-    position: relative;
-    padding-bottom: 100%;
-    overflow: hidden;
-  }
-  
-  .mgwpp-grid-gallery-item img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-  
-  .mgwpp-grid-gallery-item:hover img {
-    transform: scale(1.1);
-  }
-  
+.mg-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.mg-grid-container.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.mg-grid-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mg-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.mg-grid-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  vertical-align: middle;
+}
+
+.mg-image-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mg-grid-item:hover .mg-image-caption {
+  opacity: 1;
+}
+
+/* Lightbox Styles */
+.mg-lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.95);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  text-align: center;
+}
+
+.mg-lightbox-image {
+  max-height: 80vh;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.3);
+}
+
+.mg-lightbox-caption {
+  color: white;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+.mg-prev, .mg-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: white;
+  padding: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.mg-prev:hover, .mg-next:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.mg-prev { left: 2rem; }
+.mg-next { right: 2rem; }
+
+.mg-close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+}

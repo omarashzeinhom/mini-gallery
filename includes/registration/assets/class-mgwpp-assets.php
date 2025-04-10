@@ -84,6 +84,13 @@ class MGWPP_Assets
             array(),
             '1.0'
         );
+        wp_register_script(
+            'mg-grid-gallery-js',
+            $base_url . 'js/mg-grid-gallery',
+            array(),
+            file_exists($base_path . 'js/mg-grid-gallery.js') ? filemtime($base_path . 'js/mg-grid-gallery.js') : '1.0',
+            true
+        );
 
         // Mega Carousel
         wp_register_style(
@@ -243,6 +250,8 @@ class MGWPP_Assets
                     break;
                 case 'grid':
                     wp_enqueue_style('mg-grid-styles');
+                    wp_enqueue_script('mg-grid-gallery');
+
                     break;
                 case 'mega_slider':
                     wp_enqueue_script('mg-mega-carousel-js');

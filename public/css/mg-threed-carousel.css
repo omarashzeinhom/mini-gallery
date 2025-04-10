@@ -1,13 +1,56 @@
+/* Main Container */
 .mg-3d-carousel-container {
   position: relative;
-  width: 100vw;
-  height: 75vh;
+  width: 100%;
+  height: 70vh;
   overflow: hidden;
   touch-action: none;
-  align-items: center;
-  margin-left: -250px;
+  margin: 0 auto;
+  perspective: 1200px;
+  min-height: 500px;
 }
 
+/* Reflection Effect */
+.mg-3d-reflection {
+  position: absolute;
+  bottom: -15%;
+  left: 50%;
+  width: 120%;
+  height: 150px;
+  transform: translateX(-50%) perspective(1000px) rotateX(80deg) scaleY(0.6);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    transparent 100%
+  );
+  backdrop-filter: blur(12px);
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 30%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  border-radius: 50%;
+  z-index: 2;
+  opacity: 0.8;
+  animation: reflection-glow 4s ease-in-out infinite;
+  box-shadow: 0 40px 60px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+@keyframes reflection-glow {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateX(-50%) perspective(1000px) rotateX(80deg) scaleY(0.6) scaleX(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) perspective(1000px) rotateX(80deg) scaleY(0.6) scaleX(1.05);
+  }
+}
+
+/* Carousel Elements */
 .mg-drag-container,
 .mg-spin-container {
   position: absolute;
@@ -17,7 +60,6 @@
   transform: translate(-50%, -50%) rotateX(-10deg);
   width: 90%;
   height: 90%;
-  pointer-events: none;
 }
 
 .mg-3d-item {
@@ -26,42 +68,57 @@
   height: 100%;
   max-width: 250px;
   max-height: 250px;
-  transition: transform 1s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center center;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
 }
 
 .mg-3d-item img {
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
-  //box-shadow: 0 0 8px rgba(255,255,255,0.8);
+  border-radius: 15px;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .mg-3d-item:hover img {
-  box-shadow: 0 0 15px rgba(255,255,255,0.9);
+  transform: scale(1.05);
+  filter: brightness(1.1) drop-shadow(0 15px 30px rgba(255, 255, 255, 0.3));
 }
 
-.mg-3d-ground {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) rotateX(90deg);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(153,153,153,0.3) 0%, transparent 70%);
-  pointer-events: none;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mg-3d-carousel-container {
+    height: 50vh;
+    perspective: 800px;
+    min-height: 400px;
+  }
+
+  .mg-3d-item {
+    max-width: 180px;
+    max-height: 180px;
+  }
+
+  .mg-3d-reflection {
+    bottom: -12%;
+    height: 120px;
+    backdrop-filter: blur(8px);
+  }
 }
 
-.mg-music-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 10;
-}
+@media (max-width: 480px) {
+  .mg-3d-carousel-container {
+    height: 40vh;
+    min-height: 300px;
+  }
 
-/* Keyframe for auto-rotation */
-@keyframes carousel-spin {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
+  .mg-3d-item {
+    max-width: 140px;
+    max-height: 140px;
+  }
+
+  .mg-3d-reflection {
+    bottom: -10%;
+    height: 100px;
+  }
 }

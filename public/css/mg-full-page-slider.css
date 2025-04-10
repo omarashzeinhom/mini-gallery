@@ -19,8 +19,7 @@
 .mg-fullpage-slider {
   position: relative;
   height: 100vh; /* Fallback */
-  height: 100dvh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   overflow: hidden;
   touch-action: pan-y;

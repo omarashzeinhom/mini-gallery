@@ -107,10 +107,10 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.mg-prev {
+.mg-fullpage-slider-prev {
   left: 3vw;
 }
-.mg-next {
+.mg-fullpage-slider-next {
   right: 3vw;
 }
 

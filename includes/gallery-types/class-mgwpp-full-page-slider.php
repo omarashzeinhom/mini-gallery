@@ -43,8 +43,8 @@ class MGWPP_Full_Page_Slider
                     </div>
                 <?php endforeach; ?>
             </div>
-            <button class="mg-fullpage-nav mg-prev">❮</button>
-            <button class="mg-fullpage-nav mg-next">❯</button>
+            <button class="mg-fullpage-nav mg-fullpage-slider-prev">❮</button>
+            <button class="mg-fullpage-nav mg-fullpage-slider-next">❯</button>
         </div>
 <?php
         return ob_get_clean();

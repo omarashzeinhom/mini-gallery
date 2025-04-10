@@ -107,8 +107,8 @@ class MGWPP_FullPageSlider {
   }
 
   addEventListeners() {
-    const navPrev = document.querySelector('.mg-prev');
-    const navNext = document.querySelector('.mg-next');
+    const navPrev = document.querySelector('.mg-fullpage-slider-prev');
+    const navNext = document.querySelector('.mg-fullpage-slider-next');
 
     navPrev.addEventListener('click', () => this.goToSlide(this.currentIndex - 1));
     navNext.addEventListener('click', () => this.goToSlide(this.currentIndex + 1));

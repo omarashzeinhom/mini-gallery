@@ -29,6 +29,15 @@
   box-shadow: var(--shadow);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.media-selection{
+  position: relative;
+}
+
+
+
+
+
+
 
 /* ---- Title and Header ---- */
 
@@ -98,7 +107,9 @@
   background-color: #1d4ed8;
 }
 
-/* ---- Table Styles ---- */
+/* ---- Tab
+
+le Styles ---- */
 #mgwpp_galleries_content .wp-list-table {
   background-color: var(--background-color);
   border-radius: 12px;
@@ -131,7 +142,7 @@
   margin: 0;
 }
 
-#mgwpp_galleries_content .wp-list-table .button {
+#mgwpp_galleries_content .wp-list-table .button .mgwpp-media-upload{
   background-color: var(--primary-color);
   color: #fff;
   border: none;
@@ -142,7 +153,7 @@
   transition: background-color 0.3s ease;
 }
 
-#mgwpp_galleries_content .wp-list-table .button:hover {
+#mgwpp_galleries_content .wp-list-table .button .mgwpp-media-upload:hover  {
   background-color: #1d4ed8;
 }
 

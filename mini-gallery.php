@@ -66,7 +66,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration
 
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
-//require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
 
 // When enqueueing:
 

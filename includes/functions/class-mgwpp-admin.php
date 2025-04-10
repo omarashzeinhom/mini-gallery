@@ -34,6 +34,14 @@ class MGWPP_Admin
             'generic_error' => __('An error occurred. Please try again.', 'mini-gallery')
         ]);
 
+
+        wp_enqueue_style(
+            'mg-admin-styles',
+            MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css',
+            [],
+        );
+
+
         wp_enqueue_script('mgwpp-admin-scripts');
     }
 

@@ -18,16 +18,29 @@
 }
 
 .mgwpp-layout-btn {
-  padding: 0.5rem 1.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f5f5f5;
+  padding: 0.6rem 1.8rem;
+  border: none;
+  border-radius: 999px;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
+.mgwpp-layout-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.mgwpp-layout-btn.active {
+  background: #0073aa;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 115, 170, 0.3);
+}
+
 
 .mgwpp-layout-btn.active {
   background: #0073aa;

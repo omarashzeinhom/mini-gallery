@@ -122,24 +122,7 @@ function mgwpp_gallery_shortcode($atts)
             $output .= '<p>No images found for this gallery.</p>';
         }
 
-        if ('multi_carousel' === $gallery_type && count($all_images) > $images_per_page) {
-            $total_pages = ceil(count($all_images) / $images_per_page);
-            $output .= '<div class="mgwpp-gallery-pagination">';
-        
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $active_class = $i === $paged ? ' active' : '';
-                $output .= sprintf(
-                    '<a class="mgwpp-page-number%s" href="?id=%d&paged=%d">%d</a>',
-                    esc_attr($active_class),
-                    esc_attr($post_id),
-                    esc_attr($i),
-                    esc_html($i)
-                );
-            }
-        
-            $output .= '</div>';
-        }
-        
+      
     } else {
         $output .= '<p>Invalid gallery ID.</p>';
     }

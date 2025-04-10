@@ -1,5 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
+
 class MGWPP_Mega_Slider {
     public static function render( $post_id, $images, $settings = [] ) {
         // Check if we're in Elementor
@@ -23,7 +24,7 @@ class MGWPP_Mega_Slider {
         $placeholder      = ! empty( $settings['placeholder_image']['url'] ) ? $settings['placeholder_image']['url'] : '';
         $viewport_height  = ! empty( $settings['viewport_height']['size'] ) ? $settings['viewport_height']['size'] . $settings['viewport_height']['unit'] : '600px';
         $show_arrows      = $settings['show_arrows'] === 'yes';
-        $show_dots = $settings['show_dots'] === 'yes';
+        $show_dots        = $settings['show_dots'] === 'yes';
         $autoplay         = $settings['autoplay'] === 'yes';
         $autoplay_delay   = ! empty( $settings['autoplay_delay']['size'] ) ? $settings['autoplay_delay']['size'] . $settings['autoplay_delay']['unit'] : '3000';
         $lazy_load_first  = $settings['lazy_load_first'] === 'yes';
@@ -37,8 +38,7 @@ class MGWPP_Mega_Slider {
                     <div class="mg-carousel__slide <?php echo $index === 0 ? 'mg-active' : ''; ?>">
                         <?php 
                         if ( $index === 0 && $lazy_load_first ) {
-                            // FIRST IMAGE: Use a placeholder until page loads,
-                            // output image using wp_get_attachment_image() with custom attributes.
+                            // FIRST IMAGE: Use a placeholder until page loads, then replace using lazy load.
                             echo wp_get_attachment_image( $image->ID, 'full', false, [
                                 'class'    => 'mg-carousel__image lazy-first',
                                 'data-src' => esc_url( wp_get_attachment_url( $image->ID ) ),
@@ -61,19 +61,20 @@ class MGWPP_Mega_Slider {
 
             <?php if ( $show_arrows ) : ?>
             <div class="mg-carousel__controls">
-                <button class="mg-carousel__nav mg-prev" aria-label="Previous slide">
+                <!-- Updated navigation buttons with new class names -->
+                <button class="mgwpp__prev-mega-slider mg-carousel__nav" aria-label="Previous slide">
                     <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
                         <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15 18l-6-6 6-6" />
                     </svg>
                 </button>
 
-                <button class="mg-carousel__nav mg-next" aria-label="Next slide">
+                <button class="mgwpp__next-mega-slider mg-carousel__nav" aria-label="Next slide">
                     <svg class="mg-carousel__arrow" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
                         <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 18l6-6-6-6" />
                     </svg>
                 </button>
                 <?php if ( $show_dots ) : ?>
-                        <div class="mg-mega-carousel-dots-container"></div>
+                    <div class="mg-mega-carousel-dots-container"></div>
                 <?php endif; ?>
             </div>
             <?php endif; ?>

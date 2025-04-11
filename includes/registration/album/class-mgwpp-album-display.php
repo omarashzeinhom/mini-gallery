@@ -22,28 +22,28 @@ class MGWPP_Album_Display
         if (isset($_GET['gallery_id'], $_GET['_mg_nonce']) && wp_verify_nonce($_GET['_mg_nonce'], 'mgwpp_view_gallery')) {
             $current_gallery_id = absint($_GET['gallery_id']);
         }
-     // Album Styles
-wp_enqueue_style(
-    'mg-album-styles',
-    MG_PLUGIN_URL . 'public/css/mg-album-styles.css',
-    [],
-    filemtime(MG_PLUGIN_PATH . 'public/css/mg-album-styles.css')
-  );
-  
-  // Album Scripts
-  wp_enqueue_script(
-    'mg-albums-scripts',
-    MG_PLUGIN_URL . 'public/js/mg-albums-styles.js',
-    ['jquery'],
-    filemtime(MG_PLUGIN_PATH . 'public/js/mg-albums-styles.js'),
-    true
-  );
-  
-  // Localize script
-  wp_localize_script('mg-albums-scripts', 'mgwpp_ajax', [
-    'ajax_url' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('mgwpp_nonce')
-  ]);
+        // Album Styles
+        wp_enqueue_style(
+            'mg-album-styles',
+            MG_PLUGIN_URL . '/public/css/mg-album-styles.css',
+            [],
+            filemtime(MG_PLUGIN_PATH . '/public/css/mg-album-styles.css')
+        );
+
+        // Album Scripts
+        wp_enqueue_script(
+            'mg-albums-scripts',
+            MG_PLUGIN_URL . '/public/js/mg-albums-styles.js',
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js'),
+            true
+        );
+
+        // Localize script
+        wp_localize_script('mg-albums-scripts', 'mgwpp_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('mgwpp_nonce')
+        ]);
 
 
 
@@ -108,7 +108,7 @@ wp_enqueue_style(
         if (! empty($attachments)) {
             return wp_get_attachment_image(
                 $attachments[0]->ID,
-                'medium',
+                'large',
                 false,
                 [
                     'loading' => 'lazy',
@@ -184,16 +184,16 @@ wp_enqueue_style(
     {
         ob_start();
 ?>
-<div id="mgwpp-lightbox" class="mgwpp-lightbox">
-    <span class="mgwpp-close">&times;</span>
-    <div class="mgwpp-lightbox-overlay"></div>
-    <div class="mgwpp-lightbox-content">
-        <div class="mgwpp-lightbox-image-container"></div>
-        <div class="mgwpp-lightbox-caption"></div>
-    </div>
-    <a class="mgwpp-prev">&#10094;</a>
-    <a class="mgwpp-next">&#10095;</a>
-</div>
+        <div id="mgwpp-lightbox" class="mgwpp-lightbox">
+            <span class="mgwpp-close">&times;</span>
+            <div class="mgwpp-lightbox-overlay"></div>
+            <div class="mgwpp-lightbox-content">
+                <div class="mgwpp-lightbox-image-container"></div>
+                <div class="mgwpp-lightbox-caption"></div>
+            </div>
+            <a class="mgwpp-prev">&#10094;</a>
+            <a class="mgwpp-next">&#10095;</a>
+        </div>
 <?php
         return ob_get_clean();
     }

@@ -218,7 +218,7 @@ class MGWPP_Assets
         );
         wp_register_script(
             'mg-albums-styles.js',
-            $base_url . 'js/mg-albums-styles.js',
+            $base_url . '/public/js/mg-albums-styles.js',
             array(),
             file_exists(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js') ? filemtime(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js') : '1.0',
             true

@@ -46,18 +46,19 @@ class MGWPP_Assets
     {
         $base_url  = MG_PLUGIN_URL . '/public/';
         $base_path = MG_PLUGIN_PATH . 'public/';
+        $gallery_types_url = MG_PLUGIN_URL . '/includes/gallery-types/';
 
         // Single Carousel
         wp_register_script(
             'mg-single-carousel-js',
-            $base_url . 'js/mg-single-carousel.js',
+            $gallery_types_url . 'class-mgwpp-single-gallery/class-mgwpp-single-gallery.js',
             array(),
             '1.0',
             true
         );
         wp_register_style(
             'mg-single-carousel-styles',
-            $base_url . 'css/mg-single-carousel.css',
+            $gallery_types_url . 'class-mgwpp-single-gallery/class-mgwpp-single-gallery.css',
             array(),
             '1.0'
         );

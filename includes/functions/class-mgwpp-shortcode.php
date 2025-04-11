@@ -23,7 +23,7 @@ function mgwpp_gallery_shortcode($atts)
                     wp_enqueue_style('mg-single-carousel-styles');
                     wp_enqueue_script('mg-single-carousel-js');
                     if (!class_exists('MGWPP_Gallery_Single')) {
-                        include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-single-gallery.php';
+                        include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-single-gallery/class-mgwpp-single-gallery.php';
                     }
                     $gallery_html = MGWPP_Gallery_Single::render($post_id, $all_images);
                     break;

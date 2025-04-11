@@ -1,4 +1,7 @@
 <?php
+if (!defined('ABSPATH')) exit;
+
+
 class MGWPP_VC_Integration {
     private $gallery_types = [
         'single_carousel' => 'Single Carousel',
@@ -50,8 +53,49 @@ class MGWPP_VC_Integration {
                     'value' => '8000',
                     'description' => 'In milliseconds'
                 ]
-            ]
+            ],
+            'content_element' => true, // Allow it to be used in the WPBakery editor
+            'show_settings_on_create' => true, // Show settings immediately
+            'render_callback' => [$this, 'render_vc_gallery'] // Add the render callback for this gallery
         ]);
+    }
+
+    /**
+     * Render callback to output the gallery based on user settings
+     */
+    public function render_vc_gallery($atts, $content = null) {
+        // Extract attributes from the WPBakery element
+        $atts = shortcode_atts([
+            'type' => 'single_carousel', // Default to 'single_carousel'
+            'id' => '',                  // Gallery ID
+            'autoplay' => 'true',        // Autoplay value
+            'speed' => '8000',           // Transition speed
+        ], $atts);
+
+        // Get the gallery ID and retrieve images
+        $gallery_id = $atts['id'];
+        $images = get_attached_media('image', $gallery_id); // Retrieve the images for the gallery
+        
+        if (empty($images)) {
+            return '<div class="mgwpp-error">' . esc_html__('No images found in gallery', 'mini-gallery') . '</div>';
+        }
+
+        // Define the gallery type to render the appropriate layout
+        switch ($atts['type']) {
+            case 'single_carousel':
+                // Call a function to render the 'single_carousel' gallery
+                return MGWPP_Single_Gallery::render($gallery_id, $images, $atts);
+            case 'multi_carousel':
+                return MGWPP_Multi_Gallery::render($gallery_id, $images, $atts);
+            case 'grid':
+                return MGWPP_Grid_Gallery::render($gallery_id, $images, $atts);
+            case 'mega_slider':
+                return MGWPP_Mega_Slider::render($gallery_id, $images, $atts);
+            case 'spotlight_carousel':
+                return MGWPP_Spotlight_Carousel::render($gallery_id, $images, $atts); // Spotlight Carousel rendering
+            default:
+                return '<div class="mgwpp-error">' . esc_html__('Gallery type not supported.', 'mini-gallery') . '</div>';
+        }
     }
 
     public function enqueue_vc_assets() {
@@ -85,10 +129,12 @@ class MGWPP_VC_Integration {
             ]
         ];
 
+        // Enqueue styles
         foreach ($assets['styles'] as $handle) {
             if (wp_style_is($handle, 'registered')) wp_enqueue_style($handle);
         }
 
+        // Enqueue scripts
         foreach ($assets['scripts'] as $handle) {
             if (wp_script_is($handle, 'registered')) wp_enqueue_script($handle);
         }

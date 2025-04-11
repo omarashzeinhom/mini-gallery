@@ -1,34 +1,54 @@
 <?php
 if (!defined('ABSPATH')) exit;
+
 class MGWPP_Pro_Carousel {
     public static function render($post_id, $images, $settings = []) {
         if (empty($images) || !is_array($images)) {
-            return '<div class="mg-error">Add images to create a gallery</div>';
+            return '<div class="mgwpp-pro-carousel__error">' . esc_html__('Add images to create a gallery', 'mgwpp') . '</div>';
         }
 
-        // Get the placeholder image from settings if set
-        $placeholder = isset($settings['placeholder_image']['url']) ? $settings['placeholder_image']['url'] : '';
+        $placeholder = !empty($settings['placeholder_image']['url']) ? esc_url($settings['placeholder_image']['url']) : '';
+        $image_size = !empty($settings['image_size']) ? sanitize_key($settings['image_size']) : 'large';
 
         ob_start();
         ?>
-        <div class="mg-pro-carousel" data-carousel-id="<?php echo absint($post_id); ?>">
-            <button class="mg-pro-carousel__nav mg-pro-carousel__nav--prev">‹</button>
-            <button class="mg-pro-carousel__nav mg-pro-carousel__nav--next">›</button>
+        <div class="mgwpp-pro-carousel" 
+            data-carousel-id="<?php echo absint($post_id); ?>"
+            role="region" 
+            aria-label="<?php esc_attr_e('Image Carousel', 'mgwpp'); ?>">
             
-            <div class="mg-pro-carousel__container">
-                <div class="mg-pro-carousel__track">
+            <button class="mgwpp-pro-carousel__nav mgwpp-pro-carousel__nav--prev" 
+                    aria-label="<?php esc_attr_e('Previous slide', 'mgwpp'); ?>">
+                ‹<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Previous', 'mgwpp'); ?></span>
+            </button>
+            <button class="mgwpp-pro-carousel__nav mgwpp-pro-carousel__nav--next" 
+                    aria-label="<?php esc_attr_e('Next slide', 'mgwpp'); ?>">
+                ›<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Next', 'mgwpp'); ?></span>
+            </button>
+            
+            <div class="mgwpp-pro-carousel__container">
+                <div class="mgwpp-pro-carousel__track" role="list">
                     <?php foreach ($images as $image): 
-                        // Get image URL and fallback to placeholder if necessary
-                        $image_url = wp_get_attachment_image_url($image->ID, 'large') ?: $placeholder;
-                        // For dynamic tags, you could allow the alt text to be overridden by a dynamic control; 
-                        // here we use the image’s alt text
-                        $alt_text  = get_post_meta($image->ID, '_wp_attachment_image_alt', true);
+                        if (empty($image->ID)) continue;
+                        
+                        $image_url = wp_get_attachment_image_url($image->ID, $image_size);
+                        $image_alt = get_post_meta($image->ID, '_wp_attachment_image_alt', true);
+                        $image_url = $image_url ?: $placeholder;
+                        $image_alt = $image_alt ?: esc_html__('Gallery image', 'mgwpp');
                     ?>
-                    <div class="mg-pro-carousel__card">
-                        <img class="mg-pro-carousel__image" 
-                            src="<?php echo esc_url($image_url); ?>" 
-                            alt="<?php echo esc_attr($alt_text); ?>"
-                            loading="lazy">
+                    <div class="mgwpp-pro-carousel__card" role="listitem">
+                        <?php if ($image_url): ?>
+                            <img class="mgwpp-pro-carousel__image" 
+                                src="<?php echo esc_url($image_url); ?>" 
+                                alt="<?php echo esc_attr($image_alt); ?>"
+                                loading="lazy"
+                                <?php echo wp_get_attachment_image_srcset($image->ID, $image_size) ? 'srcset="' . esc_attr(wp_get_attachment_image_srcset($image->ID, $image_size)) . '"' : ''; ?>
+                                sizes="(max-width: 768px) 100vw, 50vw">
+                        <?php else: ?>
+                            <div class="mgwpp-pro-carousel__placeholder">
+                                <?php esc_html_e('Image missing', 'mgwpp'); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
                 </div>

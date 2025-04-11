@@ -51,14 +51,14 @@ class MGWPP_Assets
         // Single Carousel
         wp_register_script(
             'mg-single-carousel-js',
-            $gallery_types_url . 'class-mgwpp-single-gallery/class-mgwpp-single-gallery.js',
+            $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js',
             array(),
             '1.0',
             true
         );
         wp_register_style(
             'mg-single-carousel-styles',
-            $gallery_types_url . 'class-mgwpp-single-gallery/class-mgwpp-single-gallery.css',
+            $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.css',
             array(),
             '1.0'
         );

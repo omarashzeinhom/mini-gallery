@@ -123,6 +123,27 @@ add_action('after_setup_theme', 'mgwpp_add_theme_support');
 
 
 
+
+add_filter('template_include', 'mgwpp_custom_templates');
+function mgwpp_custom_templates($template)
+{
+    if (is_singular('mgwpp_soora')) {
+        $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_soora.php';
+        if (file_exists($custom_template)) return $custom_template;
+    }
+
+    if (is_singular('mgwpp_album')) {
+        $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_album.php';
+        if (file_exists($custom_template)) return $custom_template;
+    }
+
+    return $template;
+}
+
+
+
+
+
 function mgwpp_plugin_deactivate()
 {
     unregister_post_type('mgwpp_testimonials');

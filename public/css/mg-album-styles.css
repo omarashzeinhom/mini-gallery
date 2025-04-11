@@ -85,17 +85,6 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* Gallery Item in Grid */
-.mgwpp-gallery-item {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.mgwpp-gallery-item:hover {
-  transform: scale(1.03);
-}
 
 /* No Galleries/Preview Message */
 .mgwpp-no-galleries,

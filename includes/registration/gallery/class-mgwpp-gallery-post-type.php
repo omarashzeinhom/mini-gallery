@@ -15,6 +15,7 @@ class MGWPP_Gallery_Post_Type {
             'rest_base' => 'soora-api',
             'menu_icon' => 'dashicons-format-gallery',
             'has_archive' => true,
+            'rewrite' => ['slug' => 'gallery'], // Single page like /gallery/my-gallery-title
             'supports' => array('title', 'editor', 'author', 'thumbnail', 'excerpt'),
             'capability_type' => 'mgwpp_soora',
             'map_meta_cap' => true,

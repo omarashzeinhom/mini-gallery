@@ -222,7 +222,11 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
         }
     
         $images = get_attached_media('image', $gallery_id);
-        
+    
+        // Set fallback values for neon colors if not set
+        $neon_primary = isset($settings['neon_primary_color']) ? $settings['neon_primary_color'] : '#00f3ff';  // default neon primary color
+        $neon_secondary = isset($settings['neon_secondary_color']) ? $settings['neon_secondary_color'] : '#ff007f';  // default neon secondary color
+    
         // Pass settings to the renderer
         echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode([
             'autoplay' => $settings['autoplay'] === 'yes',
@@ -230,14 +234,14 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             'show_dots' => $settings['show_dots'] === 'yes',
             'show_previews' => $settings['show_previews'] === 'yes',
             'zoom_effect' => $settings['zoom_effect'] === 'yes',
-            'neon_primary' => $settings['neon_primary_color'],
-            'neon_secondary' => $settings['neon_secondary_color']
+            'neon_primary' => $neon_primary,
+            'neon_secondary' => $neon_secondary
         ])).'">';
-        
-        echo wp_kses_post( MGWPP_Neon_Carousel::render( $gallery_id, $images ) );
+    
+        echo wp_kses_post(MGWPP_Neon_Carousel::render($gallery_id, $images));
         echo '</div>';
     }
-
+    
     // Get available galleries
     private function get_galleries() {
         $galleries = get_posts([

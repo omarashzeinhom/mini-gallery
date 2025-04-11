@@ -37,8 +37,8 @@ function mgwpp_enqueue_elementor_assets()
     }
 
     if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
-        //wp_enqueue_style('mg-neon-carousel-styles');
-        //wp_enqueue_script('mg-neon-carousel-js');
+        wp_enqueue_style('mg-neon-carousel-styles');
+        wp_enqueue_script('mg-neon-carousel-js');
     }
 }
 add_action('wp_enqueue_scripts', 'mgwpp_enqueue_elementor_assets');

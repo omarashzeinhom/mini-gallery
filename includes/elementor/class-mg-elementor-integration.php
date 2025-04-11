@@ -13,10 +13,57 @@ class MG_Elementor_Integration
 
         // Only admin_init is needed for both checks + deactivation
         add_action('admin_init', [$this, 'handle_admin_init']);
-
         add_action('admin_notices', [$this, 'admin_notices']);
         add_action('elementor/widgets/register', [$this, 'register_widgets']);
         add_action('wp_ajax_mg_dismiss_pro_elements_notice', [$this, 'dismiss_notice_ajax_handler']);
+
+        // Hook to enqueue assets after Elementor renders widgets
+        add_action('elementor/frontend/after_register_styles', [$this, 'enqueue_elementor_assets']);
+        add_action('elementor/frontend/after_register_scripts', [$this, 'enqueue_elementor_assets']);
+    }
+
+    public function enqueue_elementor_assets()
+    {
+        // Ensure that we are enqueuing the right assets for the Elementor widgets.
+        $gallery_type = 'single_carousel'; // You can fetch this dynamically if required
+
+        switch ($gallery_type) {
+            case 'single_carousel':
+                wp_enqueue_script('mg-single-carousel-js');
+                wp_enqueue_style('mg-single-carousel-styles');
+                break;
+            case 'multi_carousel':
+                wp_enqueue_script('mg-multi-carousel-js');
+                wp_enqueue_style('mg-multi-carousel-styles');
+                break;
+            case 'grid':
+                wp_enqueue_style('mg-grid-styles');
+                wp_enqueue_script('mg-grid-gallery');
+                break;
+            case 'mega_slider':
+                wp_enqueue_script('mg-mega-carousel-js');
+                wp_enqueue_style('mg-mega-carousel-styles');
+                break;
+            case 'pro_carousel':
+                wp_enqueue_style('mgwpp-pro-carousel-styles');
+                wp_enqueue_script('mgwpp-pro-carousel-js');
+                break;
+            case 'neon_carousel':
+                wp_enqueue_script('mgwpp-neon-carousel-js');
+                wp_enqueue_style('mgwpp-neon-carousel-styles');
+                break;
+            case 'threed_carousel':
+                wp_enqueue_script('mgwpp-threed-carousel-js');
+                wp_enqueue_style('mgwpp-threed-carousel-styles');
+                break;
+            case 'testimonials_carousel':
+                wp_enqueue_script('mgwpp-testimonial-carousel-js');
+                wp_enqueue_style('mgwpp-testimonial-carousel-styles');
+                break;
+            default:
+                // No additional assets enqueued if the gallery type is not recognized.
+                break;
+        }
     }
 
     public function handle_admin_init()
@@ -72,34 +119,41 @@ class MG_Elementor_Integration
         // CSS & dismiss JS
         if (($this->show_pro_elements_notice && !$dismissed) || !is_plugin_active('elementor/elementor.php')) {
             add_action('admin_footer', function () {
-                ?>
+?>
                 <style>
-                    .mg-pro-elements-notice, .notice-warning {
+                    .mg-pro-elements-notice,
+                    .notice-warning {
                         padding: 20px 20px 20px 25px;
                         font-size: 15px;
                     }
-                    .mg-pro-elements-notice p, .notice-warning p {
+
+                    .mg-pro-elements-notice p,
+                    .notice-warning p {
                         margin: 0 0 5px;
                         line-height: 1.6;
                     }
-                    .mg-pro-elements-notice a, .notice-warning a {
+
+                    .mg-pro-elements-notice a,
+                    .notice-warning a {
                         color: #0073aa;
                     }
-                    .mg-pro-elements-notice a:hover, .notice-warning a:hover {
+
+                    .mg-pro-elements-notice a:hover,
+                    .notice-warning a:hover {
                         color: #00a0d2;
                     }
                 </style>
                 <script>
-                    (function($){
-                        $(document).on('click', '.mg-pro-elements-notice .notice-dismiss', function(){
+                    (function($) {
+                        $(document).on('click', '.mg-pro-elements-notice .notice-dismiss', function() {
                             $.post(ajaxurl, {
                                 action: 'mg_dismiss_pro_elements_notice',
-                                user_id: <?php echo esc_js( get_current_user_id() ); ?>
+                                user_id: <?php echo esc_js(get_current_user_id()); ?>
                             });
                         });
                     })(jQuery);
                 </script>
-                <?php
+<?php
             });
         }
     }

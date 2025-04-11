@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) exit;
 class MGWPP_Pro_Carousel {
     public static function render($post_id, $images, $settings = []) {
         if (empty($images) || !is_array($images)) {
-            return '<div class="mgwpp-pro-carousel__error">' . esc_html__('Add images to create a gallery', 'mgwpp') . '</div>';
+            return '<div class="mgwpp-pro-carousel__error">' . esc_html__('Add images to create a gallery', 'mini-gallery') . '</div>';
         }
 
         $placeholder = !empty($settings['placeholder_image']['url']) ? esc_url($settings['placeholder_image']['url']) : '';
@@ -15,15 +15,15 @@ class MGWPP_Pro_Carousel {
         <div class="mgwpp-pro-carousel" 
             data-carousel-id="<?php echo absint($post_id); ?>"
             role="region" 
-            aria-label="<?php esc_attr_e('Image Carousel', 'mgwpp'); ?>">
+            aria-label="<?php esc_attr_e('Image Carousel', 'mini-gallery'); ?>">
             
             <button class="mgwpp-pro-carousel__nav mgwpp-pro-carousel__nav--prev" 
-                    aria-label="<?php esc_attr_e('Previous slide', 'mgwpp'); ?>">
-                ‹<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Previous', 'mgwpp'); ?></span>
+                    aria-label="<?php esc_attr_e('Previous slide', 'mini-gallery'); ?>">
+                ‹<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Previous', 'mini-gallery'); ?></span>
             </button>
             <button class="mgwpp-pro-carousel__nav mgwpp-pro-carousel__nav--next" 
-                    aria-label="<?php esc_attr_e('Next slide', 'mgwpp'); ?>">
-                ›<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Next', 'mgwpp'); ?></span>
+                    aria-label="<?php esc_attr_e('Next slide', 'mini-gallery'); ?>">
+                ›<span class="mgwpp-pro-carousel__screen-reader-text"><?php esc_html_e('Next', 'mini-gallery'); ?></span>
             </button>
             
             <div class="mgwpp-pro-carousel__container">
@@ -34,7 +34,7 @@ class MGWPP_Pro_Carousel {
                         $image_url = wp_get_attachment_image_url($image->ID, $image_size);
                         $image_alt = get_post_meta($image->ID, '_wp_attachment_image_alt', true);
                         $image_url = $image_url ?: $placeholder;
-                        $image_alt = $image_alt ?: esc_html__('Gallery image', 'mgwpp');
+                        $image_alt = $image_alt ?: esc_html__('Gallery image', 'mini-gallery');
                     ?>
                     <div class="mgwpp-pro-carousel__card" role="listitem">
                         <?php if ($image_url): ?>
@@ -46,7 +46,7 @@ class MGWPP_Pro_Carousel {
                                 sizes="(max-width: 768px) 100vw, 50vw">
                         <?php else: ?>
                             <div class="mgwpp-pro-carousel__placeholder">
-                                <?php esc_html_e('Image missing', 'mgwpp'); ?>
+                                <?php esc_html_e('Image missing', 'mini-gallery'); ?>
                             </div>
                         <?php endif; ?>
                     </div>

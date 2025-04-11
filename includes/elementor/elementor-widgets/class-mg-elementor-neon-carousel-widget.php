@@ -259,24 +259,6 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
     
         return $options;
     }
-
-    // Enqueue frontend scripts
-    public function enqueue_neon_scripts() {
-        wp_enqueue_style(
-            'mg-neon-carousel-styles',
-            plugin_dir_url(__FILE__) . 'public/css/mg-neon-carousel.css',
-            [],
-            filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-neon-carousel.css')
-        );
-        wp_enqueue_script(
-            'mg-neon-carousel-scripts',
-            plugin_dir_url(__FILE__) . 'public/js/mg-neon-carousel.js',
-            ['elementor-frontend'],
-            filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-neon-carousel.js'),
-            true
-        );
-    }
-
     // Enqueue editor scripts
     public function enqueue_editor_scripts() {
         wp_enqueue_style(

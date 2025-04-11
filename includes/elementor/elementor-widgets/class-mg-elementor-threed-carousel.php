@@ -7,25 +7,6 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base {
 
     public function __construct($data = [], $args = null) {
         parent::__construct($data, $args);
-        // Register assets for frontend
-        add_action('wp_enqueue_scripts', [$this, 'register_assets']);
-    }
-
-    public function register_assets() {
-        wp_register_script(
-            'mg-3d-carousel',
-            plugins_url('public/js/mg-3d-carousel.js', __FILE__),
-            [], 
-            '1.0.0', 
-            true
-        );
-
-        wp_register_style(
-            'mg-3d-carousel-style',
-            plugins_url('public/css/mg-3d-carousel.css', __FILE__),
-            [], 
-            '1.0.0'
-        );
     }
 
     public function get_name() {

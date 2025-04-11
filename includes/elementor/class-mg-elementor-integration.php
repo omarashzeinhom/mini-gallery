@@ -17,53 +17,54 @@ class MG_Elementor_Integration
         add_action('elementor/widgets/register', [$this, 'register_widgets']);
         add_action('wp_ajax_mg_dismiss_pro_elements_notice', [$this, 'dismiss_notice_ajax_handler']);
 
-        // Hook to enqueue assets after Elementor renders widgets
-        add_action('elementor/frontend/after_register_styles', [$this, 'enqueue_elementor_assets']);
-        add_action('elementor/frontend/after_register_scripts', [$this, 'enqueue_elementor_assets']);
+        // Enqueue assets for each widget
+        add_action('elementor/widget/render_content', [$this, 'enqueue_widget_assets'], 10, 2);
     }
 
-    public function enqueue_elementor_assets()
+    public function enqueue_widget_assets($content, $widget)
     {
-        // Ensure that we are enqueuing the right assets for the Elementor widgets.
-        $gallery_type = 'single_carousel'; // You can fetch this dynamically if required
+        // Check widget class to load specific assets
+        $widget_class = get_class($widget);
 
-        switch ($gallery_type) {
-            case 'single_carousel':
+        switch ($widget_class) {
+            case 'MG_Elementor_Gallery_Single':
                 wp_enqueue_script('mg-single-carousel-js');
                 wp_enqueue_style('mg-single-carousel-styles');
                 break;
-            case 'multi_carousel':
+            case 'MG_Elementor_Gallery_Grid':
+                wp_enqueue_script('mg-grid-gallery');
+                wp_enqueue_style('mg-grid-styles');
+                break;
+            case 'MG_Elementor_Gallery_Multi':
                 wp_enqueue_script('mg-multi-carousel-js');
                 wp_enqueue_style('mg-multi-carousel-styles');
                 break;
-            case 'grid':
-                wp_enqueue_style('mg-grid-styles');
-                wp_enqueue_script('mg-grid-gallery');
-                break;
-            case 'mega_slider':
-                wp_enqueue_script('mg-mega-carousel-js');
-                wp_enqueue_style('mg-mega-carousel-styles');
-                break;
-            case 'pro_carousel':
-                wp_enqueue_style('mgwpp-pro-carousel-styles');
-                wp_enqueue_script('mgwpp-pro-carousel-js');
-                break;
-            case 'neon_carousel':
-                wp_enqueue_script('mgwpp-neon-carousel-js');
-                wp_enqueue_style('mgwpp-neon-carousel-styles');
-                break;
-            case 'threed_carousel':
-                wp_enqueue_script('mgwpp-threed-carousel-js');
-                wp_enqueue_style('mgwpp-threed-carousel-styles');
-                break;
-            case 'testimonials_carousel':
+            case 'MG_Elementor_Testimonial_Carousel':
                 wp_enqueue_script('mgwpp-testimonial-carousel-js');
                 wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                 break;
+            case 'MG_Elementor_3D_Carousel':
+                wp_enqueue_script('mgwpp-threed-carousel-js');
+                wp_enqueue_style('mgwpp-threed-carousel-styles');
+                break;
+            case 'MG_Elementor_Mega_Carousel':
+                wp_enqueue_script('mg-mega-carousel-js');
+                wp_enqueue_style('mg-mega-carousel-styles');
+                break;
+            case 'MG_Elementor_Pro_Carousel':
+                wp_enqueue_script('mgwpp-pro-carousel-js');
+                wp_enqueue_style('mgwpp-pro-carousel-styles');
+                break;
+            case 'MG_Elementor_Neon_Carousel':
+                wp_enqueue_script('mgwpp-neon-carousel-js');
+                wp_enqueue_style('mgwpp-neon-carousel-styles');
+                break;
             default:
-                // No additional assets enqueued if the gallery type is not recognized.
+                // No assets enqueued for unknown widgets
                 break;
         }
+
+        return $content;
     }
 
     public function handle_admin_init()

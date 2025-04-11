@@ -12,16 +12,6 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
     }
 
-    public function register_scripts()
-    {
-        wp_register_script(
-            'mg-mega-carousel',
-            plugins_url('assets/js/mg-mega-carousel.js', __FILE__),
-            [],
-            '1.0.0',
-            true
-        );
-    }
 
     public function get_name()
     {

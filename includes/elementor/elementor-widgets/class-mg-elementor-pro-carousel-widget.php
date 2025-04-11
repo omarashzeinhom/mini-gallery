@@ -184,29 +184,6 @@ class MG_Elementor_Pro_Carousel extends Widget_Base {
         return $options;
     }
 
-    public function __construct($data = [], $args = null) {
-        parent::__construct($data, $args);
-
-        add_action('elementor/frontend/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_frontend_scripts']);
-        add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_editor_scripts']);
-    }
-
-    public function enqueue_pro_carousel_frontend_scripts() {
-        wp_enqueue_style(
-            'mgwpp-pro-carousel-styles',
-            MG_PLUGIN_URL . '/public/css/mg-pro-carousel.css',
-            [], 
-            filemtime(MG_PLUGIN_PATH . 'public/css/mg-pro-carousel.css')
-        );
-
-        wp_enqueue_script(
-            'mgwpp-pro-carousel-js',
-            MG_PLUGIN_URL . '/public/js/mg-pro-carousel.js',
-            [], 
-            filemtime(MG_PLUGIN_PATH . 'public/js/mg-pro-carousel.js'),
-            true
-        );
-    }
 
     public function enqueue_pro_carousel_editor_scripts() {
         $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';

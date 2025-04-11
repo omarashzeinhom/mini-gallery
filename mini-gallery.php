@@ -80,6 +80,7 @@ function mgwpp_plugin_activate()
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    MGWPP_Album_Capabilities::mgwpp_album_capabilities();
     flush_rewrite_rules(false); // causes error on true
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');

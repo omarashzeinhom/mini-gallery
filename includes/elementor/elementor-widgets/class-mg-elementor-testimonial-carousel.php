@@ -1,31 +1,24 @@
 <?php
-if (! defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) exit;
 
-class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base
-{
-
-    public function get_name()
-    {
+class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base {
+    public function get_name() {
         return 'mgwpp_testimonial_carousel';
     }
 
-    public function get_title()
-    {
+    public function get_title() {
         return __('Testimonial Carousel', 'mini-gallery');
     }
 
-    public function get_icon()
-    {
+    public function get_icon() {
         return 'eicon-testimonial';
     }
 
-    public function get_categories()
-    {
+    public function get_categories() {
         return ['general'];
     }
 
-    protected function _register_controls()
-    {
+    protected function _register_controls() {
         $this->start_controls_section(
             'content_section',
             [
@@ -70,8 +63,7 @@ class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base
         $this->end_controls_section();
     }
 
-    protected function render()
-    {
+    protected function render() {
         $settings = $this->get_settings_for_display();
         echo do_shortcode('[mgwpp_testimonial_carousel autoplay="' . esc_attr($settings['autoplay']) . '" interval="' . esc_attr($settings['interval']) . '"]');
     }
@@ -83,3 +75,4 @@ class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base
 add_action('elementor/widgets/widgets_registered', function () {
     \Elementor\Plugin::instance()->widgets_manager->register(new MG_Elementor_Testimonial_Carousel);
 });
+?>

@@ -1,37 +1,59 @@
 <?php
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
 
 get_header();
 
-global $post;
+var_dump('test');
 
-// Optional: display album title
-echo '<h1>' . get_the_title($post->ID) . '</h1>';
+if (have_posts()) :
+    while (have_posts()) : the_post();
 
-// Optional: display album content (if you’re putting the shortcode there)
-echo apply_filters('the_content', $post->post_content);
+        echo '<div class="mgwpp-album">';
 
-// If you’re storing galleries via meta or relationship, get them here:
-// Example: get a gallery shortcode from a custom field called 'mgwpp_gallery_shortcode'
-$shortcode = get_post_meta($post->ID, 'mgwpp_gallery_shortcode', true);
+        // Album title
+        echo '<h1>' . esc_html(get_the_title()) . '</h1>';
 
-if (!empty($shortcode)) {
-    echo do_shortcode($shortcode);
-}
+        // Album content
+        echo '<div class="mgwpp-album-content">';
+        echo apply_filters('the_content', get_the_content());
+        echo '</div>';
 
-// OR if you want to load images directly from a custom field
-$images = get_post_meta($post->ID, 'mgwpp_album_images', true); // You’d need to set this in the post meta
+        // Get related galleries (array of post IDs)
+        $related_galleries = get_post_meta(get_the_ID(), 'mgwpp_album_galleries', true);
 
-if (!empty($images) && is_array($images)) {
-    echo '<div class="mgwpp-album-gallery">';
-    foreach ($images as $img_id) {
-        $src = wp_get_attachment_image_src($img_id, 'large');
-        echo '<img src="' . esc_url($src[0]) . '" alt="" />';
-    }
-    echo '</div>';
-}
+        if (!empty($related_galleries) && is_array($related_galleries)) {
+            foreach ($related_galleries as $gallery_id) {
+
+                echo '<div class="mgwpp-single-gallery">';
+
+                // Gallery title
+                echo '<h2>' . esc_html(get_the_title($gallery_id)) . '</h2>';
+
+                // 🔥 Render gallery via shortcode (no paged)
+                echo do_shortcode('[mgwpp_gallery id="' . intval($gallery_id) . '"]');
+
+                // Optional: fallback image rendering if shortcode fails
+                $images = get_post_meta($gallery_id, 'mgwpp_gallery_images', true);
+                if (!empty($images) && is_array($images)) {
+                    echo '<div class="mgwpp-gallery-images">';
+                    foreach ($images as $img_id) {
+                        $src = wp_get_attachment_image_src($img_id, 'large');
+                        if (!empty($src)) {
+                            echo '<img src="' . esc_url($src[0]) . '" alt="" />';
+                        }
+                    }
+                    echo '</div>';
+                }
+
+                echo '</div>'; // .mgwpp-single-gallery
+            }
+        } else {
+            echo '<p>No galleries found for this album.</p>';
+        }
+
+        echo '</div>'; // .mgwpp-album
+
+    endwhile;
+endif;
 
 get_footer();

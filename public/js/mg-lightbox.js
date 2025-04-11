@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lightbox = document.getElementById("mgwpp-lightbox")
     if (!lightbox) return
   
-    const items = Array.from(document.querySelectorAll(".mgwpp-gallery-item"))
+    const items = Array.from(document.querySelectorAll(".mgwpp-album-gallery-item"))
     const imgContainer = lightbox.querySelector(".mgwpp-lightbox-image-container")
     const captionEl = lightbox.querySelector(".mgwpp-lightbox-caption")
     const overlayEl = lightbox.querySelector(".mgwpp-lightbox-overlay")
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Event listeners
     document.addEventListener("click", (e) => {
-      const item = e.target.closest(".mgwpp-gallery-item")
+      const item = e.target.closest(".mgwpp-album-gallery-item")
       if (item) {
         e.preventDefault()
         openLightbox(items.indexOf(item))

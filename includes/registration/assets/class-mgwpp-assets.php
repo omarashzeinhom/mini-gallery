@@ -126,15 +126,15 @@ class MGWPP_Assets
         // Neon Carousel
         wp_register_style(
             'mgwpp-neon-carousel-styles',
-            $base_url . 'css/mg-neon-carousel.css',
+            $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css') : '1.0'
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-neon-carousel-js',
-            $base_url . 'js/mg-neon-carousel.js',
+            $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js',
             array('jquery'),
-            file_exists(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js') : '1.0',
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') : '1.0',
             true
         );
 

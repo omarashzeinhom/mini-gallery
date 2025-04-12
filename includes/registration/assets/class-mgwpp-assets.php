@@ -96,15 +96,15 @@ class MGWPP_Assets
         // Mega Carousel
         wp_register_style(
             'mg-mega-carousel-styles',
-            $base_url . 'css/mg-mega-carousel-styles.css',
+            $gallery_types_url  . 'mgwpp-mega-slider/mgwpp-mega-slider.css',
             array(),
             '1.0'
         );
         wp_register_script(
             'mg-mega-carousel-js',
-            $base_url . 'js/mg-mega-carousel.js',
+            $gallery_types_url  . 'mgwpp-mega-slider/mgwpp-mega-slider.js',
             array(),
-            file_exists($base_path . 'js/mg-mega-carousel.js') ? filemtime($base_path . 'js/mg-mega-carousel.js') : '1.0',
+            file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') : '1.0',
             true
         );
 

@@ -25,7 +25,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-securit
 //Gallery Types 
 
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-single-gallery/class-mgwpp-single-gallery.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-multi-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-multi-gallery/class-mgwpp-multi-gallery.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
 
 // Slider Types

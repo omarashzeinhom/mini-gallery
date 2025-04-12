@@ -66,14 +66,14 @@ class MGWPP_Assets
         // Multi Carousel
         wp_register_script(
             'mg-multi-carousel-js',
-            $base_url . 'js/mg-multi-carousel.js',
+            $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js',
             array(),
             '1.0',
             true
         );
         wp_register_style(
             'mg-multi-carousel-styles',
-            $base_url . 'css/mg-multi-carousel.css',
+            $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.css',
             array(),
             '1.0'
         );

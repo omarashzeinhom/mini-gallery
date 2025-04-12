@@ -195,15 +195,15 @@ class MGWPP_Assets
         // Spotlight Slider
         wp_register_style(
             'mg-spotlight-slider-styles',
-            $base_url . 'css/mg-spotlight-carousel.css',
+            $gallery_types_url  . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/css/mg-spotlight-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-spotlight-carousel.css') : '1.0'
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css') : '1.0'
         );
         wp_register_script(
             'mg-spotlight-slider-js',
-            $base_url . 'js/mg-spotlight-carousel.js',
+            $gallery_types_url  . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-spotlight-carousel.js') : '1.0',
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') : '1.0',
             true
         );
 

@@ -111,13 +111,13 @@ class MGWPP_Assets
         // Pro Carousel
         wp_register_style(
             'mgwpp-pro-carousel-styles',
-            $base_url . 'css/mg-pro-carousel.css',
+            $gallery_types_url  . 'mgwpp-pro-carousel/mgwpp-pro-carousel.css',
             array(),
             '1.0'
         );
         wp_register_script(
             'mgwpp-pro-carousel-js',
-            $base_url . 'js/mg-pro-carousel.js',
+            $gallery_types_url . 'mgwpp-pro-carousel/mgwpp-pro-carousel.js',
             array(),
             '1.0',
             true

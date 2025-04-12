@@ -33,13 +33,13 @@ class MGWPP_Admin_Assets {
         );
 
         // Localize script with translations and other data using matching handle
-        wp_localize_script( 'mgwpp-admin-js', 'mgwppData', array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'mgwpp_nonce' ),
-            'i18n'     => array(
-                'select_images'  => __( 'Select Images', 'mini-gallery' ),
-                'add_to_gallery' => __( 'Add to Gallery', 'mini-gallery' )
-            )
-        ) );
+        wp_localize_script('mgwpp-admin-js', 'mgwppMedia', array( // Changed from mgwppData to mgwppMedia
+            'ajax_url'       => admin_url('admin-ajax.php'),
+            'nonce'          => wp_create_nonce('mgwpp_nonce'),
+            'text_title'     => __('Select Gallery Images', 'mini-gallery'),
+            'text_select'    => __('Use Selected', 'mini-gallery'),
+            'gallery_success'=> __('Gallery created successfully!', 'mini-gallery'),
+            'generic_error'  => __('An error occurred. Please try again.', 'mini-gallery')
+        ));
     }
 }

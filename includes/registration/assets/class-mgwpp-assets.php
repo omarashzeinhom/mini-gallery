@@ -180,15 +180,15 @@ class MGWPP_Assets
         // FullPage Slider
         wp_register_style(
             'mg-fullpage-slider-styles',
-            $base_url . 'css/mg-full-page-slider.css',
+            $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/css/mg-full-page-slider.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-full-page-slider.css') : '1.0'
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css') : '1.0'
         );
         wp_register_script(
             'mg-fullpage-slider-js',
-            $base_url . 'js/mg-full-page-slider.js',
+            $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js',
             array('jquery'),
-            file_exists(MG_PLUGIN_PATH . 'public/js/mg-full-page-slider.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-full-page-slider.js') : '1.0',
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') : '1.0',
             true
         );
 

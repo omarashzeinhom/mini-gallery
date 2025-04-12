@@ -55,7 +55,6 @@ class MGWPP_Admin_Core
         // Initialize view classes with their dependencies
         new MGWPP_Galleries_View($this->asset_manager);
         new MGWPP_Security_View($this->asset_manager);
-        new MGWPP_Dashboard_View($this->asset_manager);
         new MGWPP_Albums_View($this->asset_manager);
     }
 }

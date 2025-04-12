@@ -4,20 +4,43 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Dashboard_View {
 
-    public static function render_dashboard($stats, $storage) {
-        ?>
-        <div class="wrap">
-            <h1><?php esc_html_e('Dashboard Overview', 'mini-gallery') ?></h1>
-            
-            <div class="mgwpp-dashboard-grid">
-                <?php self::render_stats_cards($stats); ?>
-                <?php self::render_storage_section($storage); ?>
-                <?php self::render_gallery_modules(); ?>
-            </div>
-        </div>
-        <?php
+    public static function render_dashboard() {
+        // Calculate stats
+        $stats = [
+            'galleries' => wp_count_posts('mgwpp_soora')->publish ?? 0,
+            'albums' => wp_count_posts('mgwpp_album')->publish ?? 0,
+            'testimonials' => wp_count_posts('mgwpp_testimonial')->publish ?? 0,
+        ];
+
+        // Calculate storage usage
+        $upload_dir = wp_upload_dir();
+        $used_bytes = 0;
+
+        if (is_dir($upload_dir['basedir'])) {
+            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($upload_dir['basedir'])) as $file) {
+                if ($file->isFile()) {
+                    $used_bytes += $file->getSize();
+                }
+            }
+        }
+
+        $used_mb = round($used_bytes / 1048576, 2);
+        $total_mb = 1024;
+        $percent = min(100, round(($used_mb / $total_mb) * 100, 2));
+
+        $storage = [
+            'percent' => $percent,
+            'used'    => "{$used_mb}MB",
+            'total'   => "{$total_mb}MB",
+        ];
+
+        // Render sections
+        self::render_stats_cards($stats);
+        self::render_storage_section($storage);
+        self::render_gallery_modules();
     }
 
+    
     private static function render_stats_cards($stats) {
         ?>
         <div class="mgwpp-stats-grid">

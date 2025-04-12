@@ -26,7 +26,7 @@ class MGWPP_Admin_Menu {
         $this->view_classes = [
             'dashboard' => [
                 'page_title' => __('Dashboard', 'mini-gallery'),
-                'callback' => [$this, 'render_dashboard']
+                'callback' => [MGWPP_Dashboard_View::class, 'render_dashboard'] // Corrected callback
             ],
             'galleries' => [
                 'page_title' => __('Galleries', 'mini-gallery'),

@@ -81,15 +81,15 @@ class MGWPP_Assets
         // Grid Styles
         wp_register_style(
             'mg-grid-styles',
-            $base_url . 'css/mg-grid.css',
+            $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.css',
             array(),
             '1.0'
         );
         wp_register_script(
             'mg-grid-gallery-js',
-            $base_url . 'js/mg-grid-gallery',
+            $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js',
             array(),
-            file_exists($base_path . 'js/mg-grid-gallery.js') ? filemtime($base_path . 'js/mg-grid-gallery.js') : '1.0',
+            file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') : '1.0',
             true
         );
 

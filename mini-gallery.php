@@ -26,7 +26,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-securit
 
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-single-gallery/class-mgwpp-single-gallery.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-multi-gallery/class-mgwpp-multi-gallery.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-grid-gallery/class-mgwpp-grid-gallery.php';
 
 // Slider Types
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';

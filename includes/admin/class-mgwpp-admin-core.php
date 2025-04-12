@@ -1,0 +1,32 @@
+<?php
+if (! defined('ABSPATH')) {
+    exit;
+}
+// File: includes/admin/class-mgwpp-admin-core.php
+class MGWPP_Admin_Core {
+    private $menu_manager;
+    private $asset_manager;
+    private $module_loader;
+
+    public function __construct() {
+        $this->load_dependencies();
+        $this->init_components();
+    }
+
+    private function load_dependencies() {
+        require_once 'class-mgwpp-admin-menu.php';
+        require_once 'class-mgwpp-admin-assets.php';
+        require_once 'class-mgwpp-module-loader.php';
+    }
+
+    private function init_components() {
+        $this->menu_manager = new MGWPP_Admin_Menu();
+        $this->asset_manager = new MGWPP_Admin_Assets();
+        $this->module_loader = new MGWPP_Module_Loader();
+    }
+
+    public function run() {
+        add_action('admin_menu', [$this->menu_manager, 'register_menus']);
+        add_action('admin_enqueue_scripts', [$this->asset_manager, 'enqueue_assets']);
+    }
+}

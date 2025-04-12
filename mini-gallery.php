@@ -146,7 +146,11 @@ function mgwpp_custom_templates($template)
     return $template;
 }
 
-
+add_action('plugins_loaded', function () {
+    if ( is_admin() ) {
+        MGWPP_Admin_Core::init();
+    }
+});
 
 
 
@@ -198,3 +202,5 @@ function mgwpp_plugin_uninstall()
 //add_action('shutdown', function () {
 //    while (@ob_end_flush());
 //});
+
+

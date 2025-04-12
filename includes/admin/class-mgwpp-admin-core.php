@@ -22,16 +22,17 @@ class MGWPP_Admin_Core
 
     private function load_dependencies()
     {
-        require_once 'class-mgwpp-admin-menu.php';
-        require_once 'class-mgwpp-admin-assets.php';
-        require_once 'class-mgwpp-module-loader.php';
-        require_once 'views/class-mgwpp-galleries-view.php'; // Add your view classes
-        require_once 'views/class-mgwpp-security-view.php';
+        require_once __DIR__ . '/class-mgwpp-admin-menu.php';
+        //require_once __DIR__ . '/class-mgwpp-admin-assets.php';
+        require_once __DIR__ . '/class-mgwpp-module-loader.php';
+        require_once __DIR__ . '/views/class-mgwpp-galleries-view.php'; // Add your view classes
+        require_once __DIR__ . '/views/class-mgwpp-security-view.php';
     }
+    
 
     private function init_components()
     {
-        $this->menu_manager = new MGWPP_Admin_Menu();
+       $this->menu_manager = new MGWPP_Admin_Menu();
         $this->asset_manager = new MGWPP_Admin_Assets();
         $this->module_loader = new MGWPP_Module_Loader();
     }
@@ -40,10 +41,10 @@ class MGWPP_Admin_Core
     {
         // Register menus and assets
         add_action('admin_menu', [$this->menu_manager, 'register_menus']);
-        add_action('admin_enqueue_scripts', [$this->asset_manager, 'enqueue_assets']);
+        //add_action('admin_enqueue_scripts', [$this->asset_manager, 'enqueue_assets']);
 
         // Initialize your view classes
-        add_action('admin_init', [$this, 'init_view_classes']);
+      add_action('admin_init', [$this, 'init_view_classes']);
     }
 
     public function init_view_classes()
@@ -53,4 +54,3 @@ class MGWPP_Admin_Core
         new MGWPP_Security_View($this->asset_manager);
     }
 }
-

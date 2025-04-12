@@ -30,7 +30,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-grid-gall
 
 // Slider Types
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-threed-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-threed-carousel/class-mgwpp-threed-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-mega-slider/class-mgwpp-mega-slider.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-pro-carousel/class-mgwpp-pro-carousel.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-neon-carousel/class-mgwpp-neon-carousel.php';

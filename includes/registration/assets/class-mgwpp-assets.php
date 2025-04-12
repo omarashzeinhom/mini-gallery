@@ -141,15 +141,15 @@ class MGWPP_Assets
         // 3D Carousel
         wp_register_style(
             'mgwpp-threed-carousel-styles',
-            $base_url . 'css/mg-threed-carousel.css',
+            $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css',
             array(),
-            file_exists(MG_PLUGIN_PATH . 'public/css/mg-threed-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'public/css/mg-threed-carousel.css') : '1.0'
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css') : '1.0'
         );
         wp_register_script(
             'mgwpp-threed-carousel-js',
-            $base_url . 'js/mg-threed-carousel.js',
+            $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js',
             array('jquery'),
-            file_exists(MG_PLUGIN_PATH . 'public/js/mg-threed-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mg-threed-carousel.js') : '1.0',
+            file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') : '1.0',
             true
         );
 

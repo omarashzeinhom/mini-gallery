@@ -4,71 +4,37 @@ if (! defined('ABSPATH')) {
 }
 // File: includes/admin/class-mgwpp-admin-assets.php
 class MGWPP_Admin_Assets {
-    private $asset_config = [];
-
-    public function __construct() {
-        $this->setup_assets();
-    }
-
-    private function setup_assets() {
-        $this->asset_config = [
-            'global' => [
-                'css' => [
-                    'mgwpp-admin' => [
-                        'src' => MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css',
-                        'deps' => []
-                    ]
-                ],
-                'js' => [
-                    'mgwpp-admin' => [
-                        'src' => MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
-                        'deps' => ['jquery', 'wp-i18n'],
-                        'footer' => true
-                    ]
-                ]
-            ],
-            'galleries' => [
-                'js' => [
-                    'mgwpp-galleries' => [
-                        'src' => MG_PLUGIN_URL . '/admin/js/galleries.js',
-                        'deps' => ['mgwpp-admin'],
-                        'footer' => true
-                    ]
-                ]
-            ]
-        ];
-    }
-
     public function enqueue_assets($hook) {
-        $this->enqueue_global_assets();
-        $this->enqueue_section_assets($hook);
-    }
+        // Only load on our plugin pages
+        if (strpos($hook, 'mgwpp_') === false) return;
 
-    private function enqueue_global_assets() {
-        foreach ($this->asset_config['global']['css'] as $handle => $asset) {
-            wp_enqueue_style($handle, $asset['src'], $asset['deps']);
-        }
+        wp_enqueue_media();
+        wp_enqueue_script('thickbox');
+        wp_enqueue_style('thickbox');
 
-        foreach ($this->asset_config['global']['js'] as $handle => $asset) {
-            wp_enqueue_script($handle, $asset['src'], $asset['deps'], null, $asset['footer']);
-        }
+        // Main admin script
+        wp_enqueue_script(
+            'mgwpp-admin',
+            MG_PLUGIN_URL . '/admin/js/admin.js',
+            ['jquery', 'media-upload', 'thickbox'],
+            filemtime(MG_PLUGIN_PATH . '/admin/js/admin.js')
+        );
 
-        $this->localize_scripts();
-    }
+        // Admin styles
+        wp_enqueue_style(
+            'mgwpp-admin',
+            MG_PLUGIN_URL . '/admin/css/admin.css',
+            [],
+            filemtime(MG_PLUGIN_PATH . '/admin/css/admin.css')
+        );
 
-    private function enqueue_section_assets($hook) {
-        if (strpos($hook, 'mgwpp_galleries') !== false) {
-            wp_enqueue_script('mgwpp-galleries');
-        }
-    }
-
-    private function localize_scripts() {
-        wp_localize_script('mgwpp-admin', 'mgwppAdmin', [
-            'nonce' => wp_create_nonce('mgwpp_admin_nonce'),
-            'texts' => [
-                'confirmDelete' => __('Are you sure you want to delete this item?', 'mini-gallery'),
-                'uploadTitle' => __('Select Gallery Images', 'mini-gallery'),
-                'uploadButton' => __('Add to Gallery', 'mini-gallery')
+        // Localize script with translations
+        wp_localize_script('mgwpp-admin', 'mgwppData', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('mgwpp_nonce'),
+            'i18n' => [
+                'select_images' => __('Select Images', 'mini-gallery'),
+                'add_to_gallery' => __('Add to Gallery', 'mini-gallery')
             ]
         ]);
     }

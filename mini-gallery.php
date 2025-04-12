@@ -56,7 +56,12 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/cla
 
 
 // Functions Admin Uninstall 
-require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
+//require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
+// New Admin Core
+require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-admin-core.php';
+
+
+
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
 // Elementor Integration

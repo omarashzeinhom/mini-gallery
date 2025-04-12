@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Dashboard_View {
 
-    public static function render($stats, $storage) {
+    public static function render_dashboard($stats, $storage) {
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Dashboard Overview', 'mini-gallery') ?></h1>

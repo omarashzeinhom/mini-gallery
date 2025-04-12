@@ -2,7 +2,15 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-// File: includes/admin/views/class-mgwpp-albums-view.php
+
+// Ensure WP_List_Table is loaded before the custom Albums Table
+if (!class_exists('WP_List_Table')) {
+    require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+}
+
+// Now load your custom table
+require_once MG_PLUGIN_PATH . 'includes/admin/tables/class-mgwpp-albums-table.php';
+
 class MGWPP_Albums_View {
 
     public static function render() {
@@ -27,17 +35,17 @@ class MGWPP_Albums_View {
                 <?php wp_nonce_field('mgwpp_album_creation', '_wpnonce'); ?>
                 
                 <div class="form-field">
-                    <label for="album_title"><?php esc_html_e('Title:', 'mini-gallery') ?></label>
+                    <label for="album_title"><?php esc_html_e('Title:', 'mini-gallery'); ?></label>
                     <input type="text" name="album_title" required>
                 </div>
 
                 <div class="form-field">
-                    <label><?php esc_html_e('Galleries:', 'mini-gallery') ?></label>
+                    <label><?php esc_html_e('Galleries:', 'mini-gallery'); ?></label>
                     <?php self::render_gallery_selector(); ?>
                 </div>
 
                 <button type="submit" class="button button-primary">
-                    <?php esc_html_e('Create Album', 'mini-gallery') ?>
+                    <?php esc_html_e('Create Album', 'mini-gallery'); ?>
                 </button>
             </form>
         </div>
@@ -57,8 +65,8 @@ class MGWPP_Albums_View {
                 <label class="mgwpp-gallery-item">
                     <input type="checkbox" 
                            name="album_galleries[]" 
-                           value="<?php echo absint($gallery->ID) ?>">
-                    <?php echo esc_html($gallery->post_title) ?>
+                           value="<?php echo absint($gallery->ID); ?>">
+                    <?php echo esc_html($gallery->post_title); ?>
                 </label>
             <?php endforeach; ?>
         </div>
@@ -70,7 +78,7 @@ class MGWPP_Albums_View {
         $table->prepare_items();
         ?>
         <div class="mgwpp-albums-table">
-            <h2><?php esc_html_e('Existing Albums', 'mini-gallery') ?></h2>
+            <h2><?php esc_html_e('Existing Albums', 'mini-gallery'); ?></h2>
             <?php $table->display(); ?>
         </div>
         <?php

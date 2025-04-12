@@ -32,6 +32,10 @@ class MGWPP_Admin_Menu {
                 'page_title' => __('Galleries', 'mini-gallery'),
                 'callback' => [MGWPP_Galleries_View::class, 'render']
             ],
+            'albums' => [
+                'page_title' => __('Albums', 'mini-gallery'),
+                'callback' => [MGWPP_Albums_View::class, 'render']
+            ],
             'security' => [
                 'page_title' => __('Security', 'mini-gallery'),
                 'callback' => [MGWPP_Security_View::class, 'render']

@@ -11,36 +11,39 @@ class MGWPP_Gallery_Grid
     <!-- Layout Switch Buttons -->
     <div class="mgwpp-layout-controls">
         <button class="mgwpp-layout-btn active" data-layout="grid" aria-label="Grid layout">
-            <img src="<?= MG_PLUGIN_URL . '/public/front-end/icons/layout-grid.webp'; ?>" alt="Grid Layout" />
+            <img src="<?= esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-grid.webp'); ?>" alt="Grid Layout" />
         </button>
         <button class="mgwpp-layout-btn" data-layout="masonry" aria-label="Masonry layout">
-            <img src="<?= MG_PLUGIN_URL . '/public/front-end/icons/layout-masonry.webp'; ?>" alt="Masonry Layout" />
+            <img src="<?= esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-masonry.webp'); ?>" alt="Masonry Layout" />
         </button>
         <button class="mgwpp-layout-btn" data-layout="minimal" aria-label="Minimal layout">
-            <img src="<?= MG_PLUGIN_URL . '/public/front-end/icons/layout-minimal.webp'; ?>" alt="Minimal Layout" />
+            <img src="<?= esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-minimal.webp'); ?>" alt="Minimal Layout" />
         </button>
     </div>
-
 </div>
-
 
 <!-- Image Grid Container -->
 <div class="mgwpp-grid-container" data-layout="grid">
     <?php foreach ($images as $image): ?>
-    <div class="mgwpp-grid-item">
-        <?= wp_get_attachment_image($image->ID, 'large', false, [
-                        'class' => 'mgwpp-grid-image',
-                        'loading' => 'lazy',
-                        'data-full' => wp_get_attachment_image_url($image->ID, 'full')
-                    ]) ?>
+        <div class="mgwpp-grid-item">
+            <?php
+            // Get the image HTML
+            $image_html = wp_get_attachment_image($image->ID, 'large', false, [
+                'class'     => 'mgwpp-grid-image',
+                'loading'   => 'lazy',
+                'data-full' => esc_url(wp_get_attachment_image_url($image->ID, 'full')),
+            ]);
 
-        <?php if ($caption = wp_get_attachment_caption($image->ID)): ?>
-        <div class="mgwpp-image-caption"><?= esc_html($caption) ?></div>
-        <?php endif; ?>
-    </div>
+            echo wp_kses_post($image_html);
+
+            if ($caption = wp_get_attachment_caption($image->ID)) :
+            ?>
+                <div class="mgwpp-image-caption"><?= esc_html($caption); ?></div>
+            <?php endif; ?>
+        </div>
     <?php endforeach; ?>
 </div>
-</div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {

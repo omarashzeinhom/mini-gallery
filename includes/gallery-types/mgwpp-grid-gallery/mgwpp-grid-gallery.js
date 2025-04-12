@@ -142,18 +142,3 @@ document.addEventListener("DOMContentLoaded", function () {
   if (currentLayout !== "masonry") initCarousel();
 });
 
-
-document.addEventListener("DOMContentLoaded", function() {
-    const layoutBtns = document.querySelectorAll(".mgwpp-layout-btn");
-    const gridContainer = document.querySelector(".mgwpp-grid-container");
-
-    layoutBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            layoutBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            const layout = btn.getAttribute("data-layout");
-            gridContainer.setAttribute("data-layout", layout);
-        });
-    });
-});

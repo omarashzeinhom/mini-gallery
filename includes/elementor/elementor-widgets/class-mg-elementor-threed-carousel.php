@@ -3,25 +3,31 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base {
+class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
+{
 
-    public function __construct($data = [], $args = null) {
+    public function __construct($data = [], $args = null)
+    {
         parent::__construct($data, $args);
     }
 
-    public function get_name() {
+    public function get_name()
+    {
         return 'mg_3d_carousel';
     }
 
-    public function get_title() {
+    public function get_title()
+    {
         return __('3D Carousel', 'mini-gallery');
     }
 
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-carousel'; // The icon used in the Elementor interface
     }
 
-    protected function _register_controls() {
+    protected function _register_controls()
+    {
         // Add Content Section
         $this->start_controls_section(
             'content_section',
@@ -136,12 +142,13 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings = $this->get_settings_for_display();
 
         // Validate the gallery ID
         $gallery_id = !empty($settings['gallery_id']) ? absint($settings['gallery_id']) : 0;
-        
+
         if (!$gallery_id) {
             printf(
                 '<div class="elementor-alert elementor-alert-info">%s</div>',
@@ -152,7 +159,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base {
 
         // Fetch images attached to the selected gallery
         $images = get_attached_media('image', $gallery_id);
-        
+
         if (empty($images)) {
             printf(
                 '<div class="elementor-alert elementor-alert-warning">%s</div>',
@@ -172,10 +179,11 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base {
         ];
 
         // Render the 3D carousel using the shortcode-like rendering function
-        echo MGWPP_3D_Carousel::render($widget_id, $images, $safe_settings);
+        echo wp_kses_post(MGWPP_3D_Carousel::render($widget_id, $images, $safe_settings));
     }
 
-    private function get_galleries() {
+    private function get_galleries()
+    {
         // Get galleries from the custom post type
         $galleries = get_posts([
             'post_type' => 'mgwpp_soora',

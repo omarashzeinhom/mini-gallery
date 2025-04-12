@@ -4,31 +4,37 @@ if (!defined('ABSPATH')) exit;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class MG_Elementor_Gallery_Single extends Widget_Base {
+class MG_Elementor_Gallery_Single extends Widget_Base
+{
 
-    public function get_name() {
+    public function get_name()
+    {
         return 'mg_gallery_single';
     }
 
-    public function get_title() {
-        return __( 'Mini Gallery Single Carousel', 'mini-gallery' );
+    public function get_title()
+    {
+        return __('Mini Gallery Single Carousel', 'mini-gallery');
     }
 
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-slider-device';
     }
 
-    public function get_categories() {
-        return [ 'minigallery' ];
+    public function get_categories()
+    {
+        return ['minigallery'];
     }
 
-    protected function _register_controls() {
+    protected function _register_controls()
+    {
 
         // Content Controls
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __( 'Content', 'mini-gallery' ),
+                'label' => __('Content', 'mini-gallery'),
                 'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -36,7 +42,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->add_control(
             'gallery_id',
             [
-                'label'   => __( 'Select Gallery', 'mini-gallery' ),
+                'label'   => __('Select Gallery', 'mini-gallery'),
                 'type'    => Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
@@ -46,7 +52,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->add_control(
             'bg_color',
             [
-                'label'   => __( 'Background Color', 'mini-gallery' ),
+                'label'   => __('Background Color', 'mini-gallery'),
                 'type'    => Controls_Manager::COLOR,
                 'default' => 'transparent',
             ]
@@ -55,7 +61,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->add_control(
             'transition_speed',
             [
-                'label'   => __( 'Transition Speed (s)', 'mini-gallery' ),
+                'label'   => __('Transition Speed (s)', 'mini-gallery'),
                 'type'    => Controls_Manager::NUMBER,
                 'default' => 0.5,
                 'step'    => 0.1,
@@ -67,20 +73,20 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->add_control(
             'auto_rotate_speed',
             [
-                'label'       => __( 'Auto Rotate Speed (ms)', 'mini-gallery' ),
+                'label'       => __('Auto Rotate Speed (ms)', 'mini-gallery'),
                 'type'        => Controls_Manager::NUMBER,
                 'default'     => 5000,
-                'description' => __( 'Set to 0 to disable auto-rotation.', 'mini-gallery' ),
+                'description' => __('Set to 0 to disable auto-rotation.', 'mini-gallery'),
             ]
         );
 
         $this->add_control(
             'show_nav',
             [
-                'label'   => __( 'Show Navigation', 'mini-gallery' ),
+                'label'   => __('Show Navigation', 'mini-gallery'),
                 'type'    => Controls_Manager::SWITCHER,
-                'label_on' => __( 'Show', 'mini-gallery' ),
-                'label_off' => __( 'Hide', 'mini-gallery' ),
+                'label_on' => __('Show', 'mini-gallery'),
+                'label_off' => __('Hide', 'mini-gallery'),
                 'default' => 'yes',
             ]
         );
@@ -88,7 +94,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->add_control(
             'swipe_threshold',
             [
-                'label'   => __( 'Swipe Threshold (px)', 'mini-gallery' ),
+                'label'   => __('Swipe Threshold (px)', 'mini-gallery'),
                 'type'    => Controls_Manager::NUMBER,
                 'default' => 30,
                 'min'     => 10,
@@ -98,7 +104,8 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings   = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
 
@@ -121,10 +128,11 @@ class MG_Elementor_Gallery_Single extends Widget_Base {
             'swipe_threshold'    => intval($settings['swipe_threshold']),
         ];
 
-        echo MGWPP_Gallery_Single::render($gallery_id, $images, $args);
+        echo wp_kses_post(MGWPP_Gallery_Single::render($gallery_id, $images, $args));
     }
 
-    private function get_galleries() {
+    private function get_galleries()
+    {
         $galleries = get_posts([
             'post_type'   => 'mgwpp_soora',
             'numberposts' => 100,

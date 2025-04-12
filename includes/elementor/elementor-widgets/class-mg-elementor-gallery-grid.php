@@ -48,29 +48,29 @@ class MG_Elementor_Gallery_Grid extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
-
+    
         if (empty($gallery_id)) {
             echo esc_html__('Please select a gallery.', 'mini-gallery');
             return;
         }
-
+    
         $gallery_post = get_post($gallery_id);
-
+    
         if (!$gallery_post || $gallery_post->post_type !== 'mgwpp_soora') {
             echo esc_html__('Invalid gallery selected.', 'mini-gallery');
             return;
         }
-
+    
         $images = array_values(get_attached_media('image', $gallery_id));
-
+    
         if (empty($images)) {
             echo esc_html__('No images found for this gallery.', 'mini-gallery');
             return;
         }
-
-        echo MGWPP_Gallery_Grid::render($gallery_id, $images);
+    
+        echo wp_kses_post(MGWPP_Gallery_Grid::render($gallery_id, $images));
     }
-
+    
     private function get_galleries() {
         $galleries = get_posts([
             'post_type'   => 'mgwpp_soora',

@@ -108,13 +108,13 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
             'auto_rotate_speed' => intval($settings['auto_rotate_speed']),
         ];
 
-        echo MGWPP_Gallery_Multi::render($gallery_id, $images, $args);
+        echo wp_kses_post(MGWPP_Gallery_Multi::render($gallery_id, $images , $args));
     }
 
     private function get_galleries() {
         $galleries = get_posts([
             'post_type'   => 'mgwpp_soora',
-            'numberposts' => 100,
+            'numberposts' => 15,
             'post_status' => 'publish',
         ]);
 

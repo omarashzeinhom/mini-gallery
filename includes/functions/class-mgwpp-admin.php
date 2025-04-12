@@ -195,7 +195,7 @@ class MGWPP_Admin
 
             // Debugging: Output the files found
             echo '<p>Files found: </p><pre>';
-            var_dump($files);
+            echo esc_html($files);
             echo '</pre>';
 
             foreach ($files as $file) {

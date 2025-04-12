@@ -24,7 +24,7 @@ class MGWPP_Upload {
         ]);
 
         if (is_wp_error($post_id)) {
-            wp_die($post_id->get_error_message());
+            wp_die(esc_html($post_id->get_error_message()));
         }
 
         // Save gallery type

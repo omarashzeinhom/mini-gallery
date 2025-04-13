@@ -96,7 +96,8 @@ class MGWPP_Testimonial_Carousel
                 $content = wpautop($testimonial->post_content); // Convert newlines to <p> tags
                 $content = wp_kses($content, $allowed_html); // Sanitize the HTML content
 
-                echo '<blockquote>' . $content . '</blockquote>';
+                $block_quote_content = wp_kses_post_deep('<blockquote>' . $content . '</blockquote>');
+                echo esc_html( $block_quote_content, 'mini-gallery');
                 ?>
                 <div class="mgwpp-carousel-testimonials-meta">
                   <?php if ($author) : ?>

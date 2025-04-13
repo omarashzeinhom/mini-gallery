@@ -6,7 +6,7 @@ class MGWPP_Dashboard_View {
 
     public static function render_dashboard() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'mini-gallery'));
+            wp_die(esc_html_e('You do not have sufficient permissions to access this page.', 'mini-gallery'));
         }
 
         $stats = [
@@ -93,7 +93,7 @@ class MGWPP_Dashboard_View {
             </div>
             <div class="mgwpp-stat-content">
                 <h3><?php echo esc_html($title); ?></h3>
-                <div class="mgwpp-stat-value"><?php echo number_format_i18n($count); ?></div>
+                <div class="mgwpp-stat-value"><?php echo wp_kses_post(number_format_i18n($count)); ?></div>
             </div>
         </div>
         <?php

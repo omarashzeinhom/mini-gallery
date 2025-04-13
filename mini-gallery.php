@@ -59,6 +59,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/cla
 //require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
 // New Admin Core
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-admin-core.php';
+require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-data-handler.php';
 
 
 
@@ -147,7 +148,7 @@ function mgwpp_custom_templates($template)
 }
 
 add_action('plugins_loaded', function () {
-    if ( is_admin() ) {
+    if (is_admin()) {
         MGWPP_Admin_Core::init();
     }
 });
@@ -202,5 +203,3 @@ function mgwpp_plugin_uninstall()
 //add_action('shutdown', function () {
 //    while (@ob_end_flush());
 //});
-
-

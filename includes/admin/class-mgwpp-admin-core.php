@@ -29,6 +29,7 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/class-mgwpp-security-view.php';
         require_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
     }
 

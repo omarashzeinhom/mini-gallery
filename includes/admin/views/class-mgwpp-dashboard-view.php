@@ -5,86 +5,175 @@ if (!defined('ABSPATH')) exit;
 class MGWPP_Dashboard_View {
 
     public static function render_dashboard() {
-        // Calculate stats
-        $stats = [
-            'galleries' => wp_count_posts('mgwpp_soora')->publish ?? 0,
-            'albums' => wp_count_posts('mgwpp_album')->publish ?? 0,
-            'testimonials' => wp_count_posts('mgwpp_testimonial')->publish ?? 0,
-        ];
-
-        // Calculate storage usage
-        $upload_dir = wp_upload_dir();
-        $used_bytes = 0;
-
-        if (is_dir($upload_dir['basedir'])) {
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($upload_dir['basedir'])) as $file) {
-                if ($file->isFile()) {
-                    $used_bytes += $file->getSize();
-                }
-            }
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'mini-gallery'));
         }
 
-        $used_mb = round($used_bytes / 1048576, 2);
-        $total_mb = 1024;
-        $percent = min(100, round(($used_mb / $total_mb) * 100, 2));
-
-        $storage = [
-            'percent' => $percent,
-            'used'    => "{$used_mb}MB",
-            'total'   => "{$total_mb}MB",
+        $stats = [
+            'galleries' => MGWPP_Data_Handler::get_post_count('mgwpp_soora'),
+            'albums' => MGWPP_Data_Handler::get_post_count('mgwpp_album'),
+            'testimonials' => MGWPP_Data_Handler::get_post_count('mgwpp_testimonial')
         ];
 
-        // Render sections
-        self::render_stats_cards($stats);
-        self::render_storage_section($storage);
-        self::render_gallery_modules();
+        $storage_data = MGWPP_Data_Handler::get_storage_data();
+        $installed_modules = MGWPP_Data_Handler::get_installed_gallery_modules();
+
+        ?>
+        <div class="wrap mgwpp-dashboard">
+            <?php
+            self::render_header();
+            self::render_stats_grid($stats);
+            self::render_storage_section($storage_data);
+            self::render_file_type_table($storage_data);
+            self::render_modules_section($installed_modules);
+            ?>
+        </div>
+        <?php
     }
 
-    
-    private static function render_stats_cards($stats) {
+    private static function render_header() {
+        ?>
+        <header class="mgwpp-header">
+            <div class="mgwpp-branding">
+                <img src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-logo.png'); ?>" 
+                     class="mgwpp-logo" 
+                     alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
+                <h1 class="mgwpp-title">
+                    <?php esc_html_e('Gallery Dashboard', 'mini-gallery') ?>
+                    <span class="mgwpp-version">v2.0</span>
+                </h1>
+            </div>
+            <div class="mgwpp-actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>" 
+                   class="mgwpp-button mgwpp-primary">
+                    <span class="dashicons dashicons-plus"></span>
+                    <?php esc_html_e('New Gallery', 'mini-gallery') ?>
+                </a>
+            </div>
+        </header>
+        <?php
+    }
+
+    private static function render_stats_grid($stats) {
         ?>
         <div class="mgwpp-stats-grid">
-            <div class="mgwpp-stat-card">
-                <h3><?php esc_html_e('Galleries', 'mini-gallery') ?></h3>
-                <div class="stat-value"><?php echo esc_html($stats['galleries']) ?></div>
+            <?php 
+            self::render_stat_card(
+                __('Galleries', 'mini-gallery'),
+                $stats['galleries'],
+                'mgwpp-galleries-icon.webp'
+            );
+            
+            self::render_stat_card(
+                __('Albums', 'mini-gallery'),
+                $stats['albums'],
+                'mgwpp-albums-icon.webp'
+            );
+
+            self::render_stat_card(
+                __('Testimonials', 'mini-gallery'),
+                $stats['testimonials'],
+                'mgwpp-testimonials-icon.webp'
+            );
+            ?>
+        </div>
+        <?php
+    }
+
+    private static function render_stat_card($title, $count, $icon) {
+        $icon_url = MG_PLUGIN_URL . '/admin/images/' . sanitize_file_name($icon);
+        ?>
+        <div class="mgwpp-stat-card">
+            <div class="mgwpp-stat-icon">
+                <img src="<?php echo esc_url($icon_url); ?>" 
+                     alt="<?php echo esc_attr($title) ?>"
+                     loading="lazy"
+                     width="40"
+                     height="40">
             </div>
-            <div class="mgwpp-stat-card">
-                <h3><?php esc_html_e('Albums', 'mini-gallery') ?></h3>
-                <div class="stat-value"><?php echo esc_html($stats['albums']) ?></div>
-            </div>
-            <div class="mgwpp-stat-card">
-                <h3><?php esc_html_e('Testimonials', 'mini-gallery') ?></h3>
-                <div class="stat-value"><?php echo esc_html($stats['testimonials']) ?></div>
+            <div class="mgwpp-stat-content">
+                <h3><?php echo esc_html($title); ?></h3>
+                <div class="mgwpp-stat-value"><?php echo number_format_i18n($count); ?></div>
             </div>
         </div>
         <?php
     }
 
-    private static function render_storage_section($storage) {
+    private static function render_storage_section($storage_data) {
         ?>
-        <div class="mgwpp-storage-section">
-            <h2><?php esc_html_e('Storage Overview', 'mini-gallery') ?></h2>
-            <div class="storage-progress">
-                <div class="progress-bar" style="width: <?php echo esc_attr($storage['percent']) ?>%"></div>
-                <span><?php echo esc_html($storage['percent']) ?>%</span>
+        <div class="mgwpp-storage-card">
+            <div class="mgwpp-storage-header">
+                <h2><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h2>
+                <span class="mgwpp-storage-percent">
+                    <?php echo esc_html($storage_data['percent']); ?>%
+                </span>
             </div>
-            <div class="storage-meta">
-                <span><?php echo esc_html($storage['used']) ?> / <?php echo esc_html($storage['total']) ?></span>
+            <div class="mgwpp-progress-bar">
+                <div class="mgwpp-progress-fill" 
+                     style="width: <?php echo esc_attr($storage_data['percent']); ?>%"></div>
+            </div>
+            <div class="mgwpp-storage-meta">
+                <span><?php echo esc_html($storage_data['used']); ?></span>
+                <span><?php echo esc_html($storage_data['total']); ?></span>
             </div>
         </div>
         <?php
     }
 
-    private static function render_gallery_modules() {
-        $modules = glob(plugin_dir_path(__FILE__) . '../gallery-types/*', GLOB_ONLYDIR);
+    private static function render_file_type_table($storage_data) {
         ?>
-        <div class="mgwpp-modules-section">
-            <h2><?php esc_html_e('Installed Gallery Types', 'mini-gallery') ?></h2>
-            <div class="modules-grid">
-                <?php foreach ($modules as $module) : ?>
-                    <div class="module-card">
-                        <h4><?php echo esc_html(basename($module)) ?></h4>
+        <div class="mgwpp-file-table">
+            <h3><?php esc_html_e('File Type Distribution', 'mini-gallery'); ?></h3>
+            <table class="wp-list-table widefat fixed">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Type', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Count', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Size', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Percentage', 'mini-gallery'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($storage_data['file_types'] as $ext => $data): ?>
+                    <tr>
+                        <td>.<?php echo esc_html($ext); ?></td>
+                        <td><?php echo number_format($data['count']); ?></td>
+                        <td><?php echo esc_html($data['size_formatted']); ?></td>
+                        <td>
+                            <div class="mgwpp-percent-bar">
+                                <div class="mgwpp-percent-fill" 
+                                     style="width: <?php echo esc_attr($data['percent']); ?>%">
+                                    <?php echo esc_html($data['percent']); ?>%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    private static function render_modules_section($modules) {
+        ?>
+        <div class="mgwpp-modules-grid">
+            <h2><?php esc_html_e('Active Gallery Types', 'mini-gallery'); ?></h2>
+            <div class="mgwpp-modules-list">
+                <?php foreach ($modules as $module): 
+                    $safe_module = sanitize_title($module);
+                    $icon_url = MG_PLUGIN_URL . '/admin/images/module-' . $safe_module . '.webp';
+                ?>
+                <div class="mgwpp-module-card">
+                    <div class="mgwpp-module-icon">
+                        <img src="<?php echo esc_url($icon_url); ?>" 
+                             alt="<?php echo esc_attr($module); ?>"
+                             loading="lazy"
+                             width="60"
+                             height="60">
                     </div>
+                    <h4><?php echo esc_html($module); ?></h4>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>

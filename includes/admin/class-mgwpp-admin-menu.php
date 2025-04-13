@@ -36,6 +36,10 @@ class MGWPP_Admin_Menu {
                 'page_title' => __('Albums', 'mini-gallery'),
                 'callback' => [MGWPP_Albums_View::class, 'render']
             ],
+            'testimonials' => [
+                'page_title' => __('Testimonials', 'mini-gallery'),
+                'callback' => [MGWPP_Testimonials_View::class, 'render']
+            ],
             'security' => [
                 'page_title' => __('Security', 'mini-gallery'),
                 'callback' => [MGWPP_Security_View::class, 'render']

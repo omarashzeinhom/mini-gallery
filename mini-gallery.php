@@ -73,7 +73,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
 //require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
-
+require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mgwpp_ajax_handler.php';
+MGWPP_Ajax_Handler::init();
 
 
 // When enqueueing:
@@ -91,13 +92,19 @@ function mgwpp_plugin_activate()
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
+function mgwpp_register_shortcodes() {
+    // Register the gallery shortcode
+    add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
+}
+add_action('admin_init', 'mgwpp_register_shortcodes'); // Ensure it's registered in the admin area
+
 
 // Initialize plugin
 function mgwpp_initialize_plugin()
 {
     // Register gallery shortcode
     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
-
+    add_action( 'admin_init', 'mgwpp_register_shortcodes' ); 
     // Call the static methods to initialize classes
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();

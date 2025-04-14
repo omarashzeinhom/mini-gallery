@@ -25,6 +25,9 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
         require_once __DIR__ . '/class-mgwpp-module-loader.php';
+        require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
+        require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
+
         // Views
         require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/class-mgwpp-security-view.php';
@@ -58,4 +61,15 @@ class MGWPP_Admin_Core
         new MGWPP_Security_View($this->asset_manager);
         new MGWPP_Albums_View($this->asset_manager);
     }
+
+    public function add_gallery_preview_iframe($post)
+{
+    // Only show the preview for gallery posts (you may need to adjust the post type check)
+    if ('mgwpp_soora' === $post->post_type) {
+        // Output the iframe
+        $gallery_id = $post->ID;
+        echo '<h3>Gallery Preview</h3>';
+        echo '<iframe src="' . admin_url('admin-ajax.php?action=mgwpp_preview&gallery_id=' . $gallery_id) . '" width="100%" height="600px" frameborder="0"></iframe>';
+    }
+}
 }

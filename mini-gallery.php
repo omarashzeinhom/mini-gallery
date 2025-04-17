@@ -160,7 +160,13 @@ add_action('plugins_loaded', function () {
     }
 });
 
-
+// Link Elementor templates to galleries
+add_action('elementor/editor/after_save', function($post_id) {
+    if (get_post_type($post_id) === 'elementor_library') {
+        $parent_gallery = $_POST['mgwpp_parent_gallery'] ?? 0;
+        update_post_meta($post_id, '_mgwpp_parent_gallery', absint($parent_gallery));
+    }
+});
 
 function mgwpp_plugin_deactivate()
 {

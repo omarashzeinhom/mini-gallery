@@ -1,204 +1,310 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Class MGWPP_Admin_Edit_Gallery
- *
- * Handles the registration and rendering of the custom "Edit Gallery" admin page.
- */
 class MGWPP_Admin_Edit_Gallery {
 
-    /**
-     * Initialize hooks.
-     */
+    private static $gallery_types = [
+        'single_carousel' => 'Single Carousel',
+        'multi_carousel' => 'Multi Carousel',
+        'grid' => 'Image Grid',
+        'mega_slider' => 'Mega Slider',
+        'pro_carousel' => 'Pro Carousel',
+        'neon_carousel' => 'Neon Carousel',
+        'threed_carousel' => '3D Carousel',
+        'full_page_slider' => 'Full Page Slider',
+        'spotlight_carousel' => 'Spotlight Carousel',
+        'testimonials_carousel' => 'Testimonials'
+    ];
+
     public static function init() {
-        add_action( 'admin_menu', array( __CLASS__, 'register_edit_gallery_page' ) );
+        add_action('admin_menu', [__CLASS__, 'register_edit_gallery_page']);
+        add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_assets']);
     }
 
-    /**
-     * Registers the "Edit Gallery" page as a submenu.
-     */
+    public static function enqueue_assets($hook) {
+        if ($hook === 'gallery_page_mgwpp-edit-gallery') {
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
+            wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/admin-edit.js', __FILE__), ['jquery'], time(), true);
+        }
+    }
+
     public static function register_edit_gallery_page() {
-        // Change 'mini-gallery' to your parent menu slug if necessary.
         add_submenu_page(
             'mini-gallery',
-            __( 'Edit Gallery', 'mini-gallery' ),
-            __( 'Edit Gallery', 'mini-gallery' ),
+            __('Edit Gallery', 'mini-gallery'),
+            __('Edit Gallery', 'mini-gallery'),
             'manage_options',
             'mgwpp-edit-gallery',
-            array( __CLASS__, 'render_edit_gallery_page' )
+            [__CLASS__, 'render_edit_gallery_page']
         );
     }
 
-    /**
-     * Renders the "Edit Gallery" page.
-     */
     public static function render_edit_gallery_page() {
-        $gallery_id = isset( $_GET['gallery_id'] ) ? intval( $_GET['gallery_id'] ) : 0;
-        if ( ! $gallery_id ) {
-            echo '<div class="notice notice-error"><p>' . esc_html__( 'No gallery specified.', 'mini-gallery' ) . '</p></div>';
+        // Validate gallery ID
+        $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
+        
+        if (!$gallery_id) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('No gallery specified.', 'mini-gallery') . '</p></div>';
             return;
         }
     
-        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'mgwpp_edit_gallery' ) ) {
-            echo '<div class="notice notice-error"><p>' . esc_html__( 'Security check failed.', 'mini-gallery' ) . '</p></div>';
+        // Verify nonce
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field($_GET['_wpnonce']), 'mgwpp_edit_gallery')) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Security check failed.', 'mini-gallery') . '</p></div>';
             return;
         }
     
-        $gallery = get_post( $gallery_id );
-        if ( ! $gallery || 'mgwpp_soora' !== $gallery->post_type ) {
-            echo '<div class="notice notice-error"><p>' . esc_html__( 'Invalid gallery.', 'mini-gallery' ) . '</p></div>';
+        // Verify gallery post
+        $gallery = get_post($gallery_id);
+        if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
+            echo '<div class="notice notice-error"><p>' . esc_html__('Invalid gallery.', 'mini-gallery') . '</p></div>';
             return;
         }
     
         // Process form submission
-        if ( isset( $_POST['mgwpp_edit_gallery_submit'] ) ) {
-            if ( ! isset( $_POST['mgwpp_edit_gallery_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['mgwpp_edit_gallery_nonce'] ) ), 'mgwpp_edit_gallery_save' ) ) {
-                echo '<div class="notice notice-error"><p>' . esc_html__( 'Form security check failed.', 'mini-gallery' ) . '</p></div>';
+        if (isset($_POST['mgwpp_edit_gallery_submit'])) {
+            if (!isset($_POST['mgwpp_edit_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_edit_gallery_nonce'], 'mgwpp_edit_gallery_save')) {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Form security check failed.', 'mini-gallery') . '</p></div>';
                 return;
             }
     
-            update_post_meta( $gallery_id, 'mgwpp_gallery_overlay', sanitize_text_field( $_POST['mgwpp_gallery_overlay'] ) );
-            update_post_meta( $gallery_id, 'mgwpp_gallery_navigation', sanitize_text_field( $_POST['mgwpp_gallery_navigation'] ) );
-            update_post_meta( $gallery_id, 'mgwpp_gallery_cta_text', sanitize_text_field( $_POST['mgwpp_gallery_cta_text'] ) );
-            update_post_meta( $gallery_id, 'mgwpp_gallery_cta_link', esc_url_raw( $_POST['mgwpp_gallery_cta_link'] ) );
+            // Sanitize and save all fields
+            $fields = [
+                'mgwpp_gallery_type' => 'sanitize_text_field',
+                'mgwpp_nav_color' => 'sanitize_hex_color',
+                'mgwpp_nav_bg' => 'sanitize_text_field',
+                'mgwpp_overlay_type' => 'sanitize_text_field',
+                'mgwpp_gradient' => 'sanitize_text_field',
+                'mgwpp_mask_enabled' => 'sanitize_text_field',
+                'mgwpp_gallery_cta_text' => 'sanitize_text_field',
+                'mgwpp_gallery_cta_link' => 'esc_url_raw'
+            ];
     
-            // Save per-image CTA
-            if ( isset( $_POST['mgwpp_gallery_images'] ) ) {
-                update_post_meta( $gallery_id, 'mgwpp_gallery_images', $_POST['mgwpp_gallery_images'] );
+            foreach ($fields as $field => $sanitizer) {
+                if (isset($_POST[$field])) {
+                    update_post_meta($gallery_id, $field, call_user_func($sanitizer, $_POST[$field]));
+                }
             }
     
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Gallery updated successfully.', 'mini-gallery' ) . '</p></div>';
+            // Save image CTAs
+            $image_ctas = [];
+            if (isset($_POST['mgwpp_gallery_images']) && is_array($_POST['mgwpp_gallery_images'])) {
+                foreach ($_POST['mgwpp_gallery_images'] as $index => $cta) {
+                    $image_ctas[$index] = [
+                        'id' => isset($cta['id']) ? intval($cta['id']) : 0,
+                        'cta_text' => sanitize_text_field($cta['cta_text']),
+                        'cta_link' => esc_url_raw($cta['cta_link'])
+                    ];
+                }
+            }
+            update_post_meta($gallery_id, 'mgwpp_gallery_images', $image_ctas);
+    
+            echo '<div class="notice notice-success is-dismissible"><p>' 
+                 . esc_html__('Gallery updated successfully.', 'mini-gallery') 
+                 . '</p></div>';
         }
     
-        $overlay    = get_post_meta( $gallery_id, 'mgwpp_gallery_overlay', true );
-        $navigation = get_post_meta( $gallery_id, 'mgwpp_gallery_navigation', true );
-        $cta_text   = get_post_meta( $gallery_id, 'mgwpp_gallery_cta_text', true );
-        $cta_link   = get_post_meta( $gallery_id, 'mgwpp_gallery_cta_link', true );
-        $images     = get_post_meta( $gallery_id, 'mgwpp_gallery_images', true );
+        // Retrieve current values with defaults
+        $current_values = [
+            'nav_color' => get_post_meta($gallery_id, 'mgwpp_nav_color', true) ?: '#ffffff',
+            'nav_bg' => get_post_meta($gallery_id, 'mgwpp_nav_bg', true) ?: 'rgba(0,0,0,0.5)',
+            'overlay_type' => get_post_meta($gallery_id, 'mgwpp_overlay_type', true) ?: 'none',
+            'gradient' => get_post_meta($gallery_id, 'mgwpp_gradient', true) ?: 'linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%)',
+            'gallery_type' => get_post_meta($gallery_id, 'mgwpp_gallery_type', true) ?: 'single_carousel',
+            'mask_enabled' => get_post_meta($gallery_id, 'mgwpp_mask_enabled', true) ?: 'no',
+            'cta_text' => get_post_meta($gallery_id, 'mgwpp_gallery_cta_text', true),
+            'cta_link' => get_post_meta($gallery_id, 'mgwpp_gallery_cta_link', true),
+            'images' => get_post_meta($gallery_id, 'mgwpp_gallery_images', true) ?: []
+        ];
     
         ?>
-        <div class="wrap">
-            <h1><?php esc_html_e( 'Edit Gallery', 'mini-gallery' ); ?></h1>
-            <form method="post">
-                <?php wp_nonce_field( 'mgwpp_edit_gallery_save', 'mgwpp_edit_gallery_nonce' ); ?>
-                <table class="form-table">
-                    <tr>
-                        <th><label for="mgwpp_gallery_overlay"><?php esc_html_e( 'Overlay Mask', 'mini-gallery' ); ?></label></th>
-                        <td><input type="text" name="mgwpp_gallery_overlay" id="mgwpp_gallery_overlay" value="<?php echo esc_attr( $overlay ); ?>" class="regular-text"></td>
-                    </tr>
-                    <tr>
-                        <th><label for="mgwpp_gallery_navigation"><?php esc_html_e( 'Navigation', 'mini-gallery' ); ?></label></th>
-                        <td>
-                            <select name="mgwpp_gallery_navigation" id="mgwpp_gallery_navigation">
-                                <option value="dots" <?php selected( $navigation, 'dots' ); ?>>Dots</option>
-                                <option value="arrows" <?php selected( $navigation, 'arrows' ); ?>>Arrows</option>
-                                <option value="pagination" <?php selected( $navigation, 'pagination' ); ?>>Pagination</option>
-                                <option value="dots_arrows" <?php selected( $navigation, 'dots_arrows' ); ?>>Dots + Arrows</option>
+        <div class="wrap mgwpp-edit-wrapper">
+            <h1 class="mgwpp-edit-title">
+                <?php esc_html_e('Edit Gallery', 'mini-gallery') ?>
+                <span class="mgwpp-gallery-id">ID: <?php echo intval($gallery_id) ?></span>
+            </h1>
+            
+            <div class="mgwpp-edit-columns">
+                <!-- Settings Panel -->
+                <div class="mgwpp-settings-panel">
+                    <form method="post" class="mgwpp-settings-form">
+                        <?php wp_nonce_field('mgwpp_edit_gallery_save', 'mgwpp_edit_gallery_nonce'); ?>
+                        
+                        <!-- Gallery Type Selector -->
+                        <div class="mgwpp-settings-section">
+                            <h3><?php esc_html_e('Gallery Type', 'mini-gallery') ?></h3>
+                            <select name="mgwpp_gallery_type" class="mgwpp-type-selector">
+                                <?php foreach (self::$gallery_types as $value => $label) : ?>
+                                    <option value="<?php echo esc_attr($value) ?>" <?php selected($current_values['gallery_type'], $value) ?>>
+                                        <?php echo esc_html($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><label for="mgwpp_gallery_cta_text"><?php esc_html_e( 'CTA Button Text', 'mini-gallery' ); ?></label></th>
-                        <td><input type="text" name="mgwpp_gallery_cta_text" id="mgwpp_gallery_cta_text" value="<?php echo esc_attr( $cta_text ); ?>" class="regular-text"></td>
-                    </tr>
-                    <tr>
-                        <th><label for="mgwpp_gallery_cta_link"><?php esc_html_e( 'CTA Button Link', 'mini-gallery' ); ?></label></th>
-                        <td><input type="url" name="mgwpp_gallery_cta_link" id="mgwpp_gallery_cta_link" value="<?php echo esc_attr( $cta_link ); ?>" class="regular-text"></td>
-                    </tr>
-                </table>
+                        </div>
     
-                <h2><?php esc_html_e( 'Image CTA Settings', 'mini-gallery' ); ?></h2>
-                <?php if ( ! empty( $images ) ) : ?>
-                    <table class="widefat">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>CTA Text</th>
-                                <th>CTA Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ( $images as $index => $img ) : ?>
-                            <tr>
-                                <td>
-                                    <?php echo wp_get_attachment_image( $img['id'], [80,80] ); ?>
-                                </td>
-                                <td>
-                                    <input type="text" name="mgwpp_gallery_images[<?php echo $index; ?>][cta_text]" value="<?php echo esc_attr( $img['cta_text'] ?? '' ); ?>" class="regular-text">
-                                </td>
-                                <td>
-                                    <input type="url" name="mgwpp_gallery_images[<?php echo $index; ?>][cta_link]" value="<?php echo esc_attr( $img['cta_link'] ?? '' ); ?>" class="regular-text">
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else : ?>
-                    <p><?php esc_html_e( 'No images found in this gallery.', 'mini-gallery' ); ?></p>
-                <?php endif; ?>
+                        <!-- Visual Style Settings -->
+                        <div class="mgwpp-settings-section">
+                            <h3><?php esc_html_e('Visual Style', 'mini-gallery') ?></h3>
+                            <div class="mgwpp-style-grid">
+                                <div class="mgwpp-style-item">
+                                    <label><?php esc_html_e('Navigation Color', 'mini-gallery') ?></label>
+                                    <input type="text" name="mgwpp_nav_color" 
+                                           value="<?php echo esc_attr($current_values['nav_color']) ?>" 
+                                           class="color-picker">
+                                </div>
+                                
+                                <div class="mgwpp-style-item">
+                                    <label><?php esc_html_e('Navigation Background', 'mini-gallery') ?></label>
+                                    <input type="text" name="mgwpp_nav_bg" 
+                                           value="<?php echo esc_attr($current_values['nav_bg']) ?>" 
+                                           class="color-picker">
+                                </div>
     
-                <?php submit_button( __( 'Save Changes', 'mini-gallery' ), 'primary', 'mgwpp_edit_gallery_submit' ); ?>
-            </form>
+                                <div class="mgwpp-style-item">
+                                    <label><?php esc_html_e('Overlay Type', 'mini-gallery') ?></label>
+                                    <select name="mgwpp_overlay_type" class="mgwpp-overlay-select">
+                                        <option value="none" <?php selected($current_values['overlay_type'], 'none') ?>><?php esc_html_e('None', 'mini-gallery') ?></option>
+                                        <option value="gradient" <?php selected($current_values['overlay_type'], 'gradient') ?>><?php esc_html_e('Gradient', 'mini-gallery') ?></option>
+                                        <option value="solid" <?php selected($current_values['overlay_type'], 'solid') ?>><?php esc_html_e('Solid', 'mini-gallery') ?></option>
+                                    </select>
+                                </div>
     
-            <h2><?php esc_html_e( 'Gallery Preview', 'mini-gallery' ); ?></h2>
-            <?php
-            // Directly render the gallery using the gallery ID
-            echo do_shortcode( '[mgwpp_gallery id="' . $gallery_id . '"]' );            ?>
+                                <div class="mgwpp-style-item mgwpp-gradient-picker" 
+                                     style="<?php echo ($current_values['overlay_type'] !== 'gradient') ? 'display:none;' : '' ?>">
+                                    <label><?php esc_html_e('Gradient', 'mini-gallery') ?></label>
+                                    <input type="text" name="mgwpp_gradient" 
+                                           value="<?php echo esc_attr($current_values['gradient']) ?>" 
+                                           class="gradient-input">
+                                </div>
     
-            <h2><?php esc_html_e( 'Copy Shortcode', 'mini-gallery' ); ?></h2>
-            <input type="text" value='[mgwpp_gallery id="<?php echo $gallery_id; ?>"]'>            
-            <button class="button" type="button" onclick="copyMGWPPShortcode()">Copy Shortcode</button>
+                                <div class="mgwpp-style-item">
+                                    <label><?php esc_html_e('Image Mask', 'mini-gallery') ?></label>
+                                    <label class="mgwpp-switch">
+                                        <input type="checkbox" name="mgwpp_mask_enabled" 
+                                               value="yes" <?php checked($current_values['mask_enabled'], 'yes') ?>>
+                                        <span class="mgwpp-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Global CTA Settings -->
+                        <div class="mgwpp-settings-section">
+                            <h3><?php esc_html_e('Call to Action', 'mini-gallery') ?></h3>
+                            <div class="mgwpp-cta-grid">
+                                <div>
+                                    <label><?php esc_html_e('Button Text', 'mini-gallery') ?></label>
+                                    <input type="text" name="mgwpp_gallery_cta_text" 
+                                           value="<?php echo esc_attr($current_values['cta_text']) ?>">
+                                </div>
+                                <div>
+                                    <label><?php esc_html_e('Button Link', 'mini-gallery') ?></label>
+                                    <input type="url" name="mgwpp_gallery_cta_link" 
+                                           value="<?php echo esc_attr($current_values['cta_link']) ?>">
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Per-Image CTAs -->
+                        <div class="mgwpp-settings-section">
+                            <h3><?php esc_html_e('Per-Image CTAs', 'mini-gallery') ?></h3>
+                            <div class="mgwpp-image-ctas">
+                                <?php foreach ($current_values['images'] as $index => $img) : ?>
+                                    <div class="mgwpp-cta-item">
+                                        <?php echo wp_get_attachment_image($img['id'], [100, 100]); ?>
+                                        <input type="hidden" 
+                                               name="mgwpp_gallery_images[<?php echo intval($index) ?>][id]" 
+                                               value="<?php echo intval($img['id']) ?>">
+                                        <input type="text" 
+                                               name="mgwpp_gallery_images[<?php echo intval($index) ?>][cta_text]" 
+                                               value="<?php echo esc_attr($img['cta_text'] ?? '') ?>"
+                                               placeholder="<?php esc_attr_e('CTA Text', 'mini-gallery') ?>">
+                                        <input type="url" 
+                                               name="mgwpp_gallery_images[<?php echo intval($index) ?>][cta_link]" 
+                                               value="<?php echo esc_attr($img['cta_link'] ?? '') ?>"
+                                               placeholder="<?php esc_attr_e('CTA Link', 'mini-gallery') ?>">
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+    
+                        <?php submit_button(__('Save Changes', 'mini-gallery'), 'primary large', 'mgwpp_edit_gallery_submit') ?>
+                    </form>
+                </div>
+    
+                <!-- Live Preview Panel -->
+                <div class="mgwpp-preview-panel">
+                    <div class="mgwpp-preview-header">
+                        <h3><?php esc_html_e('Live Preview', 'mini-gallery') ?></h3>
+                        <button type="button" class="mgwpp-refresh-preview button">
+                            <span class="dashicons dashicons-update"></span>
+                            <?php esc_html_e('Refresh Preview', 'mini-gallery') ?>
+                        </button>
+                    </div>
+                    <div class="mgwpp-preview-container">
+                        <?php echo do_shortcode('[mgwpp_gallery id="' . intval($gallery_id) . '"]') ?>
+                    </div>
+                    
+                    <div class="mgwpp-shortcode-box">
+                        <input type="text" value='[mgwpp_gallery id="<?php echo intval($gallery_id) ?>"]' readonly>
+                        <button type="button" class="button mgwpp-copy-shortcode">
+                            <?php esc_html_e('Copy Shortcode', 'mini-gallery') ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+        jQuery(document).ready(function($) {
+            // Initialize color pickers
+            $('.color-picker').wpColorPicker();
             
-            
-            <br><br>
-        <!-- Preview Button -->
-        <button id="mgwpp_preview_button" class="button">Preview Gallery</button>
-        
-            <script>
-            function copyMGWPPShortcode() {
-                var copyText = document.getElementById("mgwpp_shortcode");
-                copyText.select();
-                document.execCommand("copy");
-                alert("Shortcode copied!");
-            }
-
-            jQuery(document).ready(function($){
-                $('#mgwpp_preview_button').on('click', function(e) {
-                    e.preventDefault();
-                    var gallery_id = <?php echo $gallery_id; ?>;
-
-                    // Trigger the AJAX request to preview the gallery
-                    $.ajax({
-                        url: ajaxurl, // WordPress' AJAX handler
-                        method: 'GET',
-                        data: {
-                            action: 'mgwpp_preview',
-                            gallery_id: gallery_id
-                        },
-                        success: function(response) {
-                            // Open a new window or display the preview in an iframe
-                            var previewWindow = window.open('', 'Gallery Preview', 'width=800,height=600');
-                            previewWindow.document.write(response);
-                        },
-                        error: function() {
-                            alert('Error generating preview.');
-                        }
-                    });
+            // Toggle gradient field visibility
+            $('.mgwpp-overlay-select').change(function() {
+                $('.mgwpp-gradient-picker').toggle($(this).val() === 'gradient');
+            }).trigger('change');
+    
+            // Handle preview refresh
+            $('.mgwpp-refresh-preview').click(function() {
+                var $preview = $('.mgwpp-preview-container');
+                $preview.html('<div class="mgwpp-loading"><?php esc_html_e('Loading preview...', 'mini-gallery') ?></div>');
+                
+                $.post(ajaxurl, {
+                    action: 'mgwpp_refresh_preview',
+                    gallery_id: <?php echo intval($gallery_id) ?>,
+                    nonce: '<?php echo wp_create_nonce('mgwpp_preview_nonce') ?>'
+                }, function(response) {
+                    $preview.html(response);
                 });
             });
-            </script>
     
-        </div>
+            // Handle shortcode copy
+            $('.mgwpp-copy-shortcode').click(function() {
+                var $input = $(this).prev('input');
+                $input.select();
+                document.execCommand('copy');
+                $(this).text('<?php esc_html_e('Copied!', 'mini-gallery') ?>');
+                setTimeout(() => {
+                    $(this).text('<?php esc_html_e('Copy Shortcode', 'mini-gallery') ?>');
+                }, 2000);
+            });
+        });
+        </script>
         <?php
     }
-    
 
-    
+    // Add AJAX handler for preview refresh
+    public static function refresh_preview() {
+        check_ajax_referer('mgwpp_preview_nonce', 'nonce');
+        
+        $gallery_id = intval($_POST['gallery_id']);
+        echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+        wp_die();
+    }
 }
-
-
-// Initialize the Edit Gallery page.
 MGWPP_Admin_Edit_Gallery::init();
+add_action('wp_ajax_mgwpp_refresh_preview', [MGWPP_Admin_Edit_Gallery::class, 'refresh_preview']);

@@ -1,49 +1,66 @@
-/* Revised CSS for proper image display */
-.mgwpp-single-gallery {
+/* MGWPP Carousel Styles */
+.mgwpp-single-carousel {
+  --mgwpp-bg-color: transparent;
+  --mgwpp-transition-speed: 0.5s;
   max-width: 800px;
   margin: 2rem auto;
   position: relative;
   overflow: hidden;
 }
 
-.gallery-container {
+.mgwpp-single-carousel__container {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background: #f8f9fa; /* Fallback background */
+  background: var(--mgwpp-bg-color);
 }
-
-.main-image {
+.mgwpp-single-carousel__main {
   position: relative;
+  /* fallback for older browsers: */
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 ratio */
+  /* then for modern browsers: */
   aspect-ratio: 16/9;
 }
+.mgwpp-single-carousel__main .mgwpp-single-carousel__slide {
+  position: absolute;
+  inset: 0;
+}
 
-.carousel-slide {
+.no-transitions .mgwpp-single-carousel__slide {
+  transition: none !important;
+}
+
+
+.mgwpp-single-carousel__slide {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  visibility: hidden;
+  transition: opacity var(--mgwpp-transition-speed) ease-in-out;
+
   z-index: 0;
 }
 
-.carousel-slide.active {
+.mgwpp-single-carousel__slide--active {
   opacity: 1;
+  visibility: visible;
   z-index: 1;
 }
 
-.slide-image {
+.mgwpp-single-carousel__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Navigation controls */
-.gallery-controls {
+/* Controls */
+.mgwpp-single-carousel__controls {
   position: absolute;
   bottom: 1rem;
   width: 100%;
@@ -54,7 +71,7 @@
   z-index: 2;
 }
 
-.nav-prev, .nav-next {
+.mgwpp-single-carousel__nav {
   background: rgba(255, 255, 255, 0.8);
   border: none;
   border-radius: 50%;
@@ -64,12 +81,12 @@
   transition: all 0.3s ease;
 }
 
-.nav-prev:hover, .nav-next:hover {
+.mgwpp-single-carousel__nav:hover {
   background: white;
   transform: scale(1.1);
 }
 
-.image-counter {
+.mgwpp-single-carousel__counter {
   color: white;
   background: rgba(0, 0, 0, 0.6);
   padding: 0.3rem 0.8rem;
@@ -77,22 +94,12 @@
   font-size: 0.9rem;
 }
 
-/* Touch controls */
-.gallery-container {
-  touch-action: pan-y;
-}
-
-.carousel-slide {
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Empty state */
-.no-images {
+/* Empty State */
+.mgwpp-single-carousel__empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 300px; /* Fixed height for empty state */
+  min-height: 300px;
   color: #666;
   font-style: italic;
   padding: 2rem;

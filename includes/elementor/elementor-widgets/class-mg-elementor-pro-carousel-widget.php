@@ -4,37 +4,31 @@ if (!defined('ABSPATH')) exit;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
-{
+class MG_Elementor_Pro_Carousel extends Widget_Base {
 
-    public function get_name()
-    {
+    public function get_name() {
         return 'mg_pro_carousel';
     }
 
-    public function get_title()
-    {
+    public function get_title() {
         return __('Mini Gallery Pro Carousel', 'mini-gallery');
     }
 
-    public function get_icon()
-    {
+    public function get_icon() {
         return 'eicon-carousel';
     }
 
-    public function get_categories()
-    {
-        return ['minigallery'];
+    public function get_categories() {
+        return ['minigallery']; // Your custom category
     }
 
-    protected function _register_controls()
-    {
+    protected function _register_controls() {
         // Content Tab
         $this->start_controls_section(
             'content_section',
             [
                 'label' => __('Content', 'mini-gallery'),
-                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+                'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
 
@@ -42,18 +36,17 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             'gallery_id',
             [
                 'label'   => __('Select Gallery', 'mini-gallery'),
-                'type'    => \Elementor\Controls_Manager::SELECT,
+                'type'    => Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
             ]
         );
 
-        // Add a control for a placeholder image
         $this->add_control(
             'placeholder_image',
             [
                 'label'   => __('Placeholder Image', 'mini-gallery'),
-                'type'    => \Elementor\Controls_Manager::MEDIA,
+                'type'    => Controls_Manager::MEDIA,
                 'default' => [
                     'url' => \Elementor\Utils::get_placeholder_image_src(),
                 ],
@@ -67,7 +60,7 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             'style_section',
             [
                 'label' => __('Carousel Style', 'mini-gallery'),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+                'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
 
@@ -75,7 +68,7 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             'card_width',
             [
                 'label'      => __('Card Width', 'mini-gallery'),
-                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'type'       => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range'      => [
                     'px' => [
@@ -98,7 +91,7 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             'gap',
             [
                 'label'      => __('Card Gap', 'mini-gallery'),
-                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'type'       => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range'      => [
                     'px' => [
@@ -117,12 +110,11 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             ]
         );
 
-        // New control for image height with slider
         $this->add_control(
             'image_height',
             [
                 'label'      => __('Image Height', 'mini-gallery'),
-                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'type'       => Controls_Manager::SLIDER,
                 'size_units' => ['px', '%'],
                 'range'      => [
                     'px' => [
@@ -141,12 +133,11 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
             ]
         );
 
-        // Toggle to force fixed height on cards
         $this->add_control(
             'fixed_height',
             [
                 'label'        => __('Fixed Height', 'mini-gallery'),
-                'type'         => \Elementor\Controls_Manager::SWITCHER,
+                'type'         => Controls_Manager::SWITCHER,
                 'label_on'     => __('Yes', 'mini-gallery'),
                 'label_off'    => __('No', 'mini-gallery'),
                 'return_value' => 'yes',
@@ -160,8 +151,7 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
         $this->end_controls_section();
     }
 
-    protected function render()
-    {
+    protected function render() {
         $settings   = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
 
@@ -174,49 +164,28 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
         echo wp_kses_post(MGWPP_Pro_Carousel::render($gallery_id, $images, $settings));
     }
 
-    private function get_galleries()
-    {
+    private function get_galleries() {
         $galleries = get_posts([
-            'post_type'   => 'mgwpp_soora',
-            'numberposts' => -1,
+            'post_type' => 'mgwpp_soora',  // Your custom gallery post type
+            'numberposts' => 100,
+            'post_status' => 'publish',
         ]);
-
-        $options = [];
+    
+        $options = ['' => __('Select Gallery', 'mini-gallery')];
+    
         foreach ($galleries as $gallery) {
-            $options[$gallery->ID] = $gallery->post_title;
+            if (!$gallery instanceof WP_Post) {
+                error_log('[Mini Gallery] Skipping invalid gallery object: ' . print_r($gallery, true));
+                continue;
+            }
+            $options[$gallery->ID] = esc_html($gallery->post_title);
         }
-
+    
         return $options;
     }
 
-    public function __construct($data = [], $args = null)
-    {
-        parent::__construct($data, $args);
 
-        add_action('elementor/frontend/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_frontend_scripts']);
-        add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_pro_carousel_editor_scripts']);
-    }
-
-    public function enqueue_pro_carousel_frontend_scripts()
-    {
-        wp_enqueue_style(
-            'mgwpp-pro-carousel-styles',
-            MG_PLUGIN_URL . '/public/css/mg-pro-carousel.css',
-            [],
-            filemtime(MG_PLUGIN_PATH . 'public/css/mg-pro-carousel.css')
-        );
-
-        wp_enqueue_script(
-            'mgwpp-pro-carousel-js',
-            MG_PLUGIN_URL . '/public/js/mg-pro-carousel.js',
-            [],
-            filemtime(MG_PLUGIN_PATH . 'public/js/mg-pro-carousel.js'),
-            true
-        );
-    }
-
-    public function enqueue_pro_carousel_editor_scripts()
-    {
+    public function enqueue_pro_carousel_editor_scripts() {
         $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';
         wp_enqueue_style(
             'mg-neon-carousel-editor',
@@ -226,3 +195,4 @@ class MG_Elementor_Pro_Carousel extends \Elementor\Widget_Base
         );
     }
 }
+?>

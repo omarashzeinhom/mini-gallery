@@ -11,12 +11,137 @@ class MG_Elementor_Integration
     {
         $this->plugin_file = plugin_basename(__FILE__);
 
-        // Only admin_init is needed for both checks + deactivation
+        // Admin actions
         add_action('admin_init', [$this, 'handle_admin_init']);
-
         add_action('admin_notices', [$this, 'admin_notices']);
+        
+        // Register Elementor widgets
         add_action('elementor/widgets/register', [$this, 'register_widgets']);
+        
+        // Ajax handling for dismissing notices
         add_action('wp_ajax_mg_dismiss_pro_elements_notice', [$this, 'dismiss_notice_ajax_handler']);
+
+        // Enqueue assets for widgets both frontend and editor
+        add_action('elementor/widget/render_content', [$this, 'enqueue_widget_assets'], 10, 2);
+        add_action('elementor/widget/render_content', [$this, 'enqueue_editor_widget_assets'], 10, 2);
+        
+        // Enqueue editor specific assets
+        add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueue_editor_assets']);
+    }
+
+    // Enqueue widget-specific assets (both frontend and editor)
+    public function enqueue_widget_assets($content, $widget)
+    {
+        // Check widget class to load specific assets
+        $widget_class = get_class($widget);
+
+        switch ($widget_class) {
+            case 'MG_Elementor_Gallery_Single':
+                wp_enqueue_script('mg-single-carousel-js');
+                wp_enqueue_style('mg-single-carousel-styles');
+                break;
+            case 'MG_Elementor_Gallery_Grid':
+                wp_enqueue_script('mg-grid-gallery');
+                wp_enqueue_style('mg-grid-styles');
+                break;
+            case 'MG_Elementor_Gallery_Multi':
+                wp_enqueue_script('mg-multi-carousel-js');
+                wp_enqueue_style('mg-multi-carousel-styles');
+                break;
+            case 'MG_Elementor_Testimonial_Carousel':
+                wp_enqueue_script('mgwpp-testimonial-carousel-js');
+                wp_enqueue_style('mgwpp-testimonial-carousel-styles');
+                break;
+            case 'MG_Elementor_3D_Carousel':
+                wp_enqueue_script('mgwpp-threed-carousel-js');
+                wp_enqueue_style('mgwpp-threed-carousel-styles');
+                break;
+            case 'MG_Elementor_Mega_Carousel':
+                wp_enqueue_script('mg-mega-carousel-js');
+                wp_enqueue_style('mg-mega-carousel-styles');
+                break;
+            case 'MG_Elementor_Pro_Carousel':
+                wp_enqueue_script('mgwpp-pro-carousel-js');
+                wp_enqueue_style('mgwpp-pro-carousel-styles');
+                break;
+            case 'MG_Elementor_Neon_Carousel':
+                wp_enqueue_script('mgwpp-neon-carousel-js');
+                wp_enqueue_style('mgwpp-neon-carousel-styles');
+                break;
+            default:
+                // No assets enqueued for unknown widgets
+                break;
+        }
+
+        return $content;
+    }
+
+    // Enqueue assets for the Elementor editor (only for widgets in editor mode)
+    public function enqueue_editor_widget_assets($content, $widget)
+    {
+        // Ensure we're in the Elementor editor mode
+        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+            $widget_class = get_class($widget);
+
+            $widget_assets = [
+                'MG_Elementor_Gallery_Single' => [
+                    'scripts' => ['mg-single-carousel-js'],
+                    'styles'  => ['mg-single-carousel-styles'],
+                ],
+                'MG_Elementor_Gallery_Grid' => [
+                    'scripts' => ['mg-grid-gallery'],
+                    'styles'  => ['mg-grid-styles'],
+                ],
+                'MG_Elementor_Gallery_Multi' => [
+                    'scripts' => ['mg-multi-carousel-js'],
+                    'styles'  => ['mg-multi-carousel-styles'],
+                ],
+                'MG_Elementor_Testimonial_Carousel' => [
+                    'scripts' => ['mgwpp-testimonial-carousel-js'],
+                    'styles'  => ['mgwpp-testimonial-carousel-styles'],
+                ],
+                'MG_Elementor_3D_Carousel' => [
+                    'scripts' => ['mgwpp-threed-carousel-js'],
+                    'styles'  => ['mgwpp-threed-carousel-styles'],
+                ],
+                'MG_Elementor_Mega_Carousel' => [
+                    'scripts' => ['mg-mega-carousel-js'],
+                    'styles'  => ['mg-mega-carousel-styles'],
+                ],
+                'MG_Elementor_Pro_Carousel' => [
+                    'scripts' => ['mgwpp-pro-carousel-js'],
+                    'styles'  => ['mgwpp-pro-carousel-styles'],
+                ],
+                'MG_Elementor_Neon_Carousel' => [
+                    'scripts' => ['mgwpp-neon-carousel-js'],
+                    'styles'  => ['mgwpp-neon-carousel-styles'],
+                ],
+            ];
+
+            // Check if the widget has defined assets
+            if (isset($widget_assets[$widget_class])) {
+                // Enqueue scripts
+                foreach ($widget_assets[$widget_class]['scripts'] as $script) {
+                    wp_enqueue_script($script);
+                }
+
+                // Enqueue styles
+                foreach ($widget_assets[$widget_class]['styles'] as $style) {
+                    wp_enqueue_style($style);
+                }
+            }
+        }
+
+        return $content;
+    }
+
+    // Enqueue editor assets specifically for the Elementor editor screen
+    public function enqueue_editor_assets()
+    {
+        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            wp_enqueue_style('mg-elementor-editor-styles', MG_PLUGIN_URL . '/public/css/mg-elementor-editor.css');
+            wp_enqueue_script('mg-elementor-editor-js', MG_PLUGIN_URL . '/public/js/mg-elementor-editor.js', [], '1.0', true);
+        }
     }
 
     public function handle_admin_init()
@@ -42,65 +167,17 @@ class MG_Elementor_Integration
         $dismissed = get_user_meta($user_id, 'mg_dismiss_pro_elements_notice', true);
 
         if ($this->elementor_pro_conflict) {
-            echo '<div class="notice notice-error"><p>' .
-                esc_html__('⚠️ Mini Gallery has been deactivated because Elementor Pro is not compatible. Please deactivate Elementor Pro and use Pro Elements instead:', 'mini-gallery') .
-                ' <a href="https://proelements.org" target="_blank" rel="noopener noreferrer">proelements.org</a></p></div>';
+            echo '<div class="notice notice-error"><p>' . esc_html__('⚠️ Mini Gallery has been deactivated because Elementor Pro is not compatible. Please deactivate Elementor Pro and use Pro Elements instead:', 'mini-gallery') . ' <a href="https://proelements.org" target="_blank" rel="noopener noreferrer">proelements.org</a></p></div>';
             return;
         }
 
-        // ✅ Thank you/review notice
+        // Show Pro Elements notice if necessary
         if ($this->show_pro_elements_notice && !$dismissed) {
             echo '<div class="notice notice-success is-dismissible mg-pro-elements-notice">
-                <p><strong style="font-size: 16px;">🎉 Thank you for installing Mini Gallery!</strong></p>
-                <p style="font-size: 15px;">If you love the plugin, please consider leaving us a 
-                <a href="https://wordpress.org/plugins/mini-gallery/#reviews" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; font-weight: 500;">🌟🌟🌟🌟🌟 review</a> — it really helps!</p>
-            </div>';
-        }
-
-        // ✅ Recommend Pro Elements if Elementor is missing
-        if (
-            !is_plugin_active('elementor/elementor.php') &&
-            !is_plugin_active('elementor-pro/elementor-pro.php') &&
-            !is_plugin_active('pro-elements/pro-elements.php')
-        ) {
-            echo '<div class="notice notice-warning">
-                <p><strong>Heads up!</strong> It looks like Elementor is not active. If you plan to use Elementor with Mini Gallery, we recommend 
-                <a href="https://proelements.org" target="_blank" rel="noopener noreferrer"><strong>Pro Elements</strong></a> — the free, open-source alternative to Elementor Pro that works perfectly with Mini Gallery. 🚀</p>
-            </div>';
-        }
-
-        // CSS & dismiss JS
-        if (($this->show_pro_elements_notice && !$dismissed) || !is_plugin_active('elementor/elementor.php')) {
-            add_action('admin_footer', function () {
-                ?>
-                <style>
-                    .mg-pro-elements-notice, .notice-warning {
-                        padding: 20px 20px 20px 25px;
-                        font-size: 15px;
-                    }
-                    .mg-pro-elements-notice p, .notice-warning p {
-                        margin: 0 0 5px;
-                        line-height: 1.6;
-                    }
-                    .mg-pro-elements-notice a, .notice-warning a {
-                        color: #0073aa;
-                    }
-                    .mg-pro-elements-notice a:hover, .notice-warning a:hover {
-                        color: #00a0d2;
-                    }
-                </style>
-                <script>
-                    (function($){
-                        $(document).on('click', '.mg-pro-elements-notice .notice-dismiss', function(){
-                            $.post(ajaxurl, {
-                                action: 'mg_dismiss_pro_elements_notice',
-                                user_id: <?php echo esc_js( get_current_user_id() ); ?>
-                            });
-                        });
-                    })(jQuery);
-                </script>
-                <?php
-            });
+                    <p><strong style="font-size: 16px;">🎉 Thank you for installing Mini Gallery!</strong></p>
+                    <p style="font-size: 15px;">If you love the plugin, please consider leaving us a 
+                    <a href="https://wordpress.org/plugins/mini-gallery/#reviews" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; font-weight: 500;">🌟🌟🌟🌟🌟 review</a> — it really helps!</p>
+                </div>';
         }
     }
 
@@ -113,6 +190,7 @@ class MG_Elementor_Integration
         wp_die();
     }
 
+    // Register Elementor widgets
     public function register_widgets($widgets_manager)
     {
         if ($this->elementor_pro_conflict) return;

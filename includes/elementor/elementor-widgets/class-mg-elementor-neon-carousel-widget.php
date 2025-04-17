@@ -1,27 +1,31 @@
 <?php
-if (!defined('ABSPATH')) exit;
 
+if (!defined('ABSPATH')) exit;
 
 class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
+    // Get widget name
     public function get_name() {
         return 'mg_neon_carousel';
     }
 
+    // Get widget title
     public function get_title() {
         return __('Mini Gallery Neon Carousel', 'mini-gallery');
     }
 
+    // Get widget icon (Elementor predefined icon)
     public function get_icon() {
         return 'eicon-slider-album';
     }
 
+    // Get widget categories
     public function get_categories() {
         return ['minigallery'];
     }
 
+    // Register widget controls (settings)
     protected function _register_controls() {
-        // Content Tab
         $this->start_controls_section(
             'content_section',
             [
@@ -30,6 +34,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Gallery selection
         $this->add_control(
             'gallery_id',
             [
@@ -40,6 +45,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Autoplay control
         $this->add_control(
             'autoplay',
             [
@@ -52,6 +58,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Autoplay speed control
         $this->add_control(
             'autoplay_speed',
             [
@@ -62,6 +69,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Display navigation dots control
         $this->add_control(
             'show_dots',
             [
@@ -72,6 +80,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Show image previews control
         $this->add_control(
             'show_previews',
             [
@@ -82,6 +91,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Zoom effect control
         $this->add_control(
             'zoom_effect',
             [
@@ -94,7 +104,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        // Style Tab
+        // Style section
         $this->start_controls_section(
             'style_section',
             [
@@ -103,6 +113,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Neon primary color control
         $this->add_control(
             'neon_primary_color',
             [
@@ -113,6 +124,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Neon secondary color control
         $this->add_control(
             'neon_secondary_color',
             [
@@ -123,6 +135,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Background color control
         $this->add_control(
             'background_color',
             [
@@ -133,6 +146,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Slide height control
         $this->add_responsive_control(
             'slide_height',
             [
@@ -148,6 +162,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Overlay opacity control
         $this->add_control(
             'overlay_opacity',
             [
@@ -163,7 +178,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        // Typography Tab
+        // Typography section
         $this->start_controls_section(
             'typography_section',
             [
@@ -172,6 +187,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Title color control
         $this->add_control(
             'title_color',
             [
@@ -182,6 +198,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
             ]
         );
 
+        // Title typography control
         $this->add_group_control(
             \Elementor\Group_Control_Typography::get_type(),
             [
@@ -193,6 +210,8 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
     }
+
+    // Render widget
     protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
@@ -203,82 +222,50 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
         }
     
         $images = get_attached_media('image', $gallery_id);
-        
-        // Pass ALL settings to the renderer
+    
+        // Set fallback values for neon colors if not set
+        $neon_primary = isset($settings['neon_primary_color']) ? $settings['neon_primary_color'] : '#00f3ff';  // default neon primary color
+        $neon_secondary = isset($settings['neon_secondary_color']) ? $settings['neon_secondary_color'] : '#ff007f';  // default neon secondary color
+    
+        // Pass settings to the renderer
         echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode([
             'autoplay' => $settings['autoplay'] === 'yes',
             'autoplay_speed' => $settings['autoplay_speed'],
             'show_dots' => $settings['show_dots'] === 'yes',
             'show_previews' => $settings['show_previews'] === 'yes',
             'zoom_effect' => $settings['zoom_effect'] === 'yes',
-            'neon_primary' => $settings['neon_primary_color'],
-            'neon_secondary' => $settings['neon_secondary_color']
+            'neon_primary' => $neon_primary,
+            'neon_secondary' => $neon_secondary
         ])).'">';
-        
-        echo wp_kses_post( MGWPP_Neon_Carousel::render( $gallery_id, $images ) );
+    
+        echo wp_kses_post(MGWPP_Neon_Carousel::render($gallery_id, $images));
         echo '</div>';
-        
     }
-
+    
+    // Get available galleries
     private function get_galleries() {
         $galleries = get_posts([
             'post_type' => 'mgwpp_soora',
-            'numberposts' => -1,
+            'numberposts' => 100,
+            'post_status' => 'publish',
         ]);
-
-        $options = [];
+    
+        $options = ['' => __('Select Gallery', 'mini-gallery')];
+    
         foreach ($galleries as $gallery) {
-            $options[$gallery->ID] = $gallery->post_title;
+            if (!$gallery instanceof WP_Post) continue;
+            $options[$gallery->ID] = esc_html($gallery->post_title);
         }
-
+    
         return $options;
     }
-
-    public function __construct($data = [], $args = null) {
-        parent::__construct($data, $args);
-        
-        // Load scripts on frontend AND editor
-        add_action('elementor/frontend/before_enqueue_scripts', [$this, 'enqueue_neon_scripts']);
-        add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue_editor_scripts']);
+    // Enqueue editor scripts
+    public function enqueue_editor_scripts() {
+        wp_enqueue_style(
+            'mg-neon-carousel-editor',
+            plugin_dir_url(__FILE__) . 'admin/css/editor.css',
+            [],
+            filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
+        );
     }
-    
-// In MG_Elementor_Neon_Carousel class:
-
-public function enqueue_neon_scripts() {
-    wp_enqueue_style(
-        'mg-neon-carousel-styles',
-        MG_PLUGIN_URL . '/public/css/mg-neon-carousel.css',
-        [],
-        filemtime(MG_PLUGIN_PATH . 'public/css/mg-neon-carousel.css')
-    );
-
-    wp_enqueue_script(
-        'mg-neon-carousel-scripts',
-        MG_PLUGIN_URL . '/public/js/mg-neon-carousel.js',
-        ['elementor-frontend'],
-        filemtime(MG_PLUGIN_PATH . 'public/js/mg-neon-carousel.js'),
-        true
-    );
-}
-
-public function enqueue_editor_scripts() {
-    $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';
-    wp_enqueue_style(
-        'mg-neon-carousel-editor',
-        MG_PLUGIN_URL . '/admin/css/editor.css',
-        [],
-        filemtime($editor_css_path)
-    );
-}
-
-
-
-
-
-
-
-
-
-
-    
 }

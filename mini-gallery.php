@@ -2,8 +2,8 @@
 
 /**
  * Plugin Name: Mini Gallery
- * Description: A WordPress plugin to display a simple custom gallery.
- * Version: 1.1
+ * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own  
+ * Version: 2.0
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */
@@ -13,18 +13,8 @@ if (!defined('ABSPATH')) {
 
 define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('MG_PLUGIN_URL', plugins_url('', __FILE__));
+define('MGWPP_ASSET_VERSION', filemtime(__FILE__));
 
-// Activation & Deactivation Hooks
-function mgwpp_plugin_activate()
-{
-    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
-    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
-    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
-    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-    MGWPP_Capabilities::mgwpp_gallery_capabilities();
-    flush_rewrite_rules(false); // causes error on true
-}
-register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
 
 /* Include necessary files */
@@ -34,18 +24,18 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-securit
 
 //Gallery Types 
 
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-single-gallery.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-multi-gallery.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-grid-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-single-gallery/class-mgwpp-single-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-multi-gallery/class-mgwpp-multi-gallery.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-grid-gallery/class-mgwpp-grid-gallery.php';
 
 // Slider Types
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-threed-carousel.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-mega-slider.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-pro-carousel.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-neon-carousel.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
-require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-threed-carousel/class-mgwpp-threed-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-mega-slider/class-mgwpp-mega-slider.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-pro-carousel/class-mgwpp-pro-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-neon-carousel/class-mgwpp-neon-carousel.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-full-page-slider/class-mgwpp-full-page-slider.php';
+require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-spotlight-carousel/class-mgwpp-spotlight-carousel.php';
 
 
 // Capabilities and Post Types
@@ -66,7 +56,13 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/cla
 
 
 // Functions Admin Uninstall 
-require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
+//require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
+// New Admin Core
+require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-admin-core.php';
+require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-data-handler.php';
+
+
+
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
 // Elementor Integration
@@ -74,12 +70,41 @@ require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-
 // WPBakery Page Builder Integration
 require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration.php';
 
+//Assets
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
+//require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mgwpp_ajax_handler.php';
+MGWPP_Ajax_Handler::init();
+
+
+// When enqueueing:
+
+// Activation & Deactivation Hooks
+function mgwpp_plugin_activate()
+{
+    MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
+    MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
+    MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
+    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
+    MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    MGWPP_Album_Capabilities::mgwpp_album_capabilities();
+    flush_rewrite_rules(false); // causes error on true
+}
+register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
+
+function mgwpp_register_shortcodes() {
+    // Register the gallery shortcode
+    add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
+}
+add_action('admin_init', 'mgwpp_register_shortcodes'); // Ensure it's registered in the admin area
+
+
 // Initialize plugin
 function mgwpp_initialize_plugin()
 {
     // Register gallery shortcode
     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
-
+    add_action( 'admin_init', 'mgwpp_register_shortcodes' ); 
     // Call the static methods to initialize classes
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
@@ -101,300 +126,6 @@ function mgwpp_initialize_plugin()
 }
 add_action('init', 'mgwpp_initialize_plugin');
 
-// Enqueue front-end scripts and styles
-function mgwpp_enqueue_assets()
-{
-    // Register scripts and styles
-
-    wp_register_script('mg-single-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-single-carousel.js', array(), '1.0', true);
-    wp_register_style('mg-single-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-single-carousel.css', array(), '1.0');
-
-
-    wp_register_script('mg-multi-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-multi-carousel.js', array(), '1.0', true);
-    wp_register_style('mg-multi-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-multi-carousel.css', array(), '1.0');
-
-
-    wp_register_style('mg-grid-styles', plugin_dir_url(__FILE__) . 'public/css/mg-grid.css', array(), '1.0');
-
-
-    wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
-    wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
-    wp_register_script(
-        'mg-mega-carousel-js',
-        plugin_dir_url(__FILE__) . 'public/js/mg-mega-carousel.js',
-        array(),
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-mega-carousel.js'),
-        true
-    );
-    wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
-    wp_register_script('mgwpp-pro-carousel-js', plugin_dir_url(__FILE__) . 'public/js/mg-pro-carousel.js', array(), '1.0', true);
-    wp_register_style(
-        'mgwpp-neon-carousel-styles',
-        plugins_url('public/css/mg-neon-carousel.css', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-neon-carousel.css')
-    );
-
-    wp_register_script(
-        'mgwpp-neon-carousel-js',
-        plugins_url('public/js/mg-neon-carousel.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-neon-carousel.js'),
-        true
-    );
-
-
-
-    wp_register_style(
-        'mgwpp-threed-carousel-styles',
-        plugins_url('public/css/mg-threed-carousel.css', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-threed-carousel.css')
-    );
-
-    wp_register_script(
-        'mgwpp-threed-carousel-js',
-        plugins_url('public/js/mg-threed-carousel.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-threed-carousel.js'),
-        true
-    );
-
-
-
-    // Testimonials Carousel Styles and Scripts
-    wp_register_style(
-        'mgwpp-testimonial-carousel-styles',
-        plugins_url('public/css/mgwpp-testimonial-carousel.css', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/css/mgwpp-testimonial-carousel.css')
-    );
-
-    wp_register_script(
-        'mgwpp-testimonial-carousel-js',
-        plugins_url('public/js/mgwpp-testimonial-carousel.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mgwpp-testimonial-carousel.js'),
-        true
-    );
-
-
-    wp_register_script(
-        'mgwpp-testimonial-carousel-js',
-        plugins_url('public/js/mg-lightbox.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-lightbox.js'),
-        true
-    );
-
-    // Fullpage Slider Assets
-    wp_register_style(
-        'mg-fullpage-slider-styles',
-        plugins_url('public/css/mg-full-page-slider.css', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-full-page-slider.css')
-    );
-
-    wp_register_script(
-        'mg-fullpage-slider-js',
-        plugins_url('public/js/mg-full-page-slider.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-full-page-slider.js'),
-        true
-    );
-
-
-
-
-    // SpotLight Slider Assets
-    wp_register_style(
-        'mg-spotlight-slider-styles',
-        plugins_url('public/css/mg-spotlight-carousel.css', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/css/mg-spotlight-carousel.css')
-    );
-
-    wp_register_script(
-        'mg-spotlight-slider-js',
-        plugins_url('public/js/mg-spotlight-carousel.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-spotlight-carousel.js'),
-        true
-    );
-
-    wp_register_script(
-        'mg-universal-init',
-        plugins_url('public/js/mg-universal-init.js', __FILE__),
-        [],
-        filemtime(plugin_dir_path(__FILE__) . 'public/js/mg-universal-init.js'),
-        true
-    );
-
-    // Enqueue universal init script
-    wp_enqueue_script('mg-universal-init');
-
-
-
-    // Single Carousel
-    wp_enqueue_script('mg-single-carousel-js');
-    wp_enqueue_style('mg-single-carousel-styles');
-
-    // Multi Carousel
-    wp_enqueue_script('mg-multi-carousel-js');
-    wp_enqueue_style('mg-multi-carousel-styles');
-
-    // Grid
-    wp_enqueue_style('mg-grid-styles');
-
-    // Mega Slider/Carousel
-    wp_enqueue_script('mg-mega-carousel-js');
-    wp_enqueue_style('mg-mega-carousel-styles');
-
-    // Pro Carousel
-    wp_enqueue_style('mgwpp-pro-carousel-styles');
-
-    // 3D Carousel
-    wp_enqueue_style('mgwpp-threed-carousel-styles');
-    wp_enqueue_script('mgwpp-threed-carousel-js');
-
-    //FullPage Slider
-    wp_enqueue_script('mg-fullpage-slider-js');
-    wp_enqueue_style('mg-fullpage-slider-styles');
-
-    //Spotlight Slider
-    wp_enqueue_script('mg-spotlight-slider-js');
-    wp_enqueue_style('mg-spotlight-slider-styles');
-
-
-    // Testimonials Carousel 
-    wp_enqueue_style('mgwpp-testimonial-carousel-styles'); // Corrected handle
-    wp_enqueue_script('mgwpp-testimonial-carousel-js');
-
-
-
-    // Load all assets in WPBakery editor
-    if (function_exists('vc_is_page_editable') && vc_is_page_editable()) {
-        // Enqueue all styles
-        foreach (
-            [
-                'mg-single-carousel-styles',
-                'mg-multi-carousel-styles',
-                'mg-grid-styles',
-                'mg-mega-carousel-styles',
-                'mgwpp-pro-carousel-styles',
-                'mgwpp-neon-carousel-styles',
-                'mgwpp-threed-carousel-styles',
-                'mg-fullpage-slider-styles',
-                'mg-spotlight-slider-styles',
-                'mgwpp-testimonial-carousel-styles'
-            ] as $style
-        ) {
-            wp_enqueue_style($style);
-        }
-
-        // Enqueue all scripts
-        foreach (
-            [
-                'mg-single-carousel-js',
-                'mg-multi-carousel-js',
-                'mg-mega-carousel-js',
-                'mgwpp-pro-carousel-js',
-                'mgwpp-neon-carousel-js',
-                'mgwpp-threed-carousel-js',
-                'mg-fullpage-slider-js',
-                'mg-spotlight-slider-js',
-                'mgwpp-testimonial-carousel-js',
-                'mg-universal-init'
-            ] as $script
-        ) {
-            wp_enqueue_script($script);
-        }
-    }
-}
-
-add_action('wp_enqueue_scripts', 'mgwpp_enqueue_assets');
-
-
-
-// Enqueue admin assets
-function mgwpp_enqueue_admin_assets()
-{
-    // Register scripts and styles
-    wp_register_script('mg-admin-carousel', plugin_dir_url(__FILE__) . 'admin/js/mg-admin-scripts.js', array('jquery'), '1.0', true);
-    wp_register_style('mg-admin-styles', plugin_dir_url(__FILE__) . 'admin/css/mg-admin-styles.css', array(), '1.0');
-
-    // Register additional styles for admin area
-    wp_register_style('mg-styles', plugin_dir_url(__FILE__) . 'public/css/styles.css', array(), '1.0');
-    wp_register_style('mg-album-styles', plugin_dir_url(__FILE__) . 'public/css/mg-album-styles.css', array(), '1.0');
-    wp_register_style('mg-mega-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-mega-carousel-styles.css', array(), '1.0');
-    wp_register_style('mgwpp-pro-carousel-styles', plugin_dir_url(__FILE__) . 'public/css/mg-pro-carousel.css', array(), '1.0');
-
-    // Enqueue for admin pages
-    wp_enqueue_script('mg-admin-carousel');
-    wp_enqueue_style('mg-admin-styles');
-    wp_enqueue_style('mg-styles');
-    wp_enqueue_style('mg-album-styles');
-    wp_enqueue_style('mg-mega-carousel-styles');
-    wp_enqueue_style('mgwpp-pro-carousel-styles');
-}
-add_action('admin_enqueue_scripts', 'mgwpp_enqueue_admin_assets');
-
-
-
-
-class MGWPP_Elementor_Assets
-{
-
-    public function __construct()
-    {
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
-    }
-
-    public function enqueue_assets()
-    {
-        if (!class_exists('\Elementor\Plugin')) {
-            return;
-        }
-
-        if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
-            //wp_enqueue_style('mg-mega-carousel-styles');
-            // wp_enqueue_script('mg-mega-carousel-js');
-        }
-    }
-}
-
-// Initialize only if Elementor is active
-if (did_action('elementor/loaded')) {
-    new MGWPP_Elementor_Assets();
-}
-
-function mgwpp_enqueue_elementor_assets()
-{
-    if (!class_exists('\Elementor\Plugin')) {
-        return;
-    }
-
-    if (\Elementor\Plugin::instance()->editor->is_edit_mode() || \Elementor\Plugin::instance()->preview->is_preview_mode()) {
-        //wp_enqueue_style('mg-neon-carousel-styles');
-        //wp_enqueue_script('mg-neon-carousel-js');
-    }
-}
-add_action('wp_enqueue_scripts', 'mgwpp_enqueue_elementor_assets');
-
-
-
-
-function mgwpp_add_elementor_category($elements_manager)
-{
-    $elements_manager->add_category(
-        'minigallery',
-        [
-            'title' => __('Mini Gallery', 'mini-gallery'),
-            'icon' => 'fa fa-images',
-        ]
-    );
-}
-add_action('elementor/elements/categories_registered', 'mgwpp_add_elementor_category');
 
 function mgwpp_add_theme_support()
 {
@@ -403,6 +134,31 @@ function mgwpp_add_theme_support()
     }
 }
 add_action('after_setup_theme', 'mgwpp_add_theme_support');
+
+
+
+
+add_filter('template_include', 'mgwpp_custom_templates');
+function mgwpp_custom_templates($template)
+{
+    if (is_singular('mgwpp_soora')) {
+        $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_soora.php';
+        if (file_exists($custom_template)) return $custom_template;
+    }
+
+    if (is_singular('mgwpp_album')) {
+        $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_album.php';
+        if (file_exists($custom_template)) return $custom_template;
+    }
+
+    return $template;
+}
+
+add_action('plugins_loaded', function () {
+    if (is_admin()) {
+        MGWPP_Admin_Core::init();
+    }
+});
 
 
 

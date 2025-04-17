@@ -1,29 +1,14 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
 
 class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
 {
+
     public function __construct($data = [], $args = null)
     {
         parent::__construct($data, $args);
-        add_action('wp_enqueue_scripts', [$this, 'register_assets']);
-    }
-
-    public function register_assets()
-    {
-        wp_register_script(
-            'mg-3d-carousel',
-            plugins_url('public/js/mg-3d-carousel.js', __FILE__),
-            [],
-            '1.0.0',
-            true
-        );
-
-        wp_register_style(
-            'mg-3d-carousel-style',
-            plugins_url('public/css/mg-3d-carousel.css', __FILE__),
-            [],
-            '1.0.0'
-        );
     }
 
     public function get_name()
@@ -38,16 +23,17 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-carousel';
+        return 'eicon-carousel'; // The icon used in the Elementor interface
     }
 
     protected function _register_controls()
     {
+        // Add Content Section
         $this->start_controls_section(
             'content_section',
             [
                 'label' => __('Content', 'mini-gallery'),
-                'tab' => Controls_Manager::TAB_CONTENT,
+                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
 
@@ -55,7 +41,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'gallery_id',
             [
                 'label' => __('Select Gallery', 'mini-gallery'),
-                'type' => Controls_Manager::SELECT,
+                'type' => \Elementor\Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
             ]
@@ -63,11 +49,12 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
 
         $this->end_controls_section();
 
+        // Add Settings Section
         $this->start_controls_section(
             'settings_section',
             [
                 'label' => __('3D Settings', 'mini-gallery'),
-                'tab' => Controls_Manager::TAB_CONTENT,
+                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
 
@@ -75,7 +62,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'radius',
             [
                 'label' => __('Radius', 'mini-gallery'),
-                'type' => Controls_Manager::SLIDER,
+                'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
                     'px' => [
@@ -94,7 +81,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'auto_rotate',
             [
                 'label' => __('Auto Rotate', 'mini-gallery'),
-                'type' => Controls_Manager::SWITCHER,
+                'type' => \Elementor\Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'mini-gallery'),
                 'label_off' => __('No', 'mini-gallery'),
                 'return_value' => 'yes',
@@ -106,7 +93,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'rotate_speed',
             [
                 'label' => __('Rotation Speed', 'mini-gallery'),
-                'type' => Controls_Manager::NUMBER,
+                'type' => \Elementor\Controls_Manager::NUMBER,
                 'min' => -100,
                 'max' => 100,
                 'step' => 1,
@@ -118,7 +105,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'img_width',
             [
                 'label' => __('Image Width', 'mini-gallery'),
-                'type' => Controls_Manager::SLIDER,
+                'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
                     'px' => [
@@ -137,7 +124,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'img_height',
             [
                 'label' => __('Image Height', 'mini-gallery'),
-                'type' => Controls_Manager::SLIDER,
+                'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
                     'px' => [
@@ -154,11 +141,12 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
 
         $this->end_controls_section();
     }
+
     protected function render()
     {
         $settings = $this->get_settings_for_display();
 
-        // Sanitize gallery ID early
+        // Validate the gallery ID
         $gallery_id = !empty($settings['gallery_id']) ? absint($settings['gallery_id']) : 0;
 
         if (!$gallery_id) {
@@ -169,7 +157,7 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             return;
         }
 
-        // Get images with validation
+        // Fetch images attached to the selected gallery
         $images = get_attached_media('image', $gallery_id);
 
         if (empty($images)) {
@@ -180,10 +168,8 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             return;
         }
 
-        // Sanitize widget ID
+        // Validate and sanitize widget settings
         $widget_id = sanitize_key($this->get_id());
-
-        // Validate numeric settings
         $safe_settings = [
             'radius' => isset($settings['radius']['size']) ? absint($settings['radius']['size']) : 240,
             'auto_rotate' => sanitize_text_field($settings['auto_rotate']),
@@ -192,19 +178,13 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
             'img_height' => isset($settings['img_height']['size']) ? absint($settings['img_height']['size']) : 170,
         ];
 
-        // Output with HTML sanitization
-        echo wp_kses_post(
-            MGWPP_3D_Carousel::render(
-                $widget_id,
-                $images,
-                $safe_settings
-            )
-        );
+        // Render the 3D carousel using the shortcode-like rendering function
+        echo wp_kses_post(MGWPP_3D_Carousel::render($widget_id, $images, $safe_settings));
     }
-
 
     private function get_galleries()
     {
+        // Get galleries from the custom post type
         $galleries = get_posts([
             'post_type' => 'mgwpp_soora',
             'numberposts' => 100,
@@ -212,7 +192,12 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
         ]);
 
         $options = ['' => __('Select Gallery', 'mini-gallery')];
+
         foreach ($galleries as $gallery) {
+            if (!$gallery instanceof WP_Post) {
+                error_log('[Mini Gallery] Skipping invalid gallery object: ' . print_r($gallery, true));
+                continue;
+            }
             $options[$gallery->ID] = esc_html($gallery->post_title);
         }
 

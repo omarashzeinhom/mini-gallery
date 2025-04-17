@@ -97,6 +97,19 @@ class MGWPP_Album_Submit
             array_map('intval', $_POST['mgwpp_album_galleries']) : array();
         update_post_meta($post_id, '_mgwpp_album_galleries', $galleries);
     }
+
+ public static function ajax_delete_album() {
+    check_ajax_referer('mgwpp_nonce', 'nonce');
+
+    $album_id = intval($_GET['id']);
+    if (!current_user_can('delete_post', $album_id)) {
+        wp_send_json_error('Unauthorized', 403);
+    }
+
+    wp_delete_post($album_id, true);
+    wp_send_json_success();
+}
+      
 }
 
 // Initialize the class

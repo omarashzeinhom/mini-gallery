@@ -1,5 +1,5 @@
 <?php
-if (! defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) exit;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -12,16 +12,6 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
         add_action('wp_enqueue_scripts', [$this, 'register_scripts']);
     }
 
-    public function register_scripts()
-    {
-        wp_register_script(
-            'mg-mega-carousel',
-            plugins_url('assets/js/mg-mega-carousel.js', __FILE__),
-            [],
-            '1.0.0',
-            true
-        );
-    }
 
     public function get_name()
     {
@@ -65,7 +55,6 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
                 'default'      => 'no',
             ]
         );
-
 
         $this->add_control(
             'gallery_id',
@@ -282,7 +271,7 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
             array_shift($images);
         }
 
-        if (! class_exists('MGWPP_Mega_Slider')) {
+        if (!class_exists('MGWPP_Mega_Slider')) {
             echo '<div class="elementor-alert elementor-alert-danger">';
             echo esc_html__('Mega Slider class not available.', 'mini-gallery');
             echo '</div>';
@@ -298,19 +287,21 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
         echo wp_kses_post($output);
     }
 
-
     private function get_galleries()
     {
-        $post_type = apply_filters('mg_carousel_gallery_post_type', 'mgwpp_soora');
-
         $galleries = get_posts([
-            'post_type'    => sanitize_key($post_type),
-            'numberposts'  => 100,
-            'post_status'  => 'publish',
+            'post_type' => 'mgwpp_soora',
+            'numberposts' => 100,
+            'post_status' => 'publish',
         ]);
 
-        $options = ['' => esc_html__('Select Gallery', 'mini-gallery')];
+        $options = ['' => __('Select Gallery', 'mini-gallery')];
+
         foreach ($galleries as $gallery) {
+            if (!$gallery instanceof WP_Post) {
+                error_log('[Mini Gallery] Skipping invalid gallery object: ' . print_r($gallery, true));
+                continue;
+            }
             $options[$gallery->ID] = esc_html($gallery->post_title);
         }
 

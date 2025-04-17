@@ -1,0 +1,107 @@
+/* Core Carousel */
+.mgwpp-pro-carousel {
+    --mgwpp-pro-carousel-card-width: 300px;
+    --mgwpp-pro-carousel-gap: 30px;
+    position: relative;
+    padding: 2rem 0;
+}
+
+.mgwpp-pro-carousel__container {
+    overflow: hidden;
+    padding: 0 2rem;
+}
+
+.mgwpp-pro-carousel__track {
+    display: flex;
+    gap: var(--mgwpp-pro-carousel-gap);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mgwpp-pro-carousel__card {
+    flex: 0 0 var(--mgwpp-pro-carousel-card-width);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.mgwpp-pro-carousel__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Navigation */
+.mgwpp-pro-carousel__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mgwpp-pro-carousel__nav--prev { left: 1rem; }
+.mgwpp-pro-carousel__nav--next { right: 1rem; }
+
+/* Accessibility */
+.mgwpp-pro-carousel__screen-reader-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Error & Placeholder States */
+.mgwpp-pro-carousel__error {
+    color: #dc3545;
+    padding: 1rem;
+    border: 2px solid currentColor;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.mgwpp-pro-carousel__placeholder {
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #6c757d;
+    border: 2px dashed #dee2e6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mgwpp-pro-carousel {
+        --mgwpp-pro-carousel-card-width: min(250px, 80vw);
+        --mgwpp-pro-carousel-gap: 15px;
+        padding: 1rem 0;
+    }
+    
+    .mgwpp-pro-carousel__nav {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mgwpp-pro-carousel__container {
+        padding: 0 1rem;
+    }
+}

@@ -1,142 +1,97 @@
-// Carousel for Single Gallery
-document.addEventListener("DOMContentLoaded", function () {
-    var singleCarousels = document.querySelectorAll(".mg-gallery-single-carousel");
+// In mg-admin-scripts.js
+jQuery(document).ready(function ($) {
+    let mediaFrame;
 
-    singleCarousels.forEach(function (carousel) {
-        var slides = carousel.querySelectorAll(".carousel-slide");
-        var currentIndex = 0;
+    $('.mgwpp-media-upload').click(function (e) {
+        e.preventDefault();
 
-        function showSlide(index) {
-            slides.forEach(function (slide) {
-                slide.style.display = "none";
+        if (mediaFrame) {
+            mediaFrame.open();
+            return;
+        }
+
+        mediaFrame = wp.media({
+            title: mgwppMedia.text_title,
+            button: { text: mgwppMedia.text_select },
+            library: { type: 'image' },
+            multiple: true
+        });
+
+        mediaFrame.on('select', function () {
+            const attachments = mediaFrame.state().get('selection').toJSON();
+            const mediaIds = attachments.map(attachment => attachment.id);
+            $('#selected_media').val(mediaIds.join(','));
+
+            // Update preview
+            const preview = $('.media-preview').empty();
+            attachments.forEach(attachment => {
+                preview.append(`
+                    <div class="media-thumbnail">
+                        <img src="${attachment.sizes.thumbnail.url}" 
+                             alt="${attachment.alt}" 
+                             style="width: 80px; height: 80px;">
+                    </div>
+                `);
             });
-            slides[index].style.display = "block";
-        }
+        });
 
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
-        }
-
-        showSlide(currentIndex);
-        setInterval(nextSlide, 3000); // Change slide every 3 seconds
+        mediaFrame.open();
     });
-});
 
+    // Form submission handler
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+        const form = $(this);
+        const notice = $('#mgwpp-gallery-notice');
 
-
-// Carousel for Multi Gallery
-document.addEventListener("DOMContentLoaded", function () {
-    var multiCarousels = document.querySelectorAll(".mg-gallery.multi-carousel");
-
-    multiCarousels.forEach(function (carousel) {
-        var slides = carousel.querySelectorAll(".mg-multi-carousel-slide");
-        var currentIndex = 0;
-        var imagesPerPage = 6; // Default number of images per page
-        var visibleSlides = [];
-
-        // Function to update the number of images per page based on screen width
-        function updateImagesPerPage() {
-            if (window.innerWidth < 768) {
-                imagesPerPage = 2; // 2 images per page on mobile
-            } else {
-                imagesPerPage = 6; // 6 images per page otherwise
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            beforeSend: () => {
+                notice.hide().removeClass('success error');
+            },
+            success: (response) => {
+                notice.addClass('success').html(mgwppMedia.gallery_success).show();
+                setTimeout(() => {
+                    window.location.href = 'admin.php?page=mgwpp_galleries';
+                }, 1500);
+            },
+            error: (xhr) => {
+                const errorMsg = xhr.responseJSON?.message ||
+                    xhr.responseText ||
+                    mgwppMedia.generic_error;
+                notice.addClass('error').html(errorMsg).show();
             }
-        }
-
-        // Function to show the current page of slides
-        function showSlides() {
-            var totalSlides = slides.length;
-            slides.forEach(function (slide, index) {
-                if (index >= currentIndex * imagesPerPage && index < (currentIndex + 1) * imagesPerPage) {
-                    slide.style.display = "flex";
-                } else {
-                    slide.style.display = "none";
-                }
-            });
-        }
-
-        // Function to go to the next page of slides
-        function nextSlide() {
-            updateImagesPerPage();
-            var totalSlides = slides.length;
-            currentIndex = (currentIndex + 1) % Math.ceil(totalSlides / imagesPerPage);
-            showSlides();
-        }
-
-        // Show the initial set of slides
-        showSlides();
-
-        // Set up an interval to automatically switch slides
-        setInterval(nextSlide, 3000); // Change slide every 3 seconds
-
-
-        // Handle window resize to adjust images per page
-        window.addEventListener('resize', function () {
-            updateImagesPerPage();
-            showSlides();
         });
     });
-});
 
 
+    // Theme toggler
+    window.toggleDashboardTheme = () => {
+        $('body').toggleClass('dark');
+        localStorage.setItem('mgwpp-theme',
+            $('body').hasClass('dark') ? 'dark' : 'light'
+        );
+        $('#theme-icon-moon, #theme-icon-sun').toggleClass('hidden');
+    };
 
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleCheckbox = document.getElementById("mode-toggle-checkbox");
-    const body = document.body;
-
-    // Check for saved theme in localStorage
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-        body.setAttribute("data-theme", "dark");
-        toggleCheckbox.checked = true;
+    // Initial theme check
+    if (localStorage.getItem('mgwpp-theme') === 'dark') {
+        $('body').addClass('dark');
+        $('#theme-icon-moon').addClass('hidden');
+        $('#theme-icon-sun').removeClass('hidden');
     }
 
-    // Toggle theme on checkbox change
-    toggleCheckbox?.addEventListener("change", function () {
-        if (this.checked) {
-            body.setAttribute("data-theme", "dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            body.removeAttribute("data-theme");
-            localStorage.setItem("theme", "light");
-        }
+
+    // Gallery type preview
+    $('#gallery_type').change(function () {
+        const option = $(this).find('option:selected');
+        $('#preview_img').attr('src', option.data('image') || '');
+        $('#preview_demo').attr('href', option.data('demo') || '#');
+        $('#gallery_preview').toggle(!!option.data('image'));
     });
 });
 
 
-     function toggleDashboardTheme() {
-              const dashboardEl = document.getElementById('dashboard-stats');
-              const moonIcon = document.getElementById('theme-icon-moon');
-              const sunIcon = document.getElementById('theme-icon-sun');
-              
-              if (dashboardEl.classList.contains('theme-light')) {
-                dashboardEl.classList.remove('theme-light');
-                dashboardEl.classList.add('theme-dark');
-                moonIcon.classList.add('hidden');
-                sunIcon.classList.remove('hidden');
-                localStorage.setItem('dashboard-theme', 'dark');
-              } else {
-                dashboardEl.classList.remove('theme-dark');
-                dashboardEl.classList.add('theme-light');
-                moonIcon.classList.remove('hidden');
-                sunIcon.classList.add('hidden');
-                localStorage.setItem('dashboard-theme', 'light');
-              }
-            }
-            
-            // Check for saved theme preference
-            document.addEventListener('DOMContentLoaded', function() {
-              const savedTheme = localStorage.getItem('dashboard-theme');
-              const dashboardEl = document.getElementById('dashboard-stats');
-              const moonIcon = document.getElementById('theme-icon-moon');
-              const sunIcon = document.getElementById('theme-icon-sun');
-              
-              if (savedTheme === 'dark' || 
-                  (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                dashboardEl.classList.remove('theme-light');
-                dashboardEl.classList.add('theme-dark');
-                moonIcon.classList.add('hidden');
-                sunIcon.classList.remove('hidden');
-              }
-            });
+

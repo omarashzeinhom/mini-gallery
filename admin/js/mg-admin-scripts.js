@@ -91,6 +91,7 @@ jQuery(document).ready(function ($) {
         $('#preview_demo').attr('href', option.data('demo') || '#');
         $('#gallery_preview').toggle(!!option.data('image'));
     });
+    
 });
 
 

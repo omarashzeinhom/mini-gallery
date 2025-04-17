@@ -216,3 +216,36 @@ function mgwpp_plugin_uninstall()
 //add_action('shutdown', function () {
 //    while (@ob_end_flush());
 //});
+
+
+// Add this to your plugin's main file or a relevant include file
+
+add_action('template_redirect', 'mgwpp_handle_preview_request');
+
+function mgwpp_handle_preview_request() {
+    if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1' || !isset($_GET['gallery_id'])) {
+        return;
+    }
+
+    $gallery_id = intval($_GET['gallery_id']);
+    if (!$gallery_id) {
+        return;
+    }
+
+    // Disable theme output and render minimal preview template
+    ?>
+    <!DOCTYPE html>
+    <html <?php language_attributes(); ?>>
+    <head>
+        <meta charset="<?php bloginfo('charset'); ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?php wp_head(); ?>
+    </head>
+    <body style="margin:0;padding:0;">
+        <?php echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]'); ?>
+        <?php wp_footer(); ?>
+    </body>
+    </html>
+    <?php
+    exit;
+}

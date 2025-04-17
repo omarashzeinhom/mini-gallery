@@ -2,6 +2,7 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+require_once plugin_dir_path(__FILE__) .'class-mgwpp-assets.php';
 
 class MGWPP_Admin_Assets {
     public static function enqueue_admin_assets($hook) {

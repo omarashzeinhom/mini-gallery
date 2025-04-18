@@ -32,18 +32,22 @@ class MGWPP_Albums_View {
             <h2><?php esc_html_e('Create New Album', 'mini-gallery') ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="mgwpp_create_album">
-                <?php wp_nonce_field('mgwpp_album_creation', '_wpnonce'); ?>
                 
+                <?php 
+                // must match your handler:
+                wp_nonce_field( 'mgwpp_album_submit_nonce', 'mgwpp_album_submit_nonce' ); 
+                ?>
+    
                 <div class="form-field">
                     <label for="album_title"><?php esc_html_e('Title:', 'mini-gallery'); ?></label>
-                    <input type="text" name="album_title" required>
+                    <input type="text" name="album_title" id="album_title" required>
                 </div>
-
+    
                 <div class="form-field">
                     <label><?php esc_html_e('Galleries:', 'mini-gallery'); ?></label>
                     <?php self::render_gallery_selector(); ?>
                 </div>
-
+    
                 <button type="submit" class="button button-primary">
                     <?php esc_html_e('Create Album', 'mini-gallery'); ?>
                 </button>
@@ -51,7 +55,7 @@ class MGWPP_Albums_View {
         </div>
         <?php
     }
-
+    
     private static function render_gallery_selector() {
         $galleries = get_posts([
             'post_type'      => 'mgwpp_soora',

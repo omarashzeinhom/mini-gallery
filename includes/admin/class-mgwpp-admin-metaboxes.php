@@ -86,15 +86,24 @@ function mgwpp_save_slide_settings( $post_id ) {
         return;
     }
 
-    $settings = isset( $_POST['mgwpp_slide_settings'] ) && is_array( $_POST['mgwpp_slide_settings'] )
-                ? array_map( function( $slide ) {
-                    return array_map( 'sanitize_text_field', $slide );
-                  }, wp_unslash( $_POST['mgwpp_slide_settings'] ) )
-                : [];
+    // Retrieve and sanitize slide settings
+    $settings = isset( $_POST['mgwpp_slide_settings'] ) ? wp_unslash( $_POST['mgwpp_slide_settings'] ) : [];
+    if ( ! is_array( $settings ) ) {
+        $settings = [];
+    }
 
-    update_post_meta( $post_id, '_mgwpp_slide_settings', $settings );
+    // Sanitize each slide's settings
+    $sanitized_settings = [];
+    foreach ( $settings as $attachment_id => $slide ) {
+        $sanitized_slide = [];
+        foreach ( $slide as $key => $value ) {
+            $sanitized_slide[ sanitize_key( $key ) ] = sanitize_text_field( $value );
+        }
+        $sanitized_settings[ absint( $attachment_id ) ] = $sanitized_slide;
+    }
+
+    update_post_meta( $post_id, '_mgwpp_slide_settings', $sanitized_settings );
 }
-
 /**
  * Advanced Gallery Settings Metabox Callback
  */
@@ -190,11 +199,14 @@ function mgwpp_save_advanced_gallery_metabox( $post_id ) {
         return;
     }
 
+    // Save each setting with proper unslashing and sanitization
     if ( isset( $_POST['mgwpp_gallery_overlay'] ) ) {
-        update_post_meta( $post_id, 'mgwpp_gallery_overlay', sanitize_text_field( $_POST['mgwpp_gallery_overlay'] ) );
+        $overlay = sanitize_text_field( wp_unslash( $_POST['mgwpp_gallery_overlay'] ) );
+        update_post_meta( $post_id, 'mgwpp_gallery_overlay', $overlay );
     }
     if ( isset( $_POST['mgwpp_gallery_navigation'] ) ) {
-        update_post_meta( $post_id, 'mgwpp_gallery_navigation', sanitize_text_field( $_POST['mgwpp_gallery_navigation'] ) );
+        $navigation = sanitize_text_field( wp_unslash( $_POST['mgwpp_gallery_navigation'] ) );
+        update_post_meta( $post_id, 'mgwpp_gallery_navigation', $navigation );
     }
     if ( isset( $_POST['mgwpp_gallery_image_limit'] ) ) {
         update_post_meta( $post_id, 'mgwpp_gallery_image_limit', absint( $_POST['mgwpp_gallery_image_limit'] ) );
@@ -203,9 +215,11 @@ function mgwpp_save_advanced_gallery_metabox( $post_id ) {
     update_post_meta( $post_id, 'mgwpp_gallery_disable_lazy', $disable_lazy );
 
     if ( isset( $_POST['mgwpp_gallery_cta_text'] ) ) {
-        update_post_meta( $post_id, 'mgwpp_gallery_cta_text', sanitize_text_field( $_POST['mgwpp_gallery_cta_text'] ) );
+        $cta_text = sanitize_text_field( wp_unslash( $_POST['mgwpp_gallery_cta_text'] ) );
+        update_post_meta( $post_id, 'mgwpp_gallery_cta_text', $cta_text );
     }
     if ( isset( $_POST['mgwpp_gallery_cta_link'] ) ) {
-        update_post_meta( $post_id, 'mgwpp_gallery_cta_link', esc_url_raw( $_POST['mgwpp_gallery_cta_link'] ) );
+        $cta_link = esc_url_raw( wp_unslash( $_POST['mgwpp_gallery_cta_link'] ) );
+        update_post_meta( $post_id, 'mgwpp_gallery_cta_link', $cta_link );
     }
 }

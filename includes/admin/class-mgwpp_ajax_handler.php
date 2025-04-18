@@ -1,5 +1,5 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) {
+<?php 
+if (!defined('ABSPATH')) {
     exit;
 }
 
@@ -14,59 +14,60 @@ class MGWPP_Ajax_Handler {
      * Initialize all AJAX hooks.
      */
     public static function init() {
-        // Hook the preview function into AJAX action
-        add_action( 'wp_ajax_mgwpp_preview', array( __CLASS__, 'preview_gallery' ) );
+        add_action('wp_ajax_mgwpp_preview', array(__CLASS__, 'preview_gallery'));
     }
 
     /**
      * AJAX callback to preview a gallery.
      */
     public static function preview_gallery() {
-        // Get the gallery ID from the request
-        $gallery_id = isset( $_GET['gallery_id'] ) ? intval( $_GET['gallery_id'] ) : 0;
-
-        // Ensure the gallery ID is valid
-        if ( ! $gallery_id ) {
-            wp_die( 'Missing gallery ID.' );
+        // Verify nonce first
+        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'mgwpp_preview_nonce')) {
+            wp_die(esc_html__('Security verification failed.', 'mgwpp'));
         }
 
-        // Fetch the gallery post object
-        $gallery = get_post( $gallery_id );
-        if ( ! $gallery || 'mgwpp_soora' !== $gallery->post_type ) {
-            wp_die( 'Invalid gallery.' );
+        // Sanitize and validate input
+        $gallery_id = isset($_GET['gallery_id']) ? absint(wp_unslash($_GET['gallery_id'])) : 0;
+        
+        if (!$gallery_id) {
+            wp_die(esc_html__('Invalid gallery ID.', 'mgwpp'));
         }
 
-        // Start outputting the preview page content
+        // Verify gallery exists
+        $gallery = get_post($gallery_id);
+        if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
+            wp_die(esc_html__('Gallery not found.', 'mgwpp'));
+        }
+
+        // Output preview
         ?>
         <!DOCTYPE html>
         <html <?php language_attributes(); ?>>
         <head>
-            <meta charset="<?php bloginfo( 'charset' ); ?>">
-            <title><?php echo esc_html( $gallery->post_title ); ?> - Preview</title>
+            <meta charset="<?php bloginfo('charset'); ?>">
+            <title><?php echo esc_html($gallery->post_title); ?> - Preview</title>
             <?php
-            // Enqueue the necessary gallery styles
-            wp_enqueue_style( 'mgwpp-gallery-style' );
-            wp_print_styles();  // Print styles
+            // Enqueue styles safely
+            if (wp_style_is('mgwpp-gallery-style', 'registered')) {
+                wp_enqueue_style('mgwpp-gallery-style');
+                wp_print_styles();
+            }
             ?>
-            <style>
-                body { margin: 0; padding: 0; }
-            </style>
+            <style>body{margin:0;padding:0;}</style>
         </head>
         <body>
+            <?php echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]'); ?>
+            
             <?php
-            // Process and output the gallery shortcode dynamically
-            echo do_shortcode( '[mgwpp_gallery id="' . $gallery_id . '"]' );            ?>
-
-            <?php
-            // Enqueue and print gallery-related scripts (if needed)
-            wp_enqueue_script( 'mgwpp-gallery-script' );
-            wp_print_scripts();  // Print scripts
+            // Enqueue scripts safely
+            if (wp_script_is('mgwpp-gallery-script', 'registered')) {
+                wp_enqueue_script('mgwpp-gallery-script');
+                wp_print_scripts();
+            }
             ?>
-
         </body>
         </html>
         <?php
-
         exit;
     }
 }

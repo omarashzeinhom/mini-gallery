@@ -4,20 +4,30 @@ if (! defined('ABSPATH')) {
 }
 class MGWPP_Upload {
     public static function mgwpp_create_gallery() {
-        // Verify nonce
-        if (!isset($_POST['mgwpp_gallery_nonce']) || 
-            !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_create_gallery')) {
+        // Verify nonce (with unslashing and sanitization)
+        if (!isset($_POST['mgwpp_gallery_nonce'])) {
+            wp_die('Security check failed');
+        }
+        $nonce = sanitize_text_field(wp_unslash($_POST['mgwpp_gallery_nonce']));
+        if (!wp_verify_nonce($nonce, 'mgwpp_create_gallery')) {
             wp_die('Security check failed');
         }
 
-        // Validate required fields
-        if (empty($_POST['gallery_title']) || empty($_POST['gallery_type'])) {
+        // Validate required fields (with unslashing)
+        $gallery_title = isset($_POST['gallery_title']) 
+            ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) 
+            : '';
+        $gallery_type = isset($_POST['gallery_type']) 
+            ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) 
+            : '';
+
+        if (empty($gallery_title) || empty($gallery_type)) {
             wp_die('Missing required fields');
         }
 
         // Create gallery post
         $post_id = wp_insert_post([
-            'post_title'   => sanitize_text_field($_POST['gallery_title']),
+            'post_title'   => $gallery_title, // Already sanitized
             'post_type'    => 'mgwpp_soora',
             'post_status'  => 'publish',
             'post_content' => ''
@@ -27,13 +37,13 @@ class MGWPP_Upload {
             wp_die(esc_html($post_id->get_error_message()));
         }
 
-        // Save gallery type
-        update_post_meta($post_id, 'gallery_type', 
-            sanitize_text_field($_POST['gallery_type']));
+        // Save gallery type (already sanitized)
+        update_post_meta($post_id, 'gallery_type', $gallery_type);
 
-        // Handle media attachments
+        // Handle media attachments safely
         if (!empty($_POST['selected_media'])) {
-            $media_ids = explode(',', sanitize_text_field($_POST['selected_media']));
+            $media_input = sanitize_text_field(wp_unslash($_POST['selected_media']));
+            $media_ids = array_filter(array_map('absint', explode(',', $media_input)));
             
             foreach ($media_ids as $media_id) {
                 $attachment_post = get_post($media_id);

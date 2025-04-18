@@ -162,10 +162,18 @@ add_action('plugins_loaded', function () {
 
 // Link Elementor templates to galleries
 add_action('elementor/editor/after_save', function($post_id) {
-    if (get_post_type($post_id) === 'elementor_library') {
-        $parent_gallery = $_POST['mgwpp_parent_gallery'] ?? 0;
-        update_post_meta($post_id, '_mgwpp_parent_gallery', absint($parent_gallery));
+    // Verify nonce first
+    if (!isset($_POST['mgwpp_parent_gallery_nonce']) || 
+        !wp_verify_nonce($_POST['mgwpp_parent_gallery_nonce'], 'mgwpp_save_parent_gallery')) {
+        return;
     }
+
+    // Sanitize and validate input
+    $parent_gallery = isset($_POST['mgwpp_parent_gallery']) 
+        ? absint(wp_unslash($_POST['mgwpp_parent_gallery'])) 
+        : 0;
+    
+    update_post_meta($post_id, '_mgwpp_parent_gallery', $parent_gallery);
 });
 
 function mgwpp_plugin_deactivate()

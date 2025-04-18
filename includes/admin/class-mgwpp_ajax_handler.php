@@ -23,20 +23,20 @@ class MGWPP_Ajax_Handler {
     public static function preview_gallery() {
         // Verify nonce first
         if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'mgwpp_preview_nonce')) {
-            wp_die(esc_html__('Security verification failed.', 'mgwpp'));
+            wp_die(esc_html__('Security verification failed.', 'mini-gallery'));
         }
 
         // Sanitize and validate input
         $gallery_id = isset($_GET['gallery_id']) ? absint(wp_unslash($_GET['gallery_id'])) : 0;
         
         if (!$gallery_id) {
-            wp_die(esc_html__('Invalid gallery ID.', 'mgwpp'));
+            wp_die(esc_html__('Invalid gallery ID.', 'mini-gallery'));
         }
 
         // Verify gallery exists
         $gallery = get_post($gallery_id);
         if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
-            wp_die(esc_html__('Gallery not found.', 'mgwpp'));
+            wp_die(esc_html__('Gallery not found.', 'mini-gallery'));
         }
 
         // Output preview

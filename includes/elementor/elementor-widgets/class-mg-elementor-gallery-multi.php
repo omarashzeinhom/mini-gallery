@@ -7,11 +7,11 @@ use Elementor\Controls_Manager;
 class MG_Elementor_Gallery_Multi extends Widget_Base {
 
     public function get_name() {
-        return 'mg_gallery_multi';
+        return sanitize_key('mg_gallery_multi');
     }
 
     public function get_title() {
-        return __( 'Mini Gallery Multi Carousel', 'mini-gallery' );
+        return esc_html__('Mini Gallery Multi Carousel', 'mini-gallery');
     }
 
     public function get_icon() {
@@ -19,7 +19,7 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
     }
 
     public function get_categories() {
-        return [ 'minigallery' ];
+        return [sanitize_key('minigallery')];
     }
 
     protected function _register_controls() {
@@ -27,7 +27,7 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __( 'Content', 'mini-gallery' ),
+                'label' => esc_html__('Content', 'mini-gallery'),
                 'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -35,7 +35,7 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->add_control(
             'gallery_id',
             [
-                'label'   => __( 'Select Gallery', 'mini-gallery' ),
+                'label'   => esc_html__('Select Gallery', 'mini-gallery'),
                 'type'    => Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
@@ -45,7 +45,7 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->add_control(
             'images_per_page',
             [
-                'label'   => __( 'Images per Page', 'mini-gallery' ),
+                'label'   => esc_html__('Images per Page', 'mini-gallery'),
                 'type'    => Controls_Manager::NUMBER,
                 'default' => 6,
                 'min'     => 2,
@@ -56,12 +56,12 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->add_control(
             'display_mode',
             [
-                'label'   => __( 'Display Mode', 'mini-gallery' ),
+                'label'   => esc_html__('Display Mode', 'mini-gallery'),
                 'type'    => Controls_Manager::SELECT,
                 'default' => 'default',
                 'options' => [
-                    'default' => __( 'Full Width', 'mini-gallery' ),
-                    'cards'   => __( 'Product Cards', 'mini-gallery' ),
+                    'default' => esc_html__('Full Width', 'mini-gallery'),
+                    'cards'   => esc_html__('Product Cards', 'mini-gallery'),
                 ],
             ]
         );
@@ -69,10 +69,10 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->add_control(
             'auto_rotate_speed',
             [
-                'label'       => __( 'Auto Rotate Speed (ms)', 'mini-gallery' ),
+                'label'       => esc_html__('Auto Rotate Speed (ms)', 'mini-gallery'),
                 'type'        => Controls_Manager::NUMBER,
                 'default'     => 3000,
-                'description' => __( 'Set to 0 to disable auto-rotation.', 'mini-gallery' ),
+                'description' => esc_html__('Set to 0 to disable auto-rotation.', 'mini-gallery'),
             ]
         );
 
@@ -80,8 +80,8 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
     }
 
     protected function render() {
-        $settings   = $this->get_settings_for_display();
-        $gallery_id = $settings['gallery_id'];
+        $settings = $this->get_settings_for_display();
+        $gallery_id = isset($settings['gallery_id']) ? absint($settings['gallery_id']) : 0;
 
         if (empty($gallery_id)) {
             echo esc_html__('Please select a gallery.', 'mini-gallery');
@@ -103,12 +103,16 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         }
 
         $args = [
-            'images_per_page'   => intval($settings['images_per_page']),
-            'display_mode'      => $settings['display_mode'],
-            'auto_rotate_speed' => intval($settings['auto_rotate_speed']),
+            'images_per_page'   => isset($settings['images_per_page']) ? absint($settings['images_per_page']) : 6,
+            'display_mode'      => isset($settings['display_mode']) ? sanitize_text_field($settings['display_mode']) : 'default',
+            'auto_rotate_speed' => isset($settings['auto_rotate_speed']) ? absint($settings['auto_rotate_speed']) : 3000,
         ];
 
-        echo wp_kses_post(MGWPP_Gallery_Multi::render($gallery_id, $images , $args));
+        echo wp_kses_post(MGWPP_Gallery_Multi::render(
+            $gallery_id, 
+            $images,
+            $args
+        ));
     }
 
     private function get_galleries() {
@@ -118,7 +122,7 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
             'post_status' => 'publish',
         ]);
 
-        $options = ['' => __('Select Gallery', 'mini-gallery')];
+        $options = ['' => esc_html__('Select Gallery', 'mini-gallery')];
 
         foreach ($galleries as $gallery) {
             if ($gallery instanceof WP_Post) {

@@ -92,6 +92,13 @@ jQuery(document).ready(function ($) {
         $('#gallery_preview').toggle(!!option.data('image'));
     });
     
+
+      // Dismiss Pro Elements Notice
+      $(document).on('click', '.mg-pro-elements-notice .notice-dismiss', function () {
+        $.post(ajaxurl, { 
+            action: 'mg_dismiss_pro_elements_notice' 
+        });
+    });
 });
 
 

@@ -1,12 +1,13 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
 class MG_Elementor_Gallery_Single extends Widget_Base
 {
-
     public function get_name()
     {
         return 'mg_gallery_single';
@@ -14,7 +15,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base
 
     public function get_title()
     {
-        return __('Mini Gallery Single Carousel', 'mini-gallery');
+        return esc_html__('Mini Gallery Single Carousel', 'mini-gallery');
     }
 
     public function get_icon()
@@ -24,17 +25,15 @@ class MG_Elementor_Gallery_Single extends Widget_Base
 
     public function get_categories()
     {
-        return ['minigallery'];
+        return [sanitize_key('minigallery')];
     }
 
     protected function _register_controls()
     {
-
-        // Content Controls
         $this->start_controls_section(
             'content_section',
             [
-                'label' => __('Content', 'mini-gallery'),
+                'label' => esc_html__('Content', 'mini-gallery'),
                 'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -42,7 +41,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base
         $this->add_control(
             'gallery_id',
             [
-                'label'   => __('Select Gallery', 'mini-gallery'),
+                'label'   => esc_html__('Select Gallery', 'mini-gallery'),
                 'type'    => Controls_Manager::SELECT,
                 'options' => $this->get_galleries(),
                 'default' => '',
@@ -52,7 +51,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base
         $this->add_control(
             'bg_color',
             [
-                'label'   => __('Background Color', 'mini-gallery'),
+                'label'   => esc_html__('Background Color', 'mini-gallery'),
                 'type'    => Controls_Manager::COLOR,
                 'default' => 'transparent',
             ]
@@ -61,7 +60,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base
         $this->add_control(
             'transition_speed',
             [
-                'label'   => __('Transition Speed (s)', 'mini-gallery'),
+                'label'   => esc_html__('Transition Speed (s)', 'mini-gallery'),
                 'type'    => Controls_Manager::NUMBER,
                 'default' => 0.5,
                 'step'    => 0.1,
@@ -73,28 +72,28 @@ class MG_Elementor_Gallery_Single extends Widget_Base
         $this->add_control(
             'auto_rotate_speed',
             [
-                'label'       => __('Auto Rotate Speed (ms)', 'mini-gallery'),
+                'label'       => esc_html__('Auto Rotate Speed (ms)', 'mini-gallery'),
                 'type'        => Controls_Manager::NUMBER,
                 'default'     => 5000,
-                'description' => __('Set to 0 to disable auto-rotation.', 'mini-gallery'),
+                'description' => esc_html__('Set to 0 to disable auto-rotation.', 'mini-gallery'),
             ]
         );
 
         $this->add_control(
             'show_nav',
             [
-                'label'   => __('Show Navigation', 'mini-gallery'),
-                'type'    => Controls_Manager::SWITCHER,
-                'label_on' => __('Show', 'mini-gallery'),
-                'label_off' => __('Hide', 'mini-gallery'),
-                'default' => 'yes',
+                'label'     => esc_html__('Show Navigation', 'mini-gallery'),
+                'type'      => Controls_Manager::SWITCHER,
+                'label_on'  => esc_html__('Show', 'mini-gallery'),
+                'label_off' => esc_html__('Hide', 'mini-gallery'),
+                'default'   => 'yes',
             ]
         );
 
         $this->add_control(
             'swipe_threshold',
             [
-                'label'   => __('Swipe Threshold (px)', 'mini-gallery'),
+                'label'   => esc_html__('Swipe Threshold (px)', 'mini-gallery'),
                 'type'    => Controls_Manager::NUMBER,
                 'default' => 30,
                 'min'     => 10,
@@ -107,7 +106,7 @@ class MG_Elementor_Gallery_Single extends Widget_Base
     protected function render()
     {
         $settings   = $this->get_settings_for_display();
-        $gallery_id = $settings['gallery_id'];
+        $gallery_id = isset($settings['gallery_id']) ? absint($settings['gallery_id']) : 0;
 
         if (empty($gallery_id)) {
             echo esc_html__('Please select a gallery.', 'mini-gallery');
@@ -121,11 +120,11 @@ class MG_Elementor_Gallery_Single extends Widget_Base
         }
 
         $args = [
-            'bg_color'           => $settings['bg_color'],
-            'transition_speed'   => $settings['transition_speed'] . 's',
-            'auto_rotate_speed'  => intval($settings['auto_rotate_speed']),
-            'show_nav'           => $settings['show_nav'] === 'yes',
-            'swipe_threshold'    => intval($settings['swipe_threshold']),
+            'bg_color'          => sanitize_hex_color($settings['bg_color']),
+            'transition_speed'  => floatval($settings['transition_speed']) . 's',
+            'auto_rotate_speed' => absint($settings['auto_rotate_speed']),
+            'show_nav'          => $settings['show_nav'] === 'yes',
+            'swipe_threshold'   => absint($settings['swipe_threshold']),
         ];
 
         echo wp_kses_post(MGWPP_Gallery_Single::render($gallery_id, $images, $args));
@@ -134,12 +133,15 @@ class MG_Elementor_Gallery_Single extends Widget_Base
     private function get_galleries()
     {
         $galleries = get_posts([
-            'post_type'   => 'mgwpp_soora',
-            'numberposts' => 100,
-            'post_status' => 'publish',
+            'post_type'      => 'mgwpp_soora',
+            'numberposts'    => 100,
+            'post_status'    => 'publish',
+            'suppress_filters' => false,
         ]);
 
-        $options = ['' => __('Select Gallery', 'mini-gallery')];
+        $options = [
+            '' => esc_html__('Select Gallery', 'mini-gallery'),
+        ];
 
         foreach ($galleries as $gallery) {
             if ($gallery instanceof WP_Post) {

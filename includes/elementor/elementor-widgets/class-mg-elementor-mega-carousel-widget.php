@@ -299,7 +299,6 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
 
         foreach ($galleries as $gallery) {
             if (!$gallery instanceof WP_Post) {
-                error_log('[Mini Gallery] Skipping invalid gallery object: ' . print_r($gallery, true));
                 continue;
             }
             $options[$gallery->ID] = esc_html($gallery->post_title);

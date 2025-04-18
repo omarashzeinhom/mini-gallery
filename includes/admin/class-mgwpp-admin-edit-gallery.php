@@ -46,18 +46,24 @@ class MGWPP_Admin_Edit_Gallery
         );
     }
 
+
+
+
+
     public static function render_edit_gallery_page()
     {
-        // Validate gallery ID
-        $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
+        // Validate gallery ID with unslashing
+        $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
 
         if (!$gallery_id) {
             echo '<div class="notice notice-error"><p>' . esc_html__('No gallery specified.', 'mini-gallery') . '</p></div>';
             return;
         }
 
-        // Verify nonce
-        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field($_GET['_wpnonce']), 'mgwpp_edit_gallery')) {
+        // Verify nonce with proper unslashing and validation
+        // FIXED
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
+        if (!wp_verify_nonce(sanitize_text_field($nonce), 'mgwpp_edit_gallery')) {
             echo '<div class="notice notice-error"><p>' . esc_html__('Security check failed.', 'mini-gallery') . '</p></div>';
             return;
         }
@@ -69,14 +75,15 @@ class MGWPP_Admin_Edit_Gallery
             return;
         }
 
-        // Process form submission
+        // Process form submission with proper unslashing
         if (isset($_POST['mgwpp_edit_gallery_submit'])) {
-            if (!isset($_POST['mgwpp_edit_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_edit_gallery_nonce'], 'mgwpp_edit_gallery_save')) {
+            $submitted_nonce = isset($_POST['mgwpp_edit_gallery_nonce']) ? sanitize_text_field(wp_unslash($_POST['mgwpp_edit_gallery_nonce'])) : '';
+            if (!wp_verify_nonce(sanitize_text_field($submitted_nonce), 'mgwpp_edit_gallery_save')) {
                 echo '<div class="notice notice-error"><p>' . esc_html__('Form security check failed.', 'mini-gallery') . '</p></div>';
                 return;
             }
 
-            // Sanitize and save all fields
+            // Sanitize and save all fields with unslashing
             $fields = [
                 'mgwpp_gallery_type' => 'sanitize_text_field',
                 'mgwpp_nav_color' => 'sanitize_hex_color',
@@ -90,18 +97,20 @@ class MGWPP_Admin_Edit_Gallery
 
             foreach ($fields as $field => $sanitizer) {
                 if (isset($_POST[$field])) {
-                    update_post_meta($gallery_id, $field, call_user_func($sanitizer, $_POST[$field]));
+                    $raw_value = sanitize_text_field(wp_unslash($_POST[$field]));
+                    update_post_meta($gallery_id, $field, call_user_func($sanitizer, $raw_value));
                 }
             }
 
-            // Save image CTAs
+            // Save image CTAs with unslashing and validation
             $image_ctas = [];
             if (isset($_POST['mgwpp_gallery_images']) && is_array($_POST['mgwpp_gallery_images'])) {
-                foreach ($_POST['mgwpp_gallery_images'] as $index => $cta) {
+                $raw_images = isset($_POST['mgwpp_gallery_images']) ? array_map('wp_unslash', (array)$_POST['mgwpp_gallery_images']) : [];
+                foreach ($raw_images as $index => $cta) {
                     $image_ctas[$index] = [
-                        'id' => isset($cta['id']) ? intval($cta['id']) : 0,
-                        'cta_text' => sanitize_text_field($cta['cta_text']),
-                        'cta_link' => esc_url_raw($cta['cta_link'])
+                        'id' => isset($cta['id']) ? absint($cta['id']) : 0,
+                        'cta_text' => sanitize_text_field($cta['cta_text'] ?? ''),
+                        'cta_link' => esc_url_raw($cta['cta_link'] ?? '')
                     ];
                 }
             }
@@ -279,30 +288,30 @@ class MGWPP_Admin_Edit_Gallery
                 }).trigger('change');
 
                 // Refresh preview via Ajax
+                // Refresh preview via Ajax
                 $('.mgwpp-refresh-preview').click(function() {
                     var $preview = $('.mgwpp-preview-container');
-                    $preview.html('<div class="mgwpp-loading"><?php esc_html_e('Loading preview...', 'mini-gallery') ?></div>');
+                    $preview.html('<div class="mgwpp-loading"><?php echo esc_js(__('Loading preview...', 'mini-gallery')); ?></div>');
 
                     $.post(ajaxurl, {
                         action: 'mgwpp_refresh_preview',
-                        gallery_id: <?php echo intval($gallery_id); ?>,
-                        nonce: '<?php echo wp_create_nonce('mgwpp_preview_nonce'); ?>'
+                        gallery_id: <?php echo absint($gallery_id); ?>,
+                        nonce: '<?php echo esc_js(wp_create_nonce('mgwpp_preview_nonce')); ?>'
                     }, function(response) {
                         $preview.html(response);
                     });
                 });
 
-                // Copy shortcode input value to clipboard on button click
+                // Copy shortcode
                 $('.mgwpp-copy-shortcode').click(function() {
                     var $input = $(this).prev('input');
                     $input.select();
                     document.execCommand('copy');
-                    $(this).text('<?php esc_html_e('Copied!', 'mini-gallery'); ?>');
+                    $(this).text('<?php echo esc_js(__('Copied!', 'mini-gallery')); ?>');
                     setTimeout(() => {
-                        $(this).text('<?php esc_html_e('Copy Shortcode', 'mini-gallery'); ?>');
+                        $(this).text('<?php echo esc_js(__('Copy Shortcode', 'mini-gallery')); ?>');
                     }, 2000);
                 });
-
             });
         </script>
 
@@ -314,7 +323,11 @@ class MGWPP_Admin_Edit_Gallery
     {
         check_ajax_referer('mgwpp_preview_nonce', 'nonce');
 
-        $gallery_id = intval($_POST['gallery_id']);
+        $gallery_id = absint($_POST['gallery_id']);
+        if (!get_post($gallery_id)) {
+            wp_send_json_error(__('Invalid gallery ID', 'mini-gallery'), 404);
+            wp_die();
+        }
         echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
         wp_die();
     }

@@ -14,12 +14,12 @@ public function get_icon() { return 'eicon-slides'; }
 protected function register_controls() {
     // Gallery Selection
     $this->start_controls_section('content_section', [
-        'label' => __('Slider Content', 'mgwpp'),
+        'label' => __('Slider Content', 'mini-gallery'),
         'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
     ]);
 
     $this->add_control('selected_gallery', [
-        'label' => __('Select Gallery', 'mgwpp'),
+        'label' => __('Select Gallery', 'mini-gallery'),
         'type' => \Elementor\Controls_Manager::SELECT2,
         'options' => $this->get_galleries(),
         'label_block' => true

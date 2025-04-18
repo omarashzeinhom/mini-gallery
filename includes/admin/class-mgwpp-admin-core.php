@@ -70,7 +70,14 @@ class MGWPP_Admin_Core
         // Output the iframe
         $gallery_id = $post->ID;
         echo '<h3>Gallery Preview</h3>';
-        echo '<iframe src="' . admin_url('admin-ajax.php?action=mgwpp_preview&gallery_id=' . $gallery_id) . '" width="100%" height="600px" frameborder="0"></iframe>';
-    }
+        echo '<iframe src="' . esc_url(
+            add_query_arg(
+                [
+                    'action' => 'mgwpp_preview',
+                    'gallery_id' => absint($gallery_id)
+                ],
+                admin_url('admin-ajax.php')
+            )
+        ) . '" width="100%" height="600px" frameborder="0"></iframe>';    }
 }
 }

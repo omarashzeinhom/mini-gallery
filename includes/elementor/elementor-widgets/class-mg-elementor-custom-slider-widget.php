@@ -58,7 +58,7 @@ private function render_slides($gallery_id) {
         echo '<div class="mgwpp-slider__wrapper">';
         foreach ($slides as $slide) {
             echo '<div class="mgwpp-slider__slide">';
-            echo \Elementor\Plugin::instance()->frontend->get_builder_content($slide->ID);
+            echo esc_url(\Elementor\Plugin::instance()->frontend->get_builder_content($slide->ID));
             echo '</div>';
         }
         echo '</div>';

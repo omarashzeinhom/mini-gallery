@@ -242,6 +242,13 @@ function mgwpp_handle_preview_request() {
     if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1' || !isset($_GET['gallery_id'])) {
         return;
     }
+    
+    $nonce = sanitize_key(wp_unslash($_GET['mgwpp_preview']));
+    
+    if(!isset($nonce)){
+
+    }
+
 
     $gallery_id = intval($_GET['gallery_id']);
     if (!$gallery_id) {
@@ -265,3 +272,5 @@ function mgwpp_handle_preview_request() {
     <?php
     exit;
 }
+
+

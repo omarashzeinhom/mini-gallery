@@ -239,38 +239,37 @@ function mgwpp_plugin_uninstall()
 add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 function mgwpp_handle_preview_request() {
-    if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1' || !isset($_GET['gallery_id'])) {
+    // 1. First check if this is a preview request
+    if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
         return;
     }
-    
-    $nonce = sanitize_key(wp_unslash($_GET['mgwpp_preview']));
-    
-    if(!isset($nonce)){
 
+    // 2. Verify nonce with proper action
+    if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
+        wp_die(
+            '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
+            '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
+            '<p><a href="' . esc_url(admin_url('edit.php?post_type=mgwpp_soora')) . '">' . 
+            esc_html__('Return to Galleries', 'mini-gallery') . '</a></p>'
+        );
     }
 
-
-    $gallery_id = intval($_GET['gallery_id']);
+    // 3. Validate gallery ID
+    $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
     if (!$gallery_id) {
-        return;
+        wp_die(esc_html__('Invalid gallery ID format.', 'mini-gallery'));
     }
 
-    // Disable theme output and render minimal preview template
-    ?>
-    <!DOCTYPE html>
-    <html <?php language_attributes(); ?>>
-    <head>
-        <meta charset="<?php bloginfo('charset'); ?>">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <?php wp_head(); ?>
-    </head>
-    <body style="margin:0;padding:0;">
-        <?php echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]'); ?>
-        <?php wp_footer(); ?>
-    </body>
-    </html>
-    <?php
+    // 4. Verify gallery exists
+    $gallery = get_post($gallery_id);
+    if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
+        wp_die(esc_html__('The requested gallery no longer exists.', 'mini-gallery'));
+    }
+
+    // 5. Show preview template
+    get_header();
+    echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+    get_footer();
     exit;
 }
-
-
+add_action('template_redirect', 'mgwpp_handle_preview_request');

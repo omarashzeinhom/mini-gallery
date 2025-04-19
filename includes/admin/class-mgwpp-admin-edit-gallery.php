@@ -263,10 +263,12 @@ class MGWPP_Admin_Edit_Gallery
                 <!-- Live Preview Panel -->
                 <div class="mgwpp-preview-panel">
                     <?php // Generate the preview URL
-                    $preview_url = add_query_arg([
-                        'mgwpp_preview' => '1',
-                        'gallery_id' => $gallery_id,
-                    ], home_url('/'));
+                    // When generating the preview link
+$preview_url = add_query_arg([
+    'mgwpp_preview' => '1',
+    'gallery_id' => $gallery_id,
+    '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
+], home_url('/'));
                     ?>
 
                     <div class="mgwpp-preview-container">

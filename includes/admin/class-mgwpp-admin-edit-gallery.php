@@ -111,8 +111,7 @@ class MGWPP_Admin_Edit_Gallery
             if (isset($_POST['mgwpp_gallery_images']) && is_array($_POST['mgwpp_gallery_images'])) {
 
                 if (sanitize_post(isset($_POST['mgwpp_gallery_images']))) {
-                    $nonce = sanitize_post(wp_unslash( sanitize_key($_POST['mgwpp_gallery_images'] )));
-
+                    $nonce = sanitize_post(wp_unslash(sanitize_key($_POST['mgwpp_gallery_images'])));
                 }
 
 
@@ -264,11 +263,11 @@ class MGWPP_Admin_Edit_Gallery
                 <div class="mgwpp-preview-panel">
                     <?php // Generate the preview URL
                     // When generating the preview link
-$preview_url = add_query_arg([
-    'mgwpp_preview' => '1',
-    'gallery_id' => $gallery_id,
-    '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
-], home_url('/'));
+                    $preview_url = add_query_arg([
+                        'mgwpp_preview' => '1',
+                        'gallery_id' => $gallery_id,
+                        '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
+                    ], home_url('/'));
                     ?>
 
                     <div class="mgwpp-preview-container">
@@ -335,7 +334,7 @@ $preview_url = add_query_arg([
     {
         // Verify nonce first
         check_ajax_referer('mgwpp_preview_nonce', 'nonce');
-    
+
         // Check if gallery_id exists and is valid
         if (!isset($_POST['gallery_id']) || empty($_POST['gallery_id'])) {
             wp_send_json_error(
@@ -343,10 +342,10 @@ $preview_url = add_query_arg([
                 400
             );
         }
-    
+
         // Sanitize and validate the gallery ID
         $gallery_id = absint($_POST['gallery_id']);
-    
+
         // Verify the gallery exists and is correct post type
         $gallery = get_post($gallery_id);
         if (!$gallery || $gallery->post_type !== 'mgwpp_gallery') {
@@ -355,7 +354,7 @@ $preview_url = add_query_arg([
                 404
             );
         }
-    
+
         // Check user capabilities
         if (!current_user_can('edit_post', $gallery_id)) {
             wp_send_json_error(
@@ -363,10 +362,10 @@ $preview_url = add_query_arg([
                 403
             );
         }
-    
+
         // Generate preview HTML
         $preview_html = do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
-    
+
         // Send successful response
         wp_send_json_success([
             'html' => $preview_html

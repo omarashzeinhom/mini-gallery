@@ -87,7 +87,12 @@ function mgwpp_save_slide_settings( $post_id ) {
     }
 
     // Retrieve and sanitize slide settings
-    $settings = isset( $_POST['mgwpp_slide_settings'] ) ? wp_unslash( $_POST['mgwpp_slide_settings'] ) : [];
+    if (!isset($_POST['mgwpp_slide_settings'])) {
+        return;
+    }
+    $settings = sanitize_key(wp_unslash($_POST['mgwpp_slide_settings']));
+
+
     if ( ! is_array( $settings ) ) {
         $settings = [];
     }

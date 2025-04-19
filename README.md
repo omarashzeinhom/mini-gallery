@@ -71,7 +71,9 @@ You can upload images through the plugin's interface, and they will be displayed
 ```bash
  vendor/bin/phpcs -ps mini-gallery.php --standard=WordPress
 ```
-##### Open Source Assets 
+
+##### Open Source Assets
 
 [Gallery Icon](https://icon-sets.iconify.design/?query=gallery)
 
+[Elementor - Widget Dependencies](https://developers.elementor.com/docs/widgets/widget-dependencies/)

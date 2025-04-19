@@ -35,17 +35,17 @@ class MGWPP_Gallery_Single {
 
         ob_start(); ?>
         <div class="mgwpp-single-carousel" 
-             data-auto-rotate="<?= esc_attr($settings['auto_rotate_speed']) ?>"
-             data-swipe-threshold="<?= esc_attr($settings['swipe_threshold']) ?>"
-             style="--mgwpp-bg-color: <?= esc_attr($settings['bg_color']) ?>;
-                   --mgwpp-transition-speed: <?= esc_attr($settings['transition_speed']) ?>">
+             data-auto-rotate="<?php esc_attr($settings['auto_rotate_speed']) ?>"
+             data-swipe-threshold="<?php esc_attr($settings['swipe_threshold']) ?>"
+             style="--mgwpp-bg-color: <?php esc_attr($settings['bg_color']) ?>;
+                   --mgwpp-transition-speed: <?php esc_attr($settings['transition_speed']) ?>">
             
             <div class="mgwpp-single-carousel__container">
                 <?php if (!empty($images)) : ?>
                     <div class="mgwpp-single-carousel__main">
                         <?php foreach ($images as $index => $image) : ?>
-                            <div class="mgwpp-single-carousel__slide <?= $index === 0 ? 'mgwpp-single-carousel__slide--active' : '' ?>">
-                                <?= wp_get_attachment_image($image->ID, 'large', false, [
+                            <div class="mgwpp-single-carousel__slide <?php $index === 0 ? 'mgwpp-single-carousel__slide--active' : '' ?>">
+                                <?php wp_get_attachment_image($image->ID, 'large', false, [
                                     'class' => 'mgwpp-single-carousel__image',
                                     'loading' => 'eager',
                                     'data-caption' => esc_attr(wp_get_attachment_caption($image->ID))
@@ -57,7 +57,7 @@ class MGWPP_Gallery_Single {
                     <?php if ($settings['show_nav']) : ?>
                         <div class="mgwpp-single-carousel__controls">
                             <button class="mgwpp-single-carousel__nav mgwpp-single-carousel__nav--prev" aria-label="Previous">❮</button>
-                            <div class="mgwpp-single-carousel__counter">1/<?= count($images) ?></div>
+                            <div class="mgwpp-single-carousel__counter">1/<?php count($images) ?></div>
                             <button class="mgwpp-single-carousel__nav mgwpp-single-carousel__nav--next" aria-label="Next">❯</button>
                         </div>
                     <?php endif; ?>

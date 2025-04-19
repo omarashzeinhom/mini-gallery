@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) {
 wp_enqueue_style('wp-color-picker');
 wp_enqueue_script('wp-color-picker');
 wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
+wp_enqueue_style('');
 
 class MGWPP_Admin_Edit_Gallery
 {
@@ -36,6 +37,8 @@ class MGWPP_Admin_Edit_Gallery
             wp_enqueue_script('wp-color-picker');
             wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
         }
+
+
     }
 
     public static function register_edit_gallery_page()

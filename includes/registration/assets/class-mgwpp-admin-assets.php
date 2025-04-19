@@ -63,12 +63,15 @@ class MGWPP_Admin_Assets
         );
 
 
-        // Enqueue styles
         wp_enqueue_style(
-            'mgwpp-admin-edit-dashboard-styles',
+            'mg-admin-edit-dashboard-styles',
             MG_PLUGIN_URL . '/admin/css/mg-admin-edit-dashboard-styles.css', //RENAME FOR Possible Name Conflict
             [],
-            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styless')
         );
+
+
+
+
     }
 }

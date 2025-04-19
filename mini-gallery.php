@@ -75,7 +75,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
 //require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mgwpp_ajax_handler.php';
+require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp_ajax_handler.php';
 MGWPP_Ajax_Handler::init();
 // Editor Assets
 require_once __DIR__ . '/includes/admin/class-mgwpp-admin-editors.php';
@@ -96,7 +96,8 @@ function mgwpp_plugin_activate()
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
 
-function mgwpp_register_shortcodes() {
+function mgwpp_register_shortcodes()
+{
     // Register the gallery shortcode
     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
 }
@@ -108,7 +109,7 @@ function mgwpp_initialize_plugin()
 {
     // Register gallery shortcode
     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
-    add_action( 'admin_init', 'mgwpp_register_shortcodes' ); 
+    add_action('admin_init', 'mgwpp_register_shortcodes');
     // Call the static methods to initialize classes
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
@@ -165,8 +166,8 @@ add_action('plugins_loaded', function () {
 });
 
 // Link Elementor templates to galleries
-add_action('elementor/editor/after_save', function($post_id) {
-     // 1. Verify nonce exists first
+add_action('elementor/editor/after_save', function ($post_id) {
+    // 1. Verify nonce exists first
     if (!isset($_POST['mgwpp_parent_gallery_nonce'])) {
         return;
     }
@@ -180,8 +181,8 @@ add_action('elementor/editor/after_save', function($post_id) {
     }
 
     // 4. Sanitize and validate parent gallery ID
-    $parent_gallery = isset($_POST['mgwpp_parent_gallery']) 
-        ? absint(wp_unslash($_POST['mgwpp_parent_gallery'])) 
+    $parent_gallery = isset($_POST['mgwpp_parent_gallery'])
+        ? absint(wp_unslash($_POST['mgwpp_parent_gallery']))
         : 0;
 
     // 5. Save validated data
@@ -242,7 +243,8 @@ function mgwpp_plugin_uninstall()
 
 add_action('template_redirect', 'mgwpp_handle_preview_request');
 
-function mgwpp_handle_preview_request() {
+function mgwpp_handle_preview_request()
+{
     // 1. First check if this is a preview request
     if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
         return;
@@ -252,9 +254,9 @@ function mgwpp_handle_preview_request() {
     if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
         wp_die(
             '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
-            '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
-            '<p><a href="' . esc_url(admin_url('edit.php?post_type=mgwpp_soora')) . '">' . 
-            esc_html__('Return to Galleries', 'mini-gallery') . '</a></p>'
+                '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
+                '<p><a href="' . esc_url(admin_url('edit.php?post_type=mgwpp_soora')) . '">' .
+                esc_html__('Return to Galleries', 'mini-gallery') . '</a></p>'
         );
     }
 

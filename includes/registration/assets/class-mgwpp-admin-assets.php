@@ -67,7 +67,7 @@ class MGWPP_Admin_Assets
             'mg-admin-edit-dashboard-styles',
             MG_PLUGIN_URL . '/admin/css/mg-admin-edit-dashboard-styles.css', //RENAME FOR Possible Name Conflict
             [],
-            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styless')
+            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styles.css')
         );
 
 

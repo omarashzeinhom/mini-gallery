@@ -4,9 +4,24 @@ if (!defined('ABSPATH')) {
 }
 wp_enqueue_style('wp-color-picker');
 wp_enqueue_script('wp-color-picker');
-wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
-wp_enqueue_style('');
+$plugin_url = plugin_dir_url(dirname(__FILE__, 2)); // Points to plugin root
+    
+// CSS
+wp_enqueue_style(
+    'mgwpp-admin-styles',
+    $plugin_url . 'admin/css/mg-admin-edit-dashboard-styles.css',
+    [],
+    filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/css/mg-admin-edit-dashboard-styles.css')
+);
 
+// JS
+wp_enqueue_script(
+    'mgwpp-admin-scripts',
+    $plugin_url . 'admin/js/mg-admin-scripts.js',
+    ['jquery'],
+    filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/js/mg-admin-scripts.js'),
+    true
+);
 class MGWPP_Admin_Edit_Gallery
 {
 

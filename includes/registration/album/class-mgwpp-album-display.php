@@ -75,7 +75,7 @@ class MGWPP_Album_Display
 
                 $output .= sprintf(
                     '<div class="mgwpp-album-gallery-item">
-                        <a href="%s" class="mgwpp-album-gallery-link">
+                        <a href="%s" class="mgwpp-album-gallery-link" target="_blank" rel="noopener noreferrer">
                             %s
                             <h3 class="mgwpp-album-gallery-title">%s</h3>
                         </a>

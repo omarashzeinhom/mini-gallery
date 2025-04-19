@@ -1,9 +1,10 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-class MGWPP_Gallery_Multi {
+class MGWPP_Gallery_Multi
+{
     /**
      * Render the multi-carousel.
      *
@@ -16,27 +17,28 @@ class MGWPP_Gallery_Multi {
      *
      * @return string HTML output for the multi-carousel.
      */
-    public static function render( $post_id, $images, $args = array() ) {
+    public static function render($post_id, $images, $args = array())
+    {
         $defaults = array(
             'images_per_page'   => 6,        // default number on desktop (cards mode will clamp to min 2)
-            'display_mode'      => 'default',// set to "cards" for product style cards
+            'display_mode'      => 'default', // set to "cards" for product style cards
             'auto_rotate_speed' => 3000,     // in milliseconds
         );
-        $args = wp_parse_args( $args, $defaults );
-        
+        $args = wp_parse_args($args, $defaults);
+
         // Enqueue styles and scripts.
-        wp_enqueue_style( 'mgwpp-multi-carousel' );
-        wp_enqueue_script( 'mgwpp-multi-carousel' );
-       
+        wp_enqueue_style('mgwpp-multi-carousel');
+        wp_enqueue_script('mgwpp-multi-carousel');
+
         ob_start();
-        ?>
+?>
         <!-- Pass options via data attributes. display_mode will allow CSS and JS to adjust layout -->
-        <div class="mg-gallery multi-carousel <?php echo esc_attr( $args['display_mode'] ); ?>" 
-             data-auto-rotate="<?php echo intval( $args['auto_rotate_speed'] ); ?>"
-             data-images-per-page="<?php echo intval( max(2, $args['images_per_page']) ); ?>">
+        <div class="mg-gallery multi-carousel <?php echo esc_attr($args['display_mode']); ?>"
+            data-auto-rotate="<?php echo intval($args['auto_rotate_speed']); ?>"
+            data-images-per-page="<?php echo intval(max(2, $args['images_per_page'])); ?>">
             <div class="slides-wrapper">
-                <?php if ( ! empty( $images ) && is_array( $images ) ) : ?>
-                    <?php foreach ( $images as $image ) : ?>
+                <?php if (! empty($images) && is_array($images)) : ?>
+                    <?php foreach ($images as $image) : ?>
                         <div class="mg-multi-carousel-slide">
                             <?php
                             // Using 'full' size for max resolution; change to a custom size if desired.
@@ -53,11 +55,11 @@ class MGWPP_Gallery_Multi {
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="no-images"><?php _e( 'No images found', 'mini-gallery' ); ?></div>
+                    <div class="no-images"><?php esc_html_e('No images found', 'mini-gallery'); ?></div>
                 <?php endif; ?>
             </div><!-- .slides-wrapper -->
         </div><!-- .multi-carousel -->
-        <?php
+<?php
         return ob_get_clean();
     }
 }

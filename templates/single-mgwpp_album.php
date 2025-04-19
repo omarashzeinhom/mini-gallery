@@ -15,7 +15,7 @@ if (have_posts()) :
 
         // Album content
         echo '<div class="mgwpp-album-content">';
-        echo apply_filters('the_content', get_the_content());
+        echo esc_html(apply_filters('the_content', get_the_content()), 'mini-gallery');
         echo '</div>';
 
         // Get related galleries (array of post IDs)

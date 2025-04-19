@@ -1,0 +1,453 @@
+
+/* Main Admin Edit Gallery Styles */
+.mgwpp-edit-wrapper {
+    max-width: 1400px;
+    margin: 20px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  }
+  
+  .mgwpp-edit-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e4e7;
+  }
+  
+  .mgwpp-gallery-id {
+    font-size: 14px;
+    background: #f0f0f1;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #50575e;
+    font-weight: normal;
+  }
+  
+  /* Layout */
+  .mgwpp-edit-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  
+  @media (max-width: 1200px) {
+    .mgwpp-edit-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Settings Panel */
+  .mgwpp-settings-panel {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  .mgwpp-settings-form {
+    padding: 0;
+  }
+  
+  .mgwpp-settings-section {
+    padding: 25px;
+    border-bottom: 1px solid #f0f0f1;
+  }
+  
+  .mgwpp-settings-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+  }
+  
+  /* Form Controls */
+  .mgwpp-type-selector {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+    box-shadow: 0 0 0 transparent;
+    height: 45px;
+  }
+  
+  .mgwpp-type-selector:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+  }
+  
+  /* Style Grid */
+  .mgwpp-style-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .mgwpp-style-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .mgwpp-style-item label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #3c434a;
+  }
+  
+  .mgwpp-style-item input[type="text"],
+  .mgwpp-style-item select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .mgwpp-style-item input[type="text"]:focus,
+  .mgwpp-style-item select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+  }
+  
+  /* Toggle Switch */
+  .mgwpp-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+  
+  .mgwpp-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .mgwpp-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  
+  .mgwpp-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .mgwpp-slider {
+    background-color: #2271b1;
+  }
+  
+  input:focus + .mgwpp-slider {
+    box-shadow: 0 0 1px #2271b1;
+  }
+  
+  input:checked + .mgwpp-slider:before {
+    transform: translateX(26px);
+  }
+  
+  /* CTA Grid */
+  .mgwpp-cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .mgwpp-cta-grid label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3c434a;
+  }
+  
+  .mgwpp-cta-grid input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .mgwpp-cta-grid input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+  }
+  
+  /* Per-Image CTAs */
+  .mgwpp-image-ctas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  
+  .mgwpp-cta-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #e2e4e7;
+    transition: all 0.2s ease;
+  }
+  
+  .mgwpp-cta-item:hover {
+    border-color: #c3c4c7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .mgwpp-cta-item img {
+    grid-row: span 2;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .mgwpp-cta-item input {
+    padding: 8px 10px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 13px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .mgwpp-cta-item input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+  }
+  
+  /* Preview Panel */
+  .mgwpp-preview-panel {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mgwpp-preview-container {
+    flex: 1;
+    padding: 20px;
+    min-height: 600px;
+    background: #f0f0f1;
+    border-bottom: 1px solid #dcdcde;
+  }
+  
+  .mgwpp-preview-container iframe {
+    border: 1px solid #dcdcde;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .mgwpp-shortcode-box {
+    display: flex;
+    padding: 15px 20px;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .mgwpp-shortcode-box input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #f6f7f7;
+    color: #2c3338;
+    font-size: 14px;
+    font-family: monospace;
+  }
+  
+  .mgwpp-copy-shortcode {
+    white-space: nowrap;
+    background: #2271b1 !important;
+    color: #fff !important;
+    border-color: #2271b1 !important;
+    padding: 5px 15px !important;
+    height: auto !important;
+    transition: background-color 0.2s ease !important;
+  }
+  
+  .mgwpp-copy-shortcode:hover {
+    background: #135e96 !important;
+  }
+  
+  /* WP Color Picker Customizations */
+  .wp-picker-container {
+    width: 100%;
+  }
+  
+  .wp-picker-container .wp-color-result.button {
+    height: 30px;
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  
+  .wp-picker-container .wp-color-result-text {
+    line-height: 28px;
+  }
+  
+  .wp-picker-container input[type=text].wp-color-picker {
+    height: 30px;
+    min-height: 30px;
+  }
+  
+  /* Submit Button */
+  .mgwpp-settings-form .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    padding: 8px 20px;
+    height: auto;
+    font-size: 15px;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    margin-left: 25px;
+    margin-bottom: 25px;
+  }
+  
+  .mgwpp-settings-form .button-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+  }
+  
+  /* Loading Animation */
+  .mgwpp-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 16px;
+    color: #50575e;
+  }
+  
+  .mgwpp-loading:before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 2px solid #dcdcde;
+    border-top-color: #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Gradient Input */
+  .gradient-input {
+    font-family: monospace;
+    font-size: 13px !important;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 782px) {
+    .mgwpp-style-grid,
+    .mgwpp-cta-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .mgwpp-image-ctas {
+      grid-template-columns: 1fr;
+    }
+    
+    .mgwpp-preview-container {
+      min-height: 400px;
+    }
+    
+    .mgwpp-shortcode-box {
+      flex-direction: column;
+    }
+    
+    .mgwpp-shortcode-box input,
+    .mgwpp-copy-shortcode {
+      width: 100%;
+    }
+  }
+  
+  /* Enhanced UI Elements */
+  .mgwpp-settings-section {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .mgwpp-settings-section:hover {
+    background-color: #fafafa;
+  }
+  
+  .mgwpp-settings-section h3 {
+    position: relative;
+    padding-bottom: 10px;
+  }
+  
+  .mgwpp-settings-section h3:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #2271b1;
+    border-radius: 3px;
+  }
+  
+  /* Pro Features Styling */
+  .mgwpp-pro-feature {
+    position: relative;
+  }
+  
+  .mgwpp-pro-feature:after {
+    content: "PRO";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    z-index: 1;
+  }

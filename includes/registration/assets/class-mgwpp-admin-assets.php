@@ -2,10 +2,12 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-require_once plugin_dir_path(__FILE__) .'class-mgwpp-assets.php';
+require_once plugin_dir_path(__FILE__) . 'class-mgwpp-assets.php';
 
-class MGWPP_Admin_Assets {
-    public static function enqueue_admin_assets($hook) {
+class MGWPP_Admin_Assets
+{
+    public static function enqueue_admin_assets($hook)
+    {
         // Only load on our plugin pages
         if (strpos($hook, 'mgwpp_') === false) {
             return;
@@ -13,7 +15,7 @@ class MGWPP_Admin_Assets {
 
         // Enqueue core WordPress media components
         wp_enqueue_media();
-        
+
         // Explicitly load required media dependencies
         wp_enqueue_script('media-views');
         wp_enqueue_script('media-grid');
@@ -23,7 +25,7 @@ class MGWPP_Admin_Assets {
         wp_register_script(
             'mgwpp-admin-scripts',
             MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
-            ['jquery', 'media-views', 'wp-i18n'],
+            ['jquery', 'media-views', 'wp-i18n', 'wp-color-picker'],
             filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
             true
         );
@@ -50,6 +52,23 @@ class MGWPP_Admin_Assets {
             MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css',
             [],
             filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-styles.css')
+        );
+
+        // Enqueue styles
+        wp_enqueue_style(
+            'mgwpp-admin-editor-styles',
+            MG_PLUGIN_URL . '/admin/css/editor.css', //RENAME FOR Possible Name Conflict
+            [],
+            filemtime(MG_PLUGIN_PATH . '/admin/css/editor.css')
+        );
+
+
+        // Enqueue styles
+        wp_enqueue_style(
+            'mgwpp-admin-edit-dashboard-styles',
+            MG_PLUGIN_URL . '/admin/css/mg-admin-edit-dashboard-styles.css', //RENAME FOR Possible Name Conflict
+            [],
+            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styles.css')
         );
     }
 }

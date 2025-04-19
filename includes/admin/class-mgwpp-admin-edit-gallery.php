@@ -2,6 +2,9 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+wp_enqueue_style('wp-color-picker');
+wp_enqueue_script('wp-color-picker');
+wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
 
 class MGWPP_Admin_Edit_Gallery
 {
@@ -27,10 +30,11 @@ class MGWPP_Admin_Edit_Gallery
 
     public static function enqueue_assets($hook)
     {
-        if ($hook === 'gallery_page_mgwpp-edit-gallery') {
+        // Corrected hook name
+        if ($hook === 'mini-gallery_page_mgwpp-edit-gallery') {
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
-            wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/admin-edit.js', __FILE__), ['jquery'], time(), true);
+            wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
         }
     }
 

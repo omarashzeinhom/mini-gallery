@@ -10,15 +10,15 @@ class MGWPP_Gallery_Grid
 <div class="mgwpp-gallery-container">
     <!-- Layout Switch Buttons -->
     <div class="mgwpp-layout-controls">
-        <button class="mgwpp-layout-btn active" data-layout="grid" aria-label="Grid layout">
-            <img src="<?php esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-grid.webp'); ?>" alt="Grid Layout" />
-        </button>
-        <button class="mgwpp-layout-btn" data-layout="masonry" aria-label="Masonry layout">
-            <img src="<?php esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-masonry.webp'); ?>" alt="Masonry Layout" />
-        </button>
-        <button class="mgwpp-layout-btn" data-layout="minimal" aria-label="Minimal layout">
-            <img src="<?php esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-minimal.webp'); ?>" alt="Minimal Layout" />
-        </button>
+    <button class="mgwpp-layout-btn active" data-layout="grid" aria-label="Grid layout">
+        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-grid.webp'); ?>" alt="Grid Layout" />
+    </button>
+    <button class="mgwpp-layout-btn" data-layout="masonry" aria-label="Masonry layout">
+        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-masonry.webp'); ?>" alt="Masonry Layout" />
+    </button>
+    <button class="mgwpp-layout-btn" data-layout="minimal" aria-label="Minimal layout">
+        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/public/front-end/icons/layout-minimal.webp'); ?>" alt="Minimal Layout" />
+    </button>
     </div>
 </div>
 

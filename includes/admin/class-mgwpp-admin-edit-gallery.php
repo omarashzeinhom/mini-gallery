@@ -105,7 +105,14 @@ class MGWPP_Admin_Edit_Gallery
             // Save image CTAs with unslashing and validation
             $image_ctas = [];
             if (isset($_POST['mgwpp_gallery_images']) && is_array($_POST['mgwpp_gallery_images'])) {
-                $raw_images = isset($_POST['mgwpp_gallery_images']) ? array_map('wp_unslash', (array)$_POST['mgwpp_gallery_images']) : [];
+
+                if (sanitize_post(isset($_POST['mgwpp_gallery_images']))) {
+                    $nonce = sanitize_post(wp_unslash( sanitize_key($_POST['mgwpp_gallery_images'] )));
+
+                }
+
+
+                $raw_images = $nonce ? array_map('wp_unslash', (array)wp_unslash(sanitize_key($_POST['mgwpp_gallery_images']))) : [];
                 foreach ($raw_images as $index => $cta) {
                     $image_ctas[$index] = [
                         'id' => isset($cta['id']) ? absint($cta['id']) : 0,
@@ -318,18 +325,46 @@ class MGWPP_Admin_Edit_Gallery
 <?php
     }
 
-    // Add AJAX handler for preview refresh
     public static function refresh_preview()
     {
+        // Verify nonce first
         check_ajax_referer('mgwpp_preview_nonce', 'nonce');
-
-        $gallery_id = absint($_POST['gallery_id']);
-        if (!get_post($gallery_id)) {
-            wp_send_json_error(__('Invalid gallery ID', 'mini-gallery'), 404);
-            wp_die();
+    
+        // Check if gallery_id exists and is valid
+        if (!isset($_POST['gallery_id']) || empty($_POST['gallery_id'])) {
+            wp_send_json_error(
+                __('No gallery selected', 'mini-gallery'),
+                400
+            );
         }
-        echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
-        wp_die();
+    
+        // Sanitize and validate the gallery ID
+        $gallery_id = absint($_POST['gallery_id']);
+    
+        // Verify the gallery exists and is correct post type
+        $gallery = get_post($gallery_id);
+        if (!$gallery || $gallery->post_type !== 'mgwpp_gallery') {
+            wp_send_json_error(
+                __('Invalid gallery ID', 'mini-gallery'),
+                404
+            );
+        }
+    
+        // Check user capabilities
+        if (!current_user_can('edit_post', $gallery_id)) {
+            wp_send_json_error(
+                __('Unauthorized access', 'mini-gallery'),
+                403
+            );
+        }
+    
+        // Generate preview HTML
+        $preview_html = do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+    
+        // Send successful response
+        wp_send_json_success([
+            'html' => $preview_html
+        ]);
     }
 }
 MGWPP_Admin_Edit_Gallery::init();

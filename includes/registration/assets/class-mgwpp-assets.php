@@ -314,9 +314,7 @@ class MGWPP_Assets
         if (in_array($hook_suffix, array('post.php', 'post-new.php'), true)) {
             $screen = get_current_screen();
             if ($screen && ('post' === $screen->base || 'page' === $screen->base)) {
-                wp_enqueue_script('mg-admin-carousel');
-                wp_enqueue_style('mg-admin-styles');
-                wp_enqueue_style('mg-styles');
+                wp_enqueue_style('mgwpp-admin-styles');
             }
         }
     }

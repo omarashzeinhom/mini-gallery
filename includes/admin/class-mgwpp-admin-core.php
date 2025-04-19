@@ -20,14 +20,15 @@ class MGWPP_Admin_Core
         $this->init_components();
     }
 
-    private function load_dependencies() {
+    private function load_dependencies()
+    {
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
         require_once __DIR__ . '/class-mgwpp-module-loader.php';
         require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
-        
+
         // Views
         require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/class-mgwpp-security-view.php';
@@ -36,21 +37,28 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
     }
 
-    private function init_components() {
+    private function init_components()
+    {
         // Initialize components that hook into WordPress actions
         $this->menu_manager = new MGWPP_Admin_Menu();
-        $this->asset_manager = new MGWPP_Admin_Assets(); // Will hook into admin_enqueue_scripts
         $this->module_loader = new MGWPP_Module_Loader();
+
+        // Initialize assets manager LAST and hook it properly
+        add_action('admin_enqueue_scripts', [$this, 'init_assets']);
+    }
+
+    public function init_assets()
+    {
+        $this->asset_manager = new MGWPP_Admin_Assets();
     }
 
     public function run()
     {
-        // Register menus and assets
+        // Register menus first
         add_action('admin_menu', [$this->menu_manager, 'register_menus']);
-        add_action('admin_enqueue_scripts', [$this->asset_manager, 'enqueue_assets']);
 
-        // Initialize your view classes
-        add_action('admin_init', [$this, 'init_view_classes']);
+        // Initialize views AFTER menu registration
+        add_action('admin_menu', [$this, 'init_view_classes']);
     }
 
     public function init_view_classes()
@@ -59,23 +67,25 @@ class MGWPP_Admin_Core
         new MGWPP_Galleries_View($this->asset_manager);
         new MGWPP_Security_View($this->asset_manager);
         new MGWPP_Albums_View($this->asset_manager);
+        new MGWPP_Dashboard_View($this->asset_manager); // Add this line
     }
 
     public function add_gallery_preview_iframe($post)
-{
-    // Only show the preview for gallery posts (you may need to adjust the post type check)
-    if ('mgwpp_soora' === $post->post_type) {
-        // Output the iframe
-        $gallery_id = $post->ID;
-        echo '<h3>Gallery Preview</h3>';
-        echo '<iframe src="' . esc_url(
-            add_query_arg(
-                [
-                    'action' => 'mgwpp_preview',
-                    'gallery_id' => absint($gallery_id)
-                ],
-                admin_url('admin-ajax.php')
-            )
-        ) . '" width="100%" height="600px" frameborder="0"></iframe>';    }
-}
+    {
+        // Only show the preview for gallery posts (you may need to adjust the post type check)
+        if ('mgwpp_soora' === $post->post_type) {
+            // Output the iframe
+            $gallery_id = $post->ID;
+            echo '<h3>Gallery Preview</h3>';
+            echo '<iframe src="' . esc_url(
+                add_query_arg(
+                    [
+                        'action' => 'mgwpp_preview',
+                        'gallery_id' => absint($gallery_id)
+                    ],
+                    admin_url('admin-ajax.php')
+                )
+            ) . '" width="100%" height="600px" frameborder="0"></iframe>';
+        }
+    }
 }

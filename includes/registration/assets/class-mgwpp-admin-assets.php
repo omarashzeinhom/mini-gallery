@@ -62,16 +62,5 @@ class MGWPP_Admin_Assets
             filemtime(MG_PLUGIN_PATH . '/admin/css/editor.css')
         );
 
-
-        wp_enqueue_style(
-            'mg-admin-edit-dashboard-styles',
-            MG_PLUGIN_URL . '/admin/css/mg-admin-edit-dashboard-styles.css', //RENAME FOR Possible Name Conflict
-            [],
-            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-edit-dashboard-styles.css')
-        );
-
-
-
-
     }
 }

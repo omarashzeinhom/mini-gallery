@@ -5,6 +5,9 @@ if (!defined('ABSPATH')) exit;
 class MGWPP_Dashboard_View {
 
     public static function render_dashboard() {
+        
+       wp_enqueue_style('mg-admin-styles');
+
         if (!current_user_can('manage_options')) {
             wp_die(esc_html_e('You do not have sufficient permissions to access this page.', 'mini-gallery'));
         }
@@ -37,6 +40,8 @@ class MGWPP_Dashboard_View {
             <div class="mgwpp-branding">
                 <img src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/mgwpp-logo.png'); ?>" 
                      class="mgwpp-logo" 
+                     height="125"
+                     width="125"
                      alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
                 <h1 class="mgwpp-title">
                     <?php esc_html_e('Gallery Dashboard', 'mini-gallery') ?>

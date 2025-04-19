@@ -68,10 +68,6 @@ class MGWPP_Admin_Edit_Gallery
         );
     }
 
-
-
-
-
     public static function render_edit_gallery_page()
     {
         // Validate gallery ID with unslashing

@@ -23,10 +23,10 @@ class MG_Elementor_Integration
 
         // Enqueue assets for widgets both frontend and editor
         add_action('elementor/widget/render_content', [$this, 'enqueue_widget_assets'], 10, 2);
-        add_action('elementor/widget/render_content', [$this, 'enqueue_editor_widget_assets'], 10, 2);
+        //add_action('elementor/widget/render_content', [$this, 'enqueue_editor_widget_assets'], 10, 2);
         
         // Enqueue editor specific assets
-        add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueue_editor_assets']);
+        //add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueue_editor_assets']);
     }
 
     // Enqueue widget-specific assets (both frontend and editor)
@@ -74,74 +74,6 @@ class MG_Elementor_Integration
         }
 
         return $content;
-    }
-
-    // Enqueue assets for the Elementor editor (only for widgets in editor mode)
-    public function enqueue_editor_widget_assets($content, $widget)
-    {
-        // Ensure we're in the Elementor editor mode
-        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-            $widget_class = get_class($widget);
-
-            $widget_assets = [
-                'MG_Elementor_Gallery_Single' => [
-                    'scripts' => ['mg-single-carousel-js'],
-                    'styles'  => ['mg-single-carousel-styles'],
-                ],
-                'MG_Elementor_Gallery_Grid' => [
-                    'scripts' => ['mg-grid-gallery'],
-                    'styles'  => ['mg-grid-styles'],
-                ],
-                'MG_Elementor_Gallery_Multi' => [
-                    'scripts' => ['mg-multi-carousel-js'],
-                    'styles'  => ['mg-multi-carousel-styles'],
-                ],
-                'MG_Elementor_Testimonial_Carousel' => [
-                    'scripts' => ['mgwpp-testimonial-carousel-js'],
-                    'styles'  => ['mgwpp-testimonial-carousel-styles'],
-                ],
-                'MG_Elementor_3D_Carousel' => [
-                    'scripts' => ['mgwpp-threed-carousel-js'],
-                    'styles'  => ['mgwpp-threed-carousel-styles'],
-                ],
-                'MG_Elementor_Mega_Carousel' => [
-                    'scripts' => ['mg-mega-carousel-js'],
-                    'styles'  => ['mg-mega-carousel-styles'],
-                ],
-                'MG_Elementor_Pro_Carousel' => [
-                    'scripts' => ['mgwpp-pro-carousel-js'],
-                    'styles'  => ['mgwpp-pro-carousel-styles'],
-                ],
-                'MG_Elementor_Neon_Carousel' => [
-                    'scripts' => ['mgwpp-neon-carousel-js'],
-                    'styles'  => ['mgwpp-neon-carousel-styles'],
-                ],
-            ];
-
-            // Check if the widget has defined assets
-            if (isset($widget_assets[$widget_class])) {
-                // Enqueue scripts
-                foreach ($widget_assets[$widget_class]['scripts'] as $script) {
-                    wp_enqueue_script($script);
-                }
-
-                // Enqueue styles
-                foreach ($widget_assets[$widget_class]['styles'] as $style) {
-                    wp_enqueue_style($style);
-                }
-            }
-        }
-
-        return $content;
-    }
-
-    // Enqueue editor assets specifically for the Elementor editor screen
-    public function enqueue_editor_assets()
-    {
-        if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-            wp_enqueue_style('mg-elementor-editor-styles', MG_PLUGIN_URL . '/public/css/mg-elementor-editor.css');
-            wp_enqueue_script('mg-elementor-editor-js', MG_PLUGIN_URL . '/public/js/mg-elementor-editor.js', [], '1.0', true);
-        }
     }
 
     public function handle_admin_init()

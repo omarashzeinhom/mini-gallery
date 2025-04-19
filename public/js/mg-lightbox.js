@@ -161,4 +161,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
   
-  
+  // In mg-lightbox.js
+document.querySelectorAll('.mgwpp-gallery-image').forEach(link => {
+  link.addEventListener('click', function(e) {
+      // Open in new tab for modifier clicks
+      if (e.ctrlKey || e.metaKey || e.shiftKey) return true;
+      
+      // Handle lightbox for regular clicks
+      e.preventDefault();
+      openLightbox(this.href);
+  });
+});

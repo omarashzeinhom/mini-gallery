@@ -6,6 +6,14 @@ use Elementor\Controls_Manager;
 
 class MG_Elementor_Pro_Carousel extends Widget_Base {
 
+    public function get_script_depends() {
+        return ['mgwpp-pro-carousel-js'];
+    }
+    
+    public function get_style_depends() {
+        return ['mgwpp-pro-carousel-styles'];
+    }
+    
     public function get_name() {
         return 'mg_pro_carousel';
     }

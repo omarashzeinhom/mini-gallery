@@ -4,6 +4,14 @@ if (!defined('ABSPATH')) exit;
 
 class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
+    public function get_script_depends() {
+        return ['mgwpp-neon-carousel-js'];
+    }
+    
+    public function get_style_depends() {
+        return ['mgwpp-neon-carousel-styles'];
+    }
+    
     // Get widget name
     public function get_name() {
         return 'mg_neon_carousel';

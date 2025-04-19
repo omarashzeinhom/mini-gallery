@@ -20,28 +20,26 @@ class MGWPP_Admin_Core
         $this->init_components();
     }
 
-    private function load_dependencies()
-    {
+    private function load_dependencies() {
+        // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
         require_once __DIR__ . '/class-mgwpp-module-loader.php';
         require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
-
+        
         // Views
         require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/class-mgwpp-security-view.php';
         require_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
         require_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
-        
     }
 
-
-    private function init_components()
-    {
+    private function init_components() {
+        // Initialize components that hook into WordPress actions
         $this->menu_manager = new MGWPP_Admin_Menu();
-        $this->asset_manager = new MGWPP_Admin_Assets();
+        $this->asset_manager = new MGWPP_Admin_Assets(); // Will hook into admin_enqueue_scripts
         $this->module_loader = new MGWPP_Module_Loader();
     }
 

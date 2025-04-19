@@ -2,6 +2,15 @@
 if (!defined('ABSPATH')) exit;
 
 class MG_Elementor_Testimonial_Carousel extends \Elementor\Widget_Base {
+    
+    public function get_script_depends() {
+        return ['mgwpp-testimonial-carousel-js'];
+    }
+    
+    public function get_style_depends() {
+        return ['mgwpp-testimonial-carousel-styles'];
+    }
+    
     public function get_name() {
         return 'mgwpp_testimonial_carousel';
     }

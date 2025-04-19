@@ -6,6 +6,14 @@ use Elementor\Controls_Manager;
 
 class MG_Elementor_Gallery_Grid extends Widget_Base {
 
+    public function get_script_depends() {
+        return ['mg-grid-gallery'];
+    }
+    
+    public function get_style_depends() {
+        return ['mg-grid-styles'];
+    }
+    
     public function get_name() {
         return 'mg_gallery_grid';
     }

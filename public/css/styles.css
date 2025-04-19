@@ -11,3 +11,10 @@
   border: 1px gray gray gray gray;
 }
 
+/* Target blank indicator */
+a[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.8em;
+}

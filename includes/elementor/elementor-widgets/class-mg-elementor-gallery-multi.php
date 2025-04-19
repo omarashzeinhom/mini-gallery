@@ -6,6 +6,14 @@ use Elementor\Controls_Manager;
 
 class MG_Elementor_Gallery_Multi extends Widget_Base {
 
+    public function get_script_depends() {
+        return ['mg-multi-carousel-js'];
+    }
+    
+    public function get_style_depends() {
+        return ['mg-multi-carousel-styles'];
+    }
+    
     public function get_name() {
         return sanitize_key('mg_gallery_multi');
     }

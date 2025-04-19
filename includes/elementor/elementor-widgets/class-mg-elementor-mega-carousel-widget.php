@@ -6,6 +6,14 @@ use Elementor\Controls_Manager;
 
 class MG_Elementor_Mega_Carousel extends Widget_Base
 {
+    public function get_script_depends() {
+        return ['mg-mega-carousel-js'];
+    }
+    
+    public function get_style_depends() {
+        return ['mg-mega-carousel-styles'];
+    }
+    
     public function __construct($data = [], $args = null)
     {
         parent::__construct($data, $args);

@@ -19,8 +19,17 @@ class MGWPP_Album_Display
 
         // Verify nonce before using the gallery_id from the URL
         $current_gallery_id = 0;
-        if (isset($_GET['gallery_id'], $_GET['_mg_nonce']) && wp_verify_nonce($_GET['_mg_nonce'], 'mgwpp_view_gallery')) {
-            $current_gallery_id = absint($_GET['gallery_id']);
+        if(isset($_GET['gallery_id'])){
+            $gallery_id = sanitize_key(wp_unslash($_GET['gallery_id']));
+        }
+
+        if (isset($_GET['_mg_nonce'])){
+            $nonce = sanitize_key(wp_unslash($_GET['_mg_nonce']));
+        }
+
+
+        if (isset($gallery_id, $nonce) && wp_verify_nonce($nonce, 'mgwpp_view_gallery')) {
+            $current_gallery_id = absint($gallery_id);
         }
         // Album Styles
         wp_enqueue_style(

@@ -283,3 +283,18 @@ function mgwpp_handle_preview_request()
     exit;
 }
 add_action('template_redirect', 'mgwpp_handle_preview_request');
+
+
+// Handle gallery-archive relationships
+add_action('template_redirect', function() {
+    if (is_singular('mgwpp_soora')) {
+        // Track gallery views for analytics (optional)
+        do_action('mgwpp_gallery_viewed', get_queried_object_id());
+    }
+});
+
+// Register custom query var for album navigation
+add_filter('query_vars', function($vars) {
+    $vars[] = 'mgwpp_album_id';
+    return $vars;
+});

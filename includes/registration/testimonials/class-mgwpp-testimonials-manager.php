@@ -57,8 +57,10 @@ class MGWPP_Testimonial_Manager {
     }
 
     public function save_testimonial($post_id, $post) {
+        if (isset($_POST['mgwpp_testimonial_nonce'])){
+            $nonce = sanitize_key(wp_unslash($_POST['mgwpp_testimonial_nonce']));
+        }
         // Verify nonce with proper unslashing
-        $nonce = isset($_POST['mgwpp_testimonial_nonce']) ? wp_unslash($_POST['mgwpp_testimonial_nonce']) : '';
         
         if (!wp_verify_nonce($nonce, 'mgwpp_testimonial_nonce') ||
             !current_user_can('edit_post', $post_id) ||

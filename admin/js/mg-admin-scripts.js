@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
     }
 
     function updateMediaPreview(attachments) {
-        const preview = $('.media-preview').empty();
+        const preview = $('.mgwpp-media-preview').empty();
         attachments.forEach(attachment => {
             preview.append(`
                 <div class="media-thumbnail">

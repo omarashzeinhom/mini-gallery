@@ -88,49 +88,7 @@ class MGWPP_Galleries_View {
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
         
-        wp_add_inline_script('jquery', '
-            jQuery(document).ready(function($) {
-                // Media uploader
-                var mediaFrame;
-                var selectedMedia = [];
-                
-                $(".mgwpp-media-upload").on("click", function(e) {
-                    e.preventDefault();
-
-                    if (mediaFrame) {
-                        mediaFrame.open();
-                        return;
-                    }
-
-                    mediaFrame = wp.media({
-                        title: "' . esc_js(__('Select Gallery Images', 'mini-gallery')) . '",
-                        button: { text: "' . esc_js(__('Add to Gallery', 'mini-gallery')) . '" },
-                        multiple: true,
-                        library: { type: "image" }
-                    });
-
-                    mediaFrame.on("select", function() {
-                        var attachments = mediaFrame.state().get("selection").toJSON();
-                        selectedMedia = [];
-                        var $preview = $(".mgwpp-media-preview").empty();
-
-                        attachments.forEach(function(attachment) {
-                            selectedMedia.push(attachment.id);
-                            $preview.append(
-                                \'<div class="mgwpp-media-thumbnail">\' +
-                                \'<img src="\' + attachment.sizes.thumbnail.url + \'" alt="\' + attachment.alt + \'">\' +
-                                \'</div>\'
-                            );
-                        });
-
-                        $("#selected_media").val(selectedMedia.join(","));
-                    });
-
-                    mediaFrame.open();
-                });
-            });
-        ');
-        
+     
         wp_add_inline_style('thickbox', '
             .mgwpp-media-preview {
                 display: flex;

@@ -53,7 +53,7 @@ class MGWPP_Admin_Core
     {
         $this->asset_manager = new MGWPP_Admin_Assets();
         // Add force-load hook
-        add_action('admin_enqueue_scripts', [$this->asset_manager, 'force_load_dashboard_styles'], 20);
+        //add_action('admin_enqueue_scripts', [$this->asset_manager, 'force_load_dashboard_styles'], 20);
     }
     
     public function run()

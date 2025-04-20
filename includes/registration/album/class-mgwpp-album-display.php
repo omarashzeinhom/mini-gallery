@@ -19,11 +19,11 @@ class MGWPP_Album_Display
 
         // Verify nonce before using the gallery_id from the URL
         $current_gallery_id = 0;
-        if(isset($_GET['gallery_id'])){
+        if (isset($_GET['gallery_id'])) {
             $gallery_id = sanitize_key(wp_unslash($_GET['gallery_id']));
         }
 
-        if (isset($_GET['_mg_nonce'])){
+        if (isset($_GET['_mg_nonce'])) {
             $nonce = sanitize_key(wp_unslash($_GET['_mg_nonce']));
         }
 
@@ -82,14 +82,15 @@ class MGWPP_Album_Display
                     '_mg_nonce'  => wp_create_nonce('mgwpp_view_gallery'),
                 ], $album_url);
 
+                // In render_album() method:
                 $output .= sprintf(
                     '<div class="mgwpp-album-gallery-item">
-                        <a href="%s" class="mgwpp-album-gallery-link" target="_blank" rel="noopener noreferrer">
-                            %s
-                            <h3 class="mgwpp-album-gallery-title">%s</h3>
-                        </a>
-                    </div>',
-                    esc_url($gallery_url),
+        <a href="%s" class="mgwpp-album-gallery-link">
+            %s
+            <h3 class="mgwpp-album-gallery-title">%s</h3>
+        </a>
+    </div>',
+                    esc_url(get_permalink($gallery_id)), // Direct link to single gallery
                     $preview_image,
                     esc_html($gallery->post_title)
                 );

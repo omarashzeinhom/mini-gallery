@@ -250,8 +250,8 @@ class MGWPP_Assets
             if (self::$shortcode_gallery_type) {
                 $gallery_type = self::$shortcode_gallery_type;
 
-                // ✅ ADD DEBUG LOG HERE
-                error_log('MGWPP: Enqueueing assets for gallery type: ' . $gallery_type);
+                // TODO: ADD DEBUG LOG HERE
+                //error_log('MGWPP: Enqueueing assets for gallery type: ' . $gallery_type);
             } else {
                 // Otherwise, try the post meta.
                 $gallery_type = get_post_meta(get_the_ID(), 'gallery_type', true);

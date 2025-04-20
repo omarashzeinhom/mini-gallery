@@ -1,10 +1,14 @@
 <?php
 // File: includes/admin/views/class-mgwpp-dashboard-view.php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-class MGWPP_Dashboard_View {
+class MGWPP_Dashboard_View
+{
 
-    public static function render($stats, $storage) {
+    public static function render($stats, $storage)
+    {
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Dashboard Overview', 'mini-gallery') ?></h1>
@@ -18,7 +22,8 @@ class MGWPP_Dashboard_View {
         <?php
     }
 
-    private static function render_stats_cards($stats) {
+    private static function render_stats_cards($stats)
+    {
         ?>
         <div class="mgwpp-stats-grid">
             <div class="mgwpp-stat-card">
@@ -37,7 +42,8 @@ class MGWPP_Dashboard_View {
         <?php
     }
 
-    private static function render_storage_section($storage) {
+    private static function render_storage_section($storage)
+    {
         ?>
         <div class="mgwpp-storage-section">
             <h2><?php esc_html_e('Storage Overview', 'mini-gallery') ?></h2>
@@ -52,7 +58,8 @@ class MGWPP_Dashboard_View {
         <?php
     }
 
-    private static function render_gallery_modules() {
+    private static function render_gallery_modules()
+    {
         $modules = glob(plugin_dir_path(__FILE__) . '../gallery-types/*', GLOB_ONLYDIR);
         ?>
         <div class="mgwpp-modules-section">

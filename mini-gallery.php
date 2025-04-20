@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: Mini Gallery
- * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own  
+ * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own
  * Version: 2.0
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
@@ -22,7 +22,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortco
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-security-uploads-scanner.php';
 
 
-//Gallery Types 
+//Gallery Types
 
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-single-gallery/class-mgwpp-single-gallery.php';
 require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-multi-gallery/class-mgwpp-multi-gallery.php';
@@ -49,13 +49,13 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwp
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-display.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-capabilities.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/album/class-mgwpp-album-submit.php';
-// Testimonials Registrations for Capabilties and Post Type 
+// Testimonials Registrations for Capabilties and Post Type
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-capabilties.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-manager.php';
 
 
-// Functions Admin Uninstall 
+// Functions Admin Uninstall
 //require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
 // New Admin Core
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-admin-core.php';
@@ -148,12 +148,16 @@ function mgwpp_custom_templates($template)
 {
     if (is_singular('mgwpp_soora')) {
         $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_soora.php';
-        if (file_exists($custom_template)) return $custom_template;
+        if (file_exists($custom_template)) {
+            return $custom_template;
+        }
     }
 
     if (is_singular('mgwpp_album')) {
         $custom_template = plugin_dir_path(__FILE__) . 'templates/single-mgwpp_album.php';
-        if (file_exists($custom_template)) return $custom_template;
+        if (file_exists($custom_template)) {
+            return $custom_template;
+        }
     }
 
     return $template;

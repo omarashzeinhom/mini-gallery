@@ -1,14 +1,18 @@
 <?php
 // File: includes/admin/class-mgwpp-module-loader.php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-class MGWPP_Module_Loader {
+class MGWPP_Module_Loader
+{
     private $core_modules = [];
     private $custom_modules = [];
     private $cdn_modules = [];
     private $registered_modules = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->load_core_modules();
         $this->load_custom_modules();
         $this->load_cdn_modules();
@@ -17,7 +21,8 @@ class MGWPP_Module_Loader {
     /**
      * Load core gallery modules from /includes/gallery-types/
      */
-    private function load_core_modules() {
+    private function load_core_modules()
+    {
         $gallery_path = plugin_dir_path(__FILE__) . '../gallery-types/';
         $module_folders = glob($gallery_path . '*', GLOB_ONLYDIR);
 
@@ -44,11 +49,14 @@ class MGWPP_Module_Loader {
     /**
      * Load user-created galleries from uploads directory
      */
-    private function load_custom_modules() {
+    private function load_custom_modules()
+    {
         $upload_dir = wp_upload_dir();
         $custom_path = $upload_dir['basedir'] . '/mgwpp-galleries/';
         
-        if (!file_exists($custom_path)) return;
+        if (!file_exists($custom_path)) {
+            return;
+        }
         
         $custom_folders = glob($custom_path . '*', GLOB_ONLYDIR);
 
@@ -75,7 +83,8 @@ class MGWPP_Module_Loader {
     /**
      * Load modules from CDN (Future implementation)
      */
-    private function load_cdn_modules() {
+    private function load_cdn_modules()
+    {
         // Implementation for CDN module loading
         // Would use transient caching and remote API check
     }
@@ -83,10 +92,13 @@ class MGWPP_Module_Loader {
     /**
      * Get module configuration from module.json
      */
-    private function get_module_config($path) {
+    private function get_module_config($path)
+    {
         $config_file = $path . '/module.json';
         
-        if (!file_exists($config_file)) return false;
+        if (!file_exists($config_file)) {
+            return false;
+        }
         
         $config = json_decode(file_get_contents($config_file), true);
         return $this->validate_module_config($config) ? $config : false;
@@ -95,10 +107,13 @@ class MGWPP_Module_Loader {
     /**
      * Validate module configuration
      */
-    private function validate_module_config($config) {
+    private function validate_module_config($config)
+    {
         $required = ['name', 'version', 'author', 'assets'];
         foreach ($required as $key) {
-            if (!isset($config[$key])) return false;
+            if (!isset($config[$key])) {
+                return false;
+            }
         }
         return true;
     }
@@ -106,14 +121,16 @@ class MGWPP_Module_Loader {
     /**
      * Sanitize module name for class creation
      */
-    private function sanitize_module_name($name) {
+    private function sanitize_module_name($name)
+    {
         return str_replace('-', '_', ucfirst($name));
     }
 
     /**
      * Register all modules with the system
      */
-    public function register_modules() {
+    public function register_modules()
+    {
         $this->registered_modules = array_merge(
             $this->core_modules,
             $this->custom_modules,
@@ -129,7 +146,7 @@ class MGWPP_Module_Loader {
 
         // Add filter for third-party extensions
         $this->registered_modules = apply_filters(
-            'mgwpp_registered_modules', 
+            'mgwpp_registered_modules',
             $this->registered_modules
         );
     }
@@ -137,21 +154,24 @@ class MGWPP_Module_Loader {
     /**
      * Get all registered modules
      */
-    public function get_modules() {
+    public function get_modules()
+    {
         return $this->registered_modules;
     }
 
     /**
      * Get module-specific assets
      */
-    public function get_module_assets($module_name) {
+    public function get_module_assets($module_name)
+    {
         return $this->registered_modules[$module_name]['config']['assets'] ?? [];
     }
 
     /**
      * Template for new gallery creation
      */
-    public function create_custom_gallery_template() {
+    public function create_custom_gallery_template()
+    {
         return [
             'structure' => [
                 'php' => 'class-custom-{slug}.php',

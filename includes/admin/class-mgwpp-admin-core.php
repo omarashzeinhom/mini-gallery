@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // File: includes/admin/class-mgwpp-admin-core.php
 class MGWPP_Admin_Core
@@ -50,8 +52,10 @@ class MGWPP_Admin_Core
     public function init_assets()
     {
         $this->asset_manager = new MGWPP_Admin_Assets();
+        // Add force-load hook
+        add_action('admin_enqueue_scripts', [$this->asset_manager, 'force_load_dashboard_styles'], 20);
     }
-
+    
     public function run()
     {
         // Register menus first
@@ -63,11 +67,12 @@ class MGWPP_Admin_Core
 
     public function init_view_classes()
     {
+        $asset_manager = $this->asset_manager;
         // Initialize view classes with their dependencies
         new MGWPP_Galleries_View($this->asset_manager);
         new MGWPP_Security_View($this->asset_manager);
         new MGWPP_Albums_View($this->asset_manager);
-        new MGWPP_Dashboard_View($this->asset_manager); // Add this line
+        new MGWPP_Dashboard_View($asset_manager);
     }
 
     public function add_gallery_preview_iframe($post)

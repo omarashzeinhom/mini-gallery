@@ -3,10 +3,12 @@ if (! defined('ABSPATH')) {
     exit;
 }
 // File: includes/admin/class-mgwpp-admin-menu.php
-class MGWPP_Admin_Menu {
+class MGWPP_Admin_Menu
+{
     private $view_classes = [];
 
-    public function register_menus() {
+    public function register_menus()
+    {
         $this->setup_menu_structure();
         
         add_menu_page(
@@ -22,7 +24,8 @@ class MGWPP_Admin_Menu {
         $this->register_submenus();
     }
 
-    private function setup_menu_structure() {
+    private function setup_menu_structure()
+    {
         $this->view_classes = [
             'dashboard' => [
                 'page_title' => __('Dashboard', 'mini-gallery'),
@@ -47,7 +50,8 @@ class MGWPP_Admin_Menu {
         ];
     }
 
-    private function register_submenus() {
+    private function register_submenus()
+    {
         foreach ($this->view_classes as $slug => $menu_item) {
             add_submenu_page(
                 'mgwpp_dashboard',
@@ -60,7 +64,8 @@ class MGWPP_Admin_Menu {
         }
     }
 
-    public function render_dashboard() {
+    public function render_dashboard()
+    {
         // Dashboard rendering logic
     }
 }

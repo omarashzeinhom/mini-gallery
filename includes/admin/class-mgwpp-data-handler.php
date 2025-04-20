@@ -1,15 +1,20 @@
 <?php
 // File: includes/admin/class-mgwpp-data-handler.php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-class MGWPP_Data_Handler {
-    public static function get_post_count($post_type) {
+class MGWPP_Data_Handler
+{
+    public static function get_post_count($post_type)
+    {
         $counts = wp_count_posts($post_type);
         return $counts->publish ?? 0;
     }
 
     // Changed to public
-    public static function get_storage_data() {
+    public static function get_storage_data()
+    {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $plugin_image_ids = [];
@@ -84,7 +89,8 @@ class MGWPP_Data_Handler {
     }
 
     // Changed to public and fixed path
-    public static function get_installed_gallery_modules() {
+    public static function get_installed_gallery_modules()
+    {
         $modules = [];
         $gallery_path = plugin_dir_path(dirname(__FILE__)) . 'includes/gallery-types/';
 
@@ -98,8 +104,8 @@ class MGWPP_Data_Handler {
             foreach ($files as $file) {
                 $filename = basename($file, '.php');
                 $type = str_replace(
-                    ['class-mgwpp-', '-gallery', '-carousel', '-slider'], 
-                    '', 
+                    ['class-mgwpp-', '-gallery', '-carousel', '-slider'],
+                    '',
                     $filename
                 );
                 $modules[] = ucfirst(str_replace('_', ' ', $type));

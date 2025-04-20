@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -8,19 +8,22 @@ if (!defined('ABSPATH')) {
  *
  * Handles AJAX requests for Mini Gallery plugin.
  */
-class MGWPP_Ajax_Handler {
+class MGWPP_Ajax_Handler
+{
 
     /**
      * Initialize all AJAX hooks.
      */
-    public static function init() {
+    public static function init()
+    {
         add_action('wp_ajax_mgwpp_preview', array(__CLASS__, 'preview_gallery'));
     }
 
     /**
      * AJAX callback to preview a gallery.
      */
-    public static function preview_gallery() {
+    public static function preview_gallery()
+    {
         // Verify nonce first
         if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'mgwpp_preview_nonce')) {
             wp_die(esc_html__('Security verification failed.', 'mini-gallery'));

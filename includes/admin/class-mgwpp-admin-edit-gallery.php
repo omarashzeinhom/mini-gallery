@@ -2,6 +2,8 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// TODO
 wp_enqueue_style('wp-color-picker');
 wp_enqueue_script('wp-color-picker');
 $plugin_url = plugin_dir_url(dirname(__FILE__, 2)); // Points to plugin root
@@ -14,14 +16,7 @@ wp_enqueue_style(
     filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/css/mg-admin-edit-dashboard-styles.css')
 );
 
-// JS
-wp_enqueue_script(
-    'mgwpp-admin-scripts',
-    $plugin_url . 'admin/js/mg-admin-scripts.js',
-    ['jquery'],
-    filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/js/mg-admin-scripts.js'),
-    true
-);
+
 class MGWPP_Admin_Edit_Gallery
 {
 
@@ -52,8 +47,6 @@ class MGWPP_Admin_Edit_Gallery
             wp_enqueue_script('wp-color-picker');
             wp_enqueue_script('mgwpp-admin-edit', plugins_url('js/mg-admin-scripts.js', __FILE__), ['jquery'], time(), true);
         }
-
-
     }
 
     public static function register_edit_gallery_page()
@@ -123,7 +116,6 @@ class MGWPP_Admin_Edit_Gallery
             // Save image CTAs with unslashing and validation
             $image_ctas = [];
             if (isset($_POST['mgwpp_gallery_images']) && is_array($_POST['mgwpp_gallery_images'])) {
-
                 if (sanitize_post(isset($_POST['mgwpp_gallery_images']))) {
                     $nonce = sanitize_post(wp_unslash(sanitize_key($_POST['mgwpp_gallery_images'])));
                 }
@@ -158,7 +150,7 @@ class MGWPP_Admin_Edit_Gallery
             'images' => get_post_meta($gallery_id, 'mgwpp_gallery_images', true) ?: []
         ];
 
-?>
+        ?>
         <div class="wrap mgwpp-edit-wrapper">
             <h1 class="mgwpp-edit-title">
                 <?php esc_html_e('Edit Gallery', 'mini-gallery') ?>
@@ -341,7 +333,7 @@ class MGWPP_Admin_Edit_Gallery
             });
         </script>
 
-<?php
+        <?php
     }
 
     public static function refresh_preview()

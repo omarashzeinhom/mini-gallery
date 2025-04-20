@@ -5,6 +5,11 @@ if (! defined('ABSPATH')) {
 // File: includes/admin/class-mgwpp-admin-assets.php
 class MGWPP_Admin_Assets
 {
+    public function __construct()
+    {
+        add_action('admin_enqueue_scripts', [$this, 'register_assets'], 5); // Early registration
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets'], 10);
+    }
 
     public static function init()
     {
@@ -50,10 +55,17 @@ class MGWPP_Admin_Assets
                 'ajax_url'        => admin_url('admin-ajax.php'),
                 'nonce'           => wp_create_nonce('mgwpp_nonce'),
                 'text_title'      => __('Select Gallery Images', 'mini-gallery'),
-                'text_select'     => __('Use Selected',          'mini-gallery'),
+                'text_select'     => __('Use Selected', 'mini-gallery'),
                 'gallery_success' => __('Gallery created successfully!', 'mini-gallery'),
                 'generic_error'   => __('An error occurred. Please try again.', 'mini-gallery'),
             ]
         );
+    }
+     // Add this new method to force load on dashboard
+    public function force_load_dashboard_styles($hook)
+    {
+        if ($hook === 'toplevel_page_mgwpp_dashboard') {
+            wp_enqueue_style('mg-admin-styles');
+        }
     }
 }

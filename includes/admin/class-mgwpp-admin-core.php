@@ -6,6 +6,14 @@ if (!defined('ABSPATH')) {
 // File: includes/admin/class-mgwpp-admin-core.php
 class MGWPP_Admin_Core
 {
+    public function __construct() {
+        $this->load_dependencies();
+        $this->menu_manager  = new MGWPP_Admin_Menu();
+        $this->asset_manager = new MGWPP_Admin_Assets();  // ← instantiate here, not in a hook
+        add_action('admin_menu', [$this->menu_manager, 'register_menus']);
+        add_action('admin_menu', [$this,             'init_view_classes']);
+    }
+
     private $menu_manager;
     private $asset_manager;
     private $module_loader;
@@ -16,11 +24,8 @@ class MGWPP_Admin_Core
         $instance->run();
     }
 
-    public function __construct()
-    {
-        $this->load_dependencies();
-        $this->init_components();
-    }
+
+
 
     private function load_dependencies()
     {

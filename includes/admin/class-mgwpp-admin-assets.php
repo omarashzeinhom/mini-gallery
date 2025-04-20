@@ -25,9 +25,9 @@ class MGWPP_Admin_Assets {
         // Main admin JS
         wp_enqueue_script(
             'mgwpp-admin-js',
-            MG_PLUGIN_URL . 'admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
             ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . 'admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
             true
         );
 

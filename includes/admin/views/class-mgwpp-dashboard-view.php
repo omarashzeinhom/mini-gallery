@@ -76,7 +76,7 @@ class MGWPP_Dashboard_View
                     alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
                 <h1 class="mgwpp-title">
                     <?php esc_html_e('Gallery Dashboard', 'mini-gallery') ?>
-                    <span class="mgwpp-version">v2.0</span>
+                    <span class="mgwpp-version">v1.2</span>
                 </h1>
             </div>
             <div class="mgwpp-actions">

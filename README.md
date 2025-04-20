@@ -1,6 +1,6 @@
 # Mini Gallery
 
-- Stable tag: 2.0
+- Stable tag: 1.2
 - Requires at least: 6.0
 - Tested up to: 6.8.0
 - Requires PHP: 8.0

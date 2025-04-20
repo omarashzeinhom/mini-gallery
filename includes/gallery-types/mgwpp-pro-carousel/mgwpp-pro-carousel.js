@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     class MGWPPCarousel {
-        constructor(element) {
+        constructor(element)
+        {
             this.element = element;
             this.track = element.querySelector('.mgwpp-pro-carousel__track');
             this.cards = Array.from(element.querySelectorAll('.mgwpp-pro-carousel__card'));
@@ -17,44 +18,56 @@ document.addEventListener('DOMContentLoaded', () => {
             this.init();
         }
 
-        init() {
+        init()
+        {
             this.calculateDimensions();
             this.setupEventListeners();
             this.updateNavigation();
         }
 
-        calculateDimensions() {
+        calculateDimensions()
+        {
             const firstCard = this.cards[0];
-            if (!firstCard) return;
+            if (!firstCard) {
+                return;
+            }
             
             const styles = getComputedStyle(this.element);
             this.cardWidth = firstCard.offsetWidth;
             this.gap = parseInt(styles.getPropertyValue('--mgwpp-pro-carousel-gap'));
         }
 
-        updateNavigation() {
+        updateNavigation()
+        {
             this.prevBtn.disabled = this.currentIndex === 0;
             this.nextBtn.disabled = this.currentIndex >= this.cards.length - this.visibleCards();
         }
 
-        visibleCards() {
+        visibleCards()
+        {
             return Math.floor(this.element.offsetWidth / (this.cardWidth + this.gap));
         }
 
-        getPositionX(event) {
+        getPositionX(event)
+        {
             return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
         }
 
-        setTransform(position) {
+        setTransform(position)
+        {
             this.track.style.transform = `translateX(${position}px)`;
         }
 
-        animation() {
+        animation()
+        {
             this.setTransform(this.currentTranslate);
-            if (this.isDragging) requestAnimationFrame(() => this.animation());
+            if (this.isDragging) {
+                requestAnimationFrame(() => this.animation());
+            }
         }
 
-        handleTouchStart(e) {
+        handleTouchStart(e)
+        {
             this.isDragging = true;
             this.startPos = this.getPositionX(e);
             this.prevTranslate = this.currentTranslate;
@@ -62,13 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
             this.animation();
         }
 
-        handleTouchMove(e) {
-            if (!this.isDragging) return;
+        handleTouchMove(e)
+        {
+            if (!this.isDragging) {
+                return;
+            }
             const currentPos = this.getPositionX(e);
             this.currentTranslate = this.prevTranslate + currentPos - this.startPos;
         }
 
-        handleTouchEnd() {
+        handleTouchEnd()
+        {
             this.isDragging = false;
             this.track.style.transition = '';
             
@@ -84,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.updateNavigation();
         }
 
-        setupEventListeners() {
+        setupEventListeners()
+        {
             // Touch events
             this.track.addEventListener('touchstart', (e) => this.handleTouchStart(e));
             this.track.addEventListener('touchmove', (e) => this.handleTouchMove(e));

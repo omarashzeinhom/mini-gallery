@@ -5,11 +5,13 @@ if (!defined('ABSPATH')) {
 
 class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
 {
-    public function get_script_depends() {
+    public function get_script_depends()
+    {
         return ['mgwpp-threed-carousel-js'];
     }
     
-    public function get_style_depends() {
+    public function get_style_depends()
+    {
         return ['mgwpp-threed-carousel-styles'];
     }
     
@@ -192,11 +194,13 @@ class MG_Elementor_3D_Carousel extends \Elementor\Widget_Base
     private function get_galleries()
     {
         // Get galleries from the custom post type
-        $galleries = get_posts([
+        $galleries = get_posts(
+            [
             'post_type' => 'mgwpp_soora',
             'numberposts' => 100,
             'post_status' => 'publish',
-        ]);
+            ]
+        );
 
         $options = ['' => __('Select Gallery', 'mini-gallery')];
 

@@ -24,7 +24,10 @@ class MGWPP_3D_Carousel
         wp_enqueue_style('mg-3d-carousel-style');
         wp_enqueue_script('mg-3d-carousel');
 
-        wp_localize_script('mg-3d-carousel', 'mg3dSettings_' . $post_id, [
+        wp_localize_script(
+            'mg-3d-carousel',
+            'mg3dSettings_' . $post_id,
+            [
             'radius' => absint($settings['radius']),
             'autoRotate' => $settings['auto_rotate'] === 'yes',
             'rotateSpeed' => absint($settings['rotate_speed']),
@@ -33,7 +36,8 @@ class MGWPP_3D_Carousel
             'bgMusic' => esc_url($settings['bg_music']),
             'bgMusicControls' => $settings['bg_music_controls'] === 'yes',
             'mobileScale' => floatval($settings['mobile_scale'])
-        ]);
+            ]
+        );
 
         ob_start(); ?>
         <div class="mg-3d-carousel-container" data-post-id="<?php echo esc_attr($post_id); ?>">
@@ -42,7 +46,7 @@ class MGWPP_3D_Carousel
                 <div class="mg-spin-container">
                     <?php foreach ($images as $image) :
                         $img_alt = esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true));
-                    ?>
+                        ?>
                         <div class="mg-3d-item">
                             <?php echo wp_get_attachment_image(
                                 $image->ID,
@@ -68,7 +72,7 @@ class MGWPP_3D_Carousel
                 </div>
             <?php endif; ?>
         </div>
-<?php
+        <?php
         return ob_get_clean();
     }
 }

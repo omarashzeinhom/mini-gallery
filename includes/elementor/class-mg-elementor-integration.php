@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class MG_Elementor_Integration
 {
@@ -78,7 +80,7 @@ class MG_Elementor_Integration
 
     public function handle_admin_init()
     {
-        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
         if (is_plugin_active('elementor-pro/elementor-pro.php')) {
             $this->elementor_pro_conflict = true;
@@ -93,7 +95,9 @@ class MG_Elementor_Integration
 
     public function admin_notices()
     {
-        if (!current_user_can('manage_options')) return;
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         $user_id = get_current_user_id();
         $dismissed = get_user_meta($user_id, 'mg_dismiss_pro_elements_notice', true);
@@ -125,16 +129,18 @@ class MG_Elementor_Integration
     // Register Elementor widgets
     public function register_widgets($widgets_manager)
     {
-        if ($this->elementor_pro_conflict) return;
+        if ($this->elementor_pro_conflict) {
+            return;
+        }
 
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-testimonial-carousel.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-threed-carousel.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-mega-carousel-widget.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-pro-carousel-widget.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-neon-carousel-widget.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-single.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-grid.php';
-        require_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-multi.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-testimonial-carousel.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-threed-carousel.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-mega-carousel-widget.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-pro-carousel-widget.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-neon-carousel-widget.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-single.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-grid.php';
+        include_once plugin_dir_path(__FILE__) . 'elementor-widgets/class-mg-elementor-gallery-multi.php';
 
         $widgets_manager->register(new MG_Elementor_Testimonial_Carousel());
         $widgets_manager->register(new MG_Elementor_3D_Carousel());

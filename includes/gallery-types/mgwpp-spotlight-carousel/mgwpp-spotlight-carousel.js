@@ -11,18 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.mgwpp-nav-btn');
     let currentSlideIndex = 0;
 
-    function activateSlide(index) {
-        // Remove active classes
-        carouselSlides[currentSlideIndex].classList.remove('mgwpp-active');
-        navButtons[currentSlideIndex].classList.remove('mgwpp-active');
+function activateSlide(index)
+{
+    // Remove active classes
+    carouselSlides[currentSlideIndex].classList.remove('mgwpp-active');
+    navButtons[currentSlideIndex].classList.remove('mgwpp-active');
 
-        // Add active classes to new slide
-        carouselSlides[index].classList.add('mgwpp-active');
-        navButtons[index].classList.add('mgwpp-active');
+    // Add active classes to new slide
+    carouselSlides[index].classList.add('mgwpp-active');
+    navButtons[index].classList.add('mgwpp-active');
 
-        // Update current index
-        currentSlideIndex = index;
-    }
+    // Update current index
+    currentSlideIndex = index;
+}
 
     navButtons.forEach((button, index) => {
         button.addEventListener('click', () => activateSlide(index));
@@ -40,16 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchStartX = 0;
     let touchEndX = 0;
 
-    function handleGesture() {
-        if (touchEndX < touchStartX - 50) {
-            const next = (currentSlideIndex + 1) % carouselSlides.length;
-            activateSlide(next);
-        }
-        if (touchEndX > touchStartX + 50) {
-            const prev = (currentSlideIndex - 1 + carouselSlides.length) % carouselSlides.length;
-            activateSlide(prev);
-        }
+function handleGesture()
+{
+    if (touchEndX < touchStartX - 50) {
+        const next = (currentSlideIndex + 1) % carouselSlides.length;
+        activateSlide(next);
     }
+    if (touchEndX > touchStartX + 50) {
+        const prev = (currentSlideIndex - 1 + carouselSlides.length) % carouselSlides.length;
+        activateSlide(prev);
+    }
+}
 
     const carouselViewport = document.querySelector('.mgwpp-carousel-viewport');
     carouselViewport.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
@@ -67,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         startX = e.clientX;
     });
     carouselViewport.addEventListener('mouseup', (e) => {
-        if (!isDragging) return;
+        if (!isDragging) {
+            return;
+        }
         isDragging = false;
         const deltaX = e.clientX - startX;
         if (deltaX > 50) {
@@ -84,7 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Optional: add visual feedback during drag
     carouselViewport.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
+        if (!isDragging) {
+            return;
+        }
         // You can optionally add a CSS class like `.dragging` here
     });
 

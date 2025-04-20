@@ -9,11 +9,13 @@ use Elementor\Controls_Manager;
 class MG_Elementor_Gallery_Single extends Widget_Base
 {
 
-    public function get_script_depends() {
+    public function get_script_depends()
+    {
         return ['mg-single-carousel-js'];
     }
     
-    public function get_style_depends() {
+    public function get_style_depends()
+    {
         return ['mg-single-carousel-styles'];
     }
     
@@ -141,12 +143,14 @@ class MG_Elementor_Gallery_Single extends Widget_Base
 
     private function get_galleries()
     {
-        $galleries = get_posts([
+        $galleries = get_posts(
+            [
             'post_type'      => 'mgwpp_soora',
             'numberposts'    => 100,
             'post_status'    => 'publish',
             'suppress_filters' => false,
-        ]);
+            ]
+        );
 
         $options = [
             '' => esc_html__('Select Gallery', 'mini-gallery'),

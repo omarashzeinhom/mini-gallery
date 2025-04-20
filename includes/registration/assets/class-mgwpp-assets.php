@@ -244,7 +244,6 @@ class MGWPP_Assets
 
         // Check if we are on a single gallery page or if the shortcode flag is set.
         if (is_singular('mgwpp_gallery') || self::$load_assets) {
-
             // When using the shortcode, we might not have the proper post meta available.
             // If a gallery type was set via the shortcode, use that instead.
             if (self::$shortcode_gallery_type) {
@@ -345,7 +344,10 @@ class MGWPP_Assets
 }
 
 // Hook the class initialization on 'init' so that all hooks are ready.
-add_action('init', function () {
-    $mgwpp_assets = new MGWPP_Assets();
-    $mgwpp_assets->init();
-});
+add_action(
+    'init',
+    function () {
+        $mgwpp_assets = new MGWPP_Assets();
+        $mgwpp_assets->init();
+    }
+);

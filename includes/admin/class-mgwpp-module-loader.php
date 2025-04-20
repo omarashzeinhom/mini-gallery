@@ -32,7 +32,7 @@ class MGWPP_Module_Loader
             $module_file = $folder . '/class-' . $module_name . '.php';
 
             if (file_exists($module_file)) {
-                require_once $module_file;
+                include_once $module_file;
                 
                 if (class_exists($module_class)) {
                     $this->core_modules[$module_name] = [
@@ -66,7 +66,7 @@ class MGWPP_Module_Loader
             $module_file = $folder . '/class-custom-' . $module_name . '.php';
 
             if (file_exists($module_file)) {
-                require_once $module_file;
+                include_once $module_file;
                 
                 if (class_exists($module_class)) {
                     $this->custom_modules[$module_name] = [

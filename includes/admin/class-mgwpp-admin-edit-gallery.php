@@ -269,11 +269,14 @@ class MGWPP_Admin_Edit_Gallery
                 <div class="mgwpp-preview-panel">
                     <?php // Generate the preview URL
                     // When generating the preview link
-                    $preview_url = add_query_arg([
+                    $preview_url = add_query_arg(
+                        [
                         'mgwpp_preview' => '1',
                         'gallery_id' => $gallery_id,
                         '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
-                    ], home_url('/'));
+                        ],
+                        home_url('/')
+                    );
                     ?>
 
                     <div class="mgwpp-preview-container">
@@ -373,9 +376,11 @@ class MGWPP_Admin_Edit_Gallery
         $preview_html = do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
 
         // Send successful response
-        wp_send_json_success([
+        wp_send_json_success(
+            [
             'html' => $preview_html
-        ]);
+            ]
+        );
     }
 }
 MGWPP_Admin_Edit_Gallery::init();

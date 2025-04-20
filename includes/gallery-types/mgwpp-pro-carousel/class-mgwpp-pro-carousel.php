@@ -1,8 +1,12 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-class MGWPP_Pro_Carousel {
-    public static function render($post_id, $images, $settings = []) {
+class MGWPP_Pro_Carousel
+{
+    public static function render($post_id, $images, $settings = [])
+    {
         if (empty($images) || !is_array($images)) {
             return '<div class="mgwpp-pro-carousel__error">' . esc_html__('Add images to create a gallery', 'mini-gallery') . '</div>';
         }
@@ -28,23 +32,25 @@ class MGWPP_Pro_Carousel {
             
             <div class="mgwpp-pro-carousel__container">
                 <div class="mgwpp-pro-carousel__track" role="list">
-                    <?php foreach ($images as $image): 
-                        if (empty($image->ID)) continue;
+                    <?php foreach ($images as $image) :
+                        if (empty($image->ID)) {
+                            continue;
+                        }
                         
                         $image_url = wp_get_attachment_image_url($image->ID, $image_size);
                         $image_alt = get_post_meta($image->ID, '_wp_attachment_image_alt', true);
                         $image_url = $image_url ?: $placeholder;
                         $image_alt = $image_alt ?: esc_html__('Gallery image', 'mini-gallery');
-                    ?>
+                        ?>
                     <div class="mgwpp-pro-carousel__card" role="listitem">
-                        <?php if ($image_url): ?>
+                        <?php if ($image_url) : ?>
                             <img class="mgwpp-pro-carousel__image" 
                                 src="<?php echo esc_url($image_url); ?>" 
                                 alt="<?php echo esc_attr($image_alt); ?>"
                                 loading="lazy"
                                 <?php echo wp_get_attachment_image_srcset($image->ID, $image_size) ? 'srcset="' . esc_attr(wp_get_attachment_image_srcset($image->ID, $image_size)) . '"' : ''; ?>
                                 sizes="(max-width: 768px) 100vw, 50vw">
-                        <?php else: ?>
+                        <?php else : ?>
                             <div class="mgwpp-pro-carousel__placeholder">
                                 <?php esc_html_e('Image missing', 'mini-gallery'); ?>
                             </div>

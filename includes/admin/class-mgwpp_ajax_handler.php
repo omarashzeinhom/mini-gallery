@@ -24,8 +24,8 @@ class MGWPP_Ajax_Handler
      */
     public static function preview_gallery()
     {
-        if (isset($_GET['nonce'])){
-        $nonce = sanitize_key(wp_unslash($_GET['nonce']));
+        if (isset($_GET['nonce'])) {
+            $nonce = sanitize_key(wp_unslash($_GET['nonce']));
         }
         // Verify nonce first
         if (!isset($nonce) || !wp_verify_nonce($nonce, 'mgwpp_preview_nonce')) {

@@ -79,7 +79,7 @@ function mgwpp_gallery_shortcode($atts)
                     wp_enqueue_style('mg-fullpage-slider-styles');
                     wp_enqueue_script('mg-fullpage-slider-js');
                     if (!class_exists('MGWPP_Full_Page_Slider')) {
-                        require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
+                        include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-full-page-slider.php';
                     }
                     $gallery_html = MGWPP_Full_Page_Slider::render($post_id, $all_images);
                     break;
@@ -88,7 +88,7 @@ function mgwpp_gallery_shortcode($atts)
                     wp_enqueue_style('mg-spotlight-slider-styles');
                     wp_enqueue_script('mg-spotlight-slider-js');
                     if (!class_exists('MGWPP_Spotlight_Carousel')) {
-                        require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
+                        include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-spotlight-carousel.php';
                     }
                     $gallery_html = MGWPP_Spotlight_Carousel::render($post_id, $all_images);
                     break;
@@ -96,16 +96,18 @@ function mgwpp_gallery_shortcode($atts)
                 case 'testimonials_carousel':
                     wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                     wp_enqueue_script('mgwpp-testimonial-carousel-js');
-                    $testimonials = get_posts([
+                    $testimonials = get_posts(
+                        [
                         'post_type' => 'testimonial',
                         'posts_per_page' => -1,
                         'suppress_filters' => false
-                    ]);
+                        ]
+                    );
 
                     $gallery_html = '<p>No testimonials found.</p>';
                     if (!empty($testimonials)) {
                         if (!class_exists('MGWPP_Testimonial_Carousel')) {
-                            require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
+                            include_once plugin_dir_path(__FILE__) . 'includes/gallery-types/class-mgwpp-testimonial-carousel.php';
                         }
                         $gallery_html = MGWPP_Testimonial_Carousel::render($post_id, $testimonials);
                     }
@@ -121,8 +123,6 @@ function mgwpp_gallery_shortcode($atts)
         } else {
             $output .= '<p>No images found for this gallery.</p>';
         }
-
-      
     } else {
         $output .= '<p>Invalid gallery ID.</p>';
     }

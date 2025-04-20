@@ -1,36 +1,46 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class MG_Elementor_Gallery_Multi extends Widget_Base {
+class MG_Elementor_Gallery_Multi extends Widget_Base
+{
 
-    public function get_script_depends() {
+    public function get_script_depends()
+    {
         return ['mg-multi-carousel-js'];
     }
     
-    public function get_style_depends() {
+    public function get_style_depends()
+    {
         return ['mg-multi-carousel-styles'];
     }
     
-    public function get_name() {
+    public function get_name()
+    {
         return sanitize_key('mg_gallery_multi');
     }
 
-    public function get_title() {
+    public function get_title()
+    {
         return esc_html__('Mini Gallery Multi Carousel', 'mini-gallery');
     }
 
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-carousel';
     }
 
-    public function get_categories() {
+    public function get_categories()
+    {
         return [sanitize_key('minigallery')];
     }
 
-    protected function _register_controls() {
+    protected function _register_controls()
+    {
 
         $this->start_controls_section(
             'content_section',
@@ -87,7 +97,8 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings = $this->get_settings_for_display();
         $gallery_id = isset($settings['gallery_id']) ? absint($settings['gallery_id']) : 0;
 
@@ -116,19 +127,24 @@ class MG_Elementor_Gallery_Multi extends Widget_Base {
             'auto_rotate_speed' => isset($settings['auto_rotate_speed']) ? absint($settings['auto_rotate_speed']) : 3000,
         ];
 
-        echo wp_kses_post(MGWPP_Gallery_Multi::render(
-            $gallery_id, 
-            $images,
-            $args
-        ));
+        echo wp_kses_post(
+            MGWPP_Gallery_Multi::render(
+                $gallery_id,
+                $images,
+                $args
+            )
+        );
     }
 
-    private function get_galleries() {
-        $galleries = get_posts([
+    private function get_galleries()
+    {
+        $galleries = get_posts(
+            [
             'post_type'   => 'mgwpp_soora',
             'numberposts' => 15,
             'post_status' => 'publish',
-        ]);
+            ]
+        );
 
         $options = ['' => esc_html__('Select Gallery', 'mini-gallery')];
 

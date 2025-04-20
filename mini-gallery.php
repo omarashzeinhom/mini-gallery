@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mini Gallery
  * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own
- * Version: 2.0
+ * Version: 1.2
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */
@@ -163,35 +163,39 @@ function mgwpp_custom_templates($template)
     return $template;
 }
 
-add_action('plugins_loaded', function () {
-    if (is_admin()) {
-        MGWPP_Admin_Core::init();
+add_action(
+    'plugins_loaded', function () {
+        if (is_admin()) {
+            MGWPP_Admin_Core::init();
+        }
     }
-});
+);
 
 // Link Elementor templates to galleries
-add_action('elementor/editor/after_save', function ($post_id) {
-    // 1. Verify nonce exists first
-    if (!isset($_POST['mgwpp_parent_gallery_nonce'])) {
-        return;
-    }
+add_action(
+    'elementor/editor/after_save', function ($post_id) {
+        // 1. Verify nonce exists first
+        if (!isset($_POST['mgwpp_parent_gallery_nonce'])) {
+            return;
+        }
 
-    // 2. Sanitize nonce value
-    $nonce = sanitize_key(wp_unslash($_POST['mgwpp_parent_gallery_nonce']));
+        // 2. Sanitize nonce value
+        $nonce = sanitize_key(wp_unslash($_POST['mgwpp_parent_gallery_nonce']));
 
-    // 3. Verify nonce validity
-    if (!wp_verify_nonce($nonce, 'mgwpp_save_parent_gallery')) {
-        return;
-    }
+        // 3. Verify nonce validity
+        if (!wp_verify_nonce($nonce, 'mgwpp_save_parent_gallery')) {
+            return;
+        }
 
-    // 4. Sanitize and validate parent gallery ID
-    $parent_gallery = isset($_POST['mgwpp_parent_gallery'])
+        // 4. Sanitize and validate parent gallery ID
+        $parent_gallery = isset($_POST['mgwpp_parent_gallery'])
         ? absint(wp_unslash($_POST['mgwpp_parent_gallery']))
         : 0;
 
-    // 5. Save validated data
-    update_post_meta($post_id, '_mgwpp_parent_gallery', $parent_gallery);
-});
+        // 5. Save validated data
+        update_post_meta($post_id, '_mgwpp_parent_gallery', $parent_gallery);
+    }
+);
 
 function mgwpp_plugin_deactivate()
 {
@@ -219,7 +223,6 @@ function mgwpp_plugin_uninstall()
     remove_role('marketing_team');
 }
 /**
- *
  * Debugging
  */
 //add_action(
@@ -254,7 +257,7 @@ function mgwpp_handle_preview_request()
         return;
     }
 
-    if (isset($_GET['_wpnonce'])){
+    if (isset($_GET['_wpnonce'])) {
         $nonce = sanitize_key(wp_unslash($_GET['_wpnonce']));
     }
 
@@ -290,15 +293,19 @@ add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 
 // Handle gallery-archive relationships
-add_action('template_redirect', function() {
-    if (is_singular('mgwpp_soora')) {
-        // Track gallery views for analytics (optional)
-        do_action('mgwpp_gallery_viewed', get_queried_object_id());
+add_action(
+    'template_redirect', function () {
+        if (is_singular('mgwpp_soora')) {
+            // Track gallery views for analytics (optional)
+            do_action('mgwpp_gallery_viewed', get_queried_object_id());
+        }
     }
-});
+);
 
 // Register custom query var for album navigation
-add_filter('query_vars', function($vars) {
-    $vars[] = 'mgwpp_album_id';
-    return $vars;
-});
+add_filter(
+    'query_vars', function ($vars) {
+        $vars[] = 'mgwpp_album_id';
+        return $vars;
+    }
+);

@@ -4,14 +4,17 @@ if (! defined('ABSPATH')) {
 }
 require_once plugin_dir_path(__FILE__) . 'class-mgwpp-assets.php';
 
-class MGWPP_Admin_Assets {
-    public function __construct() {
+class MGWPP_Admin_Assets
+{
+    public function __construct()
+    {
         // Hook registration and enqueueing separately
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
-    public function register_assets() {
+    public function register_assets()
+    {
         // Register styles first
         wp_register_style(
             'mg-admin-styles', // Fixed handle to match what you're trying to enqueue
@@ -37,7 +40,8 @@ class MGWPP_Admin_Assets {
         );
     }
 
-    public function enqueue_assets($hook) {
+    public function enqueue_assets($hook)
+    {
         // Only load on specific plugin pages
         if (!$this->is_plugin_page($hook)) {
             return;
@@ -55,7 +59,8 @@ class MGWPP_Admin_Assets {
         $this->localize_scripts();
     }
 
-    private function is_plugin_page($hook) {
+    private function is_plugin_page($hook)
+    {
         $plugin_pages = [
             'toplevel_page_mgwpp_dashboard',      // Dashboard
             'gallery_page_mgwpp_galleries',       // Galleries
@@ -68,7 +73,8 @@ class MGWPP_Admin_Assets {
     }
 
 
-    private function load_media_dependencies() {
+    private function load_media_dependencies()
+    {
         // Only load media on pages that need it
         wp_enqueue_media();
         wp_enqueue_script('media-views');
@@ -76,8 +82,12 @@ class MGWPP_Admin_Assets {
         wp_enqueue_script('media-editor');
     }
 
-    private function localize_scripts() {
-        wp_localize_script('mgwpp-admin-scripts', 'mgwppMedia', [
+    private function localize_scripts()
+    {
+        wp_localize_script(
+            'mgwpp-admin-scripts',
+            'mgwppMedia',
+            [
             'gallery_success' => __('Gallery saved successfully!', 'mini-gallery'),
             'album_success' => __('Album updated successfully!', 'mini-gallery'),
             'generic_error' => __('An error occurred. Please try again.', 'mini-gallery'),
@@ -85,7 +95,8 @@ class MGWPP_Admin_Assets {
             'text_select' => __('Add to Gallery', 'mini-gallery'),
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp_nonce')
-        ]);
+            ]
+        );
 
         // Load translations
         wp_set_script_translations(

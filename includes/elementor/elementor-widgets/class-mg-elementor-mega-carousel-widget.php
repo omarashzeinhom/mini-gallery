@@ -1,16 +1,20 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
 class MG_Elementor_Mega_Carousel extends Widget_Base
 {
-    public function get_script_depends() {
+    public function get_script_depends()
+    {
         return ['mg-mega-carousel-js'];
     }
     
-    public function get_style_depends() {
+    public function get_style_depends()
+    {
         return ['mg-mega-carousel-styles'];
     }
     
@@ -297,11 +301,13 @@ class MG_Elementor_Mega_Carousel extends Widget_Base
 
     private function get_galleries()
     {
-        $galleries = get_posts([
+        $galleries = get_posts(
+            [
             'post_type' => 'mgwpp_soora',
             'numberposts' => 100,
             'post_status' => 'publish',
-        ]);
+            ]
+        );
 
         $options = ['' => __('Select Gallery', 'mini-gallery')];
 

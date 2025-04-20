@@ -2,8 +2,10 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Upload {
-    public static function mgwpp_create_gallery() {
+class MGWPP_Upload
+{
+    public static function mgwpp_create_gallery()
+    {
         // Verify nonce (with unslashing and sanitization)
         if (!isset($_POST['mgwpp_gallery_nonce'])) {
             wp_die('Security check failed');
@@ -14,11 +16,11 @@ class MGWPP_Upload {
         }
 
         // Validate required fields (with unslashing)
-        $gallery_title = isset($_POST['gallery_title']) 
-            ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) 
+        $gallery_title = isset($_POST['gallery_title'])
+            ? sanitize_text_field(wp_unslash($_POST['gallery_title']))
             : '';
-        $gallery_type = isset($_POST['gallery_type']) 
-            ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) 
+        $gallery_type = isset($_POST['gallery_type'])
+            ? sanitize_text_field(wp_unslash($_POST['gallery_type']))
             : '';
 
         if (empty($gallery_title) || empty($gallery_type)) {
@@ -26,12 +28,14 @@ class MGWPP_Upload {
         }
 
         // Create gallery post
-        $post_id = wp_insert_post([
+        $post_id = wp_insert_post(
+            [
             'post_title'   => $gallery_title, // Already sanitized
             'post_type'    => 'mgwpp_soora',
             'post_status'  => 'publish',
             'post_content' => ''
-        ]);
+            ]
+        );
 
         if (is_wp_error($post_id)) {
             wp_die(esc_html($post_id->get_error_message()));
@@ -48,10 +52,12 @@ class MGWPP_Upload {
             foreach ($media_ids as $media_id) {
                 $attachment_post = get_post($media_id);
                 if ($attachment_post && $attachment_post->post_type === 'attachment') {
-                    wp_update_post([
+                    wp_update_post(
+                        [
                         'ID' => $media_id,
                         'post_parent' => $post_id
-                    ]);
+                        ]
+                    );
                 }
             }
         }

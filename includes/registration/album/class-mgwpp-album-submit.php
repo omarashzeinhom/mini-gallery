@@ -100,8 +100,11 @@ class MGWPP_Album_Submit
 
  public static function ajax_delete_album() {
     check_ajax_referer('mgwpp_nonce', 'nonce');
+    if(isset($_GET['id'])){
+        $id = sanitize_key(wp_unslash($_GET['id']));
+    }
 
-    $album_id = intval($_GET['id']);
+    $album_id = intval($id);
     if (!current_user_can('delete_post', $album_id)) {
         wp_send_json_error('Unauthorized', 403);
     }

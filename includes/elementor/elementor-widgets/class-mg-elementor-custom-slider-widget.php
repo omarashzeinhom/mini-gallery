@@ -45,23 +45,29 @@ protected function render() {
     echo '</div>';
 }
 
-private function render_slides($gallery_id) {
+private function render_slides( $gallery_id ) {
+    // Fetch IDs only (lighter, no extra pagination query)
     $slides = get_posts([
-        'post_type' => 'elementor_library', // Use Elementor templates
-        'meta_query' => [[
-            'key' => '_mgwpp_parent_gallery',
-            'value' => $gallery_id
-        ]]
+        'post_type'              => 'elementor_library',
+        'meta_key'               => '_mgwpp_parent_gallery',
+        'meta_value'             => $gallery_id,
+        'posts_per_page'         => -1,
+        'fields'                 => 'ids',           // only pull back IDs
+        'no_found_rows'          => true,            // skip pagination count
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
     ]);
 
-    if ($slides) {
+    if ( ! empty( $slides ) ) {
         echo '<div class="mgwpp-slider__wrapper">';
-        foreach ($slides as $slide) {
+        foreach ( $slides as $slide_id ) {
             echo '<div class="mgwpp-slider__slide">';
-            echo esc_url(\Elementor\Plugin::instance()->frontend->get_builder_content($slide->ID));
+            // Use the HTML version to avoid loading full post objects twice
+            echo \Elementor\Plugin::instance()->frontend->get_builder_content( $slide_id );
             echo '</div>';
         }
         echo '</div>';
     }
 }
+
 }

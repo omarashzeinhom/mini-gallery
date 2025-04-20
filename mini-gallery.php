@@ -254,8 +254,12 @@ function mgwpp_handle_preview_request()
         return;
     }
 
+    if (isset($_GET['_wpnonce'])){
+        $nonce = sanitize_key(wp_unslash($_GET['_wpnonce']));
+    }
+
     // 2. Verify nonce with proper action
-    if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
+    if (!wp_verify_nonce($nonce ?? '', 'mgwpp_preview')) {
         wp_die(
             '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
                 '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .

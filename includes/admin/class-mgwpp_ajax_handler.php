@@ -24,8 +24,11 @@ class MGWPP_Ajax_Handler
      */
     public static function preview_gallery()
     {
+        if (isset($_GET['nonce'])){
+        $nonce = sanitize_key(wp_unslash($_GET['nonce']));
+        }
         // Verify nonce first
-        if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'mgwpp_preview_nonce')) {
+        if (!isset($nonce) || !wp_verify_nonce($nonce, 'mgwpp_preview_nonce')) {
             wp_die(esc_html__('Security verification failed.', 'mini-gallery'));
         }
 

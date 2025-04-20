@@ -37,7 +37,7 @@ class MGWPP_Data_Manager {
                 }
             }
         } catch (Exception $e) {
-            error_log('MGWPP Storage Scan Error: ' . $e->getMessage());
+            //error_log('MGWPP Storage Scan Error: ' . $e->getMessage());
         }
 
         $data['used'] = size_format($data['used'], 2);

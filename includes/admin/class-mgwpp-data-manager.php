@@ -1,14 +1,10 @@
 <?php
 // File: includes/admin/class-mgwpp-data-manager.php
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
 
-class MGWPP_Data_Manager
-{
+class MGWPP_Data_Manager {
     
-    public static function get_post_counts()
-    {
+    public static function get_post_counts() {
         return [
             'galleries' => self::count_post_type('mgwpp_soora'),
             'albums' => self::count_post_type('mgwpp_album'),
@@ -16,14 +12,12 @@ class MGWPP_Data_Manager
         ];
     }
 
-    public static function count_post_type($post_type)
-    {
+    public static function count_post_type($post_type) {
         $counts = wp_count_posts($post_type);
         return $counts->publish ?? 0;
     }
 
-    public static function get_storage_data()
-    {
+    public static function get_storage_data() {
         $upload_dir = wp_upload_dir();
         $data = [
             'used' => 0,
@@ -53,8 +47,7 @@ class MGWPP_Data_Manager
         return $data;
     }
 
-    private static function process_file($file, &$data)
-    {
+    private static function process_file($file, &$data) {
         $path = $file->getPathname();
         $size = $file->getSize();
         $ext = strtolower($file->getExtension());
@@ -78,8 +71,7 @@ class MGWPP_Data_Manager
         }
     }
 
-    private static function check_suspicious_file($path, &$data)
-    {
+    private static function check_suspicious_file($path, &$data) {
         $content = @file_get_contents($path);
         if ($content && preg_match('/(base64_decode|eval|gzinflate|shell_exec|system)/i', $content)) {
             $data['suspicious'][] = [

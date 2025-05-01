@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 wp_enqueue_style('wp-color-picker');
 wp_enqueue_script('wp-color-picker');
 $plugin_url = plugin_dir_url(dirname(__FILE__, 2)); // Points to plugin root
-    
+
 // CSS
 wp_enqueue_style(
     'mgwpp-admin-styles',
@@ -150,7 +150,7 @@ class MGWPP_Admin_Edit_Gallery
             'images' => get_post_meta($gallery_id, 'mgwpp_gallery_images', true) ?: []
         ];
 
-        ?>
+?>
         <div class="wrap mgwpp-edit-wrapper">
             <h1 class="mgwpp-edit-title">
                 <?php esc_html_e('Edit Gallery', 'mini-gallery') ?>
@@ -158,8 +158,36 @@ class MGWPP_Admin_Edit_Gallery
             </h1>
 
             <div class="mgwpp-edit-columns">
+
+                <h2> Editing Is Coming Soon !</h2>
+
+                <!-- Live Preview Panel -->
+                <div class="mgwpp-preview-panel">
+                    <?php // Generate the preview URL
+                    // When generating the preview link
+                    $preview_url = add_query_arg(
+                        [
+                            'mgwpp_preview' => '1',
+                            'gallery_id' => $gallery_id,
+                            '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
+                        ],
+                        home_url('/')
+                    );
+                    ?>
+
+                    <div class="mgwpp-preview-container">
+                        <iframe src="<?php echo esc_url($preview_url); ?>" width="100%" height="600"></iframe>
+                    </div>
+                    <div class="mgwpp-shortcode-box">
+                        <input type="text" value='[mgwpp_gallery id="<?php echo intval($gallery_id) ?>"]' readonly>
+                        <button type="button" class="button mgwpp-copy-shortcode">
+                            <?php esc_html_e('Copy Shortcode', 'mini-gallery') ?>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Settings Panel -->
-                <div class="mgwpp-settings-panel">
+                <div class="mgwpp-settings-panel" style="display: none !important;">
                     <form method="post" class="mgwpp-settings-form">
                         <?php wp_nonce_field('mgwpp_edit_gallery_save', 'mgwpp_edit_gallery_nonce'); ?>
 
@@ -265,34 +293,6 @@ class MGWPP_Admin_Edit_Gallery
                     </form>
                 </div>
 
-                <!-- Live Preview Panel -->
-                <div class="mgwpp-preview-panel">
-                    <?php // Generate the preview URL
-                    // When generating the preview link
-                    $preview_url = add_query_arg(
-                        [
-                        'mgwpp_preview' => '1',
-                        'gallery_id' => $gallery_id,
-                        '_wpnonce' => wp_create_nonce('mgwpp_preview') // CHANGED NONCE ACTION
-                        ],
-                        home_url('/')
-                    );
-                    ?>
-
-                    <div class="mgwpp-preview-container">
-                        <iframe src="<?php echo esc_url($preview_url); ?>" width="100%" height="600"></iframe>
-                    </div>
-                    <div class="mgwpp-shortcode-box">
-                        <input type="text" value='[mgwpp_gallery id="<?php echo intval($gallery_id) ?>"]' readonly>
-                        <button type="button" class="button mgwpp-copy-shortcode">
-                            <?php esc_html_e('Copy Shortcode', 'mini-gallery') ?>
-                        </button>
-                    </div>
-                </div>
-
-
-
-
 
             </div>
         </div>
@@ -336,7 +336,7 @@ class MGWPP_Admin_Edit_Gallery
             });
         </script>
 
-        <?php
+<?php
     }
 
     public static function refresh_preview()
@@ -378,7 +378,7 @@ class MGWPP_Admin_Edit_Gallery
         // Send successful response
         wp_send_json_success(
             [
-            'html' => $preview_html
+                'html' => $preview_html
             ]
         );
     }

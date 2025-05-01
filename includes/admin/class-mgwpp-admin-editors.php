@@ -6,9 +6,7 @@ if (! defined('ABSPATH')) {
 class MGWPP_Admin_Editors
 {
 
-    /**
-     * map gallery types → editor file & class
-     **/
+    /** map gallery types → editor file & class **/
     private static $map = [
       'single_carousel'    => [ 'file' => 'single-gallery-editor-options.php',     'class' => 'MGWPP_Single_Gallery_Editor_Options' ],
       'grid'               => [ 'file' => 'grid-gallery-editor-options.php',       'class' => 'MGWPP_Grid_Gallery_Editor_Options' ],
@@ -38,7 +36,7 @@ class MGWPP_Admin_Editors
             $info = self::$map[ $type ];
             $path = plugin_dir_path(__FILE__) . 'editors/class-mgwpp-' . $info['file'];
             if (file_exists($path)) {
-                include_once $path;
+                require_once $path;
                 if (class_exists($info['class'])) {
                     call_user_func([ $info['class'], 'register_meta_boxes' ], $post);
                 }

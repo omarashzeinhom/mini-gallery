@@ -3,8 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class MGWPP_Gallery_Single
-{
+class MGWPP_Gallery_Single {
     /**
      * Render the single gallery.
      *
@@ -12,17 +11,16 @@ class MGWPP_Gallery_Single
      * @param array $images   Array of image objects.
      * @param array $settings Optional settings for custom behavior.
      *
-     *                        Supported $settings keys:
-     *                        - bg_color: Background color for the gallery container (default: transparent).
-     *                        - transition_speed: Slide fade transition speed (default: 0.5s).
-     *                        - auto_rotate_speed: Auto-rotate interval in milliseconds (default: 5000).
-     *                        - show_nav: Whether to show navigation buttons (default: true).
-     *                        - swipe_threshold: Pixel threshold for swipe detection (default: 30).
+     * Supported $settings keys:
+     *   - bg_color: Background color for the gallery container (default: transparent).
+     *   - transition_speed: Slide fade transition speed (default: 0.5s).
+     *   - auto_rotate_speed: Auto-rotate interval in milliseconds (default: 5000).
+     *   - show_nav: Whether to show navigation buttons (default: true).
+     *   - swipe_threshold: Pixel threshold for swipe detection (default: 30).
      *
      * @return string HTML output of the gallery.
      */
-    public static function render($post_id, $images, $settings = [])
-    {
+    public static function render($post_id, $images, $settings = []) {
         wp_enqueue_style('mgwpp-single-carousel');
         wp_enqueue_script('mgwpp-single-carousel');
     
@@ -45,21 +43,16 @@ class MGWPP_Gallery_Single
             <div class="mgwpp-single-carousel__container">
                 <?php if (!empty($images)) : ?>
                     <div class="mgwpp-single-carousel__main">
-                        <?php foreach ($images as $index => $image) :
+                        <?php foreach ($images as $index => $image) : 
                             // Ensure we have a valid attachment ID
                             $image_id = is_object($image) ? $image->ID : $image;
                             ?>
                             <div class="mgwpp-single-carousel__slide <?php echo $index === 0 ? 'mgwpp-single-carousel__slide--active' : ''; ?>">
-                                <?php echo wp_get_attachment_image(
-                                    $image_id,
-                                    'large',
-                                    false,
-                                    [
+                                <?php echo wp_get_attachment_image($image_id, 'large', false, [
                                     'class' => 'mgwpp-single-carousel__image',
                                     'loading' => 'eager',
                                     'data-caption' => esc_attr(wp_get_attachment_caption($image_id))
-                                    ]
-                                ); ?>
+                                ]); ?>
                             </div>
                         <?php endforeach; ?>
                     </div>

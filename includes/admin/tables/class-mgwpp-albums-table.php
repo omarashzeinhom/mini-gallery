@@ -3,23 +3,18 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class MGWPP_Albums_Table extends WP_List_Table
-{
+class MGWPP_Albums_Table extends WP_List_Table {
 
-    public function __construct()
-    {
-        parent::__construct(
-            [
+    public function __construct() {
+        parent::__construct([
             'singular' => 'album',
             'plural'   => 'albums',
             'ajax'     => false,
             'screen'   => 'mgwpp-albums'
-            ]
-        );
+        ]);
     }
 
-    public function get_columns()
-    {
+    public function get_columns() {
         return [
             'title'        => __('Title', 'mini-gallery'),
             'gallery_count' => __('Galleries', 'mini-gallery'),
@@ -29,8 +24,7 @@ class MGWPP_Albums_Table extends WP_List_Table
         ];
     }
 
-    public function prepare_items()
-    {
+    public function prepare_items() {
         $this->_column_headers = [$this->get_columns(), [], []];
         
         $args = [
@@ -42,8 +36,7 @@ class MGWPP_Albums_Table extends WP_List_Table
         $this->items = get_posts($args);
     }
 
-    protected function column_title($item)
-    {
+    protected function column_title($item) {
         $edit_url = get_edit_post_link($item->ID);
         $delete_url = wp_nonce_url(
             admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $item->ID),
@@ -56,8 +49,7 @@ class MGWPP_Albums_Table extends WP_List_Table
             esc_html($item->post_title)
         );
 
-        return $title . $this->row_actions(
-            [
+        return $title . $this->row_actions([
             'edit' => sprintf(
                 '<a href="%s">%s</a>',
                 esc_url($edit_url),
@@ -68,38 +60,30 @@ class MGWPP_Albums_Table extends WP_List_Table
                 esc_url($delete_url),
                 __('Delete', 'mini-gallery')
             )
-            ]
-        );
+        ]);
     }
 
-    protected function column_gallery_count($item)
-    {
+    protected function column_gallery_count($item) {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
         return is_array($galleries) ? count($galleries) : 0;
     }
 
-    protected function column_shortcode($item)
-    {
+    protected function column_shortcode($item) {
         return sprintf(
             '<input type="text" readonly value="[mgwpp_album id=&quot;%d&quot;]" class="mgwpp-shortcode-code">',
             absint($item->ID)
         );
     }
 
-    protected function column_date($item)
-    {
+    protected function column_date($item) {
         return get_the_date('', $item);
     }
 
-    protected function column_actions($item)
-    {
-        $preview_url = add_query_arg(
-            [
+    protected function column_actions($item) {
+        $preview_url = add_query_arg([
             'album_id' => $item->ID,
             'preview' => 'true'
-            ],
-            home_url()
-        );
+        ], home_url());
 
         return sprintf(
             '<a href="%s" class="button" target="_blank">%s</a>',
@@ -108,8 +92,7 @@ class MGWPP_Albums_Table extends WP_List_Table
         );
     }
 
-    public function single_row($item)
-    {
+    public function single_row($item) {
         echo '<tr>';
         $this->single_row_columns($item);
         echo '</tr>';
@@ -122,15 +105,14 @@ class MGWPP_Albums_Table extends WP_List_Table
         echo '</tr>';
     }
 
-    private function album_details_content($item)
-    {
+    private function album_details_content($item) {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
         ?>
         <div class="mgwpp-album-details">
             <h4><?php esc_html_e('Album Contents', 'mini-gallery'); ?></h4>
             <?php if (!empty($galleries) && is_array($galleries)) : ?>
                 <ul class="mgwpp-album-galleries">
-                    <?php foreach ($galleries as $gallery_id) :
+                    <?php foreach ($galleries as $gallery_id) : 
                         $gallery = get_post($gallery_id);
                         if ($gallery) : ?>
                             <li>

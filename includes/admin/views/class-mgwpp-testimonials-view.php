@@ -3,11 +3,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 // File: includes/admin/views/class-mgwpp-testimonials-view.php
-class MGWPP_Testimonials_View
-{
+class MGWPP_Testimonials_View {
 
-    public static function render()
-    {
+    public static function render() {
         $testimonials = self::get_testimonials();
         ?>
         <div class="wrap">
@@ -22,19 +20,15 @@ class MGWPP_Testimonials_View
         <?php
     }
 
-    private static function get_testimonials()
-    {
-        return get_posts(
-            [
+    private static function get_testimonials() {
+        return get_posts([
             'post_type'      => 'testimonial',
             'posts_per_page' => -1,
             'post_status'    => 'publish'
-            ]
-        );
+        ]);
     }
 
-    private static function render_create_button()
-    {
+    private static function render_create_button() {
         ?>
         <a href="<?php echo esc_url(admin_url('post-new.php?post_type=testimonial')); ?>" 
            class="page-title-action">
@@ -43,8 +37,7 @@ class MGWPP_Testimonials_View
         <?php
     }
 
-    private static function render_table($testimonials)
-    {
+    private static function render_table($testimonials) {
         ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
@@ -66,8 +59,7 @@ class MGWPP_Testimonials_View
         <?php
     }
 
-    private static function render_row($testimonial)
-    {
+    private static function render_row($testimonial) {
         $author = sanitize_text_field(
             get_post_meta($testimonial->ID, '_mgwpp_author', true)
         );
@@ -83,8 +75,7 @@ class MGWPP_Testimonials_View
         <?php
     }
 
-    private static function render_actions($post_id)
-    {
+    private static function render_actions($post_id) {
         ?>
         <div class="row-actions">
             <?php
@@ -96,12 +87,10 @@ class MGWPP_Testimonials_View
             
             echo sprintf(
                 '<a href="%s" class="delete">%s</a>',
-                esc_url(
-                    wp_nonce_url(
-                        admin_url("post.php?post={$post_id}&action=delete"),
-                        "delete-post_{$post_id}"
-                    )
-                ),
+                esc_url(wp_nonce_url(
+                    admin_url("post.php?post={$post_id}&action=delete"),
+                    "delete-post_{$post_id}"
+                )),
                 esc_html__('Delete', 'mini-gallery')
             );
             ?>

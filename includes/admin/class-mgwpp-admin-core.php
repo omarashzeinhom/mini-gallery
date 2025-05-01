@@ -6,8 +6,7 @@ if (!defined('ABSPATH')) {
 // File: includes/admin/class-mgwpp-admin-core.php
 class MGWPP_Admin_Core
 {
-    public function __construct()
-    {
+    public function __construct() {
         $this->load_dependencies();
         $this->menu_manager  = new MGWPP_Admin_Menu();
         $this->asset_manager = new MGWPP_Admin_Assets();  // ← instantiate here, not in a hook
@@ -31,18 +30,18 @@ class MGWPP_Admin_Core
     private function load_dependencies()
     {
         // Load files but don't initialize yet
-        include_once __DIR__ . '/class-mgwpp-admin-menu.php';
-        include_once __DIR__ . '/class-mgwpp-admin-assets.php';
-        include_once __DIR__ . '/class-mgwpp-module-loader.php';
-        include_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
-        include_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
+        require_once __DIR__ . '/class-mgwpp-admin-menu.php';
+        require_once __DIR__ . '/class-mgwpp-admin-assets.php';
+        require_once __DIR__ . '/class-mgwpp-module-loader.php';
+        require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
+        require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
 
         // Views
-        include_once __DIR__ . '/views/class-mgwpp-albums-view.php';
-        include_once __DIR__ . '/views/class-mgwpp-security-view.php';
-        include_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
-        include_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
-        include_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-security-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
     }
 
     private function init_components()

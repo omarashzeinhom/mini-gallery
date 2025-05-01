@@ -3,15 +3,12 @@ if (! defined('ABSPATH')) {
     exit;
 }
 // File: includes/admin/class-mgwpp-admin-assets.php
-class MGWPP_Admin_Assets
-{
-    public function __construct()
-    {
+class MGWPP_Admin_Assets {
+    public function __construct() {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
-    public function enqueue_assets($hook)
-    {
+    public function enqueue_assets($hook) {
         // Debug this first if needed
         // error_log($hook);
 

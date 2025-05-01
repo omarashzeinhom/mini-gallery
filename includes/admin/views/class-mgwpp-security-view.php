@@ -4,10 +4,8 @@ if (!defined('ABSPATH')) {
 }
 
 // File: includes/admin/views/class-security-view.php
-class MGWPP_Security_View
-{
-    public static function render()
-    {
+class MGWPP_Security_View {
+    public static function render() {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $suspicious_files = self::scan_directory($upload_path);
@@ -19,8 +17,7 @@ class MGWPP_Security_View
         echo '</div>';
     }
 
-    private static function render_security_header()
-    {
+    private static function render_security_header() {
         ?>
         <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
         <div class="mgwpp-security-settings">
@@ -29,8 +26,7 @@ class MGWPP_Security_View
         <?php
     }
 
-    private static function render_scan_results($suspicious_files)
-    {
+    private static function render_scan_results($suspicious_files) {
         ?>
         <div class="mgwpp-scan-results mt-6">
             <h3 class="text-md font-semibold"><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
@@ -39,8 +35,7 @@ class MGWPP_Security_View
         <?php
     }
 
-    private static function render_storage_analysis()
-    {
+    private static function render_storage_analysis() {
         $storage_data = self::get_storage_data();
         ?>
         <div class="mgwpp-storage-analysis mt-6">
@@ -56,8 +51,7 @@ class MGWPP_Security_View
         <?php
     }
 
-    public static function scan_directory($path)
-    {
+    public static function scan_directory($path) {
         $suspicious_files = [];
         
         if (!is_dir($path)) {
@@ -88,15 +82,14 @@ class MGWPP_Security_View
         return $suspicious_files;
     }
 
-    public static function render_suspicious_report($suspicious_files)
-    {
+    public static function render_suspicious_report($suspicious_files) {
         if (empty($suspicious_files)) {
             echo '<div class="notice notice-success"><p>' . esc_html__('No suspicious files found.', 'mini-gallery') . '</p></div>';
             return;
         }
         
-        echo '<div class="notice notice-warning"><p>' .
-             esc_html__('Potential security issues found:', 'mini-gallery') .
+        echo '<div class="notice notice-warning"><p>' . 
+             esc_html__('Potential security issues found:', 'mini-gallery') . 
              '</p></div>';
         
         echo '<table class="wp-list-table widefat fixed striped">';
@@ -118,22 +111,19 @@ class MGWPP_Security_View
         echo '</tbody></table>';
     }
 
-    private static function get_storage_data()
-    {
+    private static function get_storage_data() {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $plugin_image_ids = [];
 
         // Get attachment IDs used in plugin post types
         $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
-        $plugin_query = new WP_Query(
-            [
+        $plugin_query = new WP_Query([
             'post_type' => $post_types,
             'posts_per_page' => -1,
             'post_status' => 'any',
             'fields' => 'ids',
-            ]
-        );
+        ]);
 
         foreach ($plugin_query->posts as $post_id) {
             $attachments = get_attached_media('image', $post_id);
@@ -183,8 +173,7 @@ class MGWPP_Security_View
         ];
     }
 
-    private static function render_storage_section($used, $total, $percent, $file_types, $file_count)
-    {
+    private static function render_storage_section($used, $total, $percent, $file_types, $file_count) {
         ?>
         <div class="mt-4 p-5 bg-white rounded-lg shadow-sm dark:bg-gray-800">
             <h3 class="text-lg font-semibold mb-4"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h3>
@@ -209,7 +198,7 @@ class MGWPP_Security_View
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($file_types as $ext => $data) : ?>
+                    <?php foreach ($file_types as $ext => $data): ?>
                         <tr class="border-b dark:border-gray-700">
                             <td class="py-1 pr-4"><?php echo esc_html($ext); ?></td>
                             <td class="py-1 pr-4"><?php echo esc_html($data['count']); ?></td>

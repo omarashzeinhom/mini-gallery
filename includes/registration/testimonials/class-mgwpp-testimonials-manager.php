@@ -2,18 +2,15 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Testimonial_Manager
-{
+class MGWPP_Testimonial_Manager {
 
-    public function __construct()
-    {
+    public function __construct() {
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('save_post_testimonial', [$this, 'save_testimonial'], 10, 2);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
-    public function enqueue_admin_assets($hook)
-    {
+    public function enqueue_admin_assets($hook) {
         global $post_type;
         
         // Only load on testimonial edit screens
@@ -25,8 +22,7 @@ class MGWPP_Testimonial_Manager
         wp_enqueue_media();
     }
 
-    public function add_meta_boxes()
-    {
+    public function add_meta_boxes() {
         add_meta_box(
             'mgwpp_testimonial_details',
             __('Testimonial Details', 'mini-gallery'),
@@ -37,8 +33,7 @@ class MGWPP_Testimonial_Manager
         );
     }
 
-    public function render_testimonial_meta($post)
-    {
+    public function render_testimonial_meta($post) {
         wp_nonce_field('mgwpp_testimonial_nonce', 'mgwpp_testimonial_nonce');
         
         $author = get_post_meta($post->ID, '_mgwpp_author', true);
@@ -61,32 +56,31 @@ class MGWPP_Testimonial_Manager
         <?php
     }
 
-    public function save_testimonial($post_id, $post)
-    {
-        if (isset($_POST['mgwpp_testimonial_nonce'])) {
+    public function save_testimonial($post_id, $post) {
+        if (isset($_POST['mgwpp_testimonial_nonce'])){
             $nonce = sanitize_key(wp_unslash($_POST['mgwpp_testimonial_nonce']));
         }
         // Verify nonce with proper unslashing
         
-        if (!wp_verify_nonce($nonce, 'mgwpp_testimonial_nonce')
-            || !current_user_can('edit_post', $post_id)
-            || wp_is_post_autosave($post_id)
-            || wp_is_post_revision($post_id)
+        if (!wp_verify_nonce($nonce, 'mgwpp_testimonial_nonce') ||
+            !current_user_can('edit_post', $post_id) ||
+            wp_is_post_autosave($post_id) ||
+            wp_is_post_revision($post_id)
         ) {
             return;
         }
 
         // Validate and sanitize inputs
-        $author = isset($_POST['mgwpp_author'])
-                ? sanitize_text_field(wp_unslash($_POST['mgwpp_author']))
+        $author = isset($_POST['mgwpp_author']) 
+                ? sanitize_text_field(wp_unslash($_POST['mgwpp_author'])) 
                 : '';
 
-        $position = isset($_POST['mgwpp_position'])
-                  ? sanitize_text_field(wp_unslash($_POST['mgwpp_position']))
+        $position = isset($_POST['mgwpp_position']) 
+                  ? sanitize_text_field(wp_unslash($_POST['mgwpp_position'])) 
                   : '';
 
-        $image_id = isset($_POST['mgwpp_image_id'])
-                  ? absint(wp_unslash($_POST['mgwpp_image_id']))
+        $image_id = isset($_POST['mgwpp_image_id']) 
+                  ? absint(wp_unslash($_POST['mgwpp_image_id'])) 
                   : 0;
 
         // Update meta values

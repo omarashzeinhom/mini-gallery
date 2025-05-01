@@ -1,12 +1,10 @@
 <?php
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class MGWPP_Testimonial_Post_Type
-{
+class MGWPP_Testimonial_Post_Type {
 
-    public static function mgwpp_register_testimonial_post_type()
-    {
+    public static function mgwpp_register_testimonial_post_type() {
         $labels = [
             'name' => _x('Testimonials', 'Post Type General Name', 'mini-gallery'),
             'singular_name' => _x('Testimonial', 'Post Type Singular Name', 'mini-gallery'),
@@ -59,3 +57,4 @@ class MGWPP_Testimonial_Post_Type
         register_post_type('testimonial', $args);
     }
 }
+

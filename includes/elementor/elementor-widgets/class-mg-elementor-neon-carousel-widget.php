@@ -1,49 +1,39 @@
 <?php
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
 
-class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base
-{
+class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
 
-    public function get_script_depends()
-    {
+    public function get_script_depends() {
         return ['mgwpp-neon-carousel-js'];
     }
     
-    public function get_style_depends()
-    {
+    public function get_style_depends() {
         return ['mgwpp-neon-carousel-styles'];
     }
     
     // Get widget name
-    public function get_name()
-    {
+    public function get_name() {
         return 'mg_neon_carousel';
     }
 
     // Get widget title
-    public function get_title()
-    {
+    public function get_title() {
         return __('Mini Gallery Neon Carousel', 'mini-gallery');
     }
 
     // Get widget icon (Elementor predefined icon)
-    public function get_icon()
-    {
+    public function get_icon() {
         return 'eicon-slider-album';
     }
 
     // Get widget categories
-    public function get_categories()
-    {
+    public function get_categories() {
         return ['minigallery'];
     }
 
     // Register widget controls (settings)
-    protected function _register_controls()
-    {
+    protected function _register_controls() {
         $this->start_controls_section(
             'content_section',
             [
@@ -230,8 +220,7 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base
     }
 
     // Render widget
-    protected function render()
-    {
+    protected function render() {
         $settings = $this->get_settings_for_display();
         $gallery_id = $settings['gallery_id'];
         
@@ -247,49 +236,39 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base
         $neon_secondary = isset($settings['neon_secondary_color']) ? $settings['neon_secondary_color'] : '#ff007f';  // default neon secondary color
     
         // Pass settings to the renderer
-        echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(
-            wp_json_encode(
-                [
-                'autoplay' => $settings['autoplay'] === 'yes',
-                'autoplay_speed' => $settings['autoplay_speed'],
-                'show_dots' => $settings['show_dots'] === 'yes',
-                'show_previews' => $settings['show_previews'] === 'yes',
-                'zoom_effect' => $settings['zoom_effect'] === 'yes',
-                'neon_primary' => $neon_primary,
-                'neon_secondary' => $neon_secondary
-                ]
-            )
-        ).'">';
+        echo '<div class="mg-neon-carousel" data-settings="'.esc_attr(wp_json_encode([
+            'autoplay' => $settings['autoplay'] === 'yes',
+            'autoplay_speed' => $settings['autoplay_speed'],
+            'show_dots' => $settings['show_dots'] === 'yes',
+            'show_previews' => $settings['show_previews'] === 'yes',
+            'zoom_effect' => $settings['zoom_effect'] === 'yes',
+            'neon_primary' => $neon_primary,
+            'neon_secondary' => $neon_secondary
+        ])).'">';
     
         echo wp_kses_post(MGWPP_Neon_Carousel::render($gallery_id, $images));
         echo '</div>';
     }
     
     // Get available galleries
-    private function get_galleries()
-    {
-        $galleries = get_posts(
-            [
+    private function get_galleries() {
+        $galleries = get_posts([
             'post_type' => 'mgwpp_soora',
             'numberposts' => 100,
             'post_status' => 'publish',
-            ]
-        );
+        ]);
     
         $options = ['' => __('Select Gallery', 'mini-gallery')];
     
         foreach ($galleries as $gallery) {
-            if (!$gallery instanceof WP_Post) {
-                continue;
-            }
+            if (!$gallery instanceof WP_Post) continue;
             $options[$gallery->ID] = esc_html($gallery->post_title);
         }
     
         return $options;
     }
     // Enqueue editor scripts
-    public function enqueue_editor_scripts()
-    {
+    public function enqueue_editor_scripts() {
         wp_enqueue_style(
             'mg-neon-carousel-editor',
             plugin_dir_url(__FILE__) . 'admin/css/editor.css',

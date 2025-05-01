@@ -20,14 +20,12 @@ class MGWPP_Data_Handler
         $plugin_image_ids = [];
 
         $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
-        $plugin_query = new WP_Query(
-            [
+        $plugin_query = new WP_Query([
             'post_type' => $post_types,
             'posts_per_page' => -1,
             'post_status' => 'any',
             'fields' => 'ids',
-            ]
-        );
+        ]);
 
         foreach ($plugin_query->posts as $post_id) {
             $attachments = get_attached_media('image', $post_id);

@@ -1,11 +1,8 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
 
 
-class MGWPP_VC_Integration
-{
+class MGWPP_VC_Integration {
     private $gallery_types = [
         'single_carousel' => 'Single Carousel',
         'multi_carousel' => 'Multi Carousel',
@@ -19,16 +16,13 @@ class MGWPP_VC_Integration
         'testimonials_carousel' => 'Testimonial Carousel'
     ];
 
-    public function __construct()
-    {
+    public function __construct() {
         add_action('vc_before_init', [$this, 'vc_integration']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_vc_assets']);
     }
 
-    public function vc_integration()
-    {
-        vc_map(
-            [
+    public function vc_integration() {
+        vc_map([
             'name' => 'MiniGallery',
             'base' => 'mgwpp_vc_gallery',
             'category' => esc_html__('Content', 'mini-gallery'),
@@ -63,25 +57,20 @@ class MGWPP_VC_Integration
             'content_element' => true, // Allow it to be used in the WPBakery editor
             'show_settings_on_create' => true, // Show settings immediately
             'render_callback' => [$this, 'render_vc_gallery'] // Add the render callback for this gallery
-            ]
-        );
+        ]);
     }
 
     /**
      * Render callback to output the gallery based on user settings
      */
-    public function render_vc_gallery($atts, $content = null)
-    {
+    public function render_vc_gallery($atts, $content = null) {
         // Extract attributes from the WPBakery element
-        $atts = shortcode_atts(
-            [
+        $atts = shortcode_atts([
             'type' => 'single_carousel', // Default to 'single_carousel'
             'id' => '',                  // Gallery ID
             'autoplay' => 'true',        // Autoplay value
             'speed' => '8000',           // Transition speed
-            ],
-            $atts
-        );
+        ], $atts);
 
         // Get the gallery ID and retrieve images
         $gallery_id = $atts['id'];
@@ -109,11 +98,8 @@ class MGWPP_VC_Integration
         }
     }
 
-    public function enqueue_vc_assets()
-    {
-        if (!function_exists('vc_is_page_editable') || !vc_is_page_editable()) {
-            return;
-        }
+    public function enqueue_vc_assets() {
+        if (!function_exists('vc_is_page_editable') || !vc_is_page_editable()) return;
 
         // Enqueue all gallery assets
         $assets = [
@@ -145,16 +131,12 @@ class MGWPP_VC_Integration
 
         // Enqueue styles
         foreach ($assets['styles'] as $handle) {
-            if (wp_style_is($handle, 'registered')) {
-                wp_enqueue_style($handle);
-            }
+            if (wp_style_is($handle, 'registered')) wp_enqueue_style($handle);
         }
 
         // Enqueue scripts
         foreach ($assets['scripts'] as $handle) {
-            if (wp_script_is($handle, 'registered')) {
-                wp_enqueue_script($handle);
-            }
+            if (wp_script_is($handle, 'registered')) wp_enqueue_script($handle);
         }
     }
 }

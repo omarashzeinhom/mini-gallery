@@ -49,14 +49,10 @@ class MGWPP_Album_Display
         );
 
         // Localize script
-        wp_localize_script(
-            'mg-albums-scripts',
-            'mgwpp_ajax',
-            [
+        wp_localize_script('mg-albums-scripts', 'mgwpp_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp_nonce')
-            ]
-        );
+        ]);
 
 
 
@@ -81,13 +77,10 @@ class MGWPP_Album_Display
                 $preview_image = self::get_gallery_preview_image($gallery_id);
 
                 // Build the URL with gallery_id and nonce for security
-                $gallery_url = add_query_arg(
-                    [
+                $gallery_url = add_query_arg([
                     'gallery_id' => $gallery_id,
                     '_mg_nonce'  => wp_create_nonce('mgwpp_view_gallery'),
-                    ],
-                    $album_url
-                );
+                ], $album_url);
 
                 // In render_album() method:
                 $output .= sprintf(
@@ -114,15 +107,13 @@ class MGWPP_Album_Display
 
     private static function get_gallery_preview_image($gallery_id)
     {
-        $attachments = get_posts(
-            [
+        $attachments = get_posts([
             'post_type'      => 'attachment',
             'posts_per_page' => 1,
             'post_parent'    => $gallery_id,
             'orderby'        => 'menu_order',
             'order'          => 'ASC',
-            ]
-        );
+        ]);
 
         if (! empty($attachments)) {
             return wp_get_attachment_image(
@@ -146,15 +137,13 @@ class MGWPP_Album_Display
             return '<p class="mgwpp-no-gallery">' . esc_html__('Gallery not found.', 'mini-gallery') . '</p>';
         }
 
-        $attachments = get_posts(
-            [
+        $attachments = get_posts([
             'post_type'      => 'attachment',
             'posts_per_page' => -1,
             'post_parent'    => $gallery_id,
             'orderby'        => 'menu_order',
             'order'          => 'ASC',
-            ]
-        );
+        ]);
 
         if (empty($attachments)) {
             return '<p class="mgwpp-no-images">' . esc_html__('This gallery contains no images.', 'mini-gallery') . '</p>';
@@ -204,7 +193,7 @@ class MGWPP_Album_Display
     public static function get_lightbox_html()
     {
         ob_start();
-        ?>
+?>
         <div id="mgwpp-lightbox" class="mgwpp-lightbox">
             <span class="mgwpp-close">&times;</span>
             <div class="mgwpp-lightbox-overlay"></div>
@@ -215,7 +204,7 @@ class MGWPP_Album_Display
             <a class="mgwpp-prev">&#10094;</a>
             <a class="mgwpp-next">&#10095;</a>
         </div>
-        <?php
+<?php
         return ob_get_clean();
     }
 

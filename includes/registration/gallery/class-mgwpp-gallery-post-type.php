@@ -1,10 +1,8 @@
 <?php
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class MGWPP_Gallery_Post_Type
-{
- 
+class MGWPP_Gallery_Post_Type { 
 
     public static function mgwpp_register_gallery_post_type()
     {
@@ -44,3 +42,5 @@ class MGWPP_Gallery_Post_Type
 
 // Register the custom post type during the 'init' hook
 add_action('init', array('MGWPP_Gallery_Post_Type', 'mgwpp_register_gallery_post_type'));
+
+?>

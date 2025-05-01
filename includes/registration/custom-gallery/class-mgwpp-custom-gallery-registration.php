@@ -1,18 +1,15 @@
 <?php
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class MGWPP_Custom_Gallery
-{
+class MGWPP_Custom_Gallery {
 
-    public static function init()
-    {
-        add_action('init', [__CLASS__, 'register_post_type']);
-    }
+public static function init() {
+    add_action('init', [__CLASS__, 'register_post_type']);
+}
 
-    public static function register_post_type()
-    {
-        $args = [
+public static function register_post_type() {
+    $args = [
         'public' => true,
         'label'  => 'MGWPP Gallery',
         'show_in_rest' => true,
@@ -23,12 +20,12 @@ class MGWPP_Custom_Gallery
         'publicly_queryable' => false,
         'exclude_from_search' => true,
         'rewrite' => ['slug' => 'mgwpp-gallery']
-        ];
+    ];
 
-        register_post_type('mgwpp_gallery', $args);
+    register_post_type('mgwpp_gallery', $args);
 
-        // Add Elementor support
-        add_post_type_support('mgwpp_gallery', 'elementor');
-    }
+    // Add Elementor support
+    add_post_type_support('mgwpp_gallery', 'elementor');
+}
 }
 MGWPP_Custom_Gallery::init();

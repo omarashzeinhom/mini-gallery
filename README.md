@@ -53,27 +53,3 @@ You can upload images through the plugin's interface, and they will be displayed
 ### 1.0
 
 - Initial release.
-
-### 1.1
-
-- Added `<table>` to Gallery Item.
-
-#### Unit testing
-
-- Phpunit testing without wp standards.
-
-``` bash
-./vendor/bin/phpunit --version
-```
-
-- Php Unit testing with wp standards.
-
-```bash
- vendor/bin/phpcs -ps mini-gallery.php --standard=WordPress
-```
-
-##### Open Source Assets
-
-[Gallery Icon](https://icon-sets.iconify.design/?query=gallery)
-
-[Elementor - Widget Dependencies](https://developers.elementor.com/docs/widgets/widget-dependencies/)

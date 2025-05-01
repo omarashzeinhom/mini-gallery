@@ -1,14 +1,12 @@
 <?php
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class MGWPP_Gallery_Manager
-{
+class MGWPP_Gallery_Manager {
 
     // Function to delete the gallery
-    public static function mgwpp_delete_gallery()
-    {
+    public static function mgwpp_delete_gallery() {
         // Security check
         if (!isset($_GET['gallery_id']) || !isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'mgwpp_delete_gallery')) {
             wp_die('Security check failed for deleting gallery');
@@ -30,8 +28,7 @@ class MGWPP_Gallery_Manager
     }
 
     // Register the action for gallery deletion
-    public static function mgwpp_register_gallery_delete_action()
-    {
+    public static function mgwpp_register_gallery_delete_action() {
         add_action('admin_post_mgwpp_delete_gallery', array('MGWPP_Gallery_Manager', 'mgwpp_delete_gallery'));
     }
 }

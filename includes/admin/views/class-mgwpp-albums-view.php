@@ -5,17 +5,15 @@ if (!defined('ABSPATH')) {
 
 // Ensure WP_List_Table is loaded before the custom Albums Table
 if (!class_exists('WP_List_Table')) {
-    include_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+    require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
 // Now load your custom table
 require_once MG_PLUGIN_PATH . 'includes/admin/tables/class-mgwpp-albums-table.php';
 
-class MGWPP_Albums_View
-{
+class MGWPP_Albums_View {
 
-    public static function render()
-    {
+    public static function render() {
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Albums Management', 'mini-gallery') ?></h1>
@@ -28,17 +26,16 @@ class MGWPP_Albums_View
         <?php
     }
 
-    private static function render_creation_form()
-    {
+    private static function render_creation_form() {
         ?>
         <div class="mgwpp-album-form">
             <h2><?php esc_html_e('Create New Album', 'mini-gallery') ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="mgwpp_create_album">
                 
-                <?php
+                <?php 
                 // must match your handler:
-                wp_nonce_field('mgwpp_album_submit_nonce', 'mgwpp_album_submit_nonce');
+                wp_nonce_field( 'mgwpp_album_submit_nonce', 'mgwpp_album_submit_nonce' ); 
                 ?>
     
                 <div class="form-field">
@@ -59,16 +56,13 @@ class MGWPP_Albums_View
         <?php
     }
     
-    private static function render_gallery_selector()
-    {
-        $galleries = get_posts(
-            [
+    private static function render_gallery_selector() {
+        $galleries = get_posts([
             'post_type'      => 'mgwpp_soora',
             'posts_per_page' => -1,
             'orderby'        => 'title',
             'order'          => 'ASC'
-            ]
-        );
+        ]);
         ?>
         <div class="mgwpp-gallery-selector">
             <?php foreach ($galleries as $gallery) : ?>
@@ -83,8 +77,7 @@ class MGWPP_Albums_View
         <?php
     }
 
-    private static function render_albums_table()
-    {
+    private static function render_albums_table() {
         $table = new MGWPP_Albums_Table();
         $table->prepare_items();
         ?>

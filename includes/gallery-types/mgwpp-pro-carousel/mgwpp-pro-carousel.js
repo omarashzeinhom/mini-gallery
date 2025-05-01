@@ -2,44 +2,47 @@ document.addEventListener('DOMContentLoaded', () => {
     class MGWPPCarousel {
         constructor(element) {
             this.element = element;
-            this.container = element.querySelector('.mgwpp-pro-carousel__container');
             this.track = element.querySelector('.mgwpp-pro-carousel__track');
-            this.cards = Array.from(element.querySelectorAll('.mgwpp-pro-carousel__card'));
+            
+            // Only select NON-CLONE cards initially
+            this.originalCards = Array.from(element.querySelectorAll('.mgwpp-pro-carousel__card:not(.clone)'));
+            
+            // Store references to existing clones
+            this.existingClones = Array.from(element.querySelectorAll('.mgwpp-pro-carousel__card.clone'));
+            
             this.prevBtn = element.querySelector('.mgwpp-pro-carousel__nav--prev');
             this.nextBtn = element.querySelector('.mgwpp-pro-carousel__nav--next');
 
-            this.currentIndex = 0;
-            this.isDragging = false;
-            this.startPos = 0;
-            this.currentTranslate = 0;
-            this.prevTranslate = 0;
-            this.cardWidth = 0;
-            this.gap = 0;
-            this.visibleCardCount = 0;
+            // Only clone if no existing clones
+            if (this.existingClones.length === 0) {
+                this.cloneSlides();
+            }
 
-            // Clone slides for infinite effect
-            this.originalCards = [...this.cards];
-            this.cloneSlides();
+            this.cards = Array.from(this.track.querySelectorAll('.mgwpp-pro-carousel__card'));
             this.init();
         }
 
         cloneSlides() {
-            // Clone first and last few slides
-            const clonesStart = this.originalCards.slice(-this.visibleCardCount).map(card => {
-                const clone = card.cloneNode(true);
-                clone.classList.add('clone');
-                return clone;
-            });
+            // Wait until dimensions are calculated
+            this.calculateDimensions();
+            
+            // Clone only what's needed
+            const clonesStart = this.originalCards
+                .slice(-this.visibleCardCount)
+                .map(this.createClone);
 
-            const clonesEnd = this.originalCards.slice(0, this.visibleCardCount).map(card => {
-                const clone = card.cloneNode(true);
-                clone.classList.add('clone');
-                return clone;
-            });
+            const clonesEnd = this.originalCards
+                .slice(0, this.visibleCardCount)
+                .map(this.createClone);
 
             this.track.prepend(...clonesStart);
             this.track.append(...clonesEnd);
-            this.cards = Array.from(this.track.querySelectorAll('.mgwpp-pro-carousel__card'));
+        }
+
+        createClone(card) {
+            const clone = card.cloneNode(true);
+            clone.classList.add('clone');
+            return clone;
         }
 
         init() {

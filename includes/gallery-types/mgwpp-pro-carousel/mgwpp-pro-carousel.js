@@ -1,140 +1,160 @@
 document.addEventListener('DOMContentLoaded', () => {
     class MGWPPCarousel {
-        constructor(element)
-        {
+        constructor(element) {
             this.element = element;
+            this.container = element.querySelector('.mgwpp-pro-carousel__container');
             this.track = element.querySelector('.mgwpp-pro-carousel__track');
             this.cards = Array.from(element.querySelectorAll('.mgwpp-pro-carousel__card'));
             this.prevBtn = element.querySelector('.mgwpp-pro-carousel__nav--prev');
             this.nextBtn = element.querySelector('.mgwpp-pro-carousel__nav--next');
-            
+
             this.currentIndex = 0;
             this.isDragging = false;
             this.startPos = 0;
             this.currentTranslate = 0;
             this.prevTranslate = 0;
-            this.animationID = 0;
+            this.cardWidth = 0;
+            this.gap = 0;
+            this.visibleCardCount = 0;
 
+            // Clone slides for infinite effect
+            this.originalCards = [...this.cards];
+            this.cloneSlides();
             this.init();
         }
 
-        init()
-        {
+        cloneSlides() {
+            // Clone first and last few slides
+            const clonesStart = this.originalCards.slice(-this.visibleCardCount).map(card => {
+                const clone = card.cloneNode(true);
+                clone.classList.add('clone');
+                return clone;
+            });
+
+            const clonesEnd = this.originalCards.slice(0, this.visibleCardCount).map(card => {
+                const clone = card.cloneNode(true);
+                clone.classList.add('clone');
+                return clone;
+            });
+
+            this.track.prepend(...clonesStart);
+            this.track.append(...clonesEnd);
+            this.cards = Array.from(this.track.querySelectorAll('.mgwpp-pro-carousel__card'));
+        }
+
+        init() {
             this.calculateDimensions();
             this.setupEventListeners();
-            this.updateNavigation();
+            this.jumpToStart();
         }
 
-        calculateDimensions()
-        {
-            const firstCard = this.cards[0];
-            if (!firstCard) {
-                return;
-            }
-            
+        calculateDimensions() {
+            const firstCard = this.originalCards[0];
+            if (!firstCard) return;
+
             const styles = getComputedStyle(this.element);
             this.cardWidth = firstCard.offsetWidth;
-            this.gap = parseInt(styles.getPropertyValue('--mgwpp-pro-carousel-gap'));
+            this.gap = parseInt(styles.getPropertyValue('--mgwpp-pro-carousel-gap')) || 0;
+            this.visibleCardCount = Math.floor(this.element.offsetWidth / (this.cardWidth + this.gap));
         }
 
-        updateNavigation()
-        {
-            this.prevBtn.disabled = this.currentIndex === 0;
-            this.nextBtn.disabled = this.currentIndex >= this.cards.length - this.visibleCards();
+        jumpToStart() {
+            this.currentIndex = this.visibleCardCount;
+            this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
         }
 
-        visibleCards()
-        {
-            return Math.floor(this.element.offsetWidth / (this.cardWidth + this.gap));
-        }
-
-        getPositionX(event)
-        {
-            return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
-        }
-
-        setTransform(position)
-        {
+        setTransform(position, smooth = true) {
+            this.track.style.transition = smooth ? 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none';
             this.track.style.transform = `translateX(${position}px)`;
+            this.currentTranslate = position;
         }
 
-        animation()
-        {
-            this.setTransform(this.currentTranslate);
-            if (this.isDragging) {
-                requestAnimationFrame(() => this.animation());
-            }
-        }
-
-        handleTouchStart(e)
-        {
+        handleTouchStart(e) {
             this.isDragging = true;
             this.startPos = this.getPositionX(e);
             this.prevTranslate = this.currentTranslate;
-            this.track.style.transition = 'none';
-            this.animation();
+            this.setTransform(this.currentTranslate, false);
         }
 
-        handleTouchMove(e)
-        {
-            if (!this.isDragging) {
-                return;
-            }
+        handleTouchMove(e) {
+            if (!this.isDragging) return;
             const currentPos = this.getPositionX(e);
             this.currentTranslate = this.prevTranslate + currentPos - this.startPos;
+            this.track.style.transform = `translateX(${this.currentTranslate}px)`;
         }
 
-        handleTouchEnd()
-        {
+        handleTouchEnd() {
             this.isDragging = false;
-            this.track.style.transition = '';
-            
             const movedBy = this.currentTranslate - this.prevTranslate;
-            const cardWithGap = this.cardWidth + this.gap;
-            
-            if (Math.abs(movedBy) > cardWithGap * 0.25) {
+            const threshold = (this.cardWidth + this.gap) * 0.25;
+
+            if (Math.abs(movedBy) > threshold) {
                 this.currentIndex += movedBy > 0 ? -1 : 1;
             }
-            
-            this.currentTranslate = -this.currentIndex * cardWithGap;
-            this.setTransform(this.currentTranslate);
-            this.updateNavigation();
+
+            this.navigateTo(this.currentIndex);
         }
 
-        setupEventListeners()
-        {
-            // Touch events
-            this.track.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-            this.track.addEventListener('touchmove', (e) => this.handleTouchMove(e));
-            this.track.addEventListener('touchend', () => this.handleTouchEnd());
+        navigateTo(index) {
+            this.currentIndex = index;
+            const targetPosition = -this.currentIndex * (this.cardWidth + this.gap);
+            this.setTransform(targetPosition);
+        }
+
+        checkBoundary() {
+            const totalSlides = this.originalCards.length;
             
-            // Mouse events
-            this.track.addEventListener('mousedown', (e) => this.handleTouchStart(e));
-            this.track.addEventListener('mousemove', (e) => this.handleTouchMove(e));
-            this.track.addEventListener('mouseup', () => this.handleTouchEnd());
-            this.track.addEventListener('mouseleave', () => this.handleTouchEnd());
+            if (this.currentIndex <= 0) {
+                this.currentIndex = totalSlides;
+                this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
+            }
+            else if (this.currentIndex >= totalSlides + this.visibleCardCount) {
+                this.currentIndex = this.visibleCardCount;
+                this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
+            }
+        }
+
+        setupEventListeners() {
+            // Touch/Mouse events
+            const handleStart = e => this.handleTouchStart(e);
+            const handleMove = e => this.handleTouchMove(e);
+            const handleEnd = () => this.handleTouchEnd();
+
+            this.track.addEventListener('touchstart', handleStart, { passive: true });
+            this.track.addEventListener('touchmove', handleMove, { passive: false });
+            this.track.addEventListener('touchend', handleEnd);
+            this.track.addEventListener('mousedown', handleStart);
+            this.track.addEventListener('mousemove', handleMove);
+            this.track.addEventListener('mouseup', handleEnd);
+            this.track.addEventListener('mouseleave', handleEnd);
 
             // Navigation buttons
             this.prevBtn?.addEventListener('click', () => {
-                this.currentIndex = Math.max(this.currentIndex - 1, 0);
-                this.currentTranslate = -this.currentIndex * (this.cardWidth + this.gap);
-                this.setTransform(this.currentTranslate);
-                this.updateNavigation();
+                this.currentIndex--;
+                this.navigateTo(this.currentIndex);
             });
 
             this.nextBtn?.addEventListener('click', () => {
-                this.currentIndex = Math.min(this.currentIndex + 1, this.cards.length - 1);
-                this.currentTranslate = -this.currentIndex * (this.cardWidth + this.gap);
-                this.setTransform(this.currentTranslate);
-                this.updateNavigation();
+                this.currentIndex++;
+                this.navigateTo(this.currentIndex);
             });
 
+            // Handle infinite loop
+            this.track.addEventListener('transitionend', () => this.checkBoundary());
+
             // Resize handler
+            let resizeTimeout;
             window.addEventListener('resize', () => {
-                this.calculateDimensions();
-                this.currentTranslate = -this.currentIndex * (this.cardWidth + this.gap);
-                this.setTransform(this.currentTranslate);
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    this.calculateDimensions();
+                    this.navigateTo(this.currentIndex);
+                }, 200);
             });
+        }
+
+        getPositionX(event) {
+            return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
         }
     }
 

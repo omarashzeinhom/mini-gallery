@@ -4,11 +4,17 @@
     --mgwpp-pro-carousel-gap: 30px;
     position: relative;
     padding: 2rem 0;
+    cursor: grab;
 }
 
 .mgwpp-pro-carousel__container {
     overflow: hidden;
     padding: 0 2rem;
+}
+
+.mgwpp-pro-carousel__track.dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
 }
 
 .mgwpp-pro-carousel__track {
@@ -18,6 +24,9 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    //gpu acceleration
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .mgwpp-pro-carousel__card {

@@ -1,8 +1,8 @@
 # Mini Gallery
 
-- Stable tag: 1.2
+- Stable tag: 1.3
 - Requires at least: 6.0
-- Tested up to: 6.8.0
+- Tested up to: 6.8.1
 - Requires PHP: 8.0
 - License: GPLv2 or later
 - License URI: [GPLv2 License](https://www.gnu.org/licenses/gpl-2.0.html)

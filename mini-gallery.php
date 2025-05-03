@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mini Gallery
  * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own
- * Version: 1.2
+ * Version: 1.3
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */

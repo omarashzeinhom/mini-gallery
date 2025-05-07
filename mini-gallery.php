@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mini Gallery
  * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own
- * Version: 1.3
+ * Version: 1.4
  * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
  * License: GPLv2
  */
@@ -55,8 +55,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/cla
 require_once plugin_dir_path(__FILE__) . 'includes/registration/testimonials/class-mgwpp-testimonials-manager.php';
 
 
-// Functions Admin Uninstall
-//require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-admin.php';
 // New Admin Core
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-admin-core.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-data-handler.php';
@@ -218,38 +216,11 @@ function mgwpp_plugin_uninstall()
     }
     remove_role('marketing_team');
 }
-/**
- *
- * Debugging
- */
-//add_action(
-//    'admin_init',
-//    function () {
-//error_log('POST Data: ' . print_r($_POST, true));
-//error_log('REQUEST Data: ' . print_r($_REQUEST, true));
-//    }
-//);
-
-
-/**
- * Proper ob_end_flush() for all levels
- *
- * This replaces the WordPress `wp_ob_end_flush_all()` function
- * with a replacement that doesn't cause PHP notices.
- */
-//remove_action('shutdown', 'wp_ob_end_flush_all', 1);
-//add_action('shutdown', function () {
-//    while (@ob_end_flush());
-//});
-
-
-// Add this to your plugin's main file or a relevant include file
 
 add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 function mgwpp_handle_preview_request()
 {
-    // 1. First check if this is a preview request
     if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
         return;
     }
@@ -258,7 +229,6 @@ function mgwpp_handle_preview_request()
         $nonce = sanitize_key(wp_unslash($_GET['_wpnonce']));
     }
 
-    // 2. Verify nonce with proper action
     if (!wp_verify_nonce($nonce ?? '', 'mgwpp_preview')) {
         wp_die(
             '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
@@ -268,19 +238,15 @@ function mgwpp_handle_preview_request()
         );
     }
 
-    // 3. Validate gallery ID
     $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
     if (!$gallery_id) {
         wp_die(esc_html__('Invalid gallery ID format.', 'mini-gallery'));
     }
 
-    // 4. Verify gallery exists
     $gallery = get_post($gallery_id);
     if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
         wp_die(esc_html__('The requested gallery no longer exists.', 'mini-gallery'));
     }
-
-    // 5. Show preview template
     get_header();
     echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
     get_footer();
@@ -289,7 +255,6 @@ function mgwpp_handle_preview_request()
 add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 
-// Handle gallery-archive relationships
 add_action('template_redirect', function() {
     if (is_singular('mgwpp_soora')) {
         // Track gallery views for analytics (optional)
@@ -297,7 +262,6 @@ add_action('template_redirect', function() {
     }
 });
 
-// Register custom query var for album navigation
 add_filter('query_vars', function($vars) {
     $vars[] = 'mgwpp_album_id';
     return $vars;

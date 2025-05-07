@@ -93,11 +93,11 @@ class MGWPP_Testimonial_Carousel
                   'em'         => array()  // Allow <em> tags
                 );
 
-                $content = wpautop($testimonial->post_content); // Convert newlines to <p> tags
+                $content = $testimonial->post_content;
+                $content = wpautop($content); // Convert newlines to <p> tags
                 $content = wp_kses($content, $allowed_html); // Sanitize the HTML content
-
-                $block_quote_content = wp_kses_post_deep('<blockquote>' . $content . '</blockquote>');
-                echo esc_html( $block_quote_content, 'mini-gallery');
+                
+                echo wp_kses_post_deep($content);
                 ?>
                 <div class="mgwpp-carousel-testimonials-meta">
                   <?php if ($author) : ?>

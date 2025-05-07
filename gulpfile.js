@@ -7,8 +7,8 @@ gulp.task(
     'watch', function () {
         browserSync.init(
             {
-                host: "localhost/wordpress",
-                proxy: "localhost/wordpress",
+                host: "agws.local",
+                proxy: "agws.local",
                 notify: true,
                 open: true,
             }

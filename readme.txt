@@ -2,9 +2,9 @@
 Contributors: @omarashzeinhom
 Tags: gallery, lite, elementor, carousel, slider
 Requires at least: 6.0
-Tested up to: 6.8.1
-Version: 1.3
-Stable tag: 1.3
+Tested up to: 6.8
+Version: 1.4
+Stable tag: 1.4
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -31,6 +31,13 @@ A lightweight and flexible WordPress gallery plugin, now with Elementor support 
 3. Use the provided shortcodes or Elementor widget to insert galleries into your pages.
 
 == Changelog ==
+
+= 1.4 =
+1 . Added Fix for `blockquote` in testimonials
+
+
+= 1.3 =
+  1. Fixed Pro Carousel Slide Animation 
 
 = 1.2 =
 - Added 11 new gallery types:

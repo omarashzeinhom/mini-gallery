@@ -95,9 +95,8 @@ class MGWPP_Testimonial_Carousel
 
                 $content = $testimonial->post_content;
                 $content = wpautop($content); // Convert newlines to <p> tags
-                $content = wp_kses($content, $allowed_html); // Sanitize the HTML content
-                
-                echo wp_kses_post_deep($content);
+                // Sanitize the HTML content
+                echo  wp_kses($content, $allowed_html);
                 ?>
                 <div class="mgwpp-carousel-testimonials-meta">
                   <?php if ($author) : ?>

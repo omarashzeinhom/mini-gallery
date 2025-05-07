@@ -63,7 +63,7 @@ private function render_slides( $gallery_id ) {
         foreach ( $slides as $slide_id ) {
             echo '<div class="mgwpp-slider__slide">';
             // Use the HTML version to avoid loading full post objects twice
-            echo \Elementor\Plugin::instance()->frontend->get_builder_content( $slide_id );
+            echo esc_html(\Elementor\Plugin::instance()->frontend->get_builder_content( $slide_id ));
             echo '</div>';
         }
         echo '</div>';

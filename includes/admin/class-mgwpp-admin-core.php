@@ -45,14 +45,15 @@ class MGWPP_Admin_Core
 
     private function init_components()
     {
+        $this->init_assets();
         add_action('admin_menu', [$this->menu_manager, 'register_menus']);
         add_action('admin_menu', [$this, 'init_view_classes']);
     }
 
-     public function init_assets()
-    {
+    public function init_assets() {
         $this->asset_manager = new MGWPP_Admin_Assets();
     }
+
 
     public function init_view_classes()
     {

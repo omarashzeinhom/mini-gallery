@@ -3,18 +3,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// TODO
-wp_enqueue_style('wp-color-picker');
-wp_enqueue_script('wp-color-picker');
-$plugin_url = plugin_dir_url(dirname(__FILE__, 2)); // Points to plugin root
-
-// CSS
-wp_enqueue_style(
-    'mgwpp-admin-styles',
-    $plugin_url . 'admin/css/mg-admin-edit-dashboard-styles.css',
-    [],
-    filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/css/mg-admin-edit-dashboard-styles.css')
-);
 
 
 class MGWPP_Admin_Edit_Gallery
@@ -62,7 +50,18 @@ class MGWPP_Admin_Edit_Gallery
     }
 
     public static function render_edit_gallery_page()
-    {
+    { // CSS
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        $plugin_url = plugin_dir_url(dirname(__FILE__, 2)); // Points to plugin root
+
+
+        wp_enqueue_style(
+            'mgwpp-admin-styles',
+            $plugin_url . 'admin/css/mg-admin-edit-dashboard-styles.css',
+            [],
+            filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/css/mg-admin-edit-dashboard-styles.css')
+        );
         // Validate gallery ID with unslashing
         $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
 

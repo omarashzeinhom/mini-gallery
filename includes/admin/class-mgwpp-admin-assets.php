@@ -12,15 +12,13 @@ class MGWPP_Admin_Assets
 
     public function enqueue_assets($hook)
     {
-        // Debug this first if needed
-        // error_log($hook);
+        // Load only on plugin pages
+        if (strpos($hook, 'mgwpp_') === false) return;
 
-        // Load only on our plugin pages
-        if (strpos($hook, 'mgwpp_') === false) {
-            return;
-        }
+        // Load core assets first
+        $this->load_core_assets();
 
-        // Dashboard-specific assets
+        // Load dashboard-specific assets
         if ($hook === 'toplevel_page_mgwpp_dashboard') {
             $this->load_dashboard_assets();
         }
@@ -69,21 +67,21 @@ class MGWPP_Admin_Assets
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
 
-        // Main admin JS
-        wp_enqueue_script(
-            'mgwpp-admin-core', // Consistent handle
-            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
-            ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
-            true
-        );
-
         // Main admin CSS
         wp_enqueue_style(
             'mgwpp-admin-core',
             MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css',
             [],
             filemtime(MG_PLUGIN_PATH . 'admin/css/mg-admin-styles.css')
+        );
+
+        // Main admin JS
+        wp_enqueue_script(
+            'mgwpp-admin-core',
+            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
+            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            true
         );
 
         wp_localize_script(

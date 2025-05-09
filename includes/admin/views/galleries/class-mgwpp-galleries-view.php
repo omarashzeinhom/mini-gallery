@@ -17,54 +17,60 @@ class MGWPP_Galleries_View
         "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp"]
     ];
 
-    private $items; // Add items as an instance property
+    private $items;
 
-    // Constructor to initialize items
     public function __construct($items = [])
     {
         $this->items = $items;
     }
 
-    // Setter method for items if needed
-    public function set_items($items)
+
+    public  function render()
     {
-        $this->items = $items;
-    }
-
-
-
-    public static function render()
-    {
-        echo '<div class="mgwpp-gallery-grid">';
-        foreach ($this->items as $item) { 
-            echo '
-            <div class="mgwpp-gallery-card">
-                <div class="mgwpp-card-header">
-                    <img src="' . esc_url($item['thumbnail']) . '" 
-                         alt="' . esc_attr($item['title']) . '"
-                         class="mgwpp-card-image">
-                    <div class="mgwpp-card-actions">
-                        ' . $item['actions'] . '
+        if (empty($this->items)) {
+            echo '<div class="mgwpp-empty-state">';
+            echo '<img src="' . MG_PLUGIN_URL . '/admin/images/empty-galleries.svg" alt="No galleries">';
+            echo '<h3>' . __('No galleries found', 'mini-gallery') . '</h3>';
+            echo '<p>' . __('Create your first gallery to get started', 'mini-gallery') . '</p>';
+            echo '<button class="button button-primary mgwpp-open-create-modal">'
+                . __('Create Gallery', 'mini-gallery')
+                . '</button>';
+            echo '</div>';
+            return;
+        } else {
+            echo '<div class="mgwpp-gallery-grid">';
+            foreach ($this->items as $item) {
+                echo '
+                <div class="mgwpp-gallery-card">
+                    <div class="mgwpp-card-header">
+                        <img src="' . esc_url($item['thumbnail']) . '" 
+                             alt="' . esc_attr($item['title']) . '"
+                             class="mgwpp-card-image">
+                        <div class="mgwpp-card-actions">
+                            ' . $item['actions'] . '
+                        </div>
                     </div>
-                </div>
-                
-                <div class="mgwpp-card-body">
-                    <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
-                    <div class="mgwpp-card-meta">
-                        <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
-                        <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
+                    
+                    <div class="mgwpp-card-body">
+                        <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
+                        <div class="mgwpp-card-meta">
+                            <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
+                            <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
+                        </div>
+                        <div class="mgwpp-card-shortcode">
+                            <input type="text" value="' . esc_attr($item['shortcode']) . '" 
+                                   readonly 
+                                   class="mgwpp-shortcode-input"
+                                   onclick="this.select()">
+                        </div>
                     </div>
-                    <div class="mgwpp-card-shortcode">
-                        <input type="text" value="' . esc_attr($item['shortcode']) . '" 
-                               readonly 
-                               class="mgwpp-shortcode-input"
-                               onclick="this.select()">
-                    </div>
-                </div>
-            </div>';
+                </div>';
+            }
         }
+
         echo '</div>';
 
+        self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
 
@@ -172,6 +178,16 @@ class MGWPP_Galleries_View
                 padding: 20px;
             }
         ');
+        // Add JavaScript
+        wp_add_inline_script('thickbox', '
+ jQuery(document).ready(function($) {
+     // Show modal when button is clicked
+     $(".mgwpp-open-create-modal").click(function(e) {
+         e.preventDefault();
+         tb_show("Create Gallery", "#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery");
+     });
+ });
+');
     }
 }
 

@@ -57,14 +57,15 @@ class MGWPP_Admin_Core
 
     public function init_view_classes()
     {
-        // Initialize views with required dependencies
-        new MGWPP_Galleries_View($this->asset_manager);
-        //new MGWPP_Security_View($this->asset_manager);
-        new MGWPP_Albums_View($this->asset_manager);
-        new MGWPP_Dashboard_View($this->asset_manager);
-        
-        // Initialize modules view with module loader
-        //new MGWPP_Modules_View($this->module_loader);
+         // Get gallery data first
+    $list_table = new MGWPP_Galleries_List_Table();
+    $list_table->prepare_items();
+    $gallery_items = $list_table->items;
+
+    // Initialize views with data
+    new MGWPP_Galleries_View($gallery_items);
+    new MGWPP_Albums_View();
+    new MGWPP_Dashboard_View();
     }
 
     public function run()

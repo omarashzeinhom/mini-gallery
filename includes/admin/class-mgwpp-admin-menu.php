@@ -7,9 +7,26 @@ class MGWPP_Admin_Menu
 {
     private $view_classes = [];
     private $modules_view;
-    
-    public function __construct($module_loader) {
+    private $galleries_view; // Add instance variables
+    private $albums_view;
+    private $testimonials_view;
+    private $security_view;
+
+    // In class-mgwpp-admin-menu.php
+    public function __construct($module_loader)
+    {
+        // Get gallery data
+        $list_table = new MGWPP_Galleries_List_Table();
+        $list_table->prepare_items();
+
+        // Initialize view with items
+        $this->galleries_view = new MGWPP_Galleries_View($list_table->items);
+
+        // Initialize other views
         $this->modules_view = new MGWPP_Modules_View($module_loader);
+        $this->albums_view = new MGWPP_Albums_View();
+        $this->testimonials_view = new MGWPP_Testimonials_View();
+        $this->security_view = new MGWPP_Security_View();
     }
 
     public function register_menus()
@@ -45,22 +62,22 @@ class MGWPP_Admin_Menu
         $this->view_classes = [
             'galleries' => [
                 'page_title' => __('Galleries', 'mini-gallery'),
-                'callback' => [MGWPP_Galleries_View::class, 'render'],
+                'callback' => [$this->galleries_view, 'render'], // ✅ Instance method
                 'capability' => 'edit_posts'
             ],
             'albums' => [
                 'page_title' => __('Albums', 'mini-gallery'),
-                'callback' => [MGWPP_Albums_View::class, 'render'],
+                'callback' => [$this->albums_view, 'render'], // ✅ Instance method
                 'capability' => 'edit_posts'
             ],
             'testimonials' => [
                 'page_title' => __('Testimonials', 'mini-gallery'),
-                'callback' => [MGWPP_Testimonials_View::class, 'render'],
+                'callback' => [$this->testimonials_view, 'render'], // ✅ Instance method
                 'capability' => 'manage_options'
             ],
             'security' => [
                 'page_title' => __('Security', 'mini-gallery'),
-                'callback' => [MGWPP_Security_View::class, 'render'],
+                'callback' => [$this->security_view, 'render'], // ✅ Instance method
                 'capability' => 'manage_options'
             ],
             'modules' => [

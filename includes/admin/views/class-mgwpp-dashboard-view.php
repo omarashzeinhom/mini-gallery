@@ -59,8 +59,8 @@ class MGWPP_Dashboard_View
                     <?php
                     self::render_header($dark_mode);
                     self::render_stats_grid($stats);
-                    //self::render_storage_section($storage_data);
-                    //self::render_file_type_table($storage_data);
+                    self::render_storage_section($storage_data);
+                    self::render_file_type_table($storage_data);
                     self::render_modules_section($installed_modules);
                     ?>
                 </div>
@@ -138,9 +138,19 @@ class MGWPP_Dashboard_View
     <?php
     }
 
-    private static function render_stat_card($title, $count, $icon)
+    private static function render_stat_card($title, $count, $icon, $dark_mode)
     {
-        $icon_url = MG_PLUGIN_URL . '/admin/images/' . sanitize_file_name($icon);
+        // Remove the extension and dark/light suffix if present
+        $icon_base = preg_replace('/-(dark|light)\.(png|webp)$/i', '', $icon);
+
+        // Determine which variant to use (invert logic: dark mode uses light icons)
+        $icon_variant = $dark_mode ? 'light' : 'dark';
+        $icon_path = "{$icon_base}-{$icon_variant}.png";
+
+        // Fallback to original if specific variant not found
+        $icon_url = file_exists(MG_PLUGIN_PATH . '/admin/images/icons/' . $icon_path)
+            ? MG_PLUGIN_URL . '/admin/images/icons/' . $icon_path
+            : MG_PLUGIN_URL . '/admin/images/' . sanitize_file_name($icon);
     ?>
         <div class="mgwpp-stat-card">
             <div class="mgwpp-stat-content">
@@ -284,8 +294,5 @@ class MGWPP_Dashboard_View
         echo '<style>';
         include MG_PLUGIN_PATH . '/admin/css/mg-admin-styles.css';
         echo '</style>';
-
-
     }
-    
 }

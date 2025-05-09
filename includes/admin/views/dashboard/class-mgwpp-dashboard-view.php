@@ -39,7 +39,7 @@ class MGWPP_Dashboard_View
                     height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
                 <div class="mgwpp-titles">
                     <h1 class="mgwpp-title">
-                        <?php esc_html_e('Gallery Dashboard', 'mini-gallery') ?>
+                        <?php esc_html_e('Mini Gallery Dashboard', 'mini-gallery') ?>
                         <span class="mgwpp-version"><?php get_file_data(__FILE__, array('Version'), 'mini-gallery'); ?> </span>
                     </h1>
                     <p class="mgwpp-subtitle">

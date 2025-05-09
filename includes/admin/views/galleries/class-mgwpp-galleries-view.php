@@ -3,6 +3,7 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Galleries_View
 {
+
     private static $gallery_types = [
         "single_carousel" => ["Single Carousel", "single-carousel.webp"],
         "multi_carousel" => ["Multi Carousel", "multi-carousel.webp"],
@@ -16,24 +17,52 @@ class MGWPP_Galleries_View
         "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp"]
     ];
 
+    private $items; // Add items as an instance property
+
+    // Constructor to initialize items
+    public function __construct($items = [])
+    {
+        $this->items = $items;
+    }
+
+    // Setter method for items if needed
+    public function set_items($items)
+    {
+        $this->items = $items;
+    }
 
 
 
     public static function render()
     {
-        echo '<div class="wrap">';
-        echo '<h1 class="wp-heading-inline">' . esc_html__('Galleries', 'mini-gallery') . '</h1>';
-        echo '<a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery" class="page-title-action thickbox">' . esc_html__('Add New', 'mini-gallery') . '</a>';
-        echo '<hr class="wp-header-end">';
-
-        // Render the create gallery form in thickbox
-        self::render_create_gallery_modal();
-
-        // Initialize and display the list table
-        $galleries_table = new MGWPP_Galleries_List_Table();
-        $galleries_table->prepare_items();
-        $galleries_table->display();
-
+        echo '<div class="mgwpp-gallery-grid">';
+        foreach ($this->items as $item) { 
+            echo '
+            <div class="mgwpp-gallery-card">
+                <div class="mgwpp-card-header">
+                    <img src="' . esc_url($item['thumbnail']) . '" 
+                         alt="' . esc_attr($item['title']) . '"
+                         class="mgwpp-card-image">
+                    <div class="mgwpp-card-actions">
+                        ' . $item['actions'] . '
+                    </div>
+                </div>
+                
+                <div class="mgwpp-card-body">
+                    <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
+                    <div class="mgwpp-card-meta">
+                        <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
+                        <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
+                    </div>
+                    <div class="mgwpp-card-shortcode">
+                        <input type="text" value="' . esc_attr($item['shortcode']) . '" 
+                               readonly 
+                               class="mgwpp-shortcode-input"
+                               onclick="this.select()">
+                    </div>
+                </div>
+            </div>';
+        }
         echo '</div>';
 
         self::enqueue_gallery_scripts();
@@ -172,8 +201,6 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
 
         public function prepare_items()
         {
-            $this->_column_headers = [$this->get_columns(), [], []];
-
             $galleries = get_posts([
                 'post_type'      => 'mgwpp_soora',
                 'posts_per_page' => -1,
@@ -183,11 +210,16 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
 
             $data = [];
             foreach ($galleries as $gallery) {
+                $thumbnail = get_the_post_thumbnail_url($gallery->ID, 'medium') ?:
+                    MG_PLUGIN_URL . '/admin/images/default-gallery.webp';
+
                 $data[] = [
                     'ID'        => $gallery->ID,
                     'title'     => $gallery->post_title,
                     'type'      => $this->get_gallery_type($gallery->ID),
                     'shortcode' => '[mgwpp_gallery id="' . $gallery->ID . '"]',
+                    'thumbnail' => $thumbnail,
+                    'date'      => get_the_date('', $gallery->ID),
                     'actions'   => $this->get_row_actions($gallery->ID)
                 ];
             }

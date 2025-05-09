@@ -2,22 +2,21 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-// File: includes/admin/class-mgwpp-admin-menu.php
+
 class MGWPP_Admin_Menu
 {
     private $view_classes = [];
     private $modules_view;
     
-     // Add modules view dependency
-     public function __construct($module_loader) {
+    public function __construct($module_loader) {
         $this->modules_view = new MGWPP_Modules_View($module_loader);
     }
-    
 
     public function register_menus()
     {
         $this->setup_menu_structure();
 
+        // Main menu
         add_menu_page(
             __('Mini Gallery', 'mini-gallery'),
             __('Mini Gallery', 'mini-gallery'),
@@ -28,18 +27,22 @@ class MGWPP_Admin_Menu
             20
         );
 
-        $this->register_submenus();
+        // Submenus
+        add_submenu_page(
+            'mgwpp_dashboard',
+            __('Dashboard', 'mini-gallery'),
+            __('Dashboard', 'mini-gallery'),
+            'manage_options',
+            'mgwpp_dashboard',
+            [$this, 'render_dashboard']
+        );
+
+        $this->register_remaining_submenus();
     }
 
-    
     private function setup_menu_structure()
     {
         $this->view_classes = [
-            'dashboard' => [
-                'page_title' => __('Dashboard', 'mini-gallery'),
-                'callback' => [MGWPP_Dashboard_View::class, 'render_dashboard'],
-                'capability' => 'manage_options'
-            ],
             'galleries' => [
                 'page_title' => __('Galleries', 'mini-gallery'),
                 'callback' => [MGWPP_Galleries_View::class, 'render'],
@@ -67,14 +70,15 @@ class MGWPP_Admin_Menu
             ]
         ];
     }
-    private function register_submenus()
+
+    private function register_remaining_submenus()
     {
         foreach ($this->view_classes as $slug => $menu_item) {
             add_submenu_page(
                 'mgwpp_dashboard',
                 $menu_item['page_title'],
                 $menu_item['page_title'],
-                'manage_options',
+                $menu_item['capability'],
                 'mgwpp_' . $slug,
                 $menu_item['callback']
             );
@@ -83,6 +87,6 @@ class MGWPP_Admin_Menu
 
     public function render_dashboard()
     {
-        // Dashboard rendering logic
+        MGWPP_Dashboard_View::render_dashboard();
     }
 }

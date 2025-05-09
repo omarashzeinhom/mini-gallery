@@ -161,11 +161,14 @@ function mgwpp_custom_templates($template)
     return $template;
 }
 
-add_action('plugins_loaded', function () {
+add_action('admin_menu', function () {
     if (is_admin()) {
         MGWPP_Admin_Core::init();
+    } else {
+        esc_html_e('Your Not Allowed To Access Mini Gallery: Access Has Been Reported to Security Plugin', 'mini-gallery');
     }
-});
+}, 5);
+
 
 // Link Elementor templates to galleries
 add_action('elementor/editor/after_save', function ($post_id) {
@@ -225,7 +228,7 @@ function mgwpp_handle_preview_request()
         return;
     }
 
-    if (isset($_GET['_wpnonce'])){
+    if (isset($_GET['_wpnonce'])) {
         $nonce = sanitize_key(wp_unslash($_GET['_wpnonce']));
     }
 
@@ -255,14 +258,14 @@ function mgwpp_handle_preview_request()
 add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 
-add_action('template_redirect', function() {
+add_action('template_redirect', function () {
     if (is_singular('mgwpp_soora')) {
         // Track gallery views for analytics (optional)
         do_action('mgwpp_gallery_viewed', get_queried_object_id());
     }
 });
 
-add_filter('query_vars', function($vars) {
+add_filter('query_vars', function ($vars) {
     $vars[] = 'mgwpp_album_id';
     return $vars;
 });

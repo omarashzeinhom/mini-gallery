@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) {
 
 // File: includes/admin/views/class-security-view.php
 class MGWPP_Security_View {
+    
     public static function render() {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];

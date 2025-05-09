@@ -62,23 +62,62 @@ class MGWPP_Admin_Assets
         );
     }
 
-    
+    private function load_core_assets()
+    {
+        // WordPress dependencies
+        wp_enqueue_media();
+        wp_enqueue_script('thickbox');
+        wp_enqueue_style('thickbox');
 
-    private function load_dashboard_assets() {
-        // Dashboard CSS (add core as dependency)
-        wp_enqueue_style(
-            'mgwpp-dashboard',
-            MG_PLUGIN_URL . '/includes/admin/views/dashboard/mgwpp-dashboard-view.css',
-            ['mgwpp-admin-core'], // Add core as dependency
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/dashboard/mgwpp-dashboard-view.css')
+        // Main admin JS
+        wp_enqueue_script(
+            'mgwpp-admin-core', // Consistent handle
+            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
+            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            true
         );
 
-        // Dashboard JS (add core as dependency)
+        // Main admin CSS
+        wp_enqueue_style(
+            'mgwpp-admin-core',
+            MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css',
+            [],
+            filemtime(MG_PLUGIN_PATH . 'admin/css/mg-admin-styles.css')
+        );
+
+        wp_localize_script(
+            'mgwpp-admin-js',
+            'mgwppMedia',
+            [
+                'ajax_url'        => admin_url('admin-ajax.php'),
+                'nonce'           => wp_create_nonce('mgwpp_nonce'),
+                'text_title'      => __('Select Gallery Images', 'mini-gallery'),
+                'text_select'     => __('Use Selected', 'mini-gallery'),
+                'gallery_success' => __('Gallery created successfully!', 'mini-gallery'),
+                'generic_error'   => __('An error occurred. Please try again.', 'mini-gallery'),
+            ]
+        );
+    }
+
+    private function load_dashboard_assets()
+    {
+        $dashboard_path = '/includes/admin/views/dashboard/';
+
+        // Dashboard CSS
+        wp_enqueue_style(
+            'mgwpp-dashboard',
+            MG_PLUGIN_URL . $dashboard_path . 'mgwpp-dashboard-view.css',
+            ['mgwpp-admin-core'], // Correct dependency
+            filemtime(MG_PLUGIN_PATH . $dashboard_path . 'mgwpp-dashboard-view.css')
+        );
+
+        // Dashboard JS
         wp_enqueue_script(
             'mgwpp-dashboard',
-            MG_PLUGIN_URL . '/includes/admin/views/dashboard/mgwpp-dashboard-view.js',
+            MG_PLUGIN_URL . $dashboard_path . 'mgwpp-dashboard-view.js',
             ['mgwpp-admin-core'], // Correct dependency
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/dashboard/mgwpp-dashboard-view.js'),
+            filemtime(MG_PLUGIN_PATH . $dashboard_path . 'mgwpp-dashboard-view.js'),
             true
         );
     }

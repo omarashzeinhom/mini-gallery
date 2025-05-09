@@ -8,12 +8,10 @@ class MGWPP_Admin_Core
 {
     public function __construct() {
         $this->load_dependencies();
-        $this->menu_manager  = new MGWPP_Admin_Menu();
-        $this->asset_manager = new MGWPP_Admin_Assets();  // ← instantiate here, not in a hook
-        add_action('admin_menu', [$this->menu_manager, 'register_menus']);
-        add_action('admin_menu', [$this,             'init_view_classes']);
+        $this->module_loader = new MGWPP_Module_Loader(); // Store as property
+        $this->menu_manager  = new MGWPP_Admin_Menu($this->module_loader);
+        $this->init_components();
     }
-
     private $menu_manager;
     private $asset_manager;
     private $module_loader;
@@ -42,25 +40,32 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
         require_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/class-mgwpp-dashboard-view.php';
+        require_once __DIR__ . '/views/class-mgwpp-modules-view.php';
     }
 
     private function init_components()
     {
-        // Initialize components that hook into WordPress actions
-        $this->menu_manager = new MGWPP_Admin_Menu();
-        $this->module_loader = new MGWPP_Module_Loader();
-
-        // Initialize assets manager LAST and hook it properly
-        add_action('admin_enqueue_scripts', [$this, 'init_assets']);
+        add_action('admin_menu', [$this->menu_manager, 'register_menus']);
+        add_action('admin_menu', [$this, 'init_view_classes']);
     }
 
-    public function init_assets()
+     public function init_assets()
     {
         $this->asset_manager = new MGWPP_Admin_Assets();
-        // Add force-load hook
-        //add_action('admin_enqueue_scripts', [$this->asset_manager, 'force_load_dashboard_styles'], 20);
     }
-    
+
+    public function init_view_classes()
+    {
+        // Initialize views with required dependencies
+        new MGWPP_Galleries_View($this->asset_manager);
+        new MGWPP_Security_View($this->asset_manager);
+        new MGWPP_Albums_View($this->asset_manager);
+        new MGWPP_Dashboard_View($this->asset_manager);
+        
+        // Initialize modules view with module loader
+        new MGWPP_Modules_View($this->module_loader);
+    }
+
     public function run()
     {
         // Register menus first
@@ -68,16 +73,6 @@ class MGWPP_Admin_Core
 
         // Initialize views AFTER menu registration
         add_action('admin_menu', [$this, 'init_view_classes']);
-    }
-
-    public function init_view_classes()
-    {
-        $asset_manager = $this->asset_manager;
-        // Initialize view classes with their dependencies
-        new MGWPP_Galleries_View($this->asset_manager);
-        new MGWPP_Security_View($this->asset_manager);
-        new MGWPP_Albums_View($this->asset_manager);
-        new MGWPP_Dashboard_View($asset_manager);
     }
 
     public function add_gallery_preview_iframe($post)

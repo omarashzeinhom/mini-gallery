@@ -49,13 +49,16 @@ private function render_slides( $gallery_id ) {
     // Fetch IDs only (lighter, no extra pagination query)
     $slides = get_posts([
         'post_type'              => 'elementor_library',
-        'meta_key'               => '_mgwpp_parent_gallery',
-        'meta_value'             => $gallery_id,
         'posts_per_page'         => -1,
         'fields'                 => 'ids',           // only pull back IDs
         'no_found_rows'          => true,            // skip pagination count
         'update_post_meta_cache' => false,
         'update_post_term_cache' => false,
+        'meta-query' => [
+            'key'=> '_mgwpp_parent_gallery',
+            'value'=> $gallery_id,
+            'compare'=> '=',
+        ]
     ]);
 
     if ( ! empty( $slides ) ) {

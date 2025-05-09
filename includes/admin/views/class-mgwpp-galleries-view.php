@@ -1,7 +1,8 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class MGWPP_Galleries_View {
+class MGWPP_Galleries_View
+{
     private static $gallery_types = [
         "single_carousel" => ["Single Carousel", "single-carousel.webp"],
         "multi_carousel" => ["Multi Carousel", "multi-carousel.webp"],
@@ -15,40 +16,45 @@ class MGWPP_Galleries_View {
         "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp"]
     ];
 
-    public static function render() {
+
+
+
+    public static function render()
+    {
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . esc_html__('Galleries', 'mini-gallery') . '</h1>';
         echo '<a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery" class="page-title-action thickbox">' . esc_html__('Add New', 'mini-gallery') . '</a>';
         echo '<hr class="wp-header-end">';
-        
+
         // Render the create gallery form in thickbox
         self::render_create_gallery_modal();
-        
+
         // Initialize and display the list table
         $galleries_table = new MGWPP_Galleries_List_Table();
         $galleries_table->prepare_items();
         $galleries_table->display();
-        
+
         echo '</div>';
-        
+
         self::enqueue_gallery_scripts();
     }
 
-    private static function render_create_gallery_modal() {
-        ?>
+    private static function render_create_gallery_modal()
+    {
+?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="mgwpp_create_gallery">
                     <?php wp_nonce_field('mgwpp_create_gallery', 'mgwpp_gallery_nonce'); ?>
-                    
+
                     <table class="form-table">
                         <tr>
                             <th scope="row"><label for="gallery_title"><?php esc_html_e('Gallery Title:', 'mini-gallery'); ?></label></th>
                             <td><input type="text" id="gallery_title" name="gallery_title" required class="regular-text"></td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row"><label><?php esc_html_e('Gallery Images:', 'mini-gallery'); ?></label></th>
                             <td>
@@ -59,7 +65,7 @@ class MGWPP_Galleries_View {
                                 <div class="mgwpp-media-preview"></div>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row"><label for="gallery_type"><?php esc_html_e('Gallery Style:', 'mini-gallery'); ?></label></th>
                             <td>
@@ -73,22 +79,47 @@ class MGWPP_Galleries_View {
                             </td>
                         </tr>
                     </table>
-                    
+
                     <p class="submit">
                         <input type="submit" class="button button-primary" value="<?php esc_attr_e('Create Gallery', 'mini-gallery'); ?>">
                     </p>
                 </form>
             </div>
         </div>
-        <?php
+<?php
     }
 
-    private static function enqueue_gallery_scripts() {
+    private static function enqueue_gallery_scripts()
+    {
         wp_enqueue_media();
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
-        
-     
+
+        // Get the correct path to admin directory
+        $admin_dir = dirname(__FILE__, 2); // Goes up 2 levels from views directory
+
+        // CSS file path
+        $css_path = $admin_dir . '/css/mg-admin-dashboard-styles.css';
+        $css_url = plugins_url('admin/css/mg-admin-dashboard-styles.css', dirname(__FILE__, 3));
+
+        // Enqueue with filemtime check
+        if (file_exists($css_path)) {
+            wp_enqueue_style(
+                'mgwpp-admin',
+                $css_url,
+                array(),
+                filemtime($css_path)
+            );
+        } else {
+            // Fallback with version number
+            wp_enqueue_style(
+                'mgwpp-admin',
+                $css_url,
+                array(),
+                '1.0.0'
+            );
+        }
+
         wp_add_inline_style('thickbox', '
             .mgwpp-media-preview {
                 display: flex;
@@ -118,8 +149,10 @@ class MGWPP_Galleries_View {
 if (!class_exists('MGWPP_Galleries_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 
-    class MGWPP_Galleries_List_Table extends WP_List_Table {
-        public function __construct() {
+    class MGWPP_Galleries_List_Table extends WP_List_Table
+    {
+        public function __construct()
+        {
             parent::__construct([
                 'singular' => 'gallery',
                 'plural'   => 'galleries',
@@ -127,7 +160,8 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             ]);
         }
 
-        public function get_columns() {
+        public function get_columns()
+        {
             return [
                 'title'     => esc_html__('Title', 'mini-gallery'),
                 'type'      => esc_html__('Type', 'mini-gallery'),
@@ -136,16 +170,17 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             ];
         }
 
-        public function prepare_items() {
+        public function prepare_items()
+        {
             $this->_column_headers = [$this->get_columns(), [], []];
-            
+
             $galleries = get_posts([
                 'post_type'      => 'mgwpp_soora',
                 'posts_per_page' => -1,
                 'orderby'        => 'title',
                 'order'          => 'ASC'
             ]);
-            
+
             $data = [];
             foreach ($galleries as $gallery) {
                 $data[] = [
@@ -156,15 +191,17 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
                     'actions'   => $this->get_row_actions($gallery->ID)
                 ];
             }
-            
+
             $this->items = $data;
         }
 
-        public function column_default($item, $column_name) {
+        public function column_default($item, $column_name)
+        {
             return $item[$column_name];
         }
 
-        public function column_title($item) {
+        public function column_title($item)
+        {
             return sprintf(
                 '<strong>%1$s</strong><div class="row-actions"><span class="id">ID: %2$s</span></div>',
                 esc_html($item['title']),
@@ -172,17 +209,19 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             );
         }
 
-        public function column_shortcode($item) {
+        public function column_shortcode($item)
+        {
             return sprintf(
                 '<input type="text" readonly value="%1$s" class="shortcode-input" onclick="this.select()">',
                 esc_attr($item['shortcode'])
             );
         }
 
-        public function column_actions($item) {
+        public function column_actions($item)
+        {
             return sprintf(
                 '<a href="%1$s" class="button">%3$s</a> ' .
-                '<a href="%2$s" class="button button-link-delete" onclick="return confirm(\'%4$s\')">%5$s</a>',
+                    '<a href="%2$s" class="button button-link-delete" onclick="return confirm(\'%4$s\')">%5$s</a>',
                 esc_url(wp_nonce_url(
                     admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $item['ID']),
                     'mgwpp_edit_gallery'
@@ -197,7 +236,8 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             );
         }
 
-        private function get_gallery_type($gallery_id) {
+        private function get_gallery_type($gallery_id)
+        {
             $type = get_post_meta($gallery_id, 'gallery_type', true);
             $types = [
                 "single_carousel" => "Single Carousel",
@@ -211,16 +251,17 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
                 "spotlight_carousel" => "Spotlight Carousel",
                 "testimonials_carousel" => "Testimonials Carousel"
             ];
-            
+
             return isset($types[$type]) ? $types[$type] : ucwords(str_replace('_', ' ', $type));
         }
 
-        private function get_row_actions($gallery_id) {
+        private function get_row_actions($gallery_id)
+        {
             $preview_url = wp_nonce_url(
                 admin_url('admin.php?page=mgwpp-galleries&action=preview&gallery_id=' . $gallery_id),
                 'mgwpp_preview_gallery'
             );
-            
+
             return sprintf(
                 '<a href="%s" class="button thickbox">%s</a>',
                 esc_url($preview_url . '&TB_iframe=true&width=800&height=600'),

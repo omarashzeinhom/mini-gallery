@@ -1,0 +1,107 @@
+:root {
+    /* Light Theme */
+    --mgwpp-background-light: #f8fafc;
+    --mgwpp-foreground-light: #1e293b;
+    --mgwpp-card-bg-light: rgba(255, 255, 255, 0.9);
+    --mgwpp-card-border-light: rgba(226, 232, 240, 0.5);
+    --mgwpp-card-shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --mgwpp-icon-bg-light: #ecfeff;
+    --mgwpp-icon-color-light: #1dc1dc;
+    --mgwpp-button-bg-light: #f1f5f9;
+    --mgwpp-button-text-light: #64748b;
+  
+    /* Dark Theme */
+    --mgwpp-background-dark: #0f172a;
+    --mgwpp-foreground-dark: #f8fafc;
+    --mgwpp-card-bg-dark: rgba(15, 23, 42, 0.9);
+    --mgwpp-card-border-dark: rgba(51, 65, 85, 0.5);
+    --mgwpp-card-shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.2);
+    --mgwpp-icon-bg-dark: rgba(12, 157, 181, 0.2);
+    --mgwpp-icon-color-dark: #4df2ff;
+    --mgwpp-button-bg-dark: #1e293b;
+    --mgwpp-button-text-dark: #cbd5e1;
+  
+    /* Common */
+    --mgwpp-primary-color: #1dc1dc;
+    --mgwpp-border-radius-lg: 12px;
+    --mgwpp-transition-speed: 0.3s;
+  }
+  
+  .mgwpp-dashboard-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    background: var(--mgwpp-background-light);
+    color: var(--mgwpp-foreground-light);
+    transition: background-color var(--mgwpp-transition-speed) ease;
+  }
+  
+  .mgwpp-dark {
+    background: var(--mgwpp-background-dark);
+    color: var(--mgwpp-foreground-dark);
+  }
+  
+  .mgwpp-glass-container {
+    border-radius: var(--mgwpp-border-radius-lg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--mgwpp-card-border-light);
+    background: var(--mgwpp-card-bg-light);
+    box-shadow: var(--mgwpp-card-shadow-light);
+    margin: 2rem;
+  }
+  
+  .mgwpp-dark .mgwpp-glass-container {
+    border-color: var(--mgwpp-card-border-dark);
+    background: var(--mgwpp-card-bg-dark);
+    box-shadow: var(--mgwpp-card-shadow-dark);
+  }
+  
+  /* Header */
+  .mgwpp-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    align-items: center;
+  }
+  
+  .mgwpp-theme-toggle-button {
+    background: var(--mgwpp-button-bg-light);
+    border: 1px solid var(--mgwpp-card-border-light);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all var(--mgwpp-transition-speed) ease;
+  }
+  
+  .mgwpp-dark .mgwpp-theme-toggle-button {
+    background: var(--mgwpp-button-bg-dark);
+    border-color: var(--mgwpp-card-border-dark);
+  }
+  
+  .mgwpp-theme-toggle-button img {
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Stats Grid */
+  .mgwpp-stats-grid {
+    display: grid;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .mgwpp-stat-card {
+    padding: 1.5rem;
+    border-radius: var(--mgwpp-border-radius-lg);
+    background: var(--mgwpp-card-bg-light);
+    border: 1px solid var(--mgwpp-card-border-light);
+    transition: transform 0.2s ease;
+  }
+  
+  .mgwpp-dark .mgwpp-stat-card {
+    background: var(--mgwpp-card-bg-dark);
+    border-color: var(--mgwpp-card-border-dark);
+  }

@@ -3,18 +3,26 @@ if (! defined('ABSPATH')) {
     exit;
 }
 // File: includes/admin/class-mgwpp-admin-assets.php
-class MGWPP_Admin_Assets {
-    public function __construct() {
+class MGWPP_Admin_Assets
+{
+    public function __construct()
+    {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
-    public function enqueue_assets($hook) {
+    public function enqueue_assets($hook)
+    {
         // Debug this first if needed
         // error_log($hook);
 
         // Load only on our plugin pages
         if (strpos($hook, 'mgwpp_') === false) {
             return;
+        }
+
+        // Dashboard-specific assets
+        if ($hook === 'toplevel_page_mgwpp_dashboard') {
+            $this->load_dashboard_assets();
         }
 
         // WordPress media + thickbox
@@ -51,6 +59,27 @@ class MGWPP_Admin_Assets {
                 'gallery_success' => __('Gallery created successfully!', 'mini-gallery'),
                 'generic_error'   => __('An error occurred. Please try again.', 'mini-gallery'),
             ]
+        );
+    }
+
+    
+
+    private function load_dashboard_assets() {
+        // Dashboard CSS (add core as dependency)
+        wp_enqueue_style(
+            'mgwpp-dashboard',
+            MG_PLUGIN_URL . '/includes/admin/views/dashboard/mgwpp-dashboard-view.css',
+            ['mgwpp-admin-core'], // Add core as dependency
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/dashboard/mgwpp-dashboard-view.css')
+        );
+
+        // Dashboard JS (add core as dependency)
+        wp_enqueue_script(
+            'mgwpp-dashboard',
+            MG_PLUGIN_URL . '/includes/admin/views/dashboard/mgwpp-dashboard-view.js',
+            ['mgwpp-admin-core'], // Correct dependency
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/dashboard/mgwpp-dashboard-view.js'),
+            true
         );
     }
 }

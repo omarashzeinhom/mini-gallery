@@ -35,12 +35,12 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
 
         // Views
-        require_once __DIR__ . '/views/class-mgwpp-albums-view.php';
-        require_once __DIR__ . '/views/class-mgwpp-security-view.php';
-        require_once __DIR__ . '/views/class-mgwpp-galleries-view.php';
-        require_once __DIR__ . '/views/class-mgwpp-testimonials-view.php';
+        require_once __DIR__ . '/views/albums/class-mgwpp-albums-view.php';
+        require_once __DIR__ . '/views/security/class-mgwpp-security-view.php';
+        require_once __DIR__ . '/views/galleries/class-mgwpp-galleries-view.php';
+        require_once __DIR__ . '/views/testimonials/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
-        require_once __DIR__ . '/views/class-mgwpp-modules-view.php';
+        require_once __DIR__ . '/views/modules/class-mgwpp-modules-view.php';
     }
 
     private function init_components()
@@ -63,7 +63,7 @@ class MGWPP_Admin_Core
         new MGWPP_Dashboard_View($this->asset_manager);
         
         // Initialize modules view with module loader
-        new MGWPP_Modules_View($this->module_loader);
+        //new MGWPP_Modules_View($this->module_loader);
     }
 
     public function run()
@@ -93,4 +93,6 @@ class MGWPP_Admin_Core
             ) . '" width="100%" height="600px" frameborder="0"></iframe>';
         }
     }
+
+    
 }

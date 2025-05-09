@@ -130,65 +130,61 @@ class MGWPP_Galleries_View
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
 
-        // Get the correct path to admin directory
-        $admin_dir = dirname(__FILE__, 2); // Goes up 2 levels from views directory
+        // Get plugin version for cache busting
+        $plugin_data = get_file_data(__FILE__, ['Version' => 'Version']);
+        $plugin_version = $plugin_data['Version'];
 
-        // CSS file path
-        $css_path = $admin_dir . '/css/mg-admin-dashboard-styles.css';
-        $css_url = plugins_url('admin/css/mg-admin-dashboard-styles.css', dirname(__FILE__, 3));
+        // Enqueue main admin CSS
+        wp_enqueue_style(
+            'mgwpp-admin-galleries',
+            plugins_url('assets/css/admin-galleries.css', dirname(__FILE__, 3)),
+            array(),
+            $plugin_version
+        );
 
-        // Enqueue with filemtime check
-        if (file_exists($css_path)) {
-            wp_enqueue_style(
-                'mgwpp-admin',
-                $css_url,
-                array(),
-                filemtime($css_path)
-            );
-        } else {
-            // Fallback with version number
-            wp_enqueue_style(
-                'mgwpp-admin',
-                $css_url,
-                array(),
-                '1.0.0'
-            );
-        }
+        // Enqueue custom admin JS
+        wp_enqueue_script(
+            'mgwpp-admin-js',
+            plugins_url('assets/js/admin-main.js', dirname(__FILE__, 3)),
+            array('jquery', 'thickbox'),
+            $plugin_version,
+            true
+        );
 
-        wp_add_inline_style('thickbox', '
+        // Add inline styles for dynamic elements
+        wp_add_inline_style('mgwpp-admin-galleries', '
             .mgwpp-media-preview {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 10px;
                 margin-top: 10px;
             }
+            
             .mgwpp-media-thumbnail {
                 width: 80px;
                 height: 80px;
                 overflow: hidden;
-                border: 1px solid #ddd;
-                border-radius: 3px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                transition: transform 0.2s ease;
             }
-            .mgwpp-media-thumbnail img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-            #mgwpp-create-gallery {
-                padding: 20px;
+            
+            .mgwpp-media-thumbnail:hover {
+                transform: scale(1.05);
             }
         ');
-        // Add JavaScript
-        wp_add_inline_script('thickbox', '
- jQuery(document).ready(function($) {
-     // Show modal when button is clicked
-     $(".mgwpp-open-create-modal").click(function(e) {
-         e.preventDefault();
-         tb_show("Create Gallery", "#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery");
-     });
- });
-');
+
+        // Localize script for AJAX and translations
+        wp_localize_script('mgwpp-admin-js', 'mgwppAdmin', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('mgwpp-admin-nonce'),
+            'i18n' => [
+                'selectImages' => __('Select Images', 'mini-gallery'),
+                'createGallery' => __('Create Gallery', 'mini-gallery')
+            ]
+        ]);
     }
+
 }
 
 if (!class_exists('MGWPP_Galleries_List_Table')) {

@@ -73,7 +73,9 @@ class MGWPP_Dashboard_View
             self::render_stat_card(__('Galleries', 'mini-gallery'), $stats['galleries'], 'gallery');
             self::render_stat_card(__('Albums', 'mini-gallery'), $stats['albums'], 'album');
             self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'testimonial');
-            ?>
+            self::render_stat_card(__('Storage Usage', 'mini-gallery'), $stats['storage-usage'], 'storage-usage');
+
+?>
         </div>
     <?php
     }
@@ -85,8 +87,8 @@ class MGWPP_Dashboard_View
         <div class="mgwpp-stat-card">
             <div class="mgwpp-stat-content">
                 <div class="mgwpp-stat-icon">
-                    <img src="<?php echo esc_url($icon_url); ?>" alt="<?php echo esc_attr($title) ?>" loading="lazy" width="24"
-                        height="24">
+                    <img src="<?php echo esc_url($icon_url); ?>" alt="<?php echo esc_attr($title) ?>" loading="lazy" width="64"
+                        height="64">
                 </div>
                 <div class="mgwpp-stat-info">
                     <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>

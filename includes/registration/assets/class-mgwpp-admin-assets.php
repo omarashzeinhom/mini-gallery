@@ -4,56 +4,60 @@ if (! defined('ABSPATH')) {
 }
 require_once plugin_dir_path(__FILE__) . 'class-mgwpp-assets.php';
 
-class MGWPP_Admin_Assets {
-    public function __construct() {
-        // Hook registration and enqueueing separately
+class MGWPP_Admin_Assets
+{
+    public function __construct()
+    {
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'maybe_enqueue_assets']);
     }
 
-    public function register_assets() {
-         // Load variables first
-  wp_register_style(
-    'mgwpp-variables',
-    MG_PLUGIN_URL . '/includes/admin/css/variables.css',
-    [],
-    filemtime(MG_PLUGIN_PATH . '/includes/admin/css/variables.css')
-  );
-
-  // Other styles depend on variables
-  wp_register_style(
-    'mg-admin-styles',
-    MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
-    ['mgwpp-variables'], // Add dependency
-    filemtime(...)
-  );
-
-        // Register styles first
+    public function register_assets()
+    {
+        // Register variables first
         wp_register_style(
-            'mg-admin-styles', // Fixed handle to match what you're trying to enqueue
-            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
+            'mgwpp-variables',
+            MG_PLUGIN_URL . '/includes/admin/css/variables.css',
             [],
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/variables.css')
+        );
+
+        // Main admin styles with dependency
+        wp_register_style(
+            'mg-admin-styles',
+            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
+            ['mgwpp-variables'],
             filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
         );
 
-        wp_register_style(
-            'mgwpp-editor-styles', // Renamed for clarity
-            MG_PLUGIN_URL . '/includes/admin/css/editor.css',
-            [],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/editor.css')
-        );
-
-        // Register scripts
+        // Dark mode toggle script
         wp_register_script(
-            'mgwpp-admin-scripts',
-            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
-            ['jquery', 'media-views', 'wp-i18n', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
+            'mgwpp-dark-mode',
+            MG_PLUGIN_URL . '/includes/admin/js/dark-mode.js',
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/dark-mode.js'),
             true
         );
     }
 
-    public function enqueue_assets($hook) {
+    public function maybe_enqueue_assets($hook)
+    {
+        if (!$this->is_plugin_page($hook)) return;
+
+        // Enqueue core assets
+        wp_enqueue_style('mg-admin-styles');
+        wp_enqueue_script('mgwpp-dark-mode');
+
+        // Localize script
+        wp_localize_script('mgwpp-dark-mode', 'mgwppDarkMode', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('mgwpp-dark-mode-nonce'),
+            'currentTheme' => MGWPP_Inner_Header::get_user_theme_preference()
+        ]);
+    }
+
+    public function enqueue_assets($hook)
+    {
         // Only load on specific plugin pages
         if (!$this->is_plugin_page($hook)) {
             return;
@@ -71,7 +75,8 @@ class MGWPP_Admin_Assets {
         $this->localize_scripts();
     }
 
-    private function is_plugin_page($hook) {
+    private function is_plugin_page($hook)
+    {
         $plugin_pages = [
             'toplevel_page_mgwpp_dashboard',      // Dashboard
             'gallery_page_mgwpp_galleries',       // Galleries
@@ -84,7 +89,8 @@ class MGWPP_Admin_Assets {
     }
 
 
-    private function load_media_dependencies() {
+    private function load_media_dependencies()
+    {
         // Only load media on pages that need it
         wp_enqueue_media();
         wp_enqueue_script('media-views');
@@ -92,8 +98,10 @@ class MGWPP_Admin_Assets {
         wp_enqueue_script('media-editor');
     }
 
-    private function localize_scripts() {
+    private function localize_scripts()
+    {
         wp_localize_script('mgwpp-admin-scripts', 'mgwppMedia', [
+            'current_theme' => MGWPP_Inner_Header::get_user_theme_preference(),
             'gallery_success' => __('Gallery saved successfully!', 'mini-gallery'),
             'album_success' => __('Album updated successfully!', 'mini-gallery'),
             'generic_error' => __('An error occurred. Please try again.', 'mini-gallery'),

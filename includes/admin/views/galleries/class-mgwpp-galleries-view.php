@@ -1,5 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
+
 
 class MGWPP_Galleries_View
 {
@@ -90,6 +92,11 @@ class MGWPP_Galleries_View
     public function render()
     {
         // Admin header at the top
+        echo '<div class="mgwpp-dashboard-container">';
+        echo '<div class="mgwpp-dashboard-wrapper">';
+        echo '<div class="mgwpp-glass-container">';
+
+        MGWPP_Inner_Header::render();
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . esc_html__('Galleries', 'mini-gallery') . '</h1>';
         echo '<a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery" class="page-title-action thickbox">' . esc_html__('Add New', 'mini-gallery') . '</a>';
@@ -108,35 +115,38 @@ class MGWPP_Galleries_View
             echo '<div class="mgwpp-gallery-grid">';
             foreach ($this->items as $item) {
                 echo '
-            <div class="mgwpp-gallery-card">
-                <div class="mgwpp-card-header">
-                    <div class="mgwpp-gallery-preview">
-                        ' . $this->get_gallery_preview($item['ID']) . '
-                    </div>
-                    <div class="mgwpp-card-actions">
-                        ' . $item['actions'] . '
-                    </div>
-                </div>
-                
-                <div class="mgwpp-card-body">
-                    <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
-                    <div class="mgwpp-card-meta">
-                        <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
-                        <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
-                    </div>
-                    <div class="mgwpp-card-shortcode">
-                        <input type="text" value="' . esc_attr($item['shortcode']) . '" 
-                               readonly 
-                               class="mgwpp-shortcode-input">
-                        <button class="button mgwpp-copy-shortcode">' . __('Copy', 'mini-gallery') . '</button>
-                    </div>
-                </div>
-            </div>';
+                    <div class="mgwpp-gallery-card">
+                        <div class="mgwpp-card-header">
+                            <div class="mgwpp-gallery-preview">
+                                ' . $this->get_gallery_preview($item['ID']) . '
+                            </div>
+                            <div class="mgwpp-card-actions">
+                                ' . $item['actions'] . '
+                            </div>
+                        </div>
+                        
+                        <div class="mgwpp-card-body">
+                            <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
+                            <div class="mgwpp-card-meta">
+                                <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
+                                <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
+                            </div>
+                            <div class="mgwpp-card-shortcode">
+                                <input type="text" value="' . esc_attr($item['shortcode']) . '" 
+                                    readonly 
+                                    class="mgwpp-shortcode-input">
+                                <button class="button mgwpp-copy-shortcode">' . __('Copy', 'mini-gallery') . '</button>
+                            </div>
+                        </div>
+                    </div>';
             }
             echo '</div>'; // Close mgwpp-gallery-grid
         }
 
         echo '</div>'; // Close wrap
+        echo '</div>'; // Close mgwpp-glass-container
+        echo '</div>'; // Close mgwpp-dashboard-wrapper
+        echo '</div>'; // Close mgwpp-dashboard-container
 
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
@@ -175,7 +185,7 @@ class MGWPP_Galleries_View
 
         // Default image based on gallery type
         if (isset(self::$gallery_types[$gallery_type])) {
-            $default_img = MG_PLUGIN_URL . '/includes/admin/images/' . self::$gallery_types[$gallery_type][1];
+            $default_img = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview' . self::$gallery_types[$gallery_type][1];
             return '<img src="' . esc_url($default_img) . '" class="mgwpp-card-image">';
         }
 
@@ -233,6 +243,7 @@ class MGWPP_Galleries_View
                 </form>
             </div>
         </div>
+
 <?php
 
     }
@@ -240,7 +251,22 @@ class MGWPP_Galleries_View
 
 if (!class_exists('MGWPP_Galleries_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+    // Add this in your plugin's main file or admin handler
+    add_action('admin_post_mgwpp_delete_gallery', function () {
+        if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'mgwpp_delete_gallery')) {
+            wp_die(__('Security check failed', 'mini-gallery'));
+        }
 
+        $gallery_id = intval($_GET['gallery_id']);
+
+        if (wp_delete_post($gallery_id, true)) {
+            wp_redirect(admin_url('admin.php?page=mgwpp-galleries&deleted=1'));
+            exit;
+        }
+
+        wp_redirect(admin_url('admin.php?page=mgwpp-galleries&error=1'));
+        exit;
+    });
     class MGWPP_Galleries_List_Table extends WP_List_Table
     {
         public function __construct()
@@ -357,10 +383,27 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
                 'mgwpp_preview_gallery'
             );
 
+            $edit_url = wp_nonce_url(
+                admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $gallery_id),
+                'mgwpp_edit_gallery'
+            );
+
+            $delete_url = wp_nonce_url(
+                admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $gallery_id),
+                'mgwpp_delete_gallery'
+            );
+
             return sprintf(
-                '<a href="%s" class="button thickbox">%s</a>',
+                '<a href="%s" class="button thickbox">%s</a>
+        <a href="%s" class="button">%s</a>
+        <a href="%s" class="button button-link-delete" onclick="return confirm(\'%s\')">%s</a>',
                 esc_url($preview_url . '&TB_iframe=true&width=800&height=600'),
-                esc_html__('Preview', 'mini-gallery')
+                esc_html__('Preview', 'mini-gallery'),
+                esc_url($edit_url),
+                esc_html__('Edit', 'mini-gallery'),
+                esc_url($delete_url),
+                esc_attr__('Are you sure you want to delete this gallery?', 'mini-gallery'),
+                esc_html__('Delete', 'mini-gallery')
             );
         }
     }

@@ -1,6 +1,9 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php'; 
+
+
 class MGWPP_Dashboard_View
 {
     public static function render_dashboard()
@@ -21,7 +24,7 @@ class MGWPP_Dashboard_View
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
                     <?php
-                    self::render_header();
+                    MGWPP_Inner_Header::render();
                     self::render_stats_grid($stats);
                     self::render_storage_section(MGWPP_Data_Handler::get_storage_data());
                     ?>
@@ -31,45 +34,7 @@ class MGWPP_Dashboard_View
     <?php
     }
 
-    private static function render_header()
-    {
-    ?>
-        <header class="mgwpp-dashboard-header">
-            <div class="mgwpp-branding">
-                <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/mgwpp-logo.png'); ?>" class="mgwpp-logo" width="50"
-                    height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
-                <div class="mgwpp-titles">
-                    <h1 class="mgwpp-title">
-                        <?php esc_html_e('Mini Gallery Dashboard', 'mini-gallery') ?>
-                        <span class="mgwpp-version"><?php get_file_data(__FILE__, array('Version'), 'mini-gallery'); ?> </span>
-                    </h1>
-                    <p class="mgwpp-subtitle">
-                        <?php esc_html_e('Manage your galleries, albums and testimonials', 'mini-gallery') ?>
-                    </p>
-                </div>
-            </div>
-            <div class="mgwpp-header-actions">
-                <button id="mgwpp-theme-toggle" class="mgwpp-theme-toggle-button">
-                    <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png'); ?>"
-                        alt="<?php esc_attr_e('Theme Toggle', 'mini-gallery') ?>" height="35" width="35"
-                        data-sun="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png'); ?>"
-                        data-moon="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png'); ?>">
-                </button>
-                <button class="mgwpp-admin-button">
-                    <a class="mgwpp-admin-link" href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>">
-                        <?php esc_html_e('New Gallery', 'mini-gallery') ?>
-                        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/add-new.png'); ?>"
-                            alt="<?php esc_html_e('New Gallery', 'mini-gallery') ?>
-                            " height="35" width="35" class="mgwpp-admin-button__icon">
-                    </a>
-                </button>
 
-            </div>
-        </header>
-
-    <?php
-
-    }
 
 
     private static function render_stats_grid($stats)

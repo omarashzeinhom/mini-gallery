@@ -16,6 +16,11 @@ define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 define('MGWPP_ASSET_VERSION', filemtime(__FILE__));
 
 
+function get_plugin_version()
+{
+    // Use actual version constant if available
+    return defined('MGWPP_ASSET_VERSION') ? MGWPP_ASSET_VERSION : '1.4.0';
+}
 
 /* Include necessary files */
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';

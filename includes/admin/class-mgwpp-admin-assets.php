@@ -40,9 +40,9 @@ class MGWPP_Admin_Assets
         // Admin CSS
         wp_enqueue_style(
             'mgwpp-admin-styles',
-            MG_PLUGIN_URL . 'includes/admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . 'includes/admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
         );
 
         // Localize JS
@@ -70,9 +70,9 @@ class MGWPP_Admin_Assets
         // Main admin CSS
         wp_enqueue_style(
             'mgwpp-admin-core',
-            MG_PLUGIN_URL . 'includes/admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . 'includes/admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
         );
 
         // Main admin JS

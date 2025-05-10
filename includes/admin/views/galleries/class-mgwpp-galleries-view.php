@@ -87,8 +87,14 @@ class MGWPP_Galleries_View
         ]);
     }
 
-    public  function render()
+    public function render()
     {
+        // Admin header at the top
+        echo '<div class="wrap">';
+        echo '<h1 class="wp-heading-inline">' . esc_html__('Galleries', 'mini-gallery') . '</h1>';
+        echo '<a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery" class="page-title-action thickbox">' . esc_html__('Add New', 'mini-gallery') . '</a>';
+        echo '<hr class="wp-header-end">';
+
         if (empty($this->items)) {
             echo '<div class="mgwpp-empty-state">';
             echo '<img src="' . MG_PLUGIN_URL . '/includes/admin/images/empty-galleries.webp" alt="No galleries">';
@@ -98,41 +104,39 @@ class MGWPP_Galleries_View
                 . __('Create Gallery', 'mini-gallery')
                 . '</button>';
             echo '</div>';
-            return;
         } else {
             echo '<div class="mgwpp-gallery-grid">';
             foreach ($this->items as $item) {
                 echo '
-<div class="mgwpp-gallery-card">
-    <div class="mgwpp-card-header">
-        <div class="mgwpp-gallery-preview">
-            ' . $this->get_gallery_preview($item['ID']) . '
-        </div>
-        <div class="mgwpp-card-actions">
-            ' . $item['actions'] . '
-        </div>
-    </div>
-    
-    <div class="mgwpp-card-body">
-        <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
-        <div class="mgwpp-card-meta">
-            <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
-            <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
-        </div>
-        <div class="mgwpp-card-shortcode">
-            <input type="text" value="' . esc_attr($item['shortcode']) . '" 
-                   readonly 
-                   class="mgwpp-shortcode-input">
-            <button class="button mgwpp-copy-shortcode">' . __('Copy', 'mini-gallery') . '</button>
-        </div>
-    </div>
-</div>';
+            <div class="mgwpp-gallery-card">
+                <div class="mgwpp-card-header">
+                    <div class="mgwpp-gallery-preview">
+                        ' . $this->get_gallery_preview($item['ID']) . '
+                    </div>
+                    <div class="mgwpp-card-actions">
+                        ' . $item['actions'] . '
+                    </div>
+                </div>
+                
+                <div class="mgwpp-card-body">
+                    <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
+                    <div class="mgwpp-card-meta">
+                        <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
+                        <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
+                    </div>
+                    <div class="mgwpp-card-shortcode">
+                        <input type="text" value="' . esc_attr($item['shortcode']) . '" 
+                               readonly 
+                               class="mgwpp-shortcode-input">
+                        <button class="button mgwpp-copy-shortcode">' . __('Copy', 'mini-gallery') . '</button>
+                    </div>
+                </div>
+            </div>';
             }
+            echo '</div>'; // Close mgwpp-gallery-grid
         }
 
-        echo '</div>';
-
-        echo '<link rel="stylesheet" href="' . plugins_url('includes/admin/views/galleries/mgwpp-galleries-view.css', dirname(__FILE__, 3)) . '">';
+        echo '</div>'; // Close wrap
 
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
@@ -178,6 +182,7 @@ class MGWPP_Galleries_View
         // Ultimate fallback
         return '<img src="' . esc_url(MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp') . '" class="mgwpp-card-image">';
     }
+
     private static function render_create_gallery_modal()
     {
 ?>
@@ -190,7 +195,8 @@ class MGWPP_Galleries_View
 
                     <table class="form-table">
                         <tr>
-                            <th scope="row"><label for="gallery_title"><?php esc_html_e('Gallery Title:', 'mini-gallery'); ?></label></th>
+                            <th scope="row"><label
+                                    for="gallery_title"><?php esc_html_e('Gallery Title:', 'mini-gallery'); ?></label></th>
                             <td><input type="text" id="gallery_title" name="gallery_title" required class="regular-text"></td>
                         </tr>
 
@@ -206,7 +212,8 @@ class MGWPP_Galleries_View
                         </tr>
 
                         <tr>
-                            <th scope="row"><label for="gallery_type"><?php esc_html_e('Gallery Style:', 'mini-gallery'); ?></label></th>
+                            <th scope="row"><label
+                                    for="gallery_type"><?php esc_html_e('Gallery Style:', 'mini-gallery'); ?></label></th>
                             <td>
                                 <select id="gallery_type" name="gallery_type" required class="regular-text">
                                     <?php foreach (self::$gallery_types as $key => $type): ?>
@@ -220,12 +227,14 @@ class MGWPP_Galleries_View
                     </table>
 
                     <p class="submit">
-                        <input type="submit" class="button button-primary" value="<?php esc_attr_e('Create Gallery', 'mini-gallery'); ?>">
+                        <input type="submit" class="button button-primary"
+                            value="<?php esc_attr_e('Create Gallery', 'mini-gallery'); ?>">
                     </p>
                 </form>
             </div>
         </div>
 <?php
+
     }
 }
 

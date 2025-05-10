@@ -110,24 +110,6 @@ class MGWPP_Dashboard_View
     private static function render_storage_section($storage_data)
     {
     ?>
-        <details>
-            <summary>Storage Overview</summary>
-            <div class="mgwpp-storage-card">
-                <div class="mgwpp-storage-header">
-                    <h2 class="mgwpp-section-title"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h2>
-                    <span class="mgwpp-storage-percent">
-                        <?php echo esc_html($storage_data['percent']); ?>%
-                    </span>
-                </div>
-                <div class="mgwpp-progress-bar">
-                    <div class="mgwpp-progress-fill" style="width: <?php echo esc_attr($storage_data['percent']); ?>%"></div>
-                </div>
-                <div class="mgwpp-storage-meta">
-                    <span><?php echo esc_html($storage_data['used']); ?></span>
-                    <span><?php echo esc_html($storage_data['total']); ?></span>
-                </div>
-            </div>
-        </details>
 <?php
     }
 }

@@ -194,10 +194,10 @@ class MG_Elementor_Pro_Carousel extends Widget_Base {
 
 
     public function enqueue_pro_carousel_editor_scripts() {
-        $editor_css_path = MG_PLUGIN_PATH . 'admin/css/editor.css';
+        $editor_css_path = MG_PLUGIN_PATH . 'includes/admin/css/editor.css';
         wp_enqueue_style(
             'mg-neon-carousel-editor',
-            MG_PLUGIN_URL . '/admin/css/editor.css',
+            MG_PLUGIN_URL . '/includes/admin/css/editor.css',
             [],
             filemtime($editor_css_path)
         );

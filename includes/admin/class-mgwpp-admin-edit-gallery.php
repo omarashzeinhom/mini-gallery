@@ -58,9 +58,9 @@ class MGWPP_Admin_Edit_Gallery
 
         wp_enqueue_style(
             'mgwpp-admin-styles',
-            $plugin_url . 'admin/css/mg-admin-edit-dashboard-styles.css',
+            $plugin_url . 'includes/admin/css/mg-admin-edit-dashboard-styles.css',
             [],
-            filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'admin/css/mg-admin-edit-dashboard-styles.css')
+            filemtime(plugin_dir_path(dirname(__FILE__, 2)) . 'includes/admin/css/mg-admin-edit-dashboard-styles.css')
         );
         // Validate gallery ID with unslashing
         $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;

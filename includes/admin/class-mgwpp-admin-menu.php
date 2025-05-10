@@ -40,7 +40,7 @@ class MGWPP_Admin_Menu
             'manage_options',
             'mgwpp_dashboard',
             [$this, 'render_dashboard'],
-            MG_PLUGIN_URL . '/admin/images/mgwpp-logo-panel.png',
+            MG_PLUGIN_URL . '/includes/admin/images/mgwpp-logo-panel.png',
             20
         );
 

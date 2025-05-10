@@ -342,8 +342,8 @@ jQuery(document).ready(function ($) {
   const updateIcons = (isDark) => {
     // Update toggle button
     const toggleIcon = isDark ?
-      `${mgwppData.pluginUrl}/admin/images/icons/sun-icon.png` :
-      `${mgwppData.pluginUrl}/admin/images/icons/moon-icon.png`;
+      `${mgwppData.pluginUrl}/includes/admin/images/icons/sun-icon.png` :
+      `${mgwppData.pluginUrl}/includes/admin/images/icons/moon-icon.png`;
     $('#mgwpp-theme-toggle img').attr('src', toggleIcon);
 
     // Update all dynamic icons

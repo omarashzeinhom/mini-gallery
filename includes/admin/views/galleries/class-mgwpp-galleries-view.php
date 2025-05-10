@@ -29,7 +29,7 @@ class MGWPP_Galleries_View
     {
         if (empty($this->items)) {
             echo '<div class="mgwpp-empty-state">';
-            echo '<img src="' . MG_PLUGIN_URL . '/admin/images/empty-galleries.svg" alt="No galleries">';
+            echo '<img src="' . MG_PLUGIN_URL . '/includes/admin/images/empty-galleries.svg" alt="No galleries">';
             echo '<h3>' . __('No galleries found', 'mini-gallery') . '</h3>';
             echo '<p>' . __('Create your first gallery to get started', 'mini-gallery') . '</p>';
             echo '<button class="button button-primary mgwpp-open-create-modal">'
@@ -223,7 +223,7 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             $data = [];
             foreach ($galleries as $gallery) {
                 $thumbnail = get_the_post_thumbnail_url($gallery->ID, 'medium') ?:
-                    MG_PLUGIN_URL . '/admin/images/default-gallery.webp';
+                    MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp';
 
                 $data[] = [
                     'ID'        => $gallery->ID,

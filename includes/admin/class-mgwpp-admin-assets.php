@@ -31,18 +31,18 @@ class MGWPP_Admin_Assets
         // Main admin JS
         wp_enqueue_script(
             'mgwpp-admin-js',
-            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
             ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
             true
         );
 
         // Admin CSS
         wp_enqueue_style(
             'mgwpp-admin-styles',
-            MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . 'includes/admin/css/mg-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . 'admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . 'includes/admin/css/mg-admin-styles.css')
         );
 
         // Localize JS
@@ -70,17 +70,17 @@ class MGWPP_Admin_Assets
         // Main admin CSS
         wp_enqueue_style(
             'mgwpp-admin-core',
-            MG_PLUGIN_URL . 'admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . 'includes/admin/css/mg-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . 'admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . 'includes/admin/css/mg-admin-styles.css')
         );
 
         // Main admin JS
         wp_enqueue_script(
             'mgwpp-admin-core',
-            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
             ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
             true
         );
 

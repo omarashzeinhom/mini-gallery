@@ -271,9 +271,9 @@ class MG_Elementor_Neon_Carousel extends \Elementor\Widget_Base {
     public function enqueue_editor_scripts() {
         wp_enqueue_style(
             'mg-neon-carousel-editor',
-            plugin_dir_url(__FILE__) . 'admin/css/editor.css',
+            plugin_dir_url(__FILE__) . 'includes/admin/css/editor.css',
             [],
-            filemtime(plugin_dir_path(__FILE__) . 'admin/css/editor.css')
+            filemtime(plugin_dir_path(__FILE__) . 'includes/admin/css/editor.css')
         );
     }
 }

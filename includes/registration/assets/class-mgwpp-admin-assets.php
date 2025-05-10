@@ -12,27 +12,43 @@ class MGWPP_Admin_Assets {
     }
 
     public function register_assets() {
+         // Load variables first
+  wp_register_style(
+    'mgwpp-variables',
+    MG_PLUGIN_URL . '/includes/admin/css/variables.css',
+    [],
+    filemtime(MG_PLUGIN_PATH . '/includes/admin/css/variables.css')
+  );
+
+  // Other styles depend on variables
+  wp_register_style(
+    'mg-admin-styles',
+    MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
+    ['mgwpp-variables'], // Add dependency
+    filemtime(...)
+  );
+
         // Register styles first
         wp_register_style(
             'mg-admin-styles', // Fixed handle to match what you're trying to enqueue
-            MG_PLUGIN_URL . '/admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . '/admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
         );
 
         wp_register_style(
             'mgwpp-editor-styles', // Renamed for clarity
-            MG_PLUGIN_URL . '/admin/css/editor.css',
+            MG_PLUGIN_URL . '/includes/admin/css/editor.css',
             [],
-            filemtime(MG_PLUGIN_PATH . '/admin/css/editor.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/editor.css')
         );
 
         // Register scripts
         wp_register_script(
             'mgwpp-admin-scripts',
-            MG_PLUGIN_URL . '/admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
             ['jquery', 'media-views', 'wp-i18n', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
             true
         );
     }

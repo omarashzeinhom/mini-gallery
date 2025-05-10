@@ -1,0 +1,106 @@
+/* Admin Button - Matches Glass Card Aesthetic */
+.mgwpp-admin-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: var(--mgwpp-border-radius-lg);
+  font-weight: 500;
+  transition: all var(--mgwpp-transition-speed) ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  /* Light Theme */
+  background: var(--mgwpp-card-bg-light);
+  border: 1px solid var(--mgwpp-card-border-light);
+  color: var(--mgwpp-foreground-light);
+  box-shadow: var(--mgwpp-card-shadow-light);
+  backdrop-filter: var(--mgwpp-backdrop-blur-sm);
+  -webkit-backdrop-filter: var(--mgwpp-backdrop-blur-sm);
+
+  /* Hover Effects */
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Dark Theme */
+  .mgwpp-dark & {
+    background: var(--mgwpp-card-bg-dark);
+    border-color: var(--mgwpp-card-border-dark);
+    color: var(--mgwpp-foreground-dark);
+    box-shadow: var(--mgwpp-card-shadow-dark);
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.8);
+    }
+  }
+
+  /* Active State */
+  &:active {
+    transform: scale(0.98);
+  }
+
+  /* Focus State */
+  &:focus {
+    outline: 2px solid var(--mgwpp-primary-color);
+    outline-offset: 2px;
+  }
+
+  /* Disabled State */
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.3);
+  }
+}
+
+/* Primary Variant */
+.mgwpp-admin-button--primary {
+  background: var(--mgwpp-primary-color);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    background: rgba(29, 193, 220, 0.9);
+  }
+
+  .mgwpp-dark & {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Icon Support */
+.mgwpp-admin-button__icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  transition: transform 0.2s ease;
+}
+
+.mgwpp-admin-button:hover .mgwpp-admin-button__icon {
+  transform: translateX(3px);
+}
+
+/* Link style matching the admin button */
+.mgwpp-admin-link {
+  color: var(--mgwpp-primary-color);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: var(--mgwpp-border-radius-lg);
+  transition: all var(--mgwpp-transition-speed) ease;
+
+  &:hover {
+    background: rgba(29, 193, 220, 0.1);
+    text-decoration: underline;
+  }
+
+  .mgwpp-dark & {
+    color: var(--mgwpp-icon-color-dark);
+    &:hover {
+      background: rgba(77, 242, 255, 0.1);
+    }
+  }
+}

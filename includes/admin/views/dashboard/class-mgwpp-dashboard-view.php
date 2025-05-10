@@ -55,9 +55,15 @@ class MGWPP_Dashboard_View
                         data-sun="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/icons/sun-icon.png'); ?>"
                         data-moon="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/icons/moon-icon.png'); ?>">
                 </button>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>" class="mgwpp-new-gallery-button">
-                    <?php esc_html_e('New Gallery', 'mini-gallery') ?>
-                </a>
+                <button class="mgwpp-admin-button">
+                    <a class="mgwpp-admin-link" href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>">
+                        <?php esc_html_e('New Gallery', 'mini-gallery') ?>
+                        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/admin/images/icons/add-new.png'); ?>"
+                            alt="<?php esc_html_e('New Gallery', 'mini-gallery') ?>
+                            " height="35" width="35" class="mgwpp-admin-button__icon">
+                    </a>
+                </button>
+
             </div>
         </header>
 
@@ -100,7 +106,7 @@ class MGWPP_Dashboard_View
                 </div>
                 <div class="mgwpp-stat-info">
                     <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>
-                                    <p class="mgwpp-stat-count"><?php echo $display_value; ?></p>
+                    <p class="mgwpp-stat-count"><?php echo $display_value; ?></p>
                 </div>
             </div>
         </div>

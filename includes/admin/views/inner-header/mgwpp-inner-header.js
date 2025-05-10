@@ -1,27 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('mgwpp-theme-toggle');
-    const body = document.body; // Or your container element
-
+    
     if(themeToggle) {
-        // Get initial state from localStorage
-        const isDark = localStorage.getItem('mgwppTheme') === 'dark';
+        // Get initial state from body class
+        const isDarkMode = document.body.classList.contains('mgwpp-dark-mode');
         const icon = themeToggle.querySelector('img');
         
-        // Initialize theme
-        if(isDark) {
-            body.classList.add('mgwpp-dark-mode');
-            icon.src = icon.dataset.sun;
-        }
-
-        themeToggle.addEventListener('click', function() {
-            const isDark = body.classList.toggle('mgwpp-dark-mode');
+        // Set initial icon
+        icon.src = isDarkMode ? icon.dataset.sun : icon.dataset.moon;
+        
+        themeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isDark = !document.body.classList.contains('mgwpp-dark-mode');
+            
+            // Toggle body class
+            document.body.classList.toggle('mgwpp-dark-mode', isDark);
+            
+            // Update icon immediately
             icon.src = isDark ? icon.dataset.sun : icon.dataset.moon;
             
-            // Persist in localStorage
-            localStorage.setItem('mgwppTheme', isDark ? 'dark' : 'light');
-            
-            // Update data attribute for server-side reference
-            themeToggle.dataset.currentTheme = isDark ? 'dark' : 'light';
+            // Persist via AJAX to user meta
+            jQuery.ajax({
+                url: mgwppHeader.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'mgwpp_toggle_theme',
+                    security: mgwppHeader.nonce
+                },
+                success: function(response) {
+                    if(!response.success) {
+                        // Revert on error
+                        document.body.classList.toggle('mgwpp-dark-mode', !isDark);
+                        icon.src = !isDark ? icon.dataset.sun : icon.dataset.moon;
+                    }
+                }
+            });
         });
     }
 });

@@ -58,8 +58,8 @@ class MGWPP_Inner_Header
 ?>
 <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
     <div class="mgwpp-branding-group">
-        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>" class="mgwpp-logo"
-            width="50" height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
+        <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>"
+            class="mgwpp-logo" width="50" height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
         <div class="mgwpp-titles">
             <h1 class="mgwpp-title">
                 <?php esc_html_e('Mini Gallery Dashboard', 'mini-gallery') ?>
@@ -96,15 +96,18 @@ class MGWPP_Inner_Header
 
     private static function render_theme_toggle($current_theme)
     {
-        $sun_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png';
-        $moon_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png';
+       // Add filemtime to icon URLs
+$sun_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png?' . filemtime(MG_PLUGIN_PATH . '/includes/admin/images/icons/sun-icon.png');
+$moon_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png?' . filemtime(MG_PLUGIN_PATH . '/includes/admin/images/icons/moon-icon.png');
     ?>
-<button id="mgwpp-theme-toggle" class="mgwpp-theme-toggle-button"
-    data-current-theme="<?php echo esc_attr($current_theme); ?>">
-    <img src="<?php echo esc_url($current_theme === 'dark' ? $sun_icon : $moon_icon); ?>"
-        alt="<?php esc_attr_e('Theme Toggle', 'mini-gallery') ?>" width="35" height="35"
-        data-sun="<?php echo esc_url($sun_icon); ?>" data-moon="<?php echo esc_url($moon_icon); ?>">
-</button>
+ <button id="mgwpp-theme-toggle" class="mgwpp-theme-toggle-button"
+        data-current-theme="<?php echo esc_attr($current_theme); ?>">
+        <img src="<?php echo esc_url($current_theme === 'dark' ? $sun_icon : $moon_icon); ?>"
+            alt="<?php esc_attr_e('Theme Toggle', 'mini-gallery') ?>"
+            width="35" height="35"
+            data-sun="<?php echo esc_url($sun_icon); ?>"
+            data-moon="<?php echo esc_url($moon_icon); ?>">
+    </button>
 <?php
     }
 

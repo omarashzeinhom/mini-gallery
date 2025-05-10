@@ -12,7 +12,8 @@ class MGWPP_Dashboard_View
         $stats = [
             'galleries' => MGWPP_Data_Handler::get_post_count('mgwpp_soora'),
             'albums' => MGWPP_Data_Handler::get_post_count('mgwpp_album'),
-            'testimonials' => MGWPP_Data_Handler::get_post_count('mgwpp_testimonial')
+            'testimonials' => MGWPP_Data_Handler::get_post_count('mgwpp_testimonial'),
+            'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 
 ?>
@@ -75,7 +76,7 @@ class MGWPP_Dashboard_View
             self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'testimonial');
             self::render_stat_card(__('Storage Usage', 'mini-gallery'), $stats['storage-usage'], 'storage-usage');
 
-?>
+            ?>
         </div>
     <?php
     }
@@ -83,6 +84,13 @@ class MGWPP_Dashboard_View
     private static function render_stat_card($title, $count, $icon)
     {
         $icon_url = MG_PLUGIN_URL . "/admin/images/icons/{$icon}.png";
+
+        // Format storage usage as "85% used"
+        if ($icon === 'storage-usage') {
+            $display_value = esc_html($count) . '% used';
+        } else {
+            $display_value = number_format_i18n($count);
+        }
     ?>
         <div class="mgwpp-stat-card">
             <div class="mgwpp-stat-content">
@@ -92,7 +100,7 @@ class MGWPP_Dashboard_View
                 </div>
                 <div class="mgwpp-stat-info">
                     <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>
-                    <p class="mgwpp-stat-count"><?php echo number_format_i18n($count); ?></p>
+                                    <p class="mgwpp-stat-count"><?php echo $display_value; ?></p>
                 </div>
             </div>
         </div>

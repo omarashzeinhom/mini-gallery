@@ -185,7 +185,7 @@ class MGWPP_Galleries_View
 
         // Default image based on gallery type
         if (isset(self::$gallery_types[$gallery_type])) {
-            $default_img = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview' . self::$gallery_types[$gallery_type][1];
+            $default_img = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . self::$gallery_types[$gallery_type][1];
             return '<img src="' . esc_url($default_img) . '" class="mgwpp-card-image">';
         }
 

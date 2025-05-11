@@ -13,7 +13,6 @@ class MGWPP_Modules_View
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
-
     /**
      * Get gallery type icon
      * 
@@ -88,11 +87,11 @@ class MGWPP_Modules_View
                             <img src="<?php echo esc_url($this->get_gallery_icon($module_slug)); ?>"
                                 alt="<?php echo esc_attr(str_replace('_', ' ', ucfirst($module_slug))); ?>"
                                 class="mgwpp-gallery-type-icon" />
-                            <label>
-                                <?php echo esc_html(str_replace('_', ' ', ucfirst($module_slug))); ?>
-                                <input type="radio" value="Enabled" name="module_enabled_status" checked autocomplete="off" class="mgwpp-module-radio"/>
+                            <?php echo esc_html(str_replace('_', ' ', ucfirst($module_slug))); ?>
+                            <label class="mgwpp-switch">
+                                <input type="checkbox">
+                                <span class="mgwpp-switch-slider round"></span>
                             </label>
-
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -103,17 +102,7 @@ class MGWPP_Modules_View
                     $is_active = in_array($slug, $enabled_modules);
                     $status_class = $is_active ? 'active' : 'inactive';
                 ?>
-                    <div class="mgwpp-module-card <?php echo $status_class; ?>">
-                        <label class="mgwpp-radio-wrapper">
-                            <input
-                                type="radio"
-                                name="mgwpp_primary_module"
-                                value="<?php echo esc_attr($slug); ?>"
-                                class="mgwpp-module-radio"
-                                <?php checked($slug === $enabled_modules[0]); ?> />
-                            <span class="radio-custom"></span>
-                        </label>
-
+                    <div class="mgwpp-module-card <?php echo esc_attr($status_class); ?>" data-module="<?php echo esc_attr($slug); ?>">
                         <div class="module-header">
                             <div class="module-icon">
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
@@ -121,13 +110,12 @@ class MGWPP_Modules_View
                             </div>
                             <h3><?php echo esc_html($module['config']['name']); ?></h3>
                             <div class="module-actions">
-                                <div class="toggle-switch">
+                                <div class="mgwpp-switch">
                                     <input type="checkbox"
-                                        id="module-<?php echo esc_attr($slug); ?>"
-                                        class="module-toggle"
-                                        data-module="<?php echo esc_attr($slug); ?>"
+                                        id="module-toggle-<?php echo esc_attr($slug); ?>"
+                                        class="mgwpp-module-toggle"
                                         <?php checked($is_active); ?>>
-                                    <label for="module-<?php echo esc_attr($slug); ?>"></label>
+                                    <label for="module-toggle-<?php echo esc_attr($slug); ?>" class="slider round"></label>
                                 </div>
                             </div>
                         </div>
@@ -143,8 +131,10 @@ class MGWPP_Modules_View
                     </div>
                 <?php endforeach; ?>
             </div>
-    <?php
+        </div>
+<?php
     }
+
     public function enqueue_assets($hook)
     {
         wp_enqueue_style(
@@ -168,7 +158,6 @@ class MGWPP_Modules_View
             'nonce'   => wp_create_nonce('module_toggle_nonce')
         ]);
     }
-
 
     public function ajax_toggle_module()
     {

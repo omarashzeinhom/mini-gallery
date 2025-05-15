@@ -3,6 +3,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 require_once plugin_dir_path(__FILE__) . 'class-mgwpp-assets.php';
+require_once plugin_dir_path(__FILE__) . 'class-mgwpp-settings.php';
 
 class MGWPP_Admin_Assets
 {
@@ -82,7 +83,8 @@ class MGWPP_Admin_Assets
             'gallery_page_mgwpp_galleries',       // Galleries
             'gallery_page_mgwpp_albums',          // Albums
             'gallery_page_mgwpp_testimonials',    // Testimonials
-            'gallery_page_mgwpp_security'         // Security
+            'gallery_page_mgwpp_security',         // Security
+            'gallery_page_mgwpp_settings',
         ];
 
         return in_array($hook, $plugin_pages);

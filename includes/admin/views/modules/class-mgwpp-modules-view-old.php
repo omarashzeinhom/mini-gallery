@@ -74,30 +74,22 @@ class MGWPP_Modules_View
     {
         $modules = $this->module_loader->get_modules();
         $enabled_modules = $this->get_enabled_modules();
-        // Debug output
-        echo '<pre style="background:#fff;padding:20px;margin:20px;border:2px solid red">';
-        echo 'Enabled Modules: ';
-        print_r($enabled_modules);
-        echo 'All Modules: ';
-        print_r(array_keys($modules));
-        echo '</pre>';
 
 ?>
         <div class="wrap">
-
             <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
 
             <div class="mgwpp-gallery-types-header">
                 <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
                 <div class="mgwpp-enabled-gallery-types">
                     <?php foreach ($enabled_modules as $module_slug) : ?>
-                        <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($module_slug); ?>">
+                        <div class="mgwpp-gallery-type-badge">
                             <img src="<?php echo esc_url($this->get_gallery_icon($module_slug)); ?>"
                                 alt="<?php echo esc_attr(str_replace('_', ' ', ucfirst($module_slug))); ?>"
                                 class="mgwpp-gallery-type-icon" />
                             <?php echo esc_html(str_replace('_', ' ', ucfirst($module_slug))); ?>
                             <label class="mgwpp-switch">
-                                <input type="checkbox" <?php checked(true); ?>>
+                                <input type="checkbox">
                                 <span class="mgwpp-switch-slider round"></span>
                             </label>
                         </div>
@@ -178,20 +170,22 @@ class MGWPP_Modules_View
         $module = sanitize_text_field($_POST['module'] ?? '');
         $status = (bool) ($_POST['status'] ?? false);
 
-        $enabled_modules = get_option('mgwpp_enabled_modules', []);
+        $enabled_modules = $this->get_enabled_modules(); // Use instance method
 
-        if ($status) {
-            if (!in_array($module, $enabled_modules)) {
-                $enabled_modules[] = $module;
-            }
-        } else {
+        if ($status && !in_array($module, $enabled_modules)) {
+            $enabled_modules[] = $module;
+        } elseif (!$status) {
             $enabled_modules = array_diff($enabled_modules, [$module]);
         }
 
         update_option('mgwpp_enabled_modules', $enabled_modules);
-        wp_send_json_success();
-    }
 
+        // Return fresh state
+        wp_send_json_success([
+            'enabled' => $enabled_modules,
+            'new_status' => $status
+        ]);
+    }
     public function save_modules()
     {
         // Legacy form handler (optional)

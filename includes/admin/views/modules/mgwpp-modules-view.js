@@ -1,21 +1,18 @@
 jQuery(document).ready(($) => {
   // Toggle module status when switch is clicked
-  $(".mgwpp-module-toggle").on("change", function () {
-    const $card = $(this).closest(".mgwpp-module-card")
-    const module = $card.data("module")
-    const isActive = $(this).is(":checked")
+  $(".mgwpp-modules-grid").on("change", ".mgwpp-module-toggle", function() {
+    const $card = $(this).closest(".mgwpp-module-card");
+    const module = $card.data("module");
+    const isActive = $(this).is(":checked");
+    const $badgeContainer = $(".mgwpp-enabled-gallery-types");
 
+    // Get existing badge if it exists
+    const $existingBadge = $(`.mgwpp-gallery-type-badge[data-module="${module}"]`);
+    
     // Immediate visual feedback
-    if (isActive) {
-      $card.removeClass("inactive").addClass("active")
-      $card.css("opacity", "1")
-    } else {
-      $card.removeClass("active").addClass("inactive")
-      $card.css("opacity", "0.7")
-    }
-
-    // Smooth transition
-    $card.css("transition", "opacity 0.3s ease, border-color 0.3s ease")
+    $card
+      .toggleClass("active inactive", isActive)
+      .css("opacity", isActive ? "1" : "0.7");
 
     // AJAX request to save the status
     $.ajax({
@@ -27,30 +24,44 @@ jQuery(document).ready(($) => {
         status: isActive,
         nonce: MGWPPData.nonce,
       },
-      error: function () {
-        // Revert on error
-        if (isActive) {
-          $card.removeClass("active").addClass("inactive")
-          $card.css("opacity", "0.7")
-        } else {
-          $card.removeClass("inactive").addClass("active")
-          $card.css("opacity", "1")
+      success: (response) => {
+        // Update badge section
+        if (isActive && !$existingBadge.length) {
+          const badgeHTML = `
+            <div class="mgwpp-gallery-type-badge" data-module="${module}">
+              <img src="${$card.find('img').attr('src')}"
+                   alt="${module}"
+                   class="mgwpp-gallery-type-icon" />
+              ${$card.find('h3').text()}
+              <label class="mgwpp-switch">
+                <input type="checkbox" checked>
+                <span class="mgwpp-switch-slider round"></span>
+              </label>
+            </div>
+          `;
+          $badgeContainer.append(badgeHTML);
+        } else if (!isActive && $existingBadge.length) {
+          $existingBadge.remove();
         }
-        $(this).prop("checked", !isActive)
-
-        // Show error notification
-        alert("Error saving module status. Please try again.")
       },
-    })
-  })
+      error: () => {
+        // Revert visual state
+        $card
+          .toggleClass("active inactive", !isActive)
+          .css("opacity", isActive ? "0.7" : "1");
+        $(this).prop("checked", !isActive);
+        
+        // Show error notification
+        alert("Error saving module status. Please try again.");
+      }
+    });
+  });
 
-  // Add hover effect to cards
-  $(".mgwpp-module-card").hover(
-    function () {
-      $(this).css("transform", "translateY(-2px)")
-    },
-    function () {
-      $(this).css("transform", "translateY(0)")
-    },
-  )
-})
+  // Initialize toggle states from PHP
+  $(".mgwpp-module-toggle").each(function() {
+    const isActive = $(this).prop("checked");
+    $(this).closest(".mgwpp-module-card")
+      .toggleClass("active inactive", isActive)
+      .css("opacity", isActive ? "1" : "0.7");
+  });
+});

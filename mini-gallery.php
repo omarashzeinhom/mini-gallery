@@ -1,12 +1,20 @@
 <?php
+/*
+Plugin Name: Mini Gallery
+Plugin URI: https://wordpress.org/plugins/mini-gallery/
+Description: A Fully Open Source WordPress Gallery, Slider and Carousel Alternative for Premium Plugin Sliders. Choose one of our 10 Default Ones, or create your own.
+Version: 1.4
+Author: AGWS | And Go Web Solutions
+Author URI: https://andgowebsolutions.com
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: mini-gallery
+Domain Path: /languages
 
-/**
- * Plugin Name: Mini Gallery
- * Description: A Fully Open Source WordPress Gallery , Slider and Carousel Alternative for Premium Plugin Sliders , Choose one of our 10 Default Ones , or create your own
- * Version: 1.4
- * Author: Omar Ashraf Zeinhom AbdElRahman | ANDGOEDU
- * License: GPLv2
- */
+Contribute: https://github.com/omarashzeinhom/mini-gallery-dev/
+Docs: https://minigallery.andgowebsolutions.com/docs/
+*/
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -95,6 +103,9 @@ function mgwpp_plugin_activate()
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
+    if (false === get_option('mgwpp_enabled_modules')) {
+        update_option('mgwpp_enabled_modules', MGWPP_Settings::get_enabled_modules());
+    }
     flush_rewrite_rules(false); // causes error on true
 }
 register_activation_hook(__FILE__, 'mgwpp_plugin_activate');
@@ -117,20 +128,21 @@ function mgwpp_initialize_plugin()
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
 
+    // Galleries
     MGWPP_Gallery_Manager::mgwpp_register_gallery_delete_action(); // Register gallery deletion
     MGWPP_Uninstall::mgwpp_register_uninstall_hook(); // Register the uninstall hook
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
 
-    //MGWPP_Admin::mgwpp_register_admin_menu(); // Register the admin menu
     //Albums
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
 
 
-    //MGWPP_Admin::mgwpp_register_admin_menu(); // Register the admin menu
     //Testimonials
     MGWPP_Testimonial_Post_Type::mgwpp_register_testimonial_post_type();
     MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
+
+    // Portfolio Items *Coming Soon
 }
 add_action('init', 'mgwpp_initialize_plugin');
 
@@ -274,3 +286,27 @@ add_filter('query_vars', function ($vars) {
     $vars[] = 'mgwpp_album_id';
     return $vars;
 });
+
+
+// Action links (below plugin name)
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'mgwpp_add_plugin_action_links');
+function mgwpp_add_plugin_action_links($links)
+{
+    $docs_link = '<a href="https://minigallery.andgowebsolutions.com/docs/" target="_blank">Docs</a>';
+    array_unshift($links, $docs_link);
+    return $links;
+}
+
+// Row meta (beneath plugin description)
+add_filter('plugin_row_meta', 'mgwpp_add_plugin_row_meta', 10, 2);
+function mgwpp_add_plugin_row_meta($links, $file)
+{
+    if (plugin_basename(__FILE__) !== $file) {
+        return $links;
+    }
+
+    $links[] = '<a href="https://github.com/omarashzeinhom/mini-gallery-dev" target="_blank">Contribute</a>';
+    $links[] = '<a href="https://wordpress.org/support/plugin/mini-gallery/reviews/#new-post" target="_blank">Rate Plugin ★★★★★</a>';
+
+    return $links;
+}

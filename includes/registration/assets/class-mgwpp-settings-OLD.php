@@ -1,7 +1,8 @@
 <?php
-if (!defined('ABSPATH')) {
+if (!defined(ABSPATH)) {
     exit();
 }
+
 
 class MGWPP_Settings
 {
@@ -19,7 +20,6 @@ class MGWPP_Settings
         'spotlight_slider' => 'Spotlight Slider',
         'albums' => 'Albums'
     ];
-
 
     public function __construct()
     {
@@ -50,7 +50,22 @@ class MGWPP_Settings
             'mgwpp-settings'
         );
 
-        foreach ($this->modules as $slug => $label) {
+        $modules = array(
+            'single_carousel' => 'Single Carousel',
+            'multi_carousel' => 'Multi Carousel',
+            'grid' => 'Grid Gallery',
+            'mega_slider' => 'Mega Slider',
+            'pro_carousel' => 'Pro Carousel',
+            'neon_carousel' => 'Neon Carousel',
+            'threed_carousel' => '3D Carousel',
+            'testimonials_carousel' => 'Testimonials Carousel',
+            'lightbox' => 'Lightbox',
+            'fullpage_slider' => 'FullPage Slider',
+            'spotlight_slider' => 'Spotlight Slider',
+            'albums' => 'Albums'
+        );
+
+        foreach ($modules as $slug => $label) {
             add_settings_field(
                 'mgwpp_enabled_' . $slug,
                 $label,
@@ -66,7 +81,7 @@ class MGWPP_Settings
     {
         $option = get_option('mgwpp_enabled_modules', array_keys($this->modules));
         $slug = $args['slug'];
-        echo '<input type="checkbox" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ' . checked(in_array($slug, (array)$option), true, false) . ' />';
+        echo '<input type="checkbox" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ' . checked(in_array($slug, $option), true, false) . ' />';
     }
 
     public function render_settings_page()
@@ -76,40 +91,6 @@ class MGWPP_Settings
         do_settings_sections('mgwpp-settings');
         submit_button();
         echo '</form></div>';
-    }
-
-    // Add a public method to get enabled modules
-    public static function get_enabled_modules()
-    {
-        $default_modules = [
-            'single_carousel',
-            'multi_carousel',
-            'grid',
-            'mega_slider',
-            'pro_carousel',
-            'neon_carousel',
-            'threed_carousel',
-            'testimonials_carousel',
-            'lightbox',
-            'fullpage_slider',
-            'spotlight_slider',
-            'albums'
-        ];
-
-        $enabled_modules = get_option('mgwpp_enabled_modules', $default_modules);
-
-        // Initialize default modules if option doesn't exist
-        if (false === $enabled_modules) {
-            update_option('mgwpp_enabled_modules', $default_modules);
-            return $default_modules;
-        }
-
-        // Handle empty array case
-        if (empty($enabled_modules)) {
-            return $default_modules;
-        }
-
-        return (array)$enabled_modules;
     }
 }
 

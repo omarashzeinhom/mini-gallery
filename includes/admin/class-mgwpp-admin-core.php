@@ -40,7 +40,9 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/galleries/class-mgwpp-galleries-view.php';
         require_once __DIR__ . '/views/testimonials/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
+
         require_once __DIR__ . '/views/modules/class-mgwpp-modules-view.php';
+
     }
 
     private function init_components()

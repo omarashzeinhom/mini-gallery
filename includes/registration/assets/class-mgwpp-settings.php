@@ -77,40 +77,7 @@ class MGWPP_Settings
         submit_button();
         echo '</form></div>';
     }
-
-    // Add a public method to get enabled modules
-    public static function get_enabled_modules()
-    {
-        $default_modules = [
-            'single_carousel',
-            'multi_carousel',
-            'grid',
-            'mega_slider',
-            'pro_carousel',
-            'neon_carousel',
-            'threed_carousel',
-            'testimonials_carousel',
-            'lightbox',
-            'fullpage_slider',
-            'spotlight_slider',
-            'albums'
-        ];
-
-        $enabled_modules = get_option('mgwpp_enabled_modules', $default_modules);
-
-        // Initialize default modules if option doesn't exist
-        if (false === $enabled_modules) {
-            update_option('mgwpp_enabled_modules', $default_modules);
-            return $default_modules;
-        }
-
-        // Handle empty array case
-        if (empty($enabled_modules)) {
-            return $default_modules;
-        }
-
-        return (array)$enabled_modules;
-    }
+  
 }
 
 if (is_admin()) {

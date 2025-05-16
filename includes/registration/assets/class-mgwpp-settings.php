@@ -78,7 +78,7 @@ class MGWPP_Settings
         echo '</form></div>';
     }
     
-    public function get_enabled_modules(){
+    public static function get_enabled_modules(){
         // empty for now
         // fetch enabled modules
     }

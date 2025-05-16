@@ -10,8 +10,8 @@ class MGWPP_Data_Manager
         return [
             'galleries' => self::count_post_type('mgwpp_soora'),
             'albums' => self::count_post_type('mgwpp_album'),
-            'testimonials' => self::count_post_type('testimonial'),
-            'storage-usage' =>  self::get_storage_data('mgwpp_testimonial')
+            'testimonials' => self::count_post_type('mgwpp_testimonial'),
+            'storage-usage' =>  self::get_storage_data('storage')
 
         ];
     }

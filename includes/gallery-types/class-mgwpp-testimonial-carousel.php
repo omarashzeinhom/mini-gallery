@@ -25,7 +25,7 @@ class MGWPP_Testimonial_Carousel
     ], $atts);
 
     $testimonials = get_posts([
-      'post_type' => 'testimonial',
+      'post_type' => 'mgwpp_testimonial',
       'posts_per_page' => absint($atts['count']),
       'suppress_filters' => false
     ]);

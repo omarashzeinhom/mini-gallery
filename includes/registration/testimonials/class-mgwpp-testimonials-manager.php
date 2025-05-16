@@ -14,7 +14,7 @@ class MGWPP_Testimonial_Manager {
         global $post_type;
         
         // Only load on testimonial edit screens
-        if (('post.php' !== $hook && 'post-new.php' !== $hook) || 'testimonial' !== $post_type) {
+        if (('post.php' !== $hook && 'post-new.php' !== $hook) || 'mgwpp_testimonial' !== $post_type) {
             return;
         }
 
@@ -27,7 +27,7 @@ class MGWPP_Testimonial_Manager {
             'mgwpp_testimonial_details',
             __('Testimonial Details', 'mini-gallery'),
             [$this, 'render_testimonial_meta'],
-            'testimonial',
+            'mgwpp_testimonial',
             'normal',
             'high'
         );

@@ -118,7 +118,7 @@ class MGWPP_Security_View {
         $plugin_image_ids = [];
 
         // Get attachment IDs used in plugin post types
-        $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
+        $post_types = ['mgwpp_soora', 'mgwpp_album', 'mgwpp_testimonial'];
         $plugin_query = new WP_Query([
             'post_type' => $post_types,
             'posts_per_page' => -1,

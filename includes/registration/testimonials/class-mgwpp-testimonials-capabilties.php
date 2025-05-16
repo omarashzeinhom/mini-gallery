@@ -55,6 +55,6 @@ class MGWPP_Testimonial_Capabilities
         }
 
         // Add featured image support for testimonials
-        add_post_type_support('testimonial', 'thumbnail');
+        add_post_type_support('mgwpp_testimonial', 'thumbnail');
     }
 }

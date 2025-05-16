@@ -19,7 +19,7 @@ class MGWPP_Data_Handler
         $upload_path = $upload_dir['basedir'];
         $plugin_image_ids = [];
 
-        $post_types = ['mgwpp_soora', 'mgwpp_album', 'testimonial'];
+        $post_types = ['mgwpp_soora', 'mgwpp_album', 'mgwpp_testimonial'];
         $plugin_query = new WP_Query([
             'post_type' => $post_types,
             'posts_per_page' => -1,

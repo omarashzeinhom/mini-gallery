@@ -34,7 +34,7 @@ class MGWPP_Testimonial_Post_Type {
             'has_archive' => true,
             'exclude_from_search' => false,
             'publicly_queryable' => true,
-            'capability_type' => 'testimonial',
+            'capability_type' => 'mgwpp_testimonial',
             'map_meta_cap' => true,
             'capabilities' => [
                 'edit_post' => 'edit_testimonial',
@@ -54,7 +54,7 @@ class MGWPP_Testimonial_Post_Type {
             ]
         ];
 
-        register_post_type('testimonial', $args);
+        register_post_type('mgwpp_testimonial', $args);
     }
 }
 

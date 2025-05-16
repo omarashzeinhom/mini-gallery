@@ -97,7 +97,7 @@ function mgwpp_gallery_shortcode($atts)
                     wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                     wp_enqueue_script('mgwpp-testimonial-carousel-js');
                     $testimonials = get_posts([
-                        'post_type' => 'testimonial',
+                        'post_type' => 'mgwpp_testimonial',
                         'posts_per_page' => -1,
                         'suppress_filters' => false
                     ]);

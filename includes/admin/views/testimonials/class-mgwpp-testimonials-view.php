@@ -22,7 +22,7 @@ class MGWPP_Testimonials_View {
 
     private static function get_testimonials() {
         return get_posts([
-            'post_type'      => 'testimonial',
+            'post_type'      => 'mgwpp_testimonial',
             'posts_per_page' => -1,
             'post_status'    => 'publish'
         ]);
@@ -30,7 +30,7 @@ class MGWPP_Testimonials_View {
 
     private static function render_create_button() {
         ?>
-        <a href="<?php echo esc_url(admin_url('post-new.php?post_type=testimonial')); ?>" 
+        <a href="<?php echo esc_url(admin_url('post-new.php?post_type=mgwpp_testimonial')); ?>" 
            class="page-title-action">
             <?php esc_html_e('Add New', 'mini-gallery') ?>
         </a>

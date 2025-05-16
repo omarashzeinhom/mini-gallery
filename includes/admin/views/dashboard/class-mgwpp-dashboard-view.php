@@ -15,7 +15,7 @@ class MGWPP_Dashboard_View
         $stats = [
             'galleries' => MGWPP_Data_Handler::get_post_count('mgwpp_soora'),
             'albums' => MGWPP_Data_Handler::get_post_count('mgwpp_album'),
-            'testimonials' => MGWPP_Data_Handler::get_post_count('testimonial'),
+            'testimonials' => MGWPP_Data_Handler::get_post_count('mgwpp_testimonial'),
             'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 
@@ -44,7 +44,7 @@ class MGWPP_Dashboard_View
             <?php
             self::render_stat_card(__('Galleries', 'mini-gallery'), $stats['galleries'], 'gallery');
             self::render_stat_card(__('Albums', 'mini-gallery'), $stats['albums'], 'album');
-            self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'testimonial');
+            self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'mgwpp_testimonial');
             self::render_stat_card(__('Storage Usage', 'mini-gallery'), $stats['storage-usage'], 'storage-usage');
 
             ?>

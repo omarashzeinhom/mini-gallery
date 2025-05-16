@@ -6,7 +6,7 @@ class MGWPP_Testimonial_Manager {
 
     public function __construct() {
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
-        add_action('save_post_testimonial', [$this, 'save_testimonial'], 10, 2);
+        add_action('save_post_mgwpp_testimonial', [$this, 'save_testimonial'], 10, 2);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 

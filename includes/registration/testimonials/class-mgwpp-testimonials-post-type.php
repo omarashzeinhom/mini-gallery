@@ -1,10 +1,12 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Testimonial_Post_Type {
+class MGWPP_Testimonial_Post_Type
+{
 
-    public static function mgwpp_register_testimonial_post_type() {
+    public static function mgwpp_register_testimonial_post_type()
+    {
         $labels = [
             'name' => _x('Testimonials', 'Post Type General Name', 'mini-gallery'),
             'singular_name' => _x('Testimonial', 'Post Type Singular Name', 'mini-gallery'),
@@ -37,24 +39,23 @@ class MGWPP_Testimonial_Post_Type {
             'capability_type' => 'mgwpp_testimonial',
             'map_meta_cap' => true,
             'capabilities' => [
-                'edit_post' => 'edit_testimonial',
-                'read_post' => 'read_testimonial',
-                'delete_post' => 'delete_testimonial',
-                'edit_posts' => 'edit_testimonials',
-                'edit_others_posts' => 'edit_others_testimonials',
-                'publish_posts' => 'publish_testimonials',
-                'read_private_posts' => 'read_private_testimonials',
-                'delete_posts' => 'delete_testimonials',
-                'delete_private_posts' => 'delete_private_testimonials',
-                'delete_published_posts' => 'delete_published_testimonials',
-                'delete_others_posts' => 'delete_others_testimonials',
-                'edit_private_posts' => 'edit_private_testimonials',
-                'edit_published_posts' => 'edit_published_testimonials',
-                'create_posts' => 'create_testimonials'
+                'edit_post' => 'edit_mgwpp_testimonial',
+                'read_post' => 'read_mgwpp_testimonial',
+                'delete_post' => 'delete_mgwpp_testimonial',
+                'edit_posts' => 'edit_mgwpp_testimonials',          // Fixed
+                'edit_others_posts' => 'edit_others_mgwpp_testimonials',  // Fixed
+                'publish_posts' => 'publish_mgwpp_testimonials',    // Fixed
+                'read_private_posts' => 'read_private_mgwpp_testimonials', // Fixed
+                'delete_posts' => 'delete_mgwpp_testimonials',       // Fixed
+                'delete_private_posts' => 'delete_private_mgwpp_testimonials', // Fixed
+                'delete_published_posts' => 'delete_published_mgwpp_testimonials', // Fixed
+                'delete_others_posts' => 'delete_others_mgwpp_testimonials', // Fixed
+                'edit_private_posts' => 'edit_private_mgwpp_testimonials', // Fixed
+                'edit_published_posts' => 'edit_published_mgwpp_testimonials', // Fixed
+                'create_posts' => 'create_mgwpp_testimonials'       // Fixed
             ]
         ];
 
         register_post_type('mgwpp_testimonial', $args);
     }
 }
-

@@ -11,20 +11,20 @@ class MGWPP_Testimonial_Capabilities
 
         // Core testimonial management capabilities
         $testimonial_caps = array(
-            'edit_testimonial',
-            'read_testimonial',
-            'delete_testimonial',
-            'edit_testimonials',
-            'edit_others_testimonials',
-            'publish_testimonials',
-            'read_private_testimonials',
-            'delete_testimonials',
-            'delete_private_testimonials',
-            'delete_published_testimonials',
-            'delete_others_testimonials',
-            'edit_private_testimonials',
-            'edit_published_testimonials',
-            'create_testimonials'
+            'edit_mgwpp_testimonial',
+            'read_mgwpp_testimonial',
+            'delete_mgwpp_testimonial',
+            'edit_mgwpp_testimonials',
+            'edit_others_mgwpp_testimonials',
+            'publish_mgwpp_testimonials',
+            'read_private_mgwpp_testimonials',
+            'delete_mgwpp_testimonials',
+            'delete_private_mgwpp_testimonials',
+            'delete_published_mgwpp_testimonials',
+            'delete_others_mgwpp_testimonials',
+            'edit_private_mgwpp_testimonials',
+            'edit_published_mgwpp_testimonials',
+            'create_mgwpp_testimonials'
         );
 
         // Media/attachment specific capabilities

@@ -44,7 +44,7 @@ class MGWPP_Dashboard_View
             <?php
             self::render_stat_card(__('Galleries', 'mini-gallery'), $stats['galleries'], 'gallery');
             self::render_stat_card(__('Albums', 'mini-gallery'), $stats['albums'], 'album');
-            self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'mgwpp_testimonial');
+            self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'testimonial');
             self::render_stat_card(__('Storage Usage', 'mini-gallery'), $stats['storage-usage'], 'storage-usage');
 
             ?>

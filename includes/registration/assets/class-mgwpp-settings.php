@@ -77,6 +77,11 @@ class MGWPP_Settings
         submit_button();
         echo '</form></div>';
     }
+    
+    public function get_enabled_modules(){
+        // empty for now
+        // fetch enabled modules
+    }
   
 }
 

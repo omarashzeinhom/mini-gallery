@@ -15,7 +15,7 @@ class MGWPP_Dashboard_View
         $stats = [
             'galleries' => MGWPP_Data_Handler::get_post_count('mgwpp_soora'),
             'albums' => MGWPP_Data_Handler::get_post_count('mgwpp_album'),
-            'testimonials' => MGWPP_Data_Handler::get_post_count('mgwpp_testimonial'),
+            'testimonials' => MGWPP_Data_Handler::get_post_count('testimonial'),
             'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 

@@ -11,6 +11,7 @@ class MGWPP_Admin_Menu
     private $albums_view;
     private $testimonials_view;
     private $security_view;
+    private $settings_view;
 
     // In class-mgwpp-admin-menu.php
     public function __construct($module_loader)
@@ -27,6 +28,7 @@ class MGWPP_Admin_Menu
         $this->albums_view = new MGWPP_Albums_View();
         $this->testimonials_view = new MGWPP_Testimonials_View();
         $this->security_view = new MGWPP_Security_View();
+        $this->settings_view = new MGWPP_Settings_View();
     }
 
     public function register_menus()
@@ -62,29 +64,34 @@ class MGWPP_Admin_Menu
         $this->view_classes = [
             'galleries' => [
                 'page_title' => __('Galleries', 'mini-gallery'),
-                'callback' => [$this->galleries_view, 'render'], // ✅ Instance method
+                'callback' => [$this->galleries_view, 'render'],
                 'capability' => 'edit_posts'
             ],
             'albums' => [
                 'page_title' => __('Albums', 'mini-gallery'),
-                'callback' => [$this->albums_view, 'render'], // ✅ Instance method
+                'callback' => [$this->albums_view, 'render'],
                 'capability' => 'edit_posts'
             ],
             'testimonials' => [
                 'page_title' => __('Testimonials', 'mini-gallery'),
-                'callback' => [$this->testimonials_view, 'render'], // ✅ Instance method
+                'callback' => [$this->testimonials_view, 'render'],
                 'capability' => 'manage_options'
             ],
             'security' => [
                 'page_title' => __('Security', 'mini-gallery'),
-                'callback' => [$this->security_view, 'render'], // ✅ Instance method
+                'callback' => [$this->security_view, 'render'],
                 'capability' => 'manage_options'
             ],
             'modules' => [
                 'page_title' => __('Modules', 'mini-gallery'),
                 'callback' => [$this->modules_view, 'render'],
                 'capability' => 'manage_options'
-            ]
+            ],
+            'settings' => [
+                'page_title' => __('Settings', 'mini-gallery'), // Corrected key
+                'callback' => [$this->settings_view, 'render'],
+                'capability' => 'manage_options'
+            ],
         ];
     }
 

@@ -56,52 +56,20 @@ class MGWPP_Settings_View
         echo '<p>' . esc_html__('Enable/disable modules to optimize performance.', 'mini-gallery') . '</p>';
     }
 
-   public function module_field_callback($args)
+    public function module_field_callback($args)
     {
         $option = get_option('mgwpp_enabled_modules', array_keys($this->modules));
         $slug = $args['slug'];
-        $is_active = in_array($slug, (array)$option);
         $asset_info = $this->get_module_asset_info($slug);
         $size_info = $this->format_size($asset_info['size']) . ' (' . count($asset_info['files']) . ' ' . _n('file', 'files', count($asset_info['files']), 'mini-gallery') . ')';
 
-        echo '<div class="mgwpp-module-card ' . ($is_active ? 'active' : 'inactive') . '" data-module="' . esc_attr($slug) . '">';
-        echo '<div class="mgwpp-module-header">';
-        echo '<div class="mgwpp-module-icon">';
-        echo '<img src="' . esc_url($this->get_gallery_icon($slug)) . '" alt="' . esc_attr($this->modules[$slug]) . '">';
-        echo '</div>';
-        echo '<div class="mgwpp-module-info">';
-        echo '<h3>' . esc_html($this->modules[$slug]) . '</h3>';
-        echo '<span class="mgwpp-module-size">' . esc_html($size_info) . '</span>';
-        echo '</div>';
-        echo '<label class="mgwpp-switch">';
+        echo '<label class="mgwpp-module-toggle">';
         echo '<input type="checkbox" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ';
-        checked($is_active);
-        echo '>';
-        echo '<span class="mgwpp-switch-slider round"></span>';
+        checked(in_array($slug, (array)$option));
+        echo '> ';
+        echo esc_html($this->modules[$slug]);
+        echo '<span class="mgwpp-module-size">' . esc_html($size_info) . '</span>';
         echo '</label>';
-        echo '</div>';
-        echo '</div>';
-    }
-
-  private function get_gallery_icon($gallery_type)
-    {
-        $icons = [
-            'single_carousel' => 'single-gallery.png',
-            'multi_carousel' => 'multi-gallery.png',
-            'grid' => 'grid.png',
-            'mega_slider' => 'mega-carousel.png',
-            'pro_carousel' => 'pro-carousel.png',
-            'neon_carousel' => 'neon-carousel.png',
-            'threed_carousel' => '3d-carousel.png',
-            'testimonials_carousel' => 'testimonial.png',
-            'lightbox' => 'lightbox.png',
-            'fullpage_slider' => 'fullpage-slider.png',
-            'spotlight_slider' => 'spotlight-carousel.png',
-            'albums' => 'albums.png',
-        ];
-
-        $icon_filename = isset($icons[$gallery_type]) ? $icons[$gallery_type] : 'default-gallery.png';
-        return MG_PLUGIN_URL . '/includes/admin/images/modules-icons/galleries/' . $icon_filename;
     }
 
     public function render()

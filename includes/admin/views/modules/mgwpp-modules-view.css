@@ -89,13 +89,15 @@
 
 
 /* Module Cards */
-.mgwpp-modules-grid {
+.mgwpp-modules-grid, .form-table
+{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
 .mgwpp-module-card {
+  padding: 20px;
   background: #fff;
   border-radius: var(--mgwpp-border-radius-md);
   overflow: hidden;
@@ -107,12 +109,12 @@
 
 /* Active/Inactive States */
 .mgwpp-module-card.active {
-  border-left: 4px solid var(--mgwpp-primary-color);
+  //border-left: 4px solid var(--mgwpp-primary-color);
   opacity: 1;
 }
 
 .mgwpp-module-card.inactive {
-  border-left: 4px solid #ccc;
+  //border-left: 4px solid #ccc;
   opacity: 0.7;
 }
 
@@ -334,4 +336,78 @@ input:checked + .mgwpp-switch-slider:before {
 .mgwpp-module-card.inactive {
   opacity: 0.7 !important;
   border-left-color: #ccc !important;
+}
+
+
+
+/* Remove table styling */
+.mgwpp-modules-grid table {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.mgwpp-modules-grid tr,
+.mgwpp-modules-grid td,
+.mgwpp-modules-grid th {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.mgwpp-modules-grid td {
+    margin-bottom: 20px !important;
+}
+
+.mgwpp-modules-grid , .mgwpp-modules-grid table {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+}
+
+.mgwpp-modules-grid > * {
+    grid-column: 1 / -1 !important;
+}
+
+.mgwpp-gallery-types-header h2 {
+    font-size: 1.5em !important;
+    margin: 2em 0 1em !important;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid #eee;
+}
+
+.mgwpp-enabled-gallery-types {
+    margin-bottom: 3em !important;
+}
+
+.mgwpp-performance-metrics {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.performance-metric {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+p.submit {
+    margin: 30px 0 0 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+}
+
+#submit {
+    position: relative !important;
+    float: none !important;
+    margin-left: 0 !important;
 }

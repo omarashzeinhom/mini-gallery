@@ -56,27 +56,32 @@ class MGWPP_Modules_View
         $is_checked = in_array($slug, (array)$option);
         $asset_info = $this->get_module_asset_info($slug);
 
-        // Start module card
-        echo '<div class="mgwpp-module-card ' . ($is_checked ? 'active' : 'inactive') . '">';
+        // In module_field_callback() function
+        echo '<div class="mgwpp-module-card ' . '" data-module="' . esc_attr($slug) . '">';
         echo '<div class="module-header">';
         echo '<div class="module-icon">';
-        echo '<img src="' . esc_url($this->get_gallery_icon($slug)) . '">';
+        echo '<img src="' . esc_url($this->get_gallery_icon($slug)) . '" alt="' . esc_attr($this->modules[$slug]['config']['name']) . '">';
         echo '</div>';
-        echo '<h3>' . esc_html($this->modules[$slug]) . '</h3>';
+        echo '<div class="module-info">';
+        echo '<h3>' . esc_html($this->modules[$slug]['config']['name']) . '</h3>';
+        echo '<div class="module-meta">';
+        echo '<span class="version">' . esc_html($this->modules[$slug]['config']['version']) . '</span>';
+        echo '<span class="author">' . esc_html($this->modules[$slug]['config']['author']) . '</span>';
+        echo '</div>'; // Close module-meta
+        echo '</div>'; // Close module-info
         echo '<div class="module-actions">';
         echo '<label class="mgwpp-switch">';
-        echo '<input type="checkbox" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ' . checked($is_checked, true, false) . '>';
+        echo '<input type="checkbox" class="mgwpp-module-toggle" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ' . checked($is_checked, true, false) . '>';
         echo '<span class="mgwpp-switch-slider round"></span>';
         echo '</label>';
-        echo '</div></div>'; // Close header
-
-        // Add metadata
-        echo '<div class="module-meta">';
-        echo '<span class="size">' . esc_html($this->format_size($asset_info['size'])) . '</span>';
-        echo '<span class="files">' . count($asset_info['files']) . ' files</span>';
+        echo '</div>'; // Close module-actions
+        echo '</div>'; // Close module-header
+        echo '<div class="module-description">';
+        echo esc_html($this->modules[$slug]['config']['description'] ?? '');
         echo '</div>';
+        echo '</div>'; // Close mgwpp-module-card
 
-        echo '</div>'; // Close module card
+
     }
 
 
@@ -111,44 +116,47 @@ class MGWPP_Modules_View
             <!-- Enabled Modules Header -->
             <div class="mgwpp-gallery-types-header">
                 <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
-                <div class="mgwpp-enabled-gallery-types">
-                    <?php foreach ($enabled_modules as $module_slug) :
-                        $module = $this->modules[$module_slug] ?? null;
-                        if (!$module) continue;
-                    ?>
-                        <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($module_slug); ?>">
-                            <img src="<?php echo esc_url($this->get_gallery_icon($module_slug)); ?>"
-                                alt="<?php echo esc_attr($module['config']['name']); ?>"
-                                class="mgwpp-gallery-type-icon" />
-                            <?php echo esc_html($module['config']['name']); ?>
-                            <div class="mgwpp-switch">
-                                <input type="checkbox"
-                                    <?php checked(true); ?>
-                                    disabled="disabled">
-                                <span class="mgwpp-switch-slider round"></span>
-                            </div>
+                <?php foreach ($enabled_modules as $module_slug) :
+                    $module = $this->modules[$module_slug] ?? null;
+                    if (!$module) continue;
+                ?>
+                    <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($module_slug); ?>">
+                        <img src="<?php echo esc_url($this->get_gallery_icon($module_slug)); ?>"
+                            alt="<?php echo esc_attr($module['config']['name']); ?>"
+                            class="mgwpp-gallery-type-icon" />
+                        <?php echo esc_html($module['config']['name']); ?>
+                        <div class="mgwpp-switch">
+                            <input type="checkbox"
+                                <?php checked(true); ?>
+                                disabled="disabled">
+                            <span class="mgwpp-switch-slider round"></span>
                         </div>
                     <?php endforeach; ?>
-                </div>
+                    </div>
+
+                    <!-- Main Modules Grid -->
+                    <form method="post" action="options.php" class="mgwpp-modules-grid">
+                        <div class="mgwpp-modules-grid">
+                            <?php settings_fields('mgwpp_settings_group'); ?>
+
+                            <?php do_settings_sections('mgwpp-settings'); ?>
+                        </div>
+
+
+                        <?php submit_button(__('Save Module Settings', 'mini-gallery'), 'primary', 'submit', true, [
+                            'style' => 'margin-top: 20px; margin-left: 20px;'
+                        ]); ?>
+                    </form>
+
+                    <!-- Performance Metrics -->
+                    <div class="mgwpp-performance-metrics">
+                        <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
+                        <?php $this->display_performance_metrics(); ?>
+                    </div>
             </div>
 
-            <!-- Main Modules Grid -->
-            <form method="post" action="options.php">
-                <?php settings_fields('mgwpp_settings_group'); ?>
-                <div class="mgwpp-modules-grid">
-                    <?php do_settings_sections('mgwpp-settings'); ?>
-                </div>
-                <?php submit_button(__('Save Module Settings', 'mini-gallery'), 'primary', 'submit', true, [
-                    'style' => 'margin-top: 20px; margin-left: 20px;'
-                ]); ?>
-            </form>
-
-            <!-- Performance Metrics -->
-            <div class="mgwpp-performance-metrics">
-                <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
-                <?php $this->display_performance_metrics(); ?>
-            </div>
         </div>
+
     <?php
     }
 

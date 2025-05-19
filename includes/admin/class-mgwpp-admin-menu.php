@@ -12,7 +12,8 @@ class MGWPP_Admin_Menu
     private $testimonials_view;
     private $security_view;
     private $settings_view;
-
+    private $embed_editor_view;
+    
     // In class-mgwpp-admin-menu.php
     public function __construct($module_loader)
     {
@@ -29,6 +30,7 @@ class MGWPP_Admin_Menu
         $this->testimonials_view = new MGWPP_Testimonials_View();
         $this->security_view = new MGWPP_Security_View();
         $this->settings_view = new MGWPP_Settings_View();
+        $this->embed_editor_view = new MGWPP_Embed_Editor_View();
     }
 
     public function register_menus()
@@ -62,6 +64,11 @@ class MGWPP_Admin_Menu
     private function setup_menu_structure()
     {
         $this->view_classes = [
+            'embed-editor' => [
+                'page_title' => __('Embed Editor', 'mini-gallery'),
+                'callback' => [$this->embed_editor_view , 'render'],
+                'capability' => 'edit_posts'
+            ],
             'galleries' => [
                 'page_title' => __('Galleries', 'mini-gallery'),
                 'callback' => [$this->galleries_view, 'render'],

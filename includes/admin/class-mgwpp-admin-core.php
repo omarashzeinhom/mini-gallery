@@ -42,6 +42,7 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
         require_once __DIR__ . '/views/modules/class-mgwpp-modules-view.php';
         require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
+        require_once __DIR__ . '/views/embed-editor/class-mgwpp-embed-editor-view.php';
 
     }
 

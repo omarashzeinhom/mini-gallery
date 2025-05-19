@@ -310,4 +310,3 @@ function mgwpp_add_plugin_row_meta($links, $file)
 
     return $links;
 }
-

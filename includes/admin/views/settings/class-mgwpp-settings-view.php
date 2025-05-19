@@ -34,15 +34,15 @@ class MGWPP_Settings_View
 
         add_settings_section(
             'mgwpp_modules_section',
-            __('Enabled Modules', 'mini-gallery'),
-            [$this, 'section_callback'],
+            __('', 'mini-gallery'),
+            '__return_false', // No callback
             'mgwpp-settings'
         );
 
         foreach ($this->modules as $slug => $label) {
             add_settings_field(
                 'mgwpp_enabled_' . $slug,
-                $label,
+                '',
                 [$this, 'module_field_callback'],
                 'mgwpp-settings',
                 'mgwpp_modules_section',
@@ -51,12 +51,7 @@ class MGWPP_Settings_View
         }
     }
 
-    public function section_callback()
-    {
-        echo '<p>' . esc_html__('Enable/disable modules to optimize performance.', 'mini-gallery') . '</p>';
-    }
-
-   public function module_field_callback($args)
+    public function module_field_callback($args)
     {
         $option = get_option('mgwpp_enabled_modules', array_keys($this->modules));
         $slug = $args['slug'];
@@ -83,7 +78,8 @@ class MGWPP_Settings_View
         echo '</div>';
     }
 
-  private function get_gallery_icon($gallery_type)
+
+    private function get_gallery_icon($gallery_type)
     {
         $icons = [
             'single_carousel' => 'single-gallery.png',
@@ -107,24 +103,28 @@ class MGWPP_Settings_View
     public function render()
     {
 ?>
-        <div class="wrap mgwpp-settings-wrap">
-            <h1><?php esc_html_e('Gallery Settings', 'mini-gallery'); ?></h1>
-            <div class="mgwpp-settings-content">
-                <form method="post" action="options.php">
-                    <?php
-                    settings_fields('mgwpp_settings_group');
-                    do_settings_sections('mgwpp-settings');
-                    submit_button();
-                    ?>
-                </form>
-                <div class="mgwpp-performance-metrics">
-                    <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
-                    <?php $this->display_performance_metrics(); ?>
+        <div class="wrap">
+                            <h1><?php esc_html_e('Gallery Settings', 'mini-gallery'); ?></h1>
+
+            <div class="mgwpp-enabled-gallery-types">
+                <div class="mgwpp-modules-grid">
+                        <form method="post" action="options.php">
+                            <?php
+                            settings_fields('mgwpp_settings_group');
+                            do_settings_sections('mgwpp-settings');
+                            submit_button();
+                            ?>
+                        </form>
                 </div>
+            </div>
+            
+            <div class="mgwpp-performance-metrics">
+                <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
+                <?php $this->display_performance_metrics(); ?>
             </div>
         </div>
     <?php
-        $this->enqueue_styles();
+        $this->enqueue_assets();
     }
 
     private function display_performance_metrics()
@@ -153,7 +153,6 @@ class MGWPP_Settings_View
         $savings_percent = $total_size > 0 ? round(($disabled_size / $total_size) * 100, 2) : 0;
     ?>
         <div class="performance-metric">
-            <div class="performance-metric-label"><?php esc_html_e('Enabled Modules:', 'mini-gallery'); ?></div>
             <div class="performance-metric-value">
                 <?php echo count($enabled_modules) . ' ' . esc_html(_n('module', 'modules', count($enabled_modules), 'mini-gallery')); ?>
                 (<?php echo esc_html($this->format_size($enabled_size)); ?> / <?php echo count($enabled_files) . ' ' . esc_html(_n('file', 'files', count($enabled_files), 'mini-gallery')); ?>)
@@ -220,13 +219,27 @@ class MGWPP_Settings_View
         return is_array($input) ? array_intersect($input, array_keys($this->modules)) : [];
     }
 
-    private function enqueue_styles()
+    public function enqueue_assets()
     {
         wp_enqueue_style(
-            'mgwpp-settings-css',
-            MG_PLUGIN_URL . 'includes/admin/css/settings.css',
+            'mgwpp-modules-view-style',
+            MG_PLUGIN_URL . "/includes/admin/views/modules/mgwpp-modules-view.css",
             [],
-            filemtime(MG_PLUGIN_PATH . 'includes/admin/css/settings.css')
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/modules/mgwpp-modules-view.css")
         );
+
+        wp_enqueue_script(
+            'mgwpp-modules-view-script',
+            MG_PLUGIN_URL . "/includes/admin/views/modules/mgwpp-modules-view.js",
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/modules/mgwpp-modules-view.js"),
+            true
+        );
+
+        // Localize script for AJAX
+        wp_localize_script('mgwpp-modules-view-script', 'MGWPPData', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('module_toggle_nonce')
+        ]);
     }
 }

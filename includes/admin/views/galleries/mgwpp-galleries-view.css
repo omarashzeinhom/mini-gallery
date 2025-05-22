@@ -8,8 +8,8 @@
 
 /* Gallery Card */
 .mgwpp-gallery-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: var(--mgwpp-card-bg);
+  border: 1px solid var(--mgwpp-card-border);
   border-radius: 0.75rem;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -42,8 +42,8 @@
 }
 
 .mgwpp-card-actions .button {
-  background: var(--icon-bg);
-  color: var(--icon-color);
+  background: var(--mgwpp-icon-bg);
+  color: var(--mgwpp-icon-color);
   border-radius: 9999px;
   padding: 0.5rem;
   transition: background 0.2s ease;
@@ -64,7 +64,7 @@
 .mgwpp-card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--button-text);
+  color: var(--mgwpp-foreground);
   margin: 0;
 }
 
@@ -90,8 +90,8 @@
 .mgwpp-card-shortcode {
   display: flex;
   align-items: center;
-  background: var(--button-bg);
-  border: 1px solid var(--button-border);
+  background: var(--mgwpp-button-bg);
+  border: 1px solid var(--mgwpp-card-border);
   border-radius: 0.375rem;
   padding: 0.25rem;
 }

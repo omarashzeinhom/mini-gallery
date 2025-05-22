@@ -1,4 +1,5 @@
 :root {
+  /* Keep ALL original variables */
   /* Light Theme */
   --mgwpp-background-light: #f8fafc;
   --mgwpp-foreground-light: #1e293b;
@@ -34,5 +35,28 @@
   --mgwpp-border-radius-lg: 16px;
   --mgwpp-border-radius-xl: 20px;
   --mgwpp-border-radius-full: 9999px;
-  --mgwpp-transition-speed: 0.3s;
+
+  /* Add generic variables that map to light/dark */
+  --mgwpp-background: var(--mgwpp-background-light);
+  --mgwpp-foreground: var(--mgwpp-foreground-light);
+  --mgwpp-card-bg: var(--mgwpp-card-bg-light);
+  --mgwpp-card-border: var(--mgwpp-card-border-light);
+  --mgwpp-card-shadow: var(--mgwpp-card-shadow-light);
+  --mgwpp-icon-bg: var(--mgwpp-icon-bg-light);
+  --mgwpp-icon-color: var(--mgwpp-icon-color-light);
+  --mgwpp-button-bg: var(--mgwpp-button-bg-light);
+  --mgwpp-button-text: var(--mgwpp-button-text-light);
+}
+
+/* Dark mode override */
+body.mgwpp-dark-mode {
+  --mgwpp-background: var(--mgwpp-background-dark);
+  --mgwpp-foreground: var(--mgwpp-foreground-dark);
+  --mgwpp-card-bg: var(--mgwpp-card-bg-dark);
+  --mgwpp-card-border: var(--mgwpp-card-border-dark);
+  --mgwpp-card-shadow: var(--mgwpp-card-shadow-dark);
+  --mgwpp-icon-bg: var(--mgwpp-icon-bg-dark);
+  --mgwpp-icon-color: var(--mgwpp-icon-color-dark);
+  --mgwpp-button-bg: var(--mgwpp-button-bg-dark);
+  --mgwpp-button-text: var(--mgwpp-button-text-dark);
 }

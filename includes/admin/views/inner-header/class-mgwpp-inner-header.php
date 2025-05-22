@@ -13,10 +13,7 @@ class MGWPP_Inner_Header
     public static function add_admin_body_class($classes)
     {
         $current_theme = self::get_user_theme_preference();
-        if ($current_theme === 'dark') {
-            $classes .= ' mgwpp-dark-mode';
-        }
-        return $classes;
+        return $classes . ($current_theme === 'dark' ? ' mgwpp-dark-mode' : '');
     }
 
     public static function render()

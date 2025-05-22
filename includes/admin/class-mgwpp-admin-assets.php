@@ -62,10 +62,20 @@ class MGWPP_Admin_Assets
 
     private function load_core_assets()
     {
+
         // WordPress dependencies
         wp_enqueue_media();
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
+
+        // Main admin Colours Root Palette for Dark/Light Mode
+        wp_enqueue_style(
+            'mgwpp-admin-core-css-variables',
+            MG_PLUGIN_URL . '/includes/admin/css/variables.css',
+            [],
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/variables.css')
+        );
+
 
         // Main admin CSS
         wp_enqueue_style(
@@ -84,6 +94,7 @@ class MGWPP_Admin_Assets
             true
         );
 
+
         wp_localize_script(
             'mgwpp-admin-js',
             'mgwppMedia',
@@ -96,7 +107,33 @@ class MGWPP_Admin_Assets
                 'generic_error'   => __('An error occurred. Please try again.', 'mini-gallery'),
             ]
         );
+
+
+        /* DARK LIGHT MODE Toggle SWITCH Theme toggle assets */
+
+
+        wp_enqueue_style(
+            'mgwpp-theme-toggle',
+            MG_PLUGIN_URL . '/includes/admin/views/inner-header/mgwpp-inner-header.css',
+            [],
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/inner-header/mgwpp-inner-header.css')
+        );
+
+        wp_enqueue_script(
+            'mgwpp-theme-toggle',
+            MG_PLUGIN_URL . '/includes/admin/views/inner-header/mgwpp-inner-header.js',
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/views/inner-header/mgwpp-inner-header.js'),
+            true
+        );
+
+        // Localize for ALL admin pages
+        wp_localize_script('mgwpp-theme-toggle', 'mgwppHeader', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('mgwpp-theme-nonce')
+        ]);
     }
+
 
     private function load_dashboard_assets()
     {

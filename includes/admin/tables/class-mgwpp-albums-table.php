@@ -16,16 +16,21 @@ class MGWPP_Albums_Table extends WP_List_Table {
 
     public function get_columns() {
         return [
-            'title'        => __('Title', 'mini-gallery'),
+            'title'         => __('Title', 'mini-gallery'),
             'gallery_count' => __('Galleries', 'mini-gallery'),
-            'shortcode'    => __('Shortcode', 'mini-gallery'),
-            'date'         => __('Date', 'mini-gallery'),
-            'actions'      => __('Actions', 'mini-gallery')
+            'shortcode'     => __('Shortcode', 'mini-gallery'),
+            'date'          => __('Date', 'mini-gallery'),
+            'actions'       => __('Actions', 'mini-gallery')
         ];
     }
 
+    protected function column_default($item, $column_name) {
+        return isset($item->$column_name) ? $item->$column_name : '';
+    }
+
     public function prepare_items() {
-        $this->_column_headers = [$this->get_columns(), [], []];
+        $columns = $this->get_columns();
+        $this->_column_headers = [$columns, [], []];
         
         $args = [
             'post_type'      => 'mgwpp_album',
@@ -96,8 +101,6 @@ class MGWPP_Albums_Table extends WP_List_Table {
         echo '<tr>';
         $this->single_row_columns($item);
         echo '</tr>';
-        
-        // Add expanded row with gallery list
         echo '<tr class="mgwpp-album-details-row">';
         echo '<td colspan="5">';
         $this->album_details_content($item);
@@ -107,30 +110,67 @@ class MGWPP_Albums_Table extends WP_List_Table {
 
     private function album_details_content($item) {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
-        ?>
-        <div class="mgwpp-album-details">
-            <h4><?php esc_html_e('Album Contents', 'mini-gallery'); ?></h4>
-            <?php if (!empty($galleries) && is_array($galleries)) : ?>
-                <ul class="mgwpp-album-galleries">
-                    <?php foreach ($galleries as $gallery_id) : 
-                        $gallery = get_post($gallery_id);
-                        if ($gallery) : ?>
-                            <li>
-                                <a href="<?php echo esc_url(get_edit_post_link($gallery_id)); ?>">
-                                    <?php echo esc_html($gallery->post_title); ?>
-                                </a>
-                                <span class="mgwpp-gallery-type">
-                                    <?php echo esc_html(get_post_meta($gallery_id, 'gallery_type', true)); ?>
-                                </span>
-                            </li>
-                        <?php endif;
-                    endforeach; ?>
-                </ul>
-            <?php else : ?>
-                <p><?php esc_html_e('No galleries in this album.', 'mini-gallery'); ?></p>
-            <?php endif; ?>
-        </div>
-        <?php
+        echo '<div class="mgwpp-album-details"><h4>' . esc_html__('Album Contents', 'mini-gallery') . '</h4>';
+        if (!empty($galleries)) {
+            echo '<ul class="mgwpp-album-galleries">';
+            foreach ($galleries as $gallery_id) {
+                $gallery = get_post($gallery_id);
+                if ($gallery) {
+                    echo '<li><a href="' . esc_url(get_edit_post_link($gallery_id)) . '">' 
+                         . esc_html($gallery->post_title) . '</a><span class="mgwpp-gallery-type">' 
+                         . esc_html(get_post_meta($gallery_id, 'gallery_type', true)) . '</span></li>';
+                }
+            }
+            echo '</ul>';
+        } else {
+            echo '<p>' . esc_html__('No galleries in this album.', 'mini-gallery') . '</p>';
+        }
+        echo '</div>';
     }
 }
 
+add_action('admin_post_mgwpp_delete_album', function() {
+    if (!isset($_GET['album_id']) || !isset($_REQUEST['_wpnonce'])) {
+        wp_die(__('Invalid request parameters', 'mini-gallery'));
+    }
+
+    $album_id = intval($_GET['album_id']);
+    $nonce = $_REQUEST['_wpnonce'];
+
+    if (!wp_verify_nonce($nonce, 'mgwpp_delete_album_' . $album_id)) {
+        wp_die(__('Security verification failed', 'mini-gallery'));
+    }
+
+    if (!get_post($album_id)) {
+        wp_die(__('Specified album does not exist', 'mini-gallery'));
+    }
+
+    if (!current_user_can('delete_post', $album_id)) {
+        wp_die(__('You lack permissions for this action', 'mini-gallery'));
+    }
+
+    $deletion_result = wp_delete_post($album_id, true);
+    $redirect_url = admin_url('admin.php?page=album-management');
+
+    if ($deletion_result) {
+        $redirect_url = add_query_arg('mgwpp_deleted', 1, $redirect_url);
+    } else {
+        $redirect_url = add_query_arg('mgwpp_delete_error', 1, $redirect_url);
+    }
+
+    wp_safe_redirect($redirect_url);
+    exit;
+});
+
+add_action('admin_notices', function() {
+    if (isset($_GET['mgwpp_deleted'])) {
+        echo '<div class="notice notice-success is-dismissible"><p>' 
+             . esc_html__('Album successfully removed.', 'mini-gallery') 
+             . '</p></div>';
+    }
+    if (isset($_GET['mgwpp_delete_error'])) {
+        echo '<div class="notice notice-error is-dismissible"><p>' 
+             . esc_html__('Failed to delete album.', 'mini-gallery') 
+             . '</p></div>';
+    }
+});

@@ -1,43 +1,4 @@
-:root {
-  /* Light Theme */
-  --mgwpp-background-light: #f8fafc;
-  --mgwpp-foreground-light: #1e293b;
-  --mgwpp-card-bg-light: rgba(255, 255, 255, 0.7);
-  --mgwpp-card-border-light: rgba(140, 140, 140, 0.4);
-  --mgwpp-card-shadow-light: 0 4px 30px rgba(0, 0, 0, 0.1);
-  --mgwpp-icon-bg-light: rgba(236, 254, 255, 0.6);
-  --mgwpp-icon-color-light: #1dc1dc;
-  --mgwpp-button-bg-light: rgba(241, 245, 249, 0.6);
-  --mgwpp-button-text-light: #64748b;
-
-  /* Dark Theme */
-  --mgwpp-background-dark: #0f172a;
-  --mgwpp-foreground-dark: #f8fafc;
-  --mgwpp-card-bg-dark: rgba(15, 23, 42, 0.7);
-  --mgwpp-card-border-dark: rgba(255, 255, 255, 0.1);
-  --mgwpp-card-shadow-dark: 0 4px 30px rgba(0, 0, 0, 0.3);
-  --mgwpp-icon-bg-dark: rgba(12, 157, 181, 0.3);
-  --mgwpp-icon-color-dark: #4df2ff;
-  --mgwpp-button-bg-dark: rgba(30, 41, 59, 0.6);
-  --mgwpp-button-text-dark: #cbd5e1;
-
-  /* Blur Effects */
-  --mgwpp-backdrop-blur: blur(16px);
-  --mgwpp-backdrop-blur-sm: blur(8px);
-
-  /* Common */
-  --mgwpp-primary-color: #1dc1dc;
-  --mgwpp-primary-hover: #0c9db5;
-  --mgwpp-transition-speed: 0.3s;
-  --mgwpp-border-radius-sm: 6px;
-  --mgwpp-border-radius-md: 8px;
-  --mgwpp-border-radius-lg: 16px;
-  --mgwpp-border-radius-xl: 20px;
-  --mgwpp-border-radius-full: 9999px;
-  --mgwpp-transition-speed: 0.3s;
-}
-
-
+@import url('variables.css');
 
 /* Admin Button - Matches Glass Card Aesthetic */
 .mgwpp-admin-button {

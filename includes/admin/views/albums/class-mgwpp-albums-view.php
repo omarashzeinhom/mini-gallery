@@ -2,6 +2,8 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
+
 
 // Ensure WP_List_Table is loaded before the custom Albums Table
 if (!class_exists('WP_List_Table')) {
@@ -32,6 +34,7 @@ class MGWPP_Albums_View
 
 ?>
         <div class="wrap mgwpp-admin-wrap">
+            <?php MGWPP_Inner_Header::render(); ?>
             <div class="mgwpp-header">
                 <div class="mgwpp-header-content">
                     <h1><span class="dashicons dashicons-format-gallery"></span> <?php esc_html_e('Albums Management', 'mini-gallery') ?></h1>

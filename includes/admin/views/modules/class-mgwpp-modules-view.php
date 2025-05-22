@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Modules_View
 {
-    private $module_loader;
+    //private $module_loader;
     private $modules = [];
 
     public function __construct($module_loader)
@@ -12,8 +12,8 @@ class MGWPP_Modules_View
         $this->modules = $module_loader->get_modules();
         add_action('admin_init', [$this, 'register_settings']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+        add_action('wp_ajax_toggle_module_status', [$this, 'ajax_toggle_module']);
     }
-
 
     public function register_settings()
     {
@@ -21,14 +21,12 @@ class MGWPP_Modules_View
             'sanitize_callback' => [$this, 'sanitize_modules']
         ]);
 
-        // Modified settings section registration
         add_settings_section(
             'mgwpp_modules_section',
-            '', // Empty title
-            '__return_false', // No callback
+            '',
+            [$this, 'grid_wrapper_start'], // New callback
             'mgwpp-settings'
         );
-
 
         foreach ($this->modules as $slug => $module) {
             add_settings_field(
@@ -43,45 +41,46 @@ class MGWPP_Modules_View
     }
 
 
-    public function section_callback()
-    {
-        // Empty callback to prevent default table output
-        echo '<div class="mgwpp-modules-grid">';
-    }
-
     public function module_field_callback($args)
     {
         $slug = $args['slug'];
         $option = get_option('mgwpp_enabled_modules', array_keys($this->modules));
         $is_checked = in_array($slug, (array)$option);
-        $asset_info = $this->get_module_asset_info($slug);
+        $module = $this->modules[$slug];
+?>
 
-        // In module_field_callback() function
-        echo '<div class="mgwpp-module-card ' . '" data-module="' . esc_attr($slug) . '">';
-        echo '<div class="module-header">';
-        echo '<div class="module-icon">';
-        echo '<img src="' . esc_url($this->get_gallery_icon($slug)) . '" alt="' . esc_attr($this->modules[$slug]['config']['name']) . '">';
-        echo '</div>';
-        echo '<div class="module-info">';
-        echo '<h3>' . esc_html($this->modules[$slug]['config']['name']) . '</h3>';
-        echo '<div class="module-meta">';
-        echo '<span class="version">' . esc_html($this->modules[$slug]['config']['version']) . '</span>';
-        echo '<span class="author">' . esc_html($this->modules[$slug]['config']['author']) . '</span>';
-        echo '</div>'; // Close module-meta
-        echo '</div>'; // Close module-info
-        echo '<div class="module-actions">';
-        echo '<label class="mgwpp-switch">';
-        echo '<input type="checkbox" class="mgwpp-module-toggle" name="mgwpp_enabled_modules[]" value="' . esc_attr($slug) . '" ' . checked($is_checked, true, false) . '>';
-        echo '<span class="mgwpp-switch-slider round"></span>';
-        echo '</label>';
-        echo '</div>'; // Close module-actions
-        echo '</div>'; // Close module-header
-        echo '<div class="module-description">';
-        echo esc_html($this->modules[$slug]['config']['description'] ?? '');
-        echo '</div>';
-        echo '</div>'; // Close mgwpp-module-card
+        <div class="mgwpp-module-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
+            <div class="module-header">
+                <div class="module-icon">
+                    <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
+                        alt="<?php echo esc_attr($module['config']['name']); ?>">
+                </div>
 
+                <div class="module-info">
+                    <h3><?php echo esc_html($module['config']['name']); ?></h3>
+                    <div class="module-meta">
+                        <span class="version"><?php echo esc_html($module['config']['version']); ?></span>
+                        <span class="author"><?php echo esc_html($module['config']['author']); ?></span>
+                    </div>
+                </div>
 
+                <div class="module-actions">
+                    <label class="mgwpp-switch">
+                        <input type="checkbox"
+                            class="mgwpp-module-toggle"
+                            name="mgwpp_enabled_modules[]"
+                            value="<?php echo esc_attr($slug); ?>"
+                            <?php checked($is_checked, true); ?>>
+                        <span class="mgwpp-switch-slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="module-description">
+                <?php echo esc_html($module['config']['description'] ?? ''); ?>
+            </div>
+        </div>
+    <?php
     }
 
 
@@ -109,54 +108,45 @@ class MGWPP_Modules_View
     public function render()
     {
         $enabled_modules = get_option('mgwpp_enabled_modules', array_keys($this->modules));
-?>
-        <div class="wrap">
-            <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
+    ?>
+        <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
 
-            <!-- Enabled Modules Header -->
-            <div class="mgwpp-gallery-types-header">
-                <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
-                <?php foreach ($enabled_modules as $module_slug) :
-                    $module = $this->modules[$module_slug] ?? null;
-                    if (!$module) continue;
+        <div class="mgwpp-gallery-types-header">
+            <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
+            <div class="mgwpp-enabled-gallery-types">
+                                <div class="mgwpp-modules-grid">
+
+                <?php foreach ($enabled_modules as $slug) :
+                    if (!isset($this->modules[$slug])) continue;
+                    $module = $this->modules[$slug];
                 ?>
-                    <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($module_slug); ?>">
-                        <img src="<?php echo esc_url($this->get_gallery_icon($module_slug)); ?>"
+                    <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($slug); ?>">
+                        <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                             alt="<?php echo esc_attr($module['config']['name']); ?>"
-                            class="mgwpp-gallery-type-icon" />
+                            class="mgwpp-gallery-type-icon">
                         <?php echo esc_html($module['config']['name']); ?>
                         <div class="mgwpp-switch">
-                            <input type="checkbox"
-                                <?php checked(true); ?>
-                                disabled="disabled">
+                            <input type="checkbox" <?php checked(true); ?> disabled>
                             <span class="mgwpp-switch-slider round"></span>
                         </div>
-                    <?php endforeach; ?>
                     </div>
-
-                    <!-- Main Modules Grid -->
-                    <form method="post" action="options.php" class="mgwpp-modules-grid">
-                        <div class="mgwpp-modules-grid">
-                            <?php settings_fields('mgwpp_settings_group'); ?>
-
-                            <?php do_settings_sections('mgwpp-settings'); ?>
-                        </div>
-
-
-                        <?php submit_button(__('Save Module Settings', 'mini-gallery'), 'primary', 'submit', true, [
-                            'style' => 'margin-top: 20px; margin-left: 20px;'
-                        ]); ?>
-                    </form>
-
-                    <!-- Performance Metrics -->
-                    <div class="mgwpp-performance-metrics">
-                        <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
-                        <?php $this->display_performance_metrics(); ?>
-                    </div>
+                <?php endforeach; ?>
+                                </div>
             </div>
-
         </div>
 
+        <form method="post" action="options.php">
+            <?php settings_fields('mgwpp_settings_group'); ?>
+            <div class="mgwpp-modules-grid">
+                <?php do_settings_sections('mgwpp-settings'); ?>
+            </div>
+            <?php submit_button(__('Save Settings', 'mini-gallery'), 'primary', 'submit', true); ?>
+        </form>
+
+        <div class="mgwpp-performance-metrics">
+            <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
+            <?php $this->display_performance_metrics(); ?>
+        </div>
     <?php
     }
 
@@ -275,5 +265,27 @@ class MGWPP_Modules_View
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('module_toggle_nonce')
         ]);
+    }
+    public function ajax_toggle_module()
+    {
+        check_ajax_referer('module_toggle_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Permission denied', 'mini-gallery'), 403);
+        }
+
+        $module = sanitize_text_field($_POST['module'] ?? '');
+        $status = (bool) ($_POST['status'] ?? false);
+
+        $enabled_modules = get_option('mgwpp_enabled_modules', []);
+
+        if ($status && !in_array($module, $enabled_modules)) {
+            $enabled_modules[] = $module;
+        } elseif (!$status) {
+            $enabled_modules = array_diff($enabled_modules, [$module]);
+        }
+
+        update_option('mgwpp_enabled_modules', $enabled_modules);
+        wp_send_json_success();
     }
 }

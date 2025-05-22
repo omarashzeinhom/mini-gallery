@@ -22,6 +22,7 @@ if (!defined('ABSPATH')) {
 define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('MG_PLUGIN_URL', plugins_url('', __FILE__));
 define('MGWPP_ASSET_VERSION', filemtime(__FILE__));
+define('MGWPP_PLUGIN_FILE',  plugin_dir_path(__FILE__) . 'includes/admin/images/');
 
 
 function get_plugin_version()

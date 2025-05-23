@@ -33,8 +33,9 @@ class MGWPP_Albums_View
         $images_count = self::get_images_count();
 
 ?>
-        <div class="wrap mgwpp-admin-wrap">
-            <?php MGWPP_Inner_Header::render(); ?>
+        <?php MGWPP_Inner_Header::render(); ?>
+
+        <div class="mgwpp-dashboard-container">
             <div class="mgwpp-header">
                 <div class="mgwpp-header-content">
                     <h1><span class="dashicons dashicons-format-gallery"></span> <?php esc_html_e('Albums Management', 'mini-gallery') ?></h1>
@@ -42,7 +43,7 @@ class MGWPP_Albums_View
                 </div>
             </div>
 
-            <div class="mgwpp-dashboard-stats">
+            <div class="mgwpp-stats-grid">
                 <div class="mgwpp-stat-card">
                     <span class="dashicons dashicons-album"></span>
                     <div class="mgwpp-stat-content">

@@ -90,64 +90,80 @@ class MGWPP_Galleries_View
     }
 
     public function render()
-    {
-        // Admin header at the top
-        echo '<div class="mgwpp-dashboard-container">';
-        echo '<div class="mgwpp-dashboard-wrapper">';
-        echo '<div class="mgwpp-glass-container">';
+    { ?>
+        <div class="mgwpp-dashboard-container">
+            <div class="mgwpp-dashboard-wrapper">
+                <div class="mgwpp-glass-container">
 
-        MGWPP_Inner_Header::render();
-        echo '<div class="wrap">';
-        echo '<h1 class="wp-heading-inline">' . esc_html__('Galleries', 'mini-gallery') . '</h1>';
-        echo '<a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery" class="page-title-action thickbox">' . esc_html__('Add New', 'mini-gallery') . '</a>';
-        echo '<hr class="wp-header-end">';
+                    <?php MGWPP_Inner_Header::render(); ?>
 
-        if (empty($this->items)) {
-            echo '<div class="mgwpp-empty-state">';
-            echo '<img src="' . MG_PLUGIN_URL . '/includes/admin/images/empty-galleries.webp" alt="No galleries">';
-            echo '<h3>' . __('No galleries found', 'mini-gallery') . '</h3>';
-            echo '<p>' . __('Create your first gallery to get started', 'mini-gallery') . '</p>';
-            echo '<button class="button button-primary mgwpp-open-create-modal">'
-                . __('Create Gallery', 'mini-gallery')
-                . '</button>';
-            echo '</div>';
-        } else {
-            echo '<div class="mgwpp-gallery-grid">';
-            foreach ($this->items as $item) {
-                echo '
-                    <div class="mgwpp-gallery-card">
-                        <div class="mgwpp-card-header">
-                            <div class="mgwpp-gallery-preview">
-                                ' . $this->get_gallery_preview($item['ID']) . '
-                            </div>
-                            <div class="mgwpp-card-actions">
-                                ' . $item['actions'] . '
-                            </div>
-                        </div>
-                        
-                        <div class="mgwpp-card-body">
-                            <h3 class="mgwpp-card-title">' . esc_html($item['title']) . '</h3>
-                            <div class="mgwpp-card-meta">
-                                <span class="mgwpp-card-type">' . esc_html($item['type']) . '</span>
-                                <span class="mgwpp-card-date">' . esc_html($item['date']) . '</span>
-                            </div>
-                            <div class="mgwpp-card-shortcode">
-                                <input type="text" value="' . esc_attr($item['shortcode']) . '" 
-                                    readonly 
-                                    class="mgwpp-shortcode-input">
-                                <button class="button mgwpp-copy-shortcode">' . __('Copy', 'mini-gallery') . '</button>
-                            </div>
-                        </div>
-                    </div>';
-            }
-            echo '</div>'; // Close mgwpp-gallery-grid
-        }
+                    <div class="wrap">
+                        <h1 class="wp-heading-inline">
+                            <?php esc_html_e('Galleries', 'mini-gallery'); ?>
+                        </h1>
+                        <a href="#TB_inline?width=600&height=550&inlineId=mgwpp-create-gallery"
+                            class="page-title-action thickbox">
+                            <?php esc_html_e('Add New', 'mini-gallery'); ?>
+                        </a>
+                        <hr class="wp-header-end">
 
-        echo '</div>'; // Close wrap
-        echo '</div>'; // Close mgwpp-glass-container
-        echo '</div>'; // Close mgwpp-dashboard-wrapper
-        echo '</div>'; // Close mgwpp-dashboard-container
+                        <?php if (empty($this->items)) : ?>
+                            <div class="mgwpp-empty-state">
+                                <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/empty-galleries.webp'); ?>"
+                                    alt="<?php esc_attr_e('No galleries', 'mini-gallery'); ?>">
+                                <h3><?php esc_html_e('No galleries found', 'mini-gallery'); ?></h3>
+                                <p><?php esc_html_e('Create your first gallery to get started', 'mini-gallery'); ?></p>
+                                <button class="button button-primary mgwpp-open-create-modal">
+                                    <?php esc_html_e('Create Gallery', 'mini-gallery'); ?>
+                                </button>
+                            </div>
+                        <?php else : ?>
+                            <div class="mgwpp-gallery-grid">
+                                <?php foreach ($this->items as $item) : ?>
+                                    <div class="mgwpp-gallery-card">
+                                        <div class="mgwpp-card-header">
+                                            <div class="mgwpp-gallery-preview">
+                                                <?php echo $this->get_gallery_preview($item['ID']); ?>
+                                            </div>
+                                            <div class="mgwpp-card-actions">
+                                                <?php echo $item['actions']; ?>
+                                            </div>
+                                        </div>
 
+                                        <div class="mgwpp-card-body">
+                                            <h3 class="mgwpp-card-title">
+                                                <?php echo esc_html($item['title']); ?>
+                                            </h3>
+                                            <div class="mgwpp-card-meta">
+                                                <span class="mgwpp-card-type">
+                                                    <?php echo esc_html($item['type']); ?>
+                                                </span>
+                                                <span class="mgwpp-card-date">
+                                                    <?php echo esc_html($item['date']); ?>
+                                                </span>
+                                            </div>
+                                            <div class="mgwpp-card-shortcode">
+                                                <input type="text"
+                                                    value="<?php echo esc_attr($item['shortcode']); ?>"
+                                                    readonly
+                                                    class="mgwpp-shortcode-input">
+                                                <button class="button mgwpp-copy-shortcode">
+                                                    <?php esc_html_e('Copy', 'mini-gallery'); ?>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    <?php
+        // Render modal and scripts
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
@@ -195,7 +211,7 @@ class MGWPP_Galleries_View
 
     private static function render_create_gallery_modal()
     {
-?>
+    ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>

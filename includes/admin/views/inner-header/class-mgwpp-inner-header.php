@@ -85,18 +85,35 @@ class MGWPP_Inner_Header
 
     public static function handle_theme_toggle()
     {
-        check_ajax_referer('mgwpp-theme-nonce', 'security');
+        try {
+            // Verify nonce first
+            if (!isset($_POST['security']) || !wp_verify_nonce($_POST['security'], 'mgwpp-theme-nonce')) {
+                throw new Exception(__('Security verification failed', 'mini-gallery'), 403);
+            }
 
-        $user_id = get_current_user_id();
-        $current_theme = get_user_meta($user_id, 'mgwpp_admin_theme', true);
-        $new_theme = $current_theme === 'dark' ? 'light' : 'dark';
+            // Validate theme parameter
+            if (!isset($_POST['theme']) || !in_array($_POST['theme'], ['light', 'dark'])) {
+                throw new Exception(__('Invalid theme parameter', 'mini-gallery'), 400);
+            }
 
-        update_user_meta($user_id, 'mgwpp_admin_theme', $new_theme);
+            $user_id = get_current_user_id();
+            $new_theme = sanitize_key($_POST['theme']);
 
-        wp_send_json_success([
-            'theme' => $new_theme,
-            'body_class' => $new_theme === 'dark' ? 'mgwpp-dark-mode' : ''
-        ]);
+            // Update user meta
+            if (!update_user_meta($user_id, 'mgwpp_admin_theme', $new_theme)) {
+                throw new Exception(__('Failed to save theme preference', 'mini-gallery'), 500);
+            }
+
+            wp_send_json_success([
+                'theme' => $new_theme,
+                'body_class' => 'mgwpp-dark-mode'
+            ]);
+        } catch (Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ], $e->getCode());
+        }
     }
 }
 

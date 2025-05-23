@@ -45,6 +45,7 @@ jQuery(document).ready(function ($) {
             $.ajax({
                 url: mgwppHeader.ajaxurl,
                 method: 'POST',
+                dataType: 'json',
                 data: {
                     action: 'mgwpp_toggle_theme',
                     security: mgwppHeader.nonce,
@@ -52,28 +53,24 @@ jQuery(document).ready(function ($) {
                 },
                 success: function (response) {
                     if (!response.success) {
-                        // Revert UI on failure
-                        body.toggleClass('mgwpp-dark-mode', currentTheme === 'dark');
-                        icon.attr('src',
-                            currentTheme === 'dark'
-                                ? themeToggle.data('sun')
-                                : themeToggle.data('moon')
-                        );
-                        themeToggle.data('current-theme', currentTheme);
+                        console.error('Error:', response.data.message);
+                        revertUI();
+                        showErrorToast(response.data.message);
                     }
                 },
-                error: function (xhr) {
-                    console.error('Theme toggle failed:', xhr.responseText);
-                    // Revert UI on error
-                    body.toggleClass('mgwpp-dark-mode', currentTheme === 'dark');
-                    icon.attr('src',
-                        currentTheme === 'dark'
-                            ? themeToggle.data('sun')
-                            : themeToggle.data('moon')
-                    );
-                    themeToggle.data('current-theme', currentTheme);
+                error: function (xhr, status, error) {
+                    console.error(`AJAX Error (${xhr.status}):`, error);
+                    revertUI();
+                    showErrorToast('Connection error - settings not saved');
                 }
             });
+
+            // Add error notification function
+            function showErrorToast(message) {
+                const toast = $(`<div class="mgwpp-error-toast">${message}</div>`);
+                $('body').append(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
         });
     }
 });

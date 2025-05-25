@@ -13,7 +13,7 @@ public static function register_post_type() {
         'public' => true,
         'label'  => 'MGWPP Gallery',
         'show_in_rest' => true,
-        'supports' => ['title', 'elementor'],
+        'supports' => ['title'],
         'menu_icon' => 'dashicons-slides',
         'capability_type' => 'mgwpp_gallery',
         'map_meta_cap' => true,
@@ -24,8 +24,6 @@ public static function register_post_type() {
 
     register_post_type('mgwpp_gallery', $args);
 
-    // Add Elementor support
-    add_post_type_support('mgwpp_gallery', 'elementor');
 }
 }
 MGWPP_Custom_Gallery::init();

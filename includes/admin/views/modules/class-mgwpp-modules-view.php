@@ -3,8 +3,9 @@ if (!defined('ABSPATH')) exit;
 
 class MGWPP_Modules_View
 {
-    //private $module_loader;
+    private $module_loader;
     private $modules = [];
+
 
     public function __construct($module_loader)
     {
@@ -114,30 +115,30 @@ class MGWPP_Modules_View
         <div class="mgwpp-gallery-types-header">
             <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
             <div class="mgwpp-enabled-gallery-types">
-                                <div class="mgwpp-modules-grid">
+                <div class="mgwpp-modules-grid">
 
-                <?php foreach ($enabled_modules as $slug) :
-                    if (!isset($this->modules[$slug])) continue;
-                    $module = $this->modules[$slug];
-                ?>
-                    <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($slug); ?>">
-                        <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
-                            alt="<?php echo esc_attr($module['config']['name']); ?>"
-                            class="mgwpp-gallery-type-icon">
-                        <?php echo esc_html($module['config']['name']); ?>
-                        <div class="mgwpp-switch">
-                            <input type="checkbox" <?php checked(true); ?> disabled>
-                            <span class="mgwpp-switch-slider round"></span>
+                    <?php foreach ($enabled_modules as $slug) :
+                        if (!isset($this->modules[$slug])) continue;
+                        $module = $this->modules[$slug];
+                    ?>
+                        <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($slug); ?>">
+                            <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
+                                alt="<?php echo esc_attr($module['config']['name']); ?>"
+                                class="mgwpp-gallery-type-icon">
+                            <?php echo esc_html($module['config']['name']); ?>
+                            <div class="mgwpp-switch">
+                                <input type="checkbox" <?php checked(true); ?> disabled>
+                                <span class="mgwpp-switch-slider round"></span>
+                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-                                </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 
-        <form method="post" action="options.php">
+        <form method="post" action="options.php" class="">
             <?php settings_fields('mgwpp_settings_group'); ?>
-            <div class="mgwpp-modules-grid">
+            <div class="mgwpp-dashboard-container">
                 <?php do_settings_sections('mgwpp-settings'); ?>
             </div>
             <?php submit_button(__('Save Settings', 'mini-gallery'), 'primary', 'submit', true); ?>

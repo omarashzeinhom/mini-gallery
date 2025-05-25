@@ -7,6 +7,10 @@
   margin: 0 auto;
 }
 
+.multi-slide-image, .mg-multi-carousel-slide{
+  cursor: grab;
+}
+
 /* Slides Wrapper */
 .mg-gallery.multi-carousel .slides-wrapper {
   display: flex;
@@ -57,3 +61,5 @@
       width: calc(100% / 2);
   }
 }
+
+

@@ -6,7 +6,8 @@ if (!defined('ABSPATH')) {
 // File: includes/admin/class-mgwpp-admin-core.php
 class MGWPP_Admin_Core
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->load_dependencies();
         $this->module_loader = new MGWPP_Module_Loader(); // Store as property
         $this->menu_manager  = new MGWPP_Admin_Menu($this->module_loader);
@@ -27,14 +28,9 @@ class MGWPP_Admin_Core
 
     private function load_dependencies()
     {
-        // Load files but don't initialize yet
-        require_once __DIR__ . '/class-mgwpp-admin-menu.php';
-        require_once __DIR__ . '/class-mgwpp-admin-assets.php';
-        require_once __DIR__ . '/class-mgwpp-module-loader.php';
-        require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
-        require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
 
         // Views
+        require_once __DIR__ . '/views/editor/class-mgwpp-editor-view.php';
         require_once __DIR__ . '/views/albums/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/security/class-mgwpp-security-view.php';
         require_once __DIR__ . '/views/galleries/class-mgwpp-galleries-view.php';
@@ -44,6 +40,12 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
         require_once __DIR__ . '/views/embed-editor/class-mgwpp-embed-editor-view.php';
 
+        // Load files but don't initialize yet
+        require_once __DIR__ . '/class-mgwpp-admin-menu.php';
+        require_once __DIR__ . '/class-mgwpp-admin-assets.php';
+        require_once __DIR__ . '/class-mgwpp-module-loader.php';
+        require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
+        require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
     }
 
     private function init_components()
@@ -53,22 +55,23 @@ class MGWPP_Admin_Core
         add_action('admin_menu', [$this, 'init_view_classes']);
     }
 
-    public function init_assets() {
+    public function init_assets()
+    {
         $this->asset_manager = new MGWPP_Admin_Assets();
     }
 
 
     public function init_view_classes()
     {
-         // Get gallery data first
-    $list_table = new MGWPP_Galleries_List_Table();
-    $list_table->prepare_items();
-    $gallery_items = $list_table->items;
+        // Get gallery data first
+        $list_table = new MGWPP_Galleries_List_Table();
+        $list_table->prepare_items();
+        $gallery_items = $list_table->items;
 
-    // Initialize views with data
-    new MGWPP_Galleries_View($gallery_items);
-    new MGWPP_Albums_View();
-    new MGWPP_Dashboard_View();
+        // Initialize views with data
+        new MGWPP_Galleries_View($gallery_items);
+        new MGWPP_Albums_View();
+        new MGWPP_Dashboard_View();
     }
 
     public function run()
@@ -98,6 +101,4 @@ class MGWPP_Admin_Core
             ) . '" width="100%" height="600px" frameborder="0"></iframe>';
         }
     }
-
-    
 }

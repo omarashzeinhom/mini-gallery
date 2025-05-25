@@ -1,11 +1,9 @@
-/* Mini Gallery WordPress Plugin - Admin Styles */
-
 /* Main Container */
 .mgwpp-admin-wrap {
   max-width: 1600px;
   margin: 20px auto;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 /* Header */
@@ -453,27 +451,6 @@
   margin-top: 20px;
 }
 
-.wp-list-table {
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.wp-list-table th {
-  background: #f8fafc;
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.wp-list-table th,
-.wp-list-table td {
-  padding: 12px 15px;
-}
-
-.wp-list-table tr:hover {
-  background-color: #f8fafc;
-}
-
 /* Settings */
 .mgwpp-settings-card {
   padding: 20px;
@@ -521,12 +498,11 @@
     align-items: flex-start;
   }
 
-  .mgwpp-setting-row label {
+  .mgwpp-setting-row {
     margin-bottom: 8px;
   }
 
-  .mgwpp-setting-row input,
-  .mgwpp-setting-row select {
+  .mgwpp-setting-row .mgwpp-setting-row {
     width: 100%;
     max-width: none;
   }
@@ -563,4 +539,103 @@
 
 .mgwpp-gallery-selector::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
+}
+
+/* Albums Table Styles */
+.mgwpp-albums-table-container {
+  margin: 2rem;
+}
+
+.mgwpp-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--mgwpp-card-bg-light);
+  border: 1px solid var(--mgwpp-card-border-light);
+  border-radius: var(--mgwpp-border-radius-lg);
+  box-shadow: var(--mgwpp-card-shadow-light);
+  backdrop-filter: var(--mgwpp-backdrop-blur);
+  -webkit-backdrop-filter: var(--mgwpp-backdrop-blur);
+  overflow: hidden;
+}
+
+.mgwpp-dark .mgwpp-admin-table {
+  background: var(--mgwpp-card-bg-dark);
+  border-color: var(--mgwpp-card-border-dark);
+  box-shadow: var(--mgwpp-card-shadow-dark);
+}
+
+.mgwpp-admin-table thead th {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--mgwpp-foreground-light);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  border-bottom: 2px solid var(--mgwpp-card-border-light);
+}
+
+.mgwpp-dark .mgwpp-admin-table thead th {
+  background: rgba(15, 23, 42, 0.1);
+  color: var(--mgwpp-foreground-dark);
+  border-bottom-color: var(--mgwpp-card-border-dark);
+}
+
+.mgwpp-admin-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--mgwpp-card-border-light);
+  transition: all var(--mgwpp-transition-speed) ease;
+}
+
+.mgwpp-dark .mgwpp-admin-table tbody td {
+  border-bottom-color: var(--mgwpp-card-border-dark);
+}
+
+.mgwpp-admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.mgwpp-admin-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mgwpp-dark .mgwpp-admin-table tbody tr:hover td {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+/* Table Actions */
+.mgwpp-table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mgwpp-table-actions .mgwpp-admin-button {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
+
+/* Responsive Table */
+@media (max-width: 782px) {
+  .mgwpp-admin-table thead {
+    display: none;
+  }
+
+  .mgwpp-admin-table tbody td {
+    display: block;
+    padding: 0.75rem;
+  }
+
+  .mgwpp-admin-table tbody tr td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 500;
+    margin-right: 1rem;
+    color: var(--mgwpp-foreground-light);
+  }
+
+  .mgwpp-dark .mgwpp-admin-table tbody tr td:before {
+    color: var(--mgwpp-foreground-dark);
+  }
+
+  .mgwpp-admin-table tbody td.actions {
+    text-align: left;
+  }
 }

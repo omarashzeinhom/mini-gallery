@@ -55,9 +55,9 @@
 
 
 /* Module Cards */
-.mgwpp-modules-grid, .form-table
+.mgwpp-modules-grid
 {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
@@ -320,12 +320,6 @@ input:checked + .mgwpp-switch-slider:before {
     margin-bottom: 20px !important;
 }
 
-.mgwpp-modules-grid , .mgwpp-modules-grid table {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
-    gap: 20px !important;
-    width: 100% !important;
-}
 
 
 .mgwpp-gallery-types-header h2 {
@@ -368,7 +362,7 @@ p.submit {
 }
 
 /* Reset form-table styles for our grid */
-.mgwpp-settings .form-table {
+.mgwpp-settings  {
     margin: 0;
     padding: 0;
     border: none;
@@ -376,10 +370,10 @@ p.submit {
     width: auto;
 }
 
-.mgwpp-settings .form-table tbody,
-.mgwpp-settings .form-table tr,
-.mgwpp-settings .form-table th,
-.mgwpp-settings .form-table td {
+.mgwpp-settings  tbody,
+.mgwpp-settings  tr,
+.mgwpp-settings  th,
+.mgwpp-settings  td {
     display: block;
     margin: 0;
     padding: 0;
@@ -388,7 +382,7 @@ p.submit {
     box-shadow: none;
 }
 
-.mgwpp-settings .form-table td {
+.mgwpp-settings  td {
     margin-bottom: 20px !important;
     padding: 0 !important;
     height: auto;

@@ -1,0 +1,531 @@
+/**
+ * Enhanced Editor CSS
+ * File: includes/admin/css/mgwpp-enhanced-editor.css
+ */
+
+.mgwpp-enhanced-editor-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #f1f1f1;
+}
+
+.mgwpp-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mgwpp-editor-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #23282d;
+}
+
+.mgwpp-toolbar {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.mgwpp-gallery-type {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.mgwpp-editor-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.mgwpp-stage-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #fff;
+    margin-right: 350px;
+}
+
+.mgwpp-stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f1f1;
+}
+
+.mgwpp-stage-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #23282d;
+}
+
+.mgwpp-add-new-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #0073aa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.mgwpp-add-new-item:hover {
+    background: #005a87;
+}
+
+.mgwpp-items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    min-height: 400px;
+}
+
+.mgwpp-empty-stage {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.mgwpp-empty-stage p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.mgwpp-gallery-item {
+    background: #fff;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.mgwpp-gallery-item:hover {
+    border-color: #0073aa;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mgwpp-gallery-item.selected {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0,115,170,0.2);
+}
+
+.mgwpp-item-preview {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.mgwpp-item-preview img,
+.mgwpp-item-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mgwpp-placeholder-image,
+.mgwpp-placeholder-video {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #999;
+    font-size: 48px;
+}
+
+.mgwpp-text-preview {
+    padding: 20px;
+    max-height: 150px;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.mgwpp-button-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.mgwpp-button-preview button {
+    padding: 10px 20px;
+    background: #0073aa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.mgwpp-item-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    border-top: 1px solid #e1e1e1;
+}
+
+.mgwpp-item-controls button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.mgwpp-item-controls button:hover {
+    background: #e1e1e1;
+}
+
+.mgwpp-item-drag-handle {
+    cursor: move;
+    color: #999;
+}
+
+.mgwpp-item-info {
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #e1e1e1;
+}
+
+.mgwpp-item-type {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.mgwpp-item-title {
+    display: block;
+    font-size: 14px;
+    color: #23282d;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.mgwpp-properties-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 350px;
+    height: 100vh;
+    background: #fff;
+    border-left: 1px solid #ddd;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.mgwpp-panel-header {
+    padding: 20px;
+    border-bottom: 1px solid #e1e1e1;
+    background: #f9f9f9;
+}
+
+.mgwpp-panel-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #23282d;
+}
+
+.mgwpp-selected-item-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.mgwpp-properties-content {
+    padding: 20px;
+}
+
+.mgwpp-properties-tabs .mgwpp-tab-nav {
+    display: flex;
+    border-bottom: 1px solid #e1e1e1;
+    margin-bottom: 20px;
+}
+
+.mgwpp-properties-tabs .nav-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.mgwpp-properties-tabs .nav-tab.active {
+    color: #0073aa;
+    border-bottom-color: #0073aa;
+}
+
+.mgwpp-tab-content {
+    display: none;
+}
+
+.mgwpp-tab-content.active {
+    display: block;
+}
+
+.mgwpp-control-group {
+    margin-bottom: 20px;
+}
+
+.mgwpp-control-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #23282d;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.mgwpp-control-group input,
+.mgwpp-control-group select,
+.mgwpp-control-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.mgwpp-control-group input:focus,
+.mgwpp-control-group select:focus,
+.mgwpp-control-group textarea:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,115,170,0.2);
+}
+
+.mgwpp-content-section {
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.mgwpp-item-type-selector {
+    margin-bottom: 20px;
+}
+
+.mgwpp-image-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mgwpp-image-preview {
+    width: 100%;
+    height: 120px;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.mgwpp-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mgwpp-video-source-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.mgwpp-video-tab {
+    flex: 1;
+    padding: 8px;
+    background: #f1f1f1;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: 3px;
+}
+
+.mgwpp-video-tab.active {
+    background: #0073aa;
+    color: white;
+}
+
+.mgwpp-video-input-area > div {
+    display: none;
+}
+
+.mgwpp-video-input-area > div.active {
+    display: block;
+}
+
+.mgwpp-text-editor-toolbar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.mgwpp-text-editor-toolbar button {
+    padding: 5px 10px;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.mgwpp-text-editor-toolbar button.active {
+    background: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+
+.mgwpp-dimension-control {
+    display: flex;
+    gap: 10px;
+}
+
+.mgwpp-dimension-control input {
+    flex: 2;
+}
+
+.mgwpp-dimension-control select {
+    flex: 1;
+}
+
+.mgwpp-spacing-control {
+    display: flex;
+    gap: 10px;
+}
+
+.mgwpp-spacing-control input {
+    flex: 1;
+}
+
+.mgwpp-range-value {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.mgwpp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mgwpp-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.mgwpp-modal-close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
+.mgwpp-media-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mgwpp-media-tab {
+    padding: 10px 20px;
+    background: #f1f1f1;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.mgwpp-media-tab.active {
+    background: #0073aa;
+    color: white;
+}
+
+.mgwpp-media-upload-area {
+    border: 2px dashed #ddd;
+    padding: 40px;
+    text-align: center;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+@media (max-width: 1200px) {
+    .mgwpp-properties-panel {
+        width: 300px;
+    }
+    
+    .mgwpp-stage-area {
+        margin-right: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mgwpp-editor-container {
+        flex-direction: column;
+    }
+    
+    .mgwpp-properties-panel {
+        position: static;
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+    }
+    
+    .mgwpp-stage-area {
+        margin-right: 0;
+    }
+    
+    .mgwpp-items-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}

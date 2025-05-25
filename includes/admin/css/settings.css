@@ -55,8 +55,8 @@
 }
 
 /* Module Cards */
-.mgwpp-modules-grid,
-.form-table {
+.mgwpp-modules-grid
+ {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 20px;
@@ -376,7 +376,7 @@ p.submit {
 }
 
 /* Reset form-table styles for our grid */
-.mgwpp-settings .form-table {
+.mgwpp-settings  {
   margin: 0;
   padding: 0;
   border: none;
@@ -384,10 +384,10 @@ p.submit {
   width: auto;
 }
 
-.mgwpp-settings .form-table tbody,
-.mgwpp-settings .form-table tr,
-.mgwpp-settings .form-table th,
-.mgwpp-settings .form-table td {
+.mgwpp-settings  tbody,
+.mgwpp-settings  tr,
+.mgwpp-settings  th,
+.mgwpp-settings  td {
   display: block;
   margin: 0;
   padding: 0;
@@ -396,9 +396,11 @@ p.submit {
   box-shadow: none;
 }
 
-.mgwpp-settings .form-table td {
+.mgwpp-settings  td {
   margin-bottom: 20px !important;
   padding: 0 !important;
   height: auto;
   vertical-align: top;
 }
+
+

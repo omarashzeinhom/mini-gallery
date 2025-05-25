@@ -77,12 +77,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp-data-handle
 
 require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-uninstall.php';
 
-// Elementor Integration
-require_once plugin_dir_path(__FILE__) . 'includes/elementor/class-mg-elementor-integration.php';
-// WPBakery Page Builder Integration
-require_once plugin_dir_path(__FILE__) . 'includes/vc/class-mgwpp-vc-integration.php';
 
-
+//Add Block Integration if Possible In Editor.
 
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
@@ -91,6 +87,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp_ajax_handle
 MGWPP_Ajax_Handler::init();
 // Editor Assets
 require_once __DIR__ . '/includes/admin/class-mgwpp-admin-editors.php';
+
+
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-module-manager.php';
+
 
 
 // When enqueueing:
@@ -187,30 +187,6 @@ add_action('admin_menu', function () {
     }
 }, 5);
 
-
-// Link Elementor templates to galleries
-add_action('elementor/editor/after_save', function ($post_id) {
-    // 1. Verify nonce exists first
-    if (!isset($_POST['mgwpp_parent_gallery_nonce'])) {
-        return;
-    }
-
-    // 2. Sanitize nonce value
-    $nonce = sanitize_key(wp_unslash($_POST['mgwpp_parent_gallery_nonce']));
-
-    // 3. Verify nonce validity
-    if (!wp_verify_nonce($nonce, 'mgwpp_save_parent_gallery')) {
-        return;
-    }
-
-    // 4. Sanitize and validate parent gallery ID
-    $parent_gallery = isset($_POST['mgwpp_parent_gallery'])
-        ? absint(wp_unslash($_POST['mgwpp_parent_gallery']))
-        : 0;
-
-    // 5. Save validated data
-    update_post_meta($post_id, '_mgwpp_parent_gallery', $parent_gallery);
-});
 
 function mgwpp_plugin_deactivate()
 {

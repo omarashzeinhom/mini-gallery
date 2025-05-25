@@ -319,13 +319,3 @@
 
     }
 
-    // Elementor Overrides 
-
-    /* Elementor-Specific Overrides */
-.elementor-widget-mg_neon_carousel .neon-dots-container {
-    display: var(--show-dots, flex); /* Controlled by Elementor */
-}
-
-.elementor-widget-mg_neon_carousel .neon-preview-images {
-    display: var(--show-previews, flex); /* Controlled by Elementor */
-}

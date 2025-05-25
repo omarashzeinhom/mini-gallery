@@ -1,5 +1,9 @@
 @import url("variables.css");
 
+.notice {
+  display: none !important;
+}
+
 .mgwpp-dashboard-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
@@ -64,7 +68,6 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-
 /* Improved stat cards */
 .mgwpp-stat-card {
   padding: 1.5rem;
@@ -112,7 +115,7 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid var(--mgwpp-card-border-light);
   transition: all 0.3s ease;
-  border-radius:  var(--mgwpp-border-radius-full);
+  border-radius: var(--mgwpp-border-radius-full);
 }
 
 .mgwpp-dark .mgwpp-theme-toggle-button {
@@ -157,7 +160,6 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
     rgba(255, 255, 255, 0) 100%
   );
 }
-
 
 /* Admin Button - Matches Glass Card Aesthetic */
 .mgwpp-admin-button {

@@ -269,7 +269,22 @@ jQuery(document).ready(function ($) {
                 default:
                     return '<div class="mgwpp-placeholder-image">';
             }
-        }
+
+
+        },
+
+        getItemTypeLabel: function (type) {
+            const labels = {
+                image: mgwppEditor.strings.imageItem || 'Image',
+                video: mgwppEditor.strings.videItem || 'Video',
+                text: mgwppEditor.strings.textItem || 'Text',
+                button: mgwppEditor.strings.buttonItem || 'Button',
+            };
+
+            return labels[type] || mgwppEditor.strings.unknownItem || 'Unknown';
+
+        },
+
     }
     MGWPPEnhancedEditor.init();
 });

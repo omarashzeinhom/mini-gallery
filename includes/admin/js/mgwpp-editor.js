@@ -6,14 +6,84 @@ jQuery(document).ready(function ($) {
         currentItem: null,
         galleryData: { items: [] },
         isDirty: false,
+        currentSlideIndex: 0,
+        slides: [],
 
         init: function () {
             this.bindEvents();
             this.initSortable();
             this.loadGalleryData();
+            this.addNewSlide();
+        },
+
+
+
+        addNewSlide: function () {
+            const newSlide = {
+                id: 'slide_' + Date.now(),
+                items: [],
+                background: '#ffffff',
+                tranisitons: {}
+
+            };
+
+            this.slides.push(newSlide);
+            this.currentSlideIndex = this.slides.length - 1;
+            this.renderSliders();
+        },
+
+
+        renderSlides: function () {
+            const $slidesContainer = $('.mgwpp-slides-container');
+            $slidesContainer.html('');
+
+            this.slides.forEach((slide, index) => {
+                const slideHTML =
+                    `
+                <div 
+                className="mgwpp-slide ${index === this.currentSlideIndex ? 'active' : ''}"
+                data-slide-index="${index}"
+                >
+
+                <div class="mgwpp-slide-number"> 
+                ${index + 1}
+                </div>
+                <div class="mgwpp-slide-items">
+                ${this.renderSlideItems(slide.items)}
+                </div>
+
+                </div>
+                `;
+                $slidesContainer.append(slideHTML);
+
+
+            });
+
+
+        },
+
+        switchTab: function (e) {
+            e.preventDefault();
+            const $tab = $(e.currentTarget);
+            const target = $tab.data('target');
+
+            // remove active classes 
+            $tab.closest('.mgwpp-properties-tabs').find('.nav-tab').removeClass('active');
+
+            $tab.closest('.mgwpp-properties-content').find('.mgwpp-tab-content').removeClass('active');
+
+            // Add active classes 
+            $tab.addClass('active');
+            $(`.mgwpp-tab-content[data-tab="${target}"]`).addClass('active');
         },
 
         bindEvents: function () {
+            // Update add item buttons
+            $(document).on('click', '.mgwpp-add-image', (e) => this.addNewItem(e, 'image'));
+            $(document).on('click', '.mgwpp-add-button', (e) => this.addNewItem(e, 'button'));
+
+            // Keep existing add first item binding
+            $(document).on('click', '.mgwpp-add-first-item', this.addNewItem.bind(this));
             // Add new item
             $(document).on('click', '.mgwpp-add-new-item, .mgwpp-add-first-item', this.addNewItem.bind(this));
 
@@ -98,12 +168,71 @@ jQuery(document).ready(function ($) {
             });
         },
 
-        addNewItem: function (e) {
+        // Add these methods to handle dirty state
+        markDirty: function () {
+            this.isDirty = true;
+            // Optional: Add visual indicator
+            $('.mgwpp-save-gallery').addClass('mgwpp-has-changes');
+        },
+
+        clearDirty: function () {
+            this.isDirty = false;
+            // Optional: Remove visual indicator
+            $('.mgwpp-save-gallery').removeClass('mgwpp-has-changes');
+        },
+
+        // Add this method to handle saving
+        saveGallery: function (e) {
             e.preventDefault();
+
+            $.post(mgwppEditor.ajaxUrl, {
+                action: 'mgwpp_save_gallery_data',
+                gallery_id: mgwppEditor.galleryId,
+                gallery_data: JSON.stringify(this.galleryData),
+                nonce: mgwppEditor.nonce
+            }, (response) => {
+                if (response.success) {
+                    this.clearDirty();
+                    alert(mgwppEditor.strings.saveSuccess);
+                } else {
+                    alert(mgwppEditor.strings.saveError);
+                }
+            });
+        },
+
+
+        addNewItem: function (e, type = 'image') {
+            if (e) {
+                e.preventDefault();
+            }
+
 
             const newItem = {
                 id: 'item_' + Date.now(),
-                type: 'image',
+                type: type,
+
+                // Common Properties 
+                position: {
+                    x: 0,
+                    y: 0
+                },
+
+                size: {
+                    width: 100,
+                    height: 100
+                },
+                // Type-specific properties
+
+                ...(type === 'image' && {
+                    image_url: '',
+                    alt_text: ''
+                }),
+                ...(type === 'button' && {
+                    text: 'Button',
+                    url: '#',
+                    style: 'primary',
+                }),
+
                 title: mgwppEditor.strings.newItem || 'New Item',
                 image_url: '',
                 image_id: 0,
@@ -123,8 +252,8 @@ jQuery(document).ready(function ($) {
                 hide_on_tablet: false
             };
 
-            this.galleryData.items.push(newItem);
-            this.renderItems();
+
+            this.galleryData.items.push(newItem); this.renderItems();
             this.selectItemById(newItem.id);
             this.markDirty();
         },
@@ -284,6 +413,91 @@ jQuery(document).ready(function ($) {
             return labels[type] || mgwppEditor.strings.unknownItem || 'Unknown';
 
         },
+
+        populatePropertiesPanel: function (item) {  // Changed parameter to item
+            // Corrected selector typo
+            $('.mgwpp-properties-panel input, .mgwpp-properties-panel select, .mgwpp-properties-panel textarea').val('');
+
+            // Setting the basic fields
+            this.setFieldValue('item_title', item.title || '');
+            this.setFieldValue('item_alt_text', item.alt_text || '');
+            this.setFieldValue('item_custom_class', item.custom_class || ''); // Fixed typo
+            this.setFieldValue('item_custom_css', item.custom_css || '');
+
+            // Set Item Type
+            $('.mgwpp-item-type-selector').val(item.type).trigger('change');
+
+            switch (item.type) {
+                case 'image':
+                    this.setFieldValue('item_image_url', item.image_url || '');
+                    this.setFieldValue('item_image_id', item.image_id || '');
+                    break;
+
+                case 'video':
+                    this.setFieldValue('item_video_url', item.video_url || '');
+                    $('.mgwpp-video-tab').removeClass('active');
+                    // Fixed selector syntax
+                    $(`.mgwpp-video-tab[data-source="${item.video_source}"]`).addClass('active');
+                    break;
+
+                case 'text':
+                    this.setFieldValue('item_text_content', item.content || '');
+                    break;
+
+                case 'button':
+                    // Fixed property name
+                    this.setFieldValue('item_button_text', item.button_text || '');
+                    this.setFieldValue('item_button_url', item.button_url || '');
+                    break;
+            }
+
+            // Layout Properties
+            this.setFieldValue('item_width_value', item.width_value || 100);
+            this.setFieldValue('item_width_unit', item.width_unit || '%');
+            this.setFieldValue('item_margin', item.margin || 0);
+            this.setFieldValue('item_padding', item.padding || 0);
+            this.setFieldValue('item_background_color', item.background_color || '#ffffff');
+            this.setFieldValue('item_border_radius', item.border_radius || 0);
+
+            // Animation Properties
+            this.setFieldValue('item_entrance_animation', item.entrance_animation || 'none');
+            this.setFieldValue('item_animation_duration', item.animation_duration || 0.5);
+            this.setFieldValue('item_animation_delay', item.animation_delay || 0);
+
+            // Visibility Options
+            // Fixed method name spelling
+            this.setCheckboxState('item_hide_mobile', item.hide_on_mobile || false);
+            this.setCheckboxState('item_hide_tablet', item.hide_on_tablet || false);
+
+            $('input[type="range"]').trigger('input');
+        },
+
+        // Helper Function to set form field values
+        setFieldValue: function (selector, value) {
+            const $field = $(`#${selector}`);
+            if ($field.is(':checkbox')) {
+                $field.prop('checked', Boolean(value));
+            } else {
+                $field.val(value);
+            }
+        },
+
+        // Fixed method name spelling
+
+        setCheckboxState: function (selector, state) {  // Changed parameter name
+            $(`#${selector}`).prop('checked', Boolean(state));
+        },
+
+        // Add this method to clear the properties panel
+        clearPropertiesPanel: function () {
+            $('.mgwpp-properties-panel input, .mgwpp-properties-panel select, .mgwpp-properties-panel textarea').val('');
+            $('.mgwpp-properties-tabs .nav-tab').removeClass('active').first().addClass('active');
+            $('.mgwpp-tab-content').removeClass('active').first().addClass('active');
+            $('.mgwpp-selected-item-info').text(mgwppEditor.strings.selectItem || 'Select an item to edit');
+            this.currentItem = null;
+        },
+
+
 
     }
     MGWPPEnhancedEditor.init();

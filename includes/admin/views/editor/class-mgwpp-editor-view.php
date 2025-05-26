@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Enhanced Gallery Editor View with Per-Image Customization
- * File: includes/admin/views/editor/class-mgwpp-enhanced-editor-view.php
+ * File: includes/admin/views/editor/class-mgwpp-editor-view.php
  */
 
 if (!defined('ABSPATH')) {
@@ -21,10 +22,10 @@ class MGWPP_Editor_View
         $this->gallery_data = $this->get_gallery_data();
     }
 
-    public function render() 
+    public function render()
     {
         $this->enqueue_editor_assets();
-        ?>
+?>
         <div class="mgwpp-enhanced-editor-wrap">
             <div class="mgwpp-editor-header">
                 <h1><?php _e('Enhanced Gallery Editor', 'mini-gallery'); ?></h1>
@@ -55,7 +56,7 @@ class MGWPP_Editor_View
                             <?php _e('Add New Item', 'mini-gallery'); ?>
                         </button>
                     </div>
-                    
+
                     <div class="mgwpp-items-container" id="mgwpp-sortable-items">
                         <?php $this->render_gallery_items(); ?>
                     </div>
@@ -97,7 +98,7 @@ class MGWPP_Editor_View
                 </div>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function render_gallery_items()
@@ -118,12 +119,12 @@ class MGWPP_Editor_View
     private function render_gallery_item($item, $index)
     {
         $item_id = $item['id'] ?? 'item_' . $index;
-        ?>
+    ?>
         <div class="mgwpp-gallery-item" data-item-id="<?php echo esc_attr($item_id); ?>" data-index="<?php echo esc_attr($index); ?>">
             <div class="mgwpp-item-preview">
                 <?php $this->render_item_preview($item); ?>
             </div>
-            
+
             <div class="mgwpp-item-controls">
                 <button class="mgwpp-item-edit" title="<?php esc_attr_e('Edit Item', 'mini-gallery'); ?>">
                     <span class="dashicons dashicons-edit"></span>
@@ -144,13 +145,13 @@ class MGWPP_Editor_View
                 <span class="mgwpp-item-title"><?php echo esc_html($item['title'] ?? __('Untitled', 'mini-gallery')); ?></span>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function render_item_preview($item)
     {
         $type = $item['type'] ?? 'image';
-        
+
         switch ($type) {
             case 'image':
                 if (!empty($item['image_url'])) {
@@ -159,7 +160,7 @@ class MGWPP_Editor_View
                     echo '<div class="mgwpp-placeholder-image"><span class="dashicons dashicons-format-image"></span></div>';
                 }
                 break;
-                
+
             case 'video':
                 if (!empty($item['video_url'])) {
                     echo '<video src="' . esc_url($item['video_url']) . '" muted></video>';
@@ -167,11 +168,11 @@ class MGWPP_Editor_View
                     echo '<div class="mgwpp-placeholder-video"><span class="dashicons dashicons-video-alt3"></span></div>';
                 }
                 break;
-                
+
             case 'text':
                 echo '<div class="mgwpp-text-preview">' . wp_kses_post($item['content'] ?? __('Text content...', 'mini-gallery')) . '</div>';
                 break;
-                
+
             case 'button':
                 echo '<div class="mgwpp-button-preview"><button>' . esc_html($item['button_text'] ?? __('Button', 'mini-gallery')) . '</button></div>';
                 break;
@@ -180,7 +181,7 @@ class MGWPP_Editor_View
 
     private function render_properties_panel()
     {
-        ?>
+    ?>
         <div class="mgwpp-properties-tabs">
             <nav class="mgwpp-tab-nav">
                 <button class="nav-tab active" data-target="content"><?php _e('Content', 'mini-gallery'); ?></button>
@@ -200,6 +201,18 @@ class MGWPP_Editor_View
                         <option value="button"><?php _e('Button', 'mini-gallery'); ?></option>
                     </select>
                 </div>
+
+                <!-- Test Tab Start -->
+
+                <div class="mgwpp-add-buttons">
+                    <button class="button mgwpp-add-image">
+                        <?php _e('Add Image', 'mini-gallery'); ?>
+                    </button>
+                    <button class="button mgwpp-add-button">
+                        <?php _e('Add Button', 'mini-gallery'); ?>
+                    </button>
+                </div>
+                <!-- Test Tab End -->
 
                 <!-- Image Content -->
                 <div class="mgwpp-content-section mgwpp-image-content">
@@ -316,7 +329,7 @@ class MGWPP_Editor_View
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="mgwpp-control-group">
                     <label><?php _e('Spacing', 'mini-gallery'); ?></label>
                     <div class="mgwpp-spacing-control">
@@ -393,19 +406,19 @@ class MGWPP_Editor_View
                 </div>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function render_item_template()
     {
-        ?>
+    ?>
         <div class="mgwpp-gallery-item mgwpp-item-template-content" data-item-id="">
             <div class="mgwpp-item-preview">
                 <div class="mgwpp-placeholder-image">
                     <span class="dashicons dashicons-format-image"></span>
                 </div>
             </div>
-            
+
             <div class="mgwpp-item-controls">
                 <button class="mgwpp-item-edit" title="<?php esc_attr_e('Edit Item', 'mini-gallery'); ?>">
                     <span class="dashicons dashicons-edit"></span>
@@ -426,14 +439,14 @@ class MGWPP_Editor_View
                 <span class="mgwpp-item-title"><?php _e('Untitled', 'mini-gallery'); ?></span>
             </div>
         </div>
-        <?php
+<?php
     }
 
     private function enqueue_editor_assets()
     {
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-sortable');
-        
+
         // Custom editor assets
         wp_enqueue_style(
             'mgwpp-enhanced-editor-css',
@@ -441,7 +454,7 @@ class MGWPP_Editor_View
             [],
             MGWPP_ASSET_VERSION
         );
-        
+
         wp_enqueue_script(
             'mgwpp-enhanced-editor-js',
             MG_PLUGIN_URL . '/includes/admin/js/mgwpp-editor.js',
@@ -513,36 +526,36 @@ class MGWPP_Editor_View
  * File: includes/admin/class-mgwpp-enhanced-editor-ajax.php
  */
 
-class MGWPP_Enhanced_Editor_Ajax 
+class MGWPP_Enhanced_Editor_Ajax
 {
-    public function __construct() 
+    public function __construct()
     {
         add_action('wp_ajax_mgwpp_save_gallery_data', [$this, 'save_gallery_data']);
         add_action('wp_ajax_mgwpp_get_gallery_data', [$this, 'get_gallery_data']);
         add_action('wp_ajax_mgwpp_duplicate_gallery_item', [$this, 'duplicate_gallery_item']);
     }
 
-    public function save_gallery_data() 
+    public function save_gallery_data()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         if (!current_user_can('edit_mgwpp_galleries')) {
             wp_die(__('You do not have permission to perform this action.', 'mini-gallery'));
         }
 
         $gallery_id = absint($_POST['gallery_id']);
         $gallery_data = json_decode(stripslashes($_POST['gallery_data']), true);
-        
+
         if (!$gallery_id || !is_array($gallery_data)) {
             wp_send_json_error(__('Invalid data provided.', 'mini-gallery'));
         }
 
         // Sanitize gallery data
         $sanitized_data = $this->sanitize_gallery_data($gallery_data);
-        
+
         // Save to database
         $result = update_post_meta($gallery_id, '_mgwpp_gallery_data', $sanitized_data);
-        
+
         if ($result !== false) {
             wp_send_json_success([
                 'message' => __('Gallery saved successfully!', 'mini-gallery'),
@@ -553,29 +566,29 @@ class MGWPP_Enhanced_Editor_Ajax
         }
     }
 
-    public function get_gallery_data() 
+    public function get_gallery_data()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         $gallery_id = absint($_POST['gallery_id']);
         $gallery_data = get_post_meta($gallery_id, '_mgwpp_gallery_data', true);
-        
+
         wp_send_json_success($gallery_data ?: ['items' => []]);
     }
 
-    public function duplicate_gallery_item() 
+    public function duplicate_gallery_item()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         if (!current_user_can('edit_mgwpp_galleries')) {
             wp_die(__('You do not have permission to perform this action.', 'mini-gallery'));
         }
 
         $gallery_id = absint($_POST['gallery_id']);
         $item_index = absint($_POST['item_index']);
-        
+
         $gallery_data = get_post_meta($gallery_id, '_mgwpp_gallery_data', true);
-        
+
         if (!is_array($gallery_data) || !isset($gallery_data['items'][$item_index])) {
             wp_send_json_error(__('Item not found.', 'mini-gallery'));
         }
@@ -583,11 +596,11 @@ class MGWPP_Enhanced_Editor_Ajax
         $item_to_duplicate = $gallery_data['items'][$item_index];
         $item_to_duplicate['id'] = uniqid('item_');
         $item_to_duplicate['title'] = $item_to_duplicate['title'] . ' ' . __('(Copy)', 'mini-gallery');
-        
+
         array_splice($gallery_data['items'], $item_index + 1, 0, [$item_to_duplicate]);
-        
+
         update_post_meta($gallery_id, '_mgwpp_gallery_data', $gallery_data);
-        
+
         wp_send_json_success([
             'message' => __('Item duplicated successfully!', 'mini-gallery'),
             'item' => $item_to_duplicate,
@@ -595,10 +608,10 @@ class MGWPP_Enhanced_Editor_Ajax
         ]);
     }
 
-    private function sanitize_gallery_data($data) 
+    private function sanitize_gallery_data($data)
     {
         $sanitized = ['items' => []];
-        
+
         if (isset($data['items']) && is_array($data['items'])) {
             foreach ($data['items'] as $item) {
                 $sanitized_item = [
@@ -613,7 +626,7 @@ class MGWPP_Enhanced_Editor_Ajax
                         $sanitized_item['image_id'] = absint($item['image_id'] ?? 0);
                         $sanitized_item['alt_text'] = sanitize_text_field($item['alt_text'] ?? '');
                         break;
-                        
+
                     case 'video':
                         $sanitized_item['video_url'] = esc_url_raw($item['video_url'] ?? '');
                         $sanitized_item['video_id'] = absint($item['video_id'] ?? 0);
@@ -629,12 +642,12 @@ class MGWPP_Enhanced_Editor_Ajax
                             ]
                         ]);
                         break;
-                        
+
                     case 'text':
                         $sanitized_item['content'] = wp_kses_post($item['content'] ?? '');
                         $sanitized_item['text_align'] = sanitize_text_field($item['text_align'] ?? 'left');
                         break;
-                        
+
                     case 'button':
                         $sanitized_item['button_text'] = sanitize_text_field($item['button_text'] ?? '');
                         $sanitized_item['button_url'] = esc_url_raw($item['button_url'] ?? '');
@@ -665,4 +678,3 @@ class MGWPP_Enhanced_Editor_Ajax
         return $sanitized;
     }
 }
-

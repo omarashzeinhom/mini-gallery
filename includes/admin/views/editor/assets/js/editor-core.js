@@ -1,9 +1,3 @@
-// editor-core.js
-import interact from 'https://cdn.jsdelivr.net/npm/@interactjs/interactjs/index.min.js';
-
-interact('.draggable').draggable({
-  // interaction config
-});
 
 jQuery(document).ready(function ($) {
     'use strict';

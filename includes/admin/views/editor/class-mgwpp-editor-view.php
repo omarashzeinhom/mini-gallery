@@ -17,7 +17,10 @@ class MGWPP_Editor_View
     public function __construct()
     {
         $this->gallery_data = new MGWPP_Editor_Data();
-        $this->assets = new MGWPP_Editor_Assets(); // instantiate the asset class
+        $this->assets = new MGWPP_Editor_Assets();
+        $this->assets->register();  
+        // <- use $this->assets here
+        // instantiate the asset class
     }
 
     public function render()

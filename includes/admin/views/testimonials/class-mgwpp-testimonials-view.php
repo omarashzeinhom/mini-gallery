@@ -123,3 +123,4 @@ class MGWPP_Testimonials_View
 <?php
     }
 }
+?>

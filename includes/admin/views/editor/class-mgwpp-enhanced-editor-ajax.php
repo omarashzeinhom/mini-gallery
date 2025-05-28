@@ -1,36 +1,34 @@
-<?php 
-
-
-class MGWPP_Enhanced_Editor_Ajax 
+<?php
+class MGWPP_Enhanced_Editor_Ajax
 {
-    public function __construct() 
+    public function __construct()
     {
         add_action('wp_ajax_mgwpp_save_gallery_data', [$this, 'save_gallery_data']);
         add_action('wp_ajax_mgwpp_get_gallery_data', [$this, 'get_gallery_data']);
         add_action('wp_ajax_mgwpp_duplicate_gallery_item', [$this, 'duplicate_gallery_item']);
     }
 
-    public function save_gallery_data() 
+    public function save_gallery_data()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         if (!current_user_can('edit_mgwpp_galleries')) {
             wp_die(__('You do not have permission to perform this action.', 'mini-gallery'));
         }
 
         $gallery_id = absint($_POST['gallery_id']);
         $gallery_data = json_decode(stripslashes($_POST['gallery_data']), true);
-        
+
         if (!$gallery_id || !is_array($gallery_data)) {
             wp_send_json_error(__('Invalid data provided.', 'mini-gallery'));
         }
 
         // Sanitize gallery data
         $sanitized_data = $this->sanitize_gallery_data($gallery_data);
-        
+
         // Save to database
         $result = update_post_meta($gallery_id, '_mgwpp_gallery_data', $sanitized_data);
-        
+
         if ($result !== false) {
             wp_send_json_success([
                 'message' => __('Gallery saved successfully!', 'mini-gallery'),
@@ -41,29 +39,29 @@ class MGWPP_Enhanced_Editor_Ajax
         }
     }
 
-    public function get_gallery_data() 
+    public function get_gallery_data()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         $gallery_id = absint($_POST['gallery_id']);
         $gallery_data = get_post_meta($gallery_id, '_mgwpp_gallery_data', true);
-        
+
         wp_send_json_success($gallery_data ?: ['items' => []]);
     }
 
-    public function duplicate_gallery_item() 
+    public function duplicate_gallery_item()
     {
         check_ajax_referer('mgwpp_editor_nonce', 'nonce');
-        
+
         if (!current_user_can('edit_mgwpp_galleries')) {
             wp_die(__('You do not have permission to perform this action.', 'mini-gallery'));
         }
 
         $gallery_id = absint($_POST['gallery_id']);
         $item_index = absint($_POST['item_index']);
-        
+
         $gallery_data = get_post_meta($gallery_id, '_mgwpp_gallery_data', true);
-        
+
         if (!is_array($gallery_data) || !isset($gallery_data['items'][$item_index])) {
             wp_send_json_error(__('Item not found.', 'mini-gallery'));
         }
@@ -71,11 +69,11 @@ class MGWPP_Enhanced_Editor_Ajax
         $item_to_duplicate = $gallery_data['items'][$item_index];
         $item_to_duplicate['id'] = uniqid('item_');
         $item_to_duplicate['title'] = $item_to_duplicate['title'] . ' ' . __('(Copy)', 'mini-gallery');
-        
+
         array_splice($gallery_data['items'], $item_index + 1, 0, [$item_to_duplicate]);
-        
+
         update_post_meta($gallery_id, '_mgwpp_gallery_data', $gallery_data);
-        
+
         wp_send_json_success([
             'message' => __('Item duplicated successfully!', 'mini-gallery'),
             'item' => $item_to_duplicate,
@@ -83,10 +81,10 @@ class MGWPP_Enhanced_Editor_Ajax
         ]);
     }
 
-    private function sanitize_gallery_data($data) 
+    private function sanitize_gallery_data($data)
     {
         $sanitized = ['items' => []];
-        
+
         if (isset($data['items']) && is_array($data['items'])) {
             foreach ($data['items'] as $item) {
                 $sanitized_item = [
@@ -101,7 +99,7 @@ class MGWPP_Enhanced_Editor_Ajax
                         $sanitized_item['image_id'] = absint($item['image_id'] ?? 0);
                         $sanitized_item['alt_text'] = sanitize_text_field($item['alt_text'] ?? '');
                         break;
-                        
+
                     case 'video':
                         $sanitized_item['video_url'] = esc_url_raw($item['video_url'] ?? '');
                         $sanitized_item['video_id'] = absint($item['video_id'] ?? 0);
@@ -117,12 +115,12 @@ class MGWPP_Enhanced_Editor_Ajax
                             ]
                         ]);
                         break;
-                        
+
                     case 'text':
                         $sanitized_item['content'] = wp_kses_post($item['content'] ?? '');
                         $sanitized_item['text_align'] = sanitize_text_field($item['text_align'] ?? 'left');
                         break;
-                        
+
                     case 'button':
                         $sanitized_item['button_text'] = sanitize_text_field($item['button_text'] ?? '');
                         $sanitized_item['button_url'] = esc_url_raw($item['button_url'] ?? '');

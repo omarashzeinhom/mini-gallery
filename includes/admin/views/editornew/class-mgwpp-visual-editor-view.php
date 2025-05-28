@@ -13,7 +13,7 @@ class MGWPP_Visual_Editor_View {
         return self::$instance;
     }
     
-    private function __construct() {
+    public function __construct() {
         $this->init();
     }
     
@@ -25,7 +25,7 @@ class MGWPP_Visual_Editor_View {
     
     public function render() {
         $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
-        include MG_PLUGIN_PATH . 'editor/templates/admin-page.php';
+        include MG_PLUGIN_PATH . 'editornew/templates/admin-page.php';
     }
     
     public function enqueue_admin_scripts($hook) {

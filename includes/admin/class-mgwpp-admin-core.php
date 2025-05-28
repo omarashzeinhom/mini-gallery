@@ -39,6 +39,7 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/modules/class-mgwpp-modules-view.php';
         require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
         require_once __DIR__ . '/views/embed-editor/class-mgwpp-embed-editor-view.php';
+        require_once __DIR__ . '/views/editornew/class-mgwpp-visual-editor-view.php';
 
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';

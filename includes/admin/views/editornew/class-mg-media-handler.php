@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Media Handler Class
  */
@@ -7,21 +8,23 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class MG_Media_Handler {
-    
-    public function handle_upload() {
+class MG_Media_Handler
+{
+
+    public function handle_upload()
+    {
         if (!function_exists('wp_handle_upload')) {
             require_once(ABSPATH . 'wp-admin/includes/file.php');
         }
-        
+
         $uploadedfile = $_FILES['file'];
-        
+
         $upload_overrides = array(
             'test_form' => false
         );
-        
+
         $movefile = wp_handle_upload($uploadedfile, $upload_overrides);
-        
+
         if ($movefile && !isset($movefile['error'])) {
             // Create attachment
             $attachment = array(
@@ -30,16 +33,16 @@ class MG_Media_Handler {
                 'post_content' => '',
                 'post_status' => 'inherit'
             );
-            
+
             $attach_id = wp_insert_attachment($attachment, $movefile['file']);
-            
+
             if (!function_exists('wp_generate_attachment_metadata')) {
                 require_once(ABSPATH . 'wp-admin/includes/image.php');
             }
-            
+
             $attach_data = wp_generate_attachment_metadata($attach_id, $movefile['file']);
             wp_update_attachment_metadata($attach_id, $attach_data);
-            
+
             return array(
                 'id' => $attach_id,
                 'url' => $movefile['url'],
@@ -51,8 +54,9 @@ class MG_Media_Handler {
             throw new Exception($movefile['error']);
         }
     }
-    
-    public function get_media_library() {
+
+    public function get_media_library()
+    {
         $args = array(
             'post_type' => 'attachment',
             'post_mime_type' => array('image', 'video'),
@@ -61,10 +65,10 @@ class MG_Media_Handler {
             'orderby' => 'date',
             'order' => 'DESC'
         );
-        
+
         $attachments = get_posts($args);
         $media_items = array();
-        
+
         foreach ($attachments as $attachment) {
             $media_items[] = array(
                 'id' => $attachment->ID,
@@ -74,7 +78,7 @@ class MG_Media_Handler {
                 'type' => strpos($attachment->post_mime_type, 'image') !== false ? 'image' : 'video'
             );
         }
-        
+
         return $media_items;
     }
 }

@@ -14,7 +14,8 @@ class MGWPP_Admin_Menu
     private $settings_view;
     private $embed_editor_view;
     private $editor_view;
-    
+    private $visual_editor_view;
+
     // In class-mgwpp-admin-menu.php
     public function __construct($module_loader)
     {
@@ -33,6 +34,8 @@ class MGWPP_Admin_Menu
         $this->settings_view = new MGWPP_Settings_View();
         $this->embed_editor_view = new MGWPP_Embed_Editor_View();
         $this->editor_view = new MGWPP_Editor_View();
+        $this->visual_editor_view = new MGWPP_Visual_Editor_View(); 
+
     }
 
     public function register_menus()
@@ -66,6 +69,13 @@ class MGWPP_Admin_Menu
     private function setup_menu_structure()
     {
         $this->view_classes = [
+
+            'visual-editor' => [
+                'page_title' => __('Visual Editor', 'mini-gallery'),
+                'callback'   => [$this->visual_editor_view, 'render'], // Ensure 'render' method exists
+                'capability' => 'edit_posts'
+            ],
+
             'editor' => [
                 'page_title' => __('Editor', 'mini-gallery'), // Corrected key
                 'callback' => [$this->editor_view, 'render'],
@@ -73,7 +83,7 @@ class MGWPP_Admin_Menu
             ],
             'embed-editor' => [
                 'page_title' => __('Embed Editor', 'mini-gallery'),
-                'callback' => [$this->embed_editor_view , 'render'],
+                'callback' => [$this->embed_editor_view, 'render'],
                 'capability' => 'edit_posts'
             ],
             'galleries' => [

@@ -7,13 +7,12 @@ class MGWPP_Admin_Menu
 {
     private $view_classes = [];
     private $modules_view;
-    private $galleries_view; // Add instance variables
+    private $galleries_view; 
     private $albums_view;
     private $testimonials_view;
     private $security_view;
     private $settings_view;
     private $embed_editor_view;
-    private $editor_view;
     private $visual_editor_view;
 
     // In class-mgwpp-admin-menu.php
@@ -33,7 +32,6 @@ class MGWPP_Admin_Menu
         $this->security_view = new MGWPP_Security_View();
         $this->settings_view = new MGWPP_Settings_View();
         $this->embed_editor_view = new MGWPP_Embed_Editor_View();
-        $this->editor_view = new MGWPP_Editor_View();
         $this->visual_editor_view = new MGWPP_Visual_Editor_View(); 
 
     }
@@ -73,12 +71,6 @@ class MGWPP_Admin_Menu
             'visual-editor' => [
                 'page_title' => __('Visual Editor', 'mini-gallery'),
                 'callback'   => [$this->visual_editor_view, 'render'], // Ensure 'render' method exists
-                'capability' => 'edit_posts'
-            ],
-
-            'editor' => [
-                'page_title' => __('Editor', 'mini-gallery'), // Corrected key
-                'callback' => [$this->editor_view, 'render'],
                 'capability' => 'edit_posts'
             ],
             'embed-editor' => [

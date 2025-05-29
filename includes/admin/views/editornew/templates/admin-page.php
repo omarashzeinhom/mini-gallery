@@ -3,6 +3,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+require_once MG_PLUGIN_PATH . 'includes/admin/views/editornew/class-mg-media-handler.php';
+
+
 $media_handler = new MG_Media_Handler();
 $media_items = $media_handler->get_media_library();
 ?>

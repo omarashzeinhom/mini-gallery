@@ -18,17 +18,15 @@ class MGWPP_Editor_View
     {
         $this->gallery_data = new MGWPP_Editor_Data();
         $this->assets = new MGWPP_Editor_Assets();
-        $this->assets->register();  
-        // <- use $this->assets here
-        // instantiate the asset class
+       $this->assets->register();  
     }
 
     public function render()
     {
-        $this->assets->enqueue_editor_assets();
+       $this->assets->enqueue_editor_assets();
 ?>
         <div class="mgwpp-enhanced-editor-wrap">
-            <?php $this->render_header(); ?>
+            <?php  $this->render_header(); ?>
             <div class="mgwpp-editor-container">
                 <?php $this->render_canvas_area(); ?>
                 <?php $this->render_sidebar(); ?>

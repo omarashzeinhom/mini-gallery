@@ -19,9 +19,9 @@ class MGWPP_Editor_Assets
         // CSS - Corrected path
         wp_enqueue_style(
             'mgwpp-editor-core-css',
-            MG_PLUGIN_URL . 'includes/admin/editor/assets/css/mgwpp-editor-core.css',
+            MG_PLUGIN_URL . 'includes/admin/editornew/assets/css/mgwpp-editor-core.css',
             [],
-            filemtime(MG_PLUGIN_PATH . 'includes/admin/editor/assets/css/mgwpp-editor-core.css')
+            filemtime(MG_PLUGIN_PATH . 'includes/admin/editornew/assets/css/mgwpp-editor-core.css')
         );
 
         // JS - Corrected path

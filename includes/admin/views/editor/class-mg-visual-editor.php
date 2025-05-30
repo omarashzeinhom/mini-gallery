@@ -24,7 +24,6 @@ class MGWPP_Visual_Editor_View
     public function __construct()
     {
         add_action('init', array($this, 'init'));
-        add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_scripts'));
         add_action('wp_ajax_mg_save_gallery', array($this, 'ajax_save_gallery'));
@@ -39,27 +38,6 @@ class MGWPP_Visual_Editor_View
         $this->create_database_tables();
     }
 
-    public function add_admin_menu()
-    {
-        add_menu_page(
-            'Visual Gallery Editor',
-            'Gallery Editor',
-            'manage_options',
-            'mg-visual-editor',
-            array($this, 'admin_page'),
-            'dashicons-format-gallery',
-            30
-        );
-
-        add_submenu_page(
-            'mg-visual-editor',
-            'All Galleries',
-            'All Galleries',
-            'manage_options',
-            'mg-all-galleries',
-            array($this, 'all_galleries_page')
-        );
-    }
 
     public function enqueue_admin_scripts($hook)
     {

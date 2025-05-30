@@ -10,7 +10,6 @@ class MGWPP_Testimonial_Post_Type
         $labels = [
             'name' => _x('Testimonials', 'Post Type General Name', 'mini-gallery'),
             'singular_name' => _x('Testimonial', 'Post Type Singular Name', 'mini-gallery'),
-            'menu_name' => __('Testimonials', 'mini-gallery'),
             'all_items' => __('All Testimonials', 'mini-gallery'),
             'add_new_item' => __('Add New Testimonial', 'mini-gallery'),
             'add_new' => __('Add New', 'mini-gallery'),
@@ -26,7 +25,7 @@ class MGWPP_Testimonial_Post_Type
             'supports' => ['title', 'editor', 'thumbnail'],
             'public' => true,
             'show_ui' => true,
-            'show_in_menu' => true,
+            'show_in_menu' => false,
             'menu_position' => 25,
             'menu_icon' => 'dashicons-testimonial',
             'show_in_admin_bar' => true,

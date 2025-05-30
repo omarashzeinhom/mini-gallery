@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 class MGWPP_Album_Submit
@@ -17,28 +17,28 @@ class MGWPP_Album_Submit
         // Verify nonce
         if (
             !isset($_POST['mgwpp_album_submit_nonce']) ||
-            !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['mgwpp_album_submit_nonce'] ) ), 'mgwpp_album_submit_nonce' )
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_submit_nonce'])), 'mgwpp_album_submit_nonce')
         ) {
             wp_die('Security check failed for Submitting Album', 'Error', array('response' => 403));
         }
-        
+
 
         // Check permissions
         if (!current_user_can('create_mgwpp_albums')) {
             wp_die('Permission denied', 'Error', array('response' => 403));
         }
-    
+
         // Validate required fields
         if (empty($_POST['album_title'])) {
             wp_die('Album title is required', 'Error', array('response' => 400));
         }
-    
+
         // Sanitize input
         $album_title = sanitize_text_field(wp_unslash($_POST['album_title']));
         $album_description = isset($_POST['album_description']) ?
             sanitize_textarea_field(wp_unslash($_POST['album_description'])) : '';
         $galleries = isset($_POST['album_galleries']) ? array_map('intval', $_POST['album_galleries']) : array();
-    
+
         // Create post
         $new_album_id = wp_insert_post(array(
             'post_title' => $album_title,
@@ -46,7 +46,7 @@ class MGWPP_Album_Submit
             'post_status' => 'publish',
             'post_type' => 'mgwpp_album',
         ));
-    
+
         if (is_wp_error($new_album_id)) {
             wp_die(
                 esc_html__('Album Creation Failed', 'mini-gallery') . esc_html($new_album_id->get_error_message()),
@@ -54,10 +54,10 @@ class MGWPP_Album_Submit
                 array('response' => 500)
             );
         }
-    
+
         // Save meta
         update_post_meta($new_album_id, '_mgwpp_album_galleries', $galleries);
-    
+
         // Redirect with success message
         wp_safe_redirect(add_query_arg(
             'message',
@@ -66,7 +66,7 @@ class MGWPP_Album_Submit
         ));
         exit;
     }
-    
+
     public static function save_album_submission($post_id, $post, $update)
     {
         // Early return if not our post type
@@ -82,11 +82,11 @@ class MGWPP_Album_Submit
         // Verify nonce
         if (
             !isset($_POST['mgwpp_album_galleries_nonce']) ||
-            !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['mgwpp_album_galleries_nonce'] ) ), 'mgwpp_album_galleries_nonce' )
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')
         ) {
             return;
         }
-        
+
         // Check permissions
         if (!current_user_can('edit_post', $post_id)) {
             return;
@@ -98,21 +98,29 @@ class MGWPP_Album_Submit
         update_post_meta($post_id, '_mgwpp_album_galleries', $galleries);
     }
 
- public static function ajax_delete_album() {
-    check_ajax_referer('mgwpp_nonce', 'nonce');
-    if(isset($_GET['id'])){
-        $id = sanitize_key(wp_unslash($_GET['id']));
-    }
+    // Replace your ajax_delete_album method with this:
+    public static function ajax_delete_album()
+    {
+        // Verify nonce first
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_key($_POST['nonce']), 'mgwpp_nonce')) {
+            wp_send_json_error('Invalid nonce', 403);
+        }
 
-    $album_id = intval($id);
-    if (!current_user_can('delete_post', $album_id)) {
-        wp_send_json_error('Unauthorized', 403);
-    }
+        // Get album ID from POST data
+        $album_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
-    wp_delete_post($album_id, true);
-    wp_send_json_success();
-}
-      
+        if (!$album_id || !current_user_can('delete_mgwpp_album', $album_id)) {
+            wp_send_json_error('Unauthorized', 403);
+        }
+
+        $result = wp_delete_post($album_id, true);
+
+        if ($result) {
+            wp_send_json_success();
+        } else {
+            wp_send_json_error('Deletion failed', 500);
+        }
+    }
 }
 
 // Initialize the class

@@ -202,9 +202,9 @@ class MGWPP_Settings_View
     {
         wp_enqueue_style(
             'mgwpp-settings-style',
-            MG_PLUGIN_URL . "/includes/admin/views/settings/mgwpp-settings.css",
+            MG_PLUGIN_URL . "includes/admin/views/settings/mgwpp-settings-view.css",
             [],
-            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/settings/mgwpp-settings.css")
+            filemtime(MG_PLUGIN_PATH . "includes/admin/views/settings/mgwpp-settings-view.css")
         );
     }
 }

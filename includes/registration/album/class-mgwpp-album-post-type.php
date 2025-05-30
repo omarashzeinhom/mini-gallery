@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 class MGWPP_Album_Post_Type
@@ -31,7 +31,13 @@ class MGWPP_Album_Post_Type
                 'delete_others_posts' => 'delete_others_mgwpp_albums',
                 'edit_private_posts' => 'edit_private_mgwpp_albums',
                 'edit_published_posts' => 'edit_published_mgwpp_albums',
-                'create_posts' => 'create_mgwpp_albums'
+                'create_posts' => 'create_mgwpp_albums',
+                'create_posts'       => 'create_mgwpp_albums',
+                'delete_private_posts'   => 'delete_private_mgwpp_albums',
+                'delete_published_posts' => 'delete_published_mgwpp_albums',
+                'delete_others_posts'    => 'delete_others_mgwpp_albums',
+                'edit_private_posts'     => 'edit_private_mgwpp_albums',
+                'edit_published_posts'   => 'edit_published_mgwpp_albums',
             )
         );
         register_post_type('mgwpp_album', $args);
@@ -87,8 +93,10 @@ class MGWPP_Album_Post_Type
     public static function save_album_galleries_meta($post_id)
     {
         // Verify nonce
-        if (!isset($_POST['mgwpp_album_galleries_nonce']) || 
-            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')) {
+        if (
+            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')
+        ) {
             return;
         }
 
@@ -103,7 +111,7 @@ class MGWPP_Album_Post_Type
         }
 
         // Save galleries
-        $galleries = isset($_POST['mgwpp_album_galleries']) ? 
+        $galleries = isset($_POST['mgwpp_album_galleries']) ?
             array_map('intval', $_POST['mgwpp_album_galleries']) : array();
         update_post_meta($post_id, '_mgwpp_album_galleries', $galleries);
     }

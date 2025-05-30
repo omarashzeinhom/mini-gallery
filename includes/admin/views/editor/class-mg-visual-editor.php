@@ -95,7 +95,76 @@ class MGWPP_Visual_Editor_View
     public function admin_page()
     {
         $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
-        $this->render($gallery_id);
+?>
+        <div class="wrap">
+            <div id="mgwpp-visual-editor">
+                <!-- Slide Navigation -->
+                <div class="mgwpp-slide-nav">
+                    <button class="button mgwpp-prev-slide">❮</button>
+                    <span class="mgwpp-slide-counter">
+                        Slide <span class="mgwpp-current-slide">1</span> of
+                        <span class="mgwpp-total-slides">1</span>
+                    </span>
+                    <button class="button mgwpp-next-slide">❯</button>
+                    <button class="button button-primary mgwpp-add-slide">+ Add Slide</button>
+                    <button class="button mgwpp-remove-slide">- Remove Slide</button>
+                </div>
+
+                <!-- Canvas Area -->
+                <div class="mgwpp-canvas-container">
+                    <div id="mgwpp-canvas" class="mgwpp-canvas">
+                        <!-- Elements will be rendered here -->
+                    </div>
+
+                    <!-- Element Toolbar -->
+                    <div class="mgwpp-element-toolbar">
+                        <button class="button" data-type="text">Add Text</button>
+                        <button class="button" data-type="image">Add Image</button>
+                        <button class="button" data-type="button">Add Button</button>
+                    </div>
+                </div>
+
+                <!-- Properties Panel -->
+                <div class="mgwpp-properties-panel">
+                    <div class="mgwpp-bg-controls">
+                        <h3>Background</h3>
+                        <select class="mgwpp-bg-type-select">
+                            <option value="color">Color</option>
+                            <option value="image">Image</option>
+                        </select>
+                        <div class="mgwpp-bg-color-picker" style="display:block;">
+                            <input type="color" class="mgwpp-bg-color" value="#ffffff">
+                        </div>
+                        <div class="mgwpp-bg-image-upload" style="display:none;">
+                            <button class="button mgwpp-upload-bg">Upload Image</button>
+                        </div>
+                    </div>
+
+                    <div class="mgwpp-animation-controls">
+                        <h3>Slide Transition</h3>
+                        <select class="mgwpp-transition-select">
+                            <option value="fade">Fade</option>
+                            <option value="slide">Slide</option>
+                            <!-- More options -->
+                        </select>
+                        <input type="number" class="mgwpp-transition-duration" value="500"> ms
+                    </div>
+
+                    <div class="mgwpp-navigation-controls">
+                        <h3>Navigation</h3>
+                        <label>
+                            <input type="checkbox" class="mgwpp-show-navigation" checked>
+                            Show Navigation Arrows
+                        </label>
+                        <label>
+                            <input type="checkbox" class="mgwpp-show-pagination" checked>
+                            Show Pagination Dots
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
     }
 
     public function all_galleries_page()
@@ -152,7 +221,7 @@ class MGWPP_Visual_Editor_View
             'type' => 'grid'
         ), $atts);
 
-        $gallery_renderer = new MG_Gallery_Renderer();
+        $gallery_renderer = new MGWPP_Gallery_Renderer();
         return $gallery_renderer->render_gallery($atts['id'], $atts['type']);
     }
 
@@ -203,7 +272,7 @@ class MGWPP_Visual_Editor_View
         );
 
         // Output the editor HTML
-?>
+    ?>
         <div class="wrap">
             <h1><?php echo $gallery_id ? __('Edit Gallery', 'mini-gallery') : __('Create New Gallery', 'mini-gallery'); ?></h1>
             <?php
@@ -638,19 +707,18 @@ class MGWPP_Visual_Editor_View
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'mg_galleries';
-
+        $table_name = $wpdb->prefix . 'mgwpp_galleries';
         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            title varchar(255) NOT NULL,
-            gallery_data longtext NOT NULL,
-            gallery_type varchar(50) DEFAULT 'grid',
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
-        ) $charset_collate;";
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        title varchar(255) NOT NULL,
+        slides longtext NOT NULL,  // Changed to store slides
+        settings longtext NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);

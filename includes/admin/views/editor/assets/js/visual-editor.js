@@ -556,4 +556,8 @@
   $(document).ready(() => {
     new MGVisualEditor()
   })
+// Export the class properly
+if (typeof window !== 'undefined') {
+    window.MGVisualEditor = MGVisualEditor;
+}
 })(jQuery)

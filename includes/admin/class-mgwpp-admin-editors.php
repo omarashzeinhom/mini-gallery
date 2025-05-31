@@ -11,7 +11,6 @@ class MGWPP_Admin_Editors
       'single_carousel'    => [ 'file' => 'single-gallery-editor-options.php',     'class' => 'MGWPP_Single_Gallery_Editor_Options' ],
       'grid'               => [ 'file' => 'grid-gallery-editor-options.php',       'class' => 'MGWPP_Grid_Gallery_Editor_Options' ],
       'mega_slider'        => [ 'file' => 'mega-slider-gallery-editor-options.php','class' => 'MGWPP_Mega_Slider_Gallery_Editor_Options' ],
-      // …and so on for each type…
     ];
 
     public static function init()

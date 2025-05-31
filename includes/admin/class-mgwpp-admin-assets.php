@@ -7,10 +7,10 @@ class MGWPP_Admin_Assets
 {
     public function __construct()
     {
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'mgwpp_enqueue_admin_assets']);
     }
 
-    public function enqueue_assets($hook)
+    public function mgwpp_enqueue_admin_assets($hook)
     {
         // Load only on plugin pages
         if (strpos($hook, 'mgwpp_') === false) return;
@@ -31,18 +31,18 @@ class MGWPP_Admin_Assets
         // Main admin JS
         wp_enqueue_script(
             'mgwpp-admin-js',
-            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/includes/admin/js/mgwpp-admin-scripts.js',
             ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mgwpp-admin-scripts.js'),
             true
         );
 
         // Admin CSS
         wp_enqueue_style(
             'mgwpp-admin-styles',
-            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . '/includes/admin/css/mgwpp-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mgwpp-admin-styles.css')
         );
 
         // Localize JS
@@ -62,12 +62,6 @@ class MGWPP_Admin_Assets
 
     private function load_core_assets()
     {
-
-        // WordPress dependencies
-        wp_enqueue_media();
-        wp_enqueue_script('thickbox');
-        wp_enqueue_style('thickbox');
-
         // Main admin Colours Root Palette for Dark/Light Mode
         wp_enqueue_style(
             'mgwpp-admin-core-css-variables',
@@ -80,17 +74,17 @@ class MGWPP_Admin_Assets
         // Main admin CSS
         wp_enqueue_style(
             'mgwpp-admin-core',
-            MG_PLUGIN_URL . '/includes/admin/css/mg-admin-styles.css',
+            MG_PLUGIN_URL . '/includes/admin/css/mgwpp-admin-styles.css',
             [],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mg-admin-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/css/mgwpp-admin-styles.css')
         );
 
         // Main admin JS
         wp_enqueue_script(
             'mgwpp-admin-core',
-            MG_PLUGIN_URL . '/includes/admin/js/mg-admin-scripts.js',
+            MG_PLUGIN_URL . '/includes/admin/js/mgwpp-admin-scripts.js',
             ['jquery', 'media-upload', 'thickbox', 'wp-color-picker'],
-            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mg-admin-scripts.js'),
+            filemtime(MG_PLUGIN_PATH . '/includes/admin/js/mgwpp-admin-scripts.js'),
             true
         );
 

@@ -1,18 +1,18 @@
 /* Visual Editor Admin Styles */
-.mg-editor-container {
+.mgwpp-editor-container {
   background: #f1f1f1;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.mg-editor-header {
+.mgwpp-editor-header {
   background: white;
   border-bottom: 1px solid #ddd;
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-content {
+.mgwpp-header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,29 +20,29 @@
   margin: 0 auto;
 }
 
-.header-content h2 {
+.mgwpp-header-content h2 {
   margin: 0;
   color: #23282d;
 }
 
-.header-actions {
+.mgwpp-header-actions {
   display: flex;
   gap: 1rem;
   align-items: center;
 }
 
-.gallery-type-select {
+.mgwpp-gallery-type-select {
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.mg-editor-main {
+.mgwpp-editor-main {
   display: flex;
   height: calc(100vh - 80px);
 }
 
-.canvas-area {
+.mgwpp-canvas-area {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -52,7 +52,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.canvas-toolbar {
+.mgwpp-canvas-toolbar {
   display: flex;
   gap: 0.5rem;
   padding: 1rem;
@@ -60,13 +60,13 @@
   background: #f9f9f9;
 }
 
-.canvas-container {
+.mgwpp-canvas-container {
   flex: 1;
   overflow: auto;
   position: relative;
 }
 
-.canvas {
+.mgwpp-canvas {
   position: relative;
   min-height: 100%;
   background: white;
@@ -75,13 +75,13 @@
   border-radius: 8px;
 }
 
-.canvas.show-grid {
+.mgwpp-canvas.show-grid {
   background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
-.empty-canvas {
+.mgwpp-empty-canvas {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -90,7 +90,7 @@
   color: #666;
 }
 
-.canvas-item {
+.mgwpp-canvas-item {
   position: absolute;
   cursor: move;
   border: 2px solid transparent;
@@ -98,29 +98,29 @@
   transition: border-color 0.2s;
 }
 
-.canvas-item:hover {
+.mgwpp-canvas-item:hover {
   border-color: #0073aa;
 }
 
-.canvas-item.selected {
+.mgwpp-canvas-item.selected {
   border-color: #0073aa;
   box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.3);
 }
 
-.item-content {
+.mgwpp-item-content {
   width: 100%;
   height: 100%;
   overflow: hidden;
   border-radius: 2px;
 }
 
-.item-content img {
+.mgwpp-item-content img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.text-content {
+.mgwpp-text-content {
   padding: 1rem;
   background: #f9f9f9;
   border: 1px solid #ddd;
@@ -130,7 +130,7 @@
   justify-content: center;
 }
 
-.button-content {
+.mgwpp-button-content {
   background: #0073aa;
   color: white;
   border: none;
@@ -141,7 +141,7 @@
   height: 100%;
 }
 
-.item-controls {
+.mgwpp-item-controls {
   position: absolute;
   top: -8px;
   left: -8px;
@@ -150,7 +150,7 @@
   pointer-events: none;
 }
 
-.resize-handle {
+.mgwpp-resize-handle {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -161,28 +161,28 @@
   cursor: pointer;
 }
 
-.resize-nw {
+.mgwpp-resize-nw {
   top: -5px;
   left: -5px;
   cursor: nw-resize;
 }
-.resize-ne {
+.mgwpp-resize-ne {
   top: -5px;
   right: -5px;
   cursor: ne-resize;
 }
-.resize-sw {
+.mgwpp-resize-sw {
   bottom: -5px;
   left: -5px;
   cursor: sw-resize;
 }
-.resize-se {
+.mgwpp-resize-se {
   bottom: -5px;
   right: -5px;
   cursor: se-resize;
 }
 
-.rotate-handle {
+.mgwpp-rotate-handle {
   position: absolute;
   top: -20px;
   left: 50%;
@@ -196,7 +196,7 @@
   pointer-events: all;
 }
 
-.delete-handle {
+.mgwpp-delete-handle {
   position: absolute;
   top: -12px;
   right: -12px;
@@ -211,7 +211,7 @@
   font-size: 12px;
 }
 
-.editor-sidebar {
+.mgwpp-editor-sidebar {
   width: 320px;
   background: white;
   border-left: 1px solid #ddd;
@@ -219,30 +219,30 @@
   flex-direction: column;
 }
 
-.sidebar-panel {
+.mgwpp-sidebar-panel {
   flex: 1;
   border-bottom: 1px solid #ddd;
 }
 
-.panel-header {
+.mgwpp-panel-header {
   padding: 1rem;
   border-bottom: 1px solid #ddd;
   background: #f9f9f9;
 }
 
-.panel-header h3 {
+.mgwpp-panel-header h3 {
   margin: 0 0 1rem 0;
   font-size: 1rem;
 }
 
-.search-input {
+.mgwpp-search-input {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.media-grid {
+.mgwpp-media-grid {
   padding: 1rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -251,7 +251,7 @@
   overflow-y: auto;
 }
 
-.media-item {
+.mgwpp-media-item {
   background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -260,12 +260,12 @@
   transition: transform 0.2s;
 }
 
-.media-item:hover {
+.mgwpp-media-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.media-thumbnail {
+.mgwpp-media-thumbnail {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #f9f9f9;
@@ -274,13 +274,13 @@
   justify-content: center;
 }
 
-.media-thumbnail img {
+.mgwpp-media-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.video-thumbnail {
+.mgwpp-video-thumbnail {
   width: 100%;
   height: 100%;
   display: flex;
@@ -290,11 +290,11 @@
   color: white;
 }
 
-.media-info {
+.mgwpp-media-info {
   padding: 0.5rem;
 }
 
-.media-title {
+.mgwpp-media-title {
   font-size: 0.8rem;
   font-weight: 500;
   display: block;
@@ -303,24 +303,24 @@
   text-overflow: ellipsis;
 }
 
-.media-type {
+.mgwpp-media-type {
   font-size: 0.7rem;
   color: #666;
   text-transform: uppercase;
 }
 
-.properties-content {
+.mgwpp-properties-content {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.tab-navigation {
+.mgwpp-tab-navigation {
   display: flex;
   border-bottom: 1px solid #ddd;
 }
 
-.tab-button {
+.mgwpp-tab-button {
   flex: 1;
   padding: 0.75rem;
   border: none;
@@ -329,57 +329,57 @@
   border-bottom: 2px solid transparent;
 }
 
-.tab-button.active {
+.mgwpp-tab-button.active {
   background: white;
   border-bottom-color: #0073aa;
 }
 
-.tab-content {
+.mgwpp-tab-content {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
 }
 
-.control-group {
+.mgwpp-control-group {
   margin-bottom: 1rem;
 }
 
-.control-group label {
+.mgwpp-control-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
-.position-controls,
-.size-controls {
+.mgwpp-position-controls,
+.mgwpp-size-controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
 }
 
-.position-controls input,
-.size-controls input,
-.control-group input[type="text"],
-.control-group textarea {
+.mgwpp-position-controls input,
+.mgwpp-size-controls input,
+.mgwpp-control-group input[type="text"],
+.mgwpp-control-group textarea {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.range-input {
+.mgwpp-range-input {
   width: 100%;
   margin: 0.5rem 0;
 }
 
-.color-input {
+.mgwpp-color-input {
   width: 100%;
   height: 40px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.no-selection {
+.mgwpp-no-selection {
   flex: 1;
   display: flex;
   align-items: center;
@@ -390,18 +390,78 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .editor-sidebar {
+  .mgwpp-editor-sidebar {
     width: 280px;
   }
 }
 
 @media (max-width: 768px) {
-  .mg-editor-main {
+  .mgwpp-editor-main {
     flex-direction: column;
   }
 
-  .editor-sidebar {
+  .mgwpp-editor-sidebar {
     width: 100%;
     height: 40vh;
   }
+}
+
+
+/* Media Selector Styles */
+.mgwpp-media-selector {
+    margin: 20px 0;
+}
+
+.mgwpp-selected-media-container {
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.mgwpp-selected-media {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mgwpp-media-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mgwpp-media-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mgwpp-remove-media {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: rgba(220, 50, 50, 0.8);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mgwpp-remove-media .dashicons {
+    font-size: 16px;
+    width: auto;
+    height: auto;
 }

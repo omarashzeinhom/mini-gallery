@@ -126,6 +126,7 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
 /* Text contrast adjustments */
 .mgwpp-title,
 .mgwpp-stat-title {
+  line-height: 1.3em;
   color: var(--mgwpp-foreground-light);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

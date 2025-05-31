@@ -24,24 +24,24 @@ class MGWPP_Visual_Editor_View
     public function __construct()
     {
         add_action('init', array($this, 'init'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_scripts'));
-        add_action('wp_ajax_mg_save_gallery', array($this, 'ajax_save_gallery'));
-        add_action('wp_ajax_mg_load_gallery', array($this, 'ajax_load_gallery'));
-        add_action('wp_ajax_mg_upload_media', array($this, 'ajax_upload_media'));
-        add_shortcode('mg_gallery', array($this, 'render_gallery_shortcode'));
+        add_action('admin_enqueue_scripts', array($this, 'mgwpp_enqueue_admin_scripts_visual_editor'));
+        add_action('wp_enqueue_scripts', array($this, 'mgwpp_enqueue_frontend_scripts_visual_editor'));
+        add_action('wp_ajax_mg_save_gallery', array($this, 'mgwpp_ajax_save_gallery_ve'));
+        add_action('wp_ajax_mg_load_gallery', array($this, 'mgwpp_ajax_load_gallery_ve'));
+        add_action('wp_ajax_mg_upload_media', array($this, 'mgwpp_ajax_upload_media_ve'));
+        add_shortcode('mg_gallery', array($this, 'mgwpp_render_gallery_shortcode_ve'));
     }
 
     public function init()
     {
-        $this->create_gallery_post_type();
         $this->create_database_tables();
     }
 
 
-    public function enqueue_admin_scripts($hook)
+    public function mgwpp_enqueue_admin_scripts_visual_editor($hook)
     {
-        if (strpos($hook, 'mg-visual-editor') === false) {
+
+        if (strpos($hook, 'mgwpp_visual_editor') === false) {
             return;
         }
 
@@ -52,7 +52,7 @@ class MGWPP_Visual_Editor_View
         // Enqueue the editor script - make sure the path is correct
         wp_enqueue_script(
             'mg-visual-editor',
-            MG_PLUGIN_URL . 'editor/assets/js/visual-editor.js',
+            MG_PLUGIN_URL . 'editor/assets/js/mgwpp-visual-editor.js',
             array('jquery', 'wp-util'),  // Explicit dependencies
             MGWPP_ASSET_VERSION,
             true  // Load in footer - CRITICAL for timing
@@ -68,12 +68,12 @@ class MGWPP_Visual_Editor_View
         // Enqueue styles
         wp_enqueue_style(
             'mg-visual-editor',
-            MG_PLUGIN_URL . 'editor/assets/css/visual-editor.css',
+            MG_PLUGIN_URL . 'editor/assets/css/mgwpp-visual-editor.css',
             array(),
             MGWPP_ASSET_VERSION
         );
     }
-    public function enqueue_frontend_scripts()
+    public function mgwpp_enqueue_frontend_scripts_visual_editor()
     {
         wp_enqueue_script(
             'mg-gallery-frontend',
@@ -89,13 +89,22 @@ class MGWPP_Visual_Editor_View
             array(),
             MGWPP_ASSET_VERSION
         );
+
+        wp_enqueue_style(
+            'mgwpp-visual-editor-styles',
+            MG_PLUGIN_URL . 'editor/assets/css/visual-editor.css',
+            array(),
+            MGWPP_ASSET_VERSION
+        );
     }
 
     // Update the admin_page method to use the render function
     public function admin_page()
     {
-        $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
-?>
+        $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;?>
+
+<?php MGWPP_Inner_Header::init();?>
+
         <div class="wrap">
             <div id="mgwpp-visual-editor">
                 <!-- Slide Navigation -->
@@ -172,35 +181,42 @@ class MGWPP_Visual_Editor_View
         include MG_PLUGIN_PATH . 'editor/templates/all-galleries.php';
     }
 
-    public function ajax_save_gallery()
+    public function mgwpp_ajax_save_gallery_ve()
     {
         check_ajax_referer('mg_visual_editor_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_die('Unauthorized');
         }
-
         $gallery_data = json_decode(stripslashes($_POST['gallery_data']), true);
         $gallery_id = intval($_POST['gallery_id']);
 
-        $gallery_manager = new MG_Gallery_Manager();
-        $result = $gallery_manager->save_gallery($gallery_id, $gallery_data);
+        if ($gallery_id === 0) {
+            // Create new gallery post
+            $new_post = array(
+                'post_title'   => $gallery_data['title'] ?? 'New Gallery',
+                'post_type'    => 'mgwpp_soora',
+                'post_status'  => 'publish'
+            );
+            $gallery_id = wp_insert_post($new_post);
+        }
 
-        wp_send_json_success($result);
+        // Save data as post meta
+        update_post_meta($gallery_id, '_mgwpp_gallery_data', $gallery_data);
+
+        wp_send_json_success(['gallery_id' => $gallery_id]);
     }
 
-    public function ajax_load_gallery()
+    public function mgwpp_ajax_load_gallery_ve()
     {
         check_ajax_referer('mg_visual_editor_nonce', 'nonce');
 
         $gallery_id = intval($_POST['gallery_id']);
-        $gallery_manager = new MG_Gallery_Manager();
-        $gallery_data = $gallery_manager->load_gallery($gallery_id);
-
-        wp_send_json_success($gallery_data);
+        $gallery_data = get_post_meta($gallery_id, '_mgwpp_gallery_data', true);
+        wp_send_json_success($gallery_data ?: []);
     }
 
-    public function ajax_upload_media()
+    public function mgwpp_ajax_upload_media_ve()
     {
         check_ajax_referer('mg_visual_editor_nonce', 'nonce');
 
@@ -208,35 +224,26 @@ class MGWPP_Visual_Editor_View
             wp_die('Unauthorized');
         }
 
-        $media_handler = new MG_Media_Handler();
+        $media_handler = new MGWPP_Media_Handler();
         $result = $media_handler->handle_upload();
 
         wp_send_json_success($result);
     }
 
-    public function render_gallery_shortcode($atts)
+    public function mgwpp_render_gallery_shortcode_ve($atts)
     {
-        $atts = shortcode_atts(array(
-            'id' => 0,
-            'type' => 'grid'
-        ), $atts);
+        $atts = shortcode_atts(['id' => 0], $atts);
+        $gallery_id = intval($atts['id']);
+
+        // Verify post type
+        if (get_post_type($gallery_id) !== 'mgwpp_soora') {
+            return '<p>Invalid gallery ID</p>';
+        }
 
         $gallery_renderer = new MGWPP_Gallery_Renderer();
         return $gallery_renderer->render_gallery($atts['id'], $atts['type']);
     }
 
-    private function create_gallery_post_type()
-    {
-        register_post_type('mg_gallery', array(
-            'labels' => array(
-                'name' => 'Galleries',
-                'singular_name' => 'Gallery'
-            ),
-            'public' => false,
-            'show_ui' => false,
-            'supports' => array('title', 'editor')
-        ));
-    }
     /**
      * Renders the visual editor interface
      * 
@@ -249,17 +256,26 @@ class MGWPP_Visual_Editor_View
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
 
+        // Get gallery title from post if exists
+        $gallery_title = ($gallery_id > 0)
+            ? get_the_title($gallery_id)
+            : __('Create New Gallery', 'mini-gallery');
+
+        // Load gallery data from post meta
+        $gallery_data = ($gallery_id > 0)
+            ? get_post_meta($gallery_id, '_mgwpp_gallery_data', true)
+            : [];
+
+
         // Load required dependencies
         require_once MG_PLUGIN_PATH . 'includes/admin/views/editor/class-mg-media-handler.php';
         require_once MG_PLUGIN_PATH . 'includes/admin/views/editor/class-mg-gallery-manager.php';
 
         // Initialize handlers
-        $media_handler = new MG_Media_Handler();
-        $gallery_manager = new MG_Gallery_Manager();
+        $media_handler = new MGWPP_Media_Handler();
 
         // Get media library and gallery data
         $media_items = $media_handler->get_media_library();
-        $gallery_data = $gallery_id ? $gallery_manager->load_gallery($gallery_id) : array();
 
         // Prepare editor data for JavaScript
         $editor_data = array(
@@ -274,7 +290,6 @@ class MGWPP_Visual_Editor_View
         // Output the editor HTML
     ?>
         <div class="wrap">
-            <h1><?php echo $gallery_id ? __('Edit Gallery', 'mini-gallery') : __('Create New Gallery', 'mini-gallery'); ?></h1>
             <?php
             // Prepare media items HTML
             $media_grid_html = '';
@@ -294,10 +309,10 @@ class MGWPP_Visual_Editor_View
             }
 
             // Output the editor HTML
-            ?>
-            <div class="wrap">
-                <h1><?php echo $gallery_id ? __('Edit Gallery', 'mini-gallery') : __('Create New Gallery', 'mini-gallery'); ?></h1>
 
+?>
+            <div class="wrap">
+            <?php MGWPP_Inner_Header::render();?>    
                 <div class="mg-editor-container">
                     <div class="mg-editor-header">
                         <div class="header-content">
@@ -333,7 +348,12 @@ class MGWPP_Visual_Editor_View
                                 </div>
                             </div>
                         </div>
-
+                        <div id="mgwpp-media-selector-container">
+                            <?php
+                            $media_handler = new MGWPP_Media_Handler();
+                            $media_handler->render_media_selector('mgwpp-editor-container');
+                            ?>
+                        </div>
                         <div class="editor-sidebar">
                             <div class="sidebar-panel media-panel">
                                 <div class="panel-header">

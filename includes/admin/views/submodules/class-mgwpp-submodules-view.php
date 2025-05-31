@@ -33,20 +33,18 @@ class MGWPP_SubModules_View
                 'mgwpp_enabled_' . $slug,
                 '',
                 [$this, 'module_field_callback'],
-                'mgwpp-submodules-settings', // FIXED: Correct settings page
+                'mgwpp-submodules-settings',
                 'mgwpp_sub_modules_section',
                 ['slug' => $slug, 'module' => $module]
             );
         }
     }
 
-    // Fixed: Added section header method
     public function render_section_header()
     {
-        echo '<div class="mgwpp-sub_modules-grid">';
+        echo '<div class="mgwpp-stats-grid">';
     }
 
-    // Fixed: Added section footer method
     public function render_section_footer()
     {
         echo '</div>';
@@ -118,7 +116,7 @@ class MGWPP_SubModules_View
     {
         $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
     ?>
-        <div class="wrap">
+        <div class="mgwpp-modules-view">
             <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
 
             <div class="mgwpp-gallery-types-header">
@@ -146,9 +144,9 @@ class MGWPP_SubModules_View
 
             <form method="post" action="options.php" class="mgwpp-settings-form">
                 <?php
-                settings_fields('mgwpp_submodules_group');  // Changed settings group
-                do_settings_sections('mgwpp-submodules-settings');  // New settings page
-                $this->render_section_footer(); // Close the grid container
+                settings_fields('mgwpp_submodules_group');
+                do_settings_sections('mgwpp-submodules-settings');
+                $this->render_section_footer();
                 ?>
                 <?php submit_button(__('Save Settings', 'mini-gallery'), 'primary', 'submit', true); ?>
             </form>
@@ -171,10 +169,21 @@ class MGWPP_SubModules_View
         $enabled_files = [];
         $disabled_files = [];
 
-        foreach (array_keys($this->sub_modules) as $module) {
-            $info = $this->get_module_asset_info($module);
+        // Detailed module tracking
+        $module_details = [];
 
-            if (in_array($module, $enabled_sub_modules)) {
+        foreach ($this->sub_modules as $slug => $module) {
+            $info = $this->get_module_asset_info($slug);
+            $status = in_array($slug, $enabled_sub_modules) ? 'enabled' : 'disabled';
+
+            $module_details[$slug] = [
+                'name' => $module['config']['name'],
+                'status' => $status,
+                'size' => $info['size'],
+                'files' => $info['files']
+            ];
+
+            if ($status === 'enabled') {
                 $enabled_size += $info['size'];
                 $enabled_files = array_merge($enabled_files, $info['files']);
             } else {
@@ -207,6 +216,34 @@ class MGWPP_SubModules_View
                 <div class="metric-size"><?php echo esc_html($this->format_size($disabled_size)); ?></div>
                 <div class="metric-description"><?php esc_html_e('of total assets', 'mini-gallery'); ?></div>
             </div>
+        </div>
+
+        <div class="module-asset-details">
+            <h3><?php esc_html_e('Module Details', 'mini-gallery'); ?></h3>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Module', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Status', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Files', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Size', 'mini-gallery'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($module_details as $slug => $details) : ?>
+                        <tr>
+                            <td><?php echo esc_html($details['name']); ?></td>
+                            <td>
+                                <span class="module-status <?php echo esc_attr($details['status']); ?>">
+                                    <?php echo $details['status'] === 'enabled' ? esc_html__('Enabled', 'mini-gallery') : esc_html__('Disabled', 'mini-gallery'); ?>
+                                </span>
+                            </td>
+                            <td><?php echo count($details['files']); ?></td>
+                            <td><?php echo esc_html($this->format_size($details['size'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
 <?php
     }
@@ -260,46 +297,97 @@ class MGWPP_SubModules_View
     public function enqueue_assets()
     {
         wp_enqueue_style(
-            'mgwpp-modules-view',
+            'mgwpp-modules-styles',
             MG_PLUGIN_URL . "/includes/admin/views/submodules/mgwpp-submodules-view.css",
             [],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/submodules/mgwpp-submodules-view.css")
         );
 
         wp_enqueue_script(
-            'mgwpp-modules-view',
+            'mgwpp-modules-scripts',
             MG_PLUGIN_URL . "/includes/admin/views/submodules/mgwpp-submodules-view.js",
             ['jquery'],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/submodules/mgwpp-submodules-view.js"),
             true
         );
 
-        wp_localize_script('mgwpp-modules-view', 'MGWPPData', [
+        wp_localize_script('mgwpp-modules-scripts', 'MGWPPData', [
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('module_toggle_nonce')
+            'nonce'   => wp_create_nonce('module_toggle_nonce'),
+            'genericError' => __('An error occurred. Please try again.', 'mini-gallery')
         ]);
     }
 
     public function ajax_toggle_module()
     {
-        check_ajax_referer('module_toggle_nonce', 'nonce');
+        // Debugging: Log incoming request
+        error_log('AJAX toggle_module_status received: ' . print_r($_POST, true));
 
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Permission denied', 'mini-gallery'), 403);
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'module_toggle_nonce')) {
+            $error = __('Nonce verification failed', 'mini-gallery');
+            error_log('AJAX error: ' . $error);
+            wp_send_json_error($error, 403);
         }
 
+        // Check capabilities
+        if (!current_user_can('manage_options')) {
+            $error = __('Permission denied', 'mini-gallery');
+            error_log('AJAX error: ' . $error);
+            wp_send_json_error($error, 403);
+        }
+
+        // Validate input
         $module = sanitize_text_field($_POST['module'] ?? '');
         $status = (bool) ($_POST['status'] ?? false);
 
-        $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', []);
-
-        if ($status && !in_array($module, $enabled_sub_modules)) {
-            $enabled_sub_modules[] = $module;
-        } elseif (!$status) {
-            $enabled_sub_modules = array_diff($enabled_sub_modules, [$module]);
+        if (!array_key_exists($module, $this->sub_modules)) {
+            $error = __('Invalid module specified', 'mini-gallery');
+            error_log('AJAX error: ' . $error . ' - ' . $module);
+            wp_send_json_error($error, 400);
         }
 
-        update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules);
-        wp_send_json_success();
+        try {
+            $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
+            $key = array_search($module, $enabled_sub_modules);
+
+            if ($status) {
+                // Add if not present
+                if ($key === false) {
+                    $enabled_sub_modules[] = $module;
+                }
+            } else {
+                // Remove if present
+                if ($key !== false) {
+                    unset($enabled_sub_modules[$key]);
+                }
+            }
+
+            // Ensure array values are re-indexed
+            $enabled_sub_modules = array_values($enabled_sub_modules);
+
+            $result = update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules);
+
+            if (!$result) {
+                $error = __('Failed to update option', 'mini-gallery');
+                error_log('AJAX error: ' . $error);
+                wp_send_json_error($error, 500);
+            }
+
+            // Return success with metrics
+            wp_send_json_success([
+                'metrics' => $this->get_performance_metrics_html()
+            ]);
+        } catch (Exception $e) {
+            error_log('AJAX exception: ' . $e->getMessage());
+            wp_send_json_error(__('Internal server error', 'mini-gallery'), 500);
+        }
+    }
+
+    private function get_performance_metrics_html()
+    {
+        ob_start();
+        $this->display_performance_metrics();
+        return ob_get_clean();
     }
 }

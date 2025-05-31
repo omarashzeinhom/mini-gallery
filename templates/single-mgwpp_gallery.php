@@ -7,24 +7,7 @@ get_header();
 $gallery_id = get_the_ID();
 
 // Enqueue lightbox assets
-// CSS: no deps, version 1.0, media all
-wp_enqueue_style(
-    'mgwpp-lightbox',
-    MG_PLUGIN_URL . '/public/css/lightbox.css',
-    [],           // deps
-    '1.0',        // version
-    'all'         // media
-  );
-  
-  // JS: depends on jQuery, version 1.0, load in footer
-  wp_enqueue_script(
-    'mgwpp-lightbox',
-    MG_PLUGIN_URL . '/public/js/lightbox.js',
-    ['jquery'],   // deps
-    '1.0',        // version
-    true          // in_footer
-  );
-  
+
 echo '<div class="mgwpp-single-gallery-container">';
 
 // Gallery title

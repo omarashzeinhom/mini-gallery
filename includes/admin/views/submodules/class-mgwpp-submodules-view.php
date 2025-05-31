@@ -251,7 +251,7 @@ class MGWPP_SubModules_View
         return number_format($size / pow(1024, $power), 2) . ' ' . $units[$power];
     }
 
-    private function sanitize_sub_modules($input)
+    public function sanitize_sub_modules($input)
     {
         $valid_sub_modules = array_keys($this->sub_modules);
         return is_array($input) ? array_intersect($input, $valid_sub_modules) : [];

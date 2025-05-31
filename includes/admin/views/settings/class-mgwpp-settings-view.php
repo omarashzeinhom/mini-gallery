@@ -170,5 +170,13 @@ class MGWPP_Settings_View
             [],
             filemtime(MG_PLUGIN_PATH . "includes/admin/views/settings/mgwpp-settings-view.css")
         );
+
+        wp_enqueue_script(
+            'mgwpp-settings-script',
+            MG_PLUGIN_URL . "includes/admin/views/settings/mgwpp-settings-view.js",
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . "includes/admin/views/settings/mgwpp-settings-view.js"),
+            true
+        );
     }
 }

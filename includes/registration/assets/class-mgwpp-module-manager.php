@@ -7,6 +7,104 @@ if (!defined('ABSPATH')) {
 class MGWPP_Module_Manager
 {
     private static $enabled_modules;
+    private static $sub_modules = [
+        'single_carousel' => [
+            'config' => [
+                'name' => 'Single Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A carousel gallery with a single item at a time.',
+            ],
+        ],
+        'multi_carousel' => [
+            'config' => [
+                'name' => 'Multi Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A carousel gallery with multiple items at a time.',
+            ],
+        ],
+        'grid' => [
+            'config' => [
+                'name' => 'Grid Gallery',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A grid layout gallery.',
+            ],
+        ],
+        'mega_slider' => [
+            'config' => [
+                'name' => 'Mega Slider',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A mega slider gallery.',
+            ],
+        ],
+        'pro_carousel' => [
+            'config' => [
+                'name' => 'Pro Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A professional carousel gallery.',
+            ],
+        ],
+        'neon_carousel' => [
+            'config' => [
+                'name' => 'Neon Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A neon themed carousel gallery.',
+            ],
+        ],
+        'threed_carousel' => [
+            'config' => [
+                'name' => '3D Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A 3D carousel gallery.',
+            ],
+        ],
+        'testimonials_carousel' => [
+            'config' => [
+                'name' => 'Testimonials Carousel',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A testimonials carousel.',
+            ],
+        ],
+        'lightbox' => [
+            'config' => [
+                'name' => 'Lightbox',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A lightbox for images.',
+            ],
+        ],
+        'fullpage_slider' => [
+            'config' => [
+                'name' => 'Fullpage Slider',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A fullpage slider gallery.',
+            ],
+        ],
+        'spotlight_slider' => [
+            'config' => [
+                'name' => 'Spotlight Slider',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'A spotlight slider gallery.',
+            ],
+        ],
+        'albums' => [
+            'config' => [
+                'name' => 'Albums',
+                'version' => '1.0.0',
+                'author' => 'Mini Gallery Team',
+                'description' => 'Gallery albums.',
+            ],
+        ],
+    ];
 
     public static function get_enabled_modules()
     {
@@ -22,6 +120,18 @@ class MGWPP_Module_Manager
             self::$enabled_modules = get_option('mgwpp_enabled_modules', $default);
         }
         return self::$enabled_modules;
+    }
+
+    public function get_sub_modules() {
+        $modules = self::$sub_modules;
+        
+        // Apply translations at runtime
+        foreach ($modules as $slug => &$module) {
+            $module['config']['name'] = __($module['config']['name'], 'mini-gallery');
+            $module['config']['description'] = __($module['config']['description'], 'mini-gallery');
+        }
+        
+        return $modules;
     }
 
     public static function load_enabled_modules()

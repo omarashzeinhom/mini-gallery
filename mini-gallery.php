@@ -31,6 +31,9 @@ function get_plugin_version()
     return defined('MGWPP_ASSET_VERSION') ? MGWPP_ASSET_VERSION : '1.4.0';
 }
 
+
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-module-manager.php';
+
 /* Include necessary files */
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-shortcode.php';
 require_once plugin_dir_path(__FILE__) . 'includes/functions/class-mgwpp-security-uploads-scanner.php';
@@ -84,15 +87,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-unin
 
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
-require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp_ajax_handler.php';
 MGWPP_Ajax_Handler::init();
 // Editor Assets
-require_once __DIR__ . '/includes/admin/class-mgwpp-admin-editors.php';
-
-
-require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-module-manager.php';
-
+//require_once __DIR__ . '/includes/admin/class-mgwpp-admin-editors.php';
 
 
 // When enqueueing:

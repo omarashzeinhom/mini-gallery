@@ -10,7 +10,9 @@ class MGWPP_Admin_Core
     {
         $this->load_dependencies();
         $this->module_loader = new MGWPP_Module_Manager(); // Store as property
-        $this->menu_manager  = new MGWPP_Admin_Menu($this->module_loader);
+        $module_manager = new MGWPP_Module_Manager();
+        $this->module_loader = $module_manager;
+        $this->menu_manager  = new MGWPP_Admin_Menu($module_manager, $module_manager);
         $this->init_components();
     }
     private $menu_manager;
@@ -43,7 +45,6 @@ class MGWPP_Admin_Core
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
-        require_once __DIR__ . '/class-mgwpp-module-manager.php';
         require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
     }

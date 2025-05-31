@@ -17,16 +17,18 @@ class MGWPP_SubModules_View
 
     public function register_settings()
     {
-        register_setting('mgwpp_settings_group', 'mgwpp_enabled_sub_modules', [
+        // Change settings group and page for submodules
+        register_setting('mgwpp_submodules_group', 'mgwpp_enabled_sub_modules', [
             'sanitize_callback' => [$this, 'sanitize_sub_modules']
         ]);
 
         add_settings_section(
             'mgwpp_sub_modules_section',
             '',
-            [$this, 'render_section_header'], // Fixed callback method
-            'mgwpp-settings'
+            [$this, 'render_section_header'],
+            'mgwpp-submodules-settings'  // New settings page
         );
+
 
         foreach ($this->sub_modules as $slug => $module) {
             add_settings_field(
@@ -111,7 +113,7 @@ class MGWPP_SubModules_View
         ];
 
         $icon_filename = $icons[$gallery_type] ?? 'default-gallery.png';
-        return MG_PLUGIN_URL . '/includes/admin/images/sub_modules-icons/galleries/' . $icon_filename;
+        return MG_PLUGIN_URL . '/includes/admin/images/modules-icons/sub-modules/galleries/' . $icon_filename;
     }
 
     public function render()
@@ -124,12 +126,12 @@ class MGWPP_SubModules_View
             <div class="mgwpp-gallery-types-header">
                 <h2><?php esc_html_e('Enabled Gallery Types', 'mini-gallery'); ?></h2>
                 <div class="mgwpp-enabled-gallery-types">
-                    <div class="mgwpp-sub_modules-grid">
+                    <div class="mgwpp-stats-grid">
                         <?php foreach ($enabled_sub_modules as $slug) :
                             if (!isset($this->sub_modules[$slug])) continue;
                             $module = $this->sub_modules[$slug];
                         ?>
-                            <div class="mgwpp-gallery-type-badge" data-module="<?php echo esc_attr($slug); ?>">
+                            <div class="mgwpp-stat-card" data-module="<?php echo esc_attr($slug); ?>">
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                                     alt="<?php echo esc_attr($module['config']['name']); ?>"
                                     class="mgwpp-gallery-type-icon">
@@ -146,8 +148,8 @@ class MGWPP_SubModules_View
 
             <form method="post" action="options.php" class="mgwpp-settings-form">
                 <?php
-                settings_fields('mgwpp_settings_group');
-                do_settings_sections('mgwpp-settings');
+                settings_fields('mgwpp_submodules_group');  // Changed settings group
+                do_settings_sections('mgwpp-submodules-settings');  // New settings page
                 $this->render_section_footer(); // Close the grid container
                 ?>
                 <?php submit_button(__('Save Settings', 'mini-gallery'), 'primary', 'submit', true); ?>

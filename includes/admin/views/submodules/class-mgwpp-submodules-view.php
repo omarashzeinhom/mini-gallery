@@ -17,7 +17,6 @@ class MGWPP_SubModules_View
 
     public function register_settings()
     {
-        // Change settings group and page for submodules
         register_setting('mgwpp_submodules_group', 'mgwpp_enabled_sub_modules', [
             'sanitize_callback' => [$this, 'sanitize_sub_modules']
         ]);
@@ -26,16 +25,15 @@ class MGWPP_SubModules_View
             'mgwpp_sub_modules_section',
             '',
             [$this, 'render_section_header'],
-            'mgwpp-submodules-settings'  // New settings page
+            'mgwpp-submodules-settings'
         );
-
 
         foreach ($this->sub_modules as $slug => $module) {
             add_settings_field(
                 'mgwpp_enabled_' . $slug,
                 '',
                 [$this, 'module_field_callback'],
-                'mgwpp-settings',
+                'mgwpp-submodules-settings', // FIXED: Correct settings page
                 'mgwpp_sub_modules_section',
                 ['slug' => $slug, 'module' => $module]
             );
@@ -134,7 +132,7 @@ class MGWPP_SubModules_View
                             <div class="mgwpp-stat-card" data-module="<?php echo esc_attr($slug); ?>">
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                                     alt="<?php echo esc_attr($module['config']['name']); ?>"
-                                    class="mgwpp-gallery-type-icon">
+                                    class="mgwpp-stat-card-icon">
                                 <?php echo esc_html($module['config']['name']); ?>
                                 <div class="mgwpp-switch">
                                     <input type="checkbox" <?php checked(true); ?> disabled>
@@ -263,16 +261,16 @@ class MGWPP_SubModules_View
     {
         wp_enqueue_style(
             'mgwpp-modules-view',
-            MG_PLUGIN_URL . "includes/admin/views/submodules/mgwpp-submodules-view.css",
+            MG_PLUGIN_URL . "/includes/admin/views/submodules/mgwpp-submodules-view.css",
             [],
-            filemtime(MG_PLUGIN_PATH . "includes/admin/views/submodules/mgwpp-submodules-view.css")
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/submodules/mgwpp-submodules-view.css")
         );
 
         wp_enqueue_script(
             'mgwpp-modules-view',
-            MG_PLUGIN_URL . "includes/admin/views/submodules/mgwpp-submodules-view.js",
+            MG_PLUGIN_URL . "/includes/admin/views/submodules/mgwpp-submodules-view.js",
             ['jquery'],
-            filemtime(MG_PLUGIN_PATH . "includes/admin/views/submodules/mgwpp-submodules-view.js"),
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/submodules/mgwpp-submodules-view.js"),
             true
         );
 

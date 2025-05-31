@@ -269,7 +269,6 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
   }
 }
 
-
 /* The switch - the box around the slider */
 .mgwpp-switch {
   position: relative;
@@ -331,4 +330,11 @@ input:checked + .mgwpp-switch-slider:before {
 
 .mgwpp-switch-slider.round:before {
   border-radius: 50%;
+}
+
+.mgwpp-stat-card-icon {
+  width: 64px;
+  height: 64px;
+  margin-right: 8px;
+  object-fit: contain;
 }

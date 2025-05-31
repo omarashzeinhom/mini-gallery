@@ -3,7 +3,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-// Updated Settings View for Core Modules
 class MGWPP_Settings_View
 {
     private $module_loader;
@@ -13,7 +12,6 @@ class MGWPP_Settings_View
         $this->module_loader = $module_loader;
         add_action('admin_init', [$this, 'register_settings']);
     }
-
 
     public function register_settings()
     {
@@ -25,18 +23,18 @@ class MGWPP_Settings_View
             'mgwpp_modules_section',
             __('Core Modules', 'mini-gallery'),
             [$this, 'render_section_header'],
-            'mgwpp-settings'  // Main settings page
+            'mgwpp-settings'
         );
 
         if ($this->module_loader) {
             $modules = $this->module_loader->get_modules();
             foreach ($modules as $slug => $module) {
-                if ($slug !== 'galleries') { // Skip galleries as it's always enabled
+                if ($slug !== 'galleries') {
                     add_settings_field(
                         'mgwpp_enabled_' . $slug,
                         '',
                         [$this, 'module_field_callback'],
-                        'mgwpp-settings',
+                        'mgwpp-settings', // FIXED: Correct settings page
                         'mgwpp_modules_section',
                         ['slug' => $slug, 'module' => $module]
                     );
@@ -44,11 +42,10 @@ class MGWPP_Settings_View
             }
         }
     }
-
     public function render_section_header()
     {
         echo '<p>' . __('Enable or disable core plugin features. Galleries module is always enabled.', 'mini-gallery') . '</p>';
-        echo '<div class="mgwpp-modules-grid">';
+        echo '<div class="mgwpp-stats-grid">';
     }
 
     public function module_field_callback($args)
@@ -59,26 +56,24 @@ class MGWPP_Settings_View
         $is_checked = in_array($slug, (array)$option);
 
 ?>
-        <div class="mgwpp-module-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
-            <div class="module-header">
-                <div class="module-icon">
-                    <img src="<?php echo esc_url($this->get_module_icon($slug)); ?>"
-                        alt="<?php echo esc_attr($module['name']); ?>">
-                </div>
-                <div class="module-info">
-                    <h3><?php echo esc_html($module['name']); ?></h3>
-                    <p><?php echo esc_html($module['description']); ?></p>
-                </div>
-                <div class="module-actions">
-                    <label class="mgwpp-switch">
-                        <input type="checkbox"
-                            class="mgwpp-module-toggle"
-                            name="mgwpp_enabled_modules[]"
-                            value="<?php echo esc_attr($slug); ?>"
-                            <?php checked($is_checked, true); ?>>
-                        <span class="mgwpp-switch-slider round"></span>
-                    </label>
-                </div>
+        <div class="mgwpp-stat-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
+            <div class="mgwpp-stat-card-icon">
+                <img src="<?php echo esc_url($this->get_module_icon($slug)); ?>"
+                    alt="<?php echo esc_attr($module['name']); ?>">
+            </div>
+            <div class="module-info">
+                <h3><?php echo esc_html($module['name']); ?></h3>
+                <p><?php echo esc_html($module['description']); ?></p>
+            </div>
+            <div class="module-actions">
+                <label class="mgwpp-switch">
+                    <input type="checkbox"
+                        class="mgwpp-module-toggle"
+                        name="mgwpp_enabled_modules[]"
+                        value="<?php echo esc_attr($slug); ?>"
+                        <?php checked($is_checked, true); ?>>
+                    <span class="mgwpp-switch-slider round"></span>
+                </label>
             </div>
         </div>
     <?php
@@ -90,7 +85,6 @@ class MGWPP_Settings_View
             'albums' => 'albums.png',
             'testimonials' => 'testimonial.png',
             'visual_editor' => 'editor.png',
-            'embed_editor' => 'editor.png',
             'embed_editor' => 'build.png'
         ];
 
@@ -100,26 +94,22 @@ class MGWPP_Settings_View
 
     public function render()
     {
+        $this->enqueue_assets();
     ?>
         <div class="wrap">
             <h1><?php esc_html_e('Plugin Settings', 'mini-gallery'); ?></h1>
 
-            <div class="mgwpp-settings-tabs">
-
-                <div id="core-modules" class="tab-content active">
-                    <form method="post" action="options.php">
-                        <?php
-                        settings_fields('mgwpp_settings_group');
-                        do_settings_sections('mgwpp-settings');  // Main settings page                        echo '</div>'; // Close grid container
-                        submit_button(__('Save Core Module Settings', 'mini-gallery'));
-                        ?>
-                    </form>
-                </div>
-
-
-            </div>
-
-    <?php
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('mgwpp_settings_group');
+                // Output settings sections - this includes the grid container and fields
+                do_settings_sections('mgwpp-settings');
+                ?>
+        </div> <!-- Close the mgwpp-stats-grid container -->
+        <?php submit_button(__('Save Core Module Settings', 'mini-gallery')); ?>
+        </form>
+        </div>
+<?php
     }
 
     public function sanitize_modules($input)
@@ -132,16 +122,16 @@ class MGWPP_Settings_View
     {
         wp_enqueue_style(
             'mgwpp-settings-style',
-            MG_PLUGIN_URL . "includes/admin/views/settings/mgwpp-settings-view.css",
+            MG_PLUGIN_URL . "/includes/admin/views/settings/mgwpp-settings-view.css",
             [],
-            filemtime(MG_PLUGIN_PATH . "includes/admin/views/settings/mgwpp-settings-view.css")
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/settings/mgwpp-settings-view.css")
         );
 
         wp_enqueue_script(
             'mgwpp-settings-script',
-            MG_PLUGIN_URL . "includes/admin/views/settings/mgwpp-settings-view.js",
+            MG_PLUGIN_URL . "/includes/admin/views/settings/mgwpp-settings-view.js",
             ['jquery'],
-            filemtime(MG_PLUGIN_PATH . "includes/admin/views/settings/mgwpp-settings-view.js"),
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/settings/mgwpp-settings-view.js"),
             true
         );
     }

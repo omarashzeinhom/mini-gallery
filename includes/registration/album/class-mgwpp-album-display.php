@@ -34,17 +34,17 @@ class MGWPP_Album_Display
         // Album Styles
         wp_enqueue_style(
             'mg-album-styles',
-            MG_PLUGIN_URL . '/public/css/mg-album-styles.css',
+            MG_PLUGIN_URL . '/public/css/mgwpp-albums.css',
             [],
-            filemtime(MG_PLUGIN_PATH . '/public/css/mg-album-styles.css')
+            filemtime(MG_PLUGIN_PATH . '/public/css/mgwpp-albums.css')
         );
 
         // Album Scripts
         wp_enqueue_script(
             'mg-albums-scripts',
-            MG_PLUGIN_URL . '/public/js/mg-albums-styles.js',
+            MG_PLUGIN_URL . '/public/js/mgwpp-albums.js',
             ['jquery'],
-            filemtime(MG_PLUGIN_PATH . '/public/js/mg-albums-styles.js'),
+            filemtime(MG_PLUGIN_PATH . '/public/js/mgwpp-albums.js'),
             true
         );
 

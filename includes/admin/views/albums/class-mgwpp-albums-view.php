@@ -35,7 +35,7 @@ class MGWPP_Albums_View
 ?>
         <?php MGWPP_Inner_Header::render(); ?>
 
-        <div class="mgwpp-dashboard-container">
+        <div class="wrap">
             <div class="mgwpp-header">
                 <div class="mgwpp-header-content">
                     <h1><span class="dashicons dashicons-format-gallery"></span> <?php esc_html_e('Albums Management', 'mini-gallery') ?></h1>

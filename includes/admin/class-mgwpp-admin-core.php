@@ -39,8 +39,6 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/testimonials/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
         require_once __DIR__ . '/views/submodules/class-mgwpp-submodules-view.php';
-        require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
-
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';

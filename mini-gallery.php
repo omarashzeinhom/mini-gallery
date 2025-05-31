@@ -214,7 +214,6 @@ function mgwpp_plugin_uninstall()
     remove_role('marketing_team');
 }
 
-add_action('template_redirect', 'mgwpp_handle_preview_request');
 
 function mgwpp_handle_preview_request()
 {
@@ -249,9 +248,6 @@ function mgwpp_handle_preview_request()
     get_footer();
     exit;
 }
-add_action('template_redirect', 'mgwpp_handle_preview_request');
-
-
 add_action('template_redirect', function () {
     if (is_singular('mgwpp_soora')) {
         // Track gallery views for analytics (optional)

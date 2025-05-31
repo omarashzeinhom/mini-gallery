@@ -30,13 +30,9 @@ C:.
 |   |   |   class-mgwpp-admin-assets.php
 |   |   |   class-mgwpp-admin-core.php
 |   |   |   class-mgwpp-admin-edit-gallery.php
-|   |   |   class-mgwpp-admin-editors.php
 |   |   |   class-mgwpp-admin-menu.php
-|   |   |   class-mgwpp-admin-metaboxes.php
 |   |   |   class-mgwpp-data-handler.php
 |   |   |   class-mgwpp-data-manager.php
-|   |   |   class-mgwpp-module-loader.php
-|   |   |   class-mgwpp-table-builder.php
 |   |   |   class-mgwpp_ajax_handler.php
 |   |   |   
 |   |   +---css
@@ -133,7 +129,6 @@ C:.
 |   |       |       
 |   |       +---modules
 |   |       |       class-mgwpp-modules-view-fix.php
-|   |       |       class-mgwpp-modules-view-old.php
 |   |       |       class-mgwpp-modules-view.php
 |   |       |       mgwpp-modules-view.css
 |   |       |       mgwpp-modules-view.js
@@ -144,20 +139,6 @@ C:.
 |   |       \---testimonials
 |   |               class-mgwpp-testimonials-view.php
 |   |               
-|   +---elementor
-|   |   |   class-mg-elementor-integration.php
-|   |   |   
-|   |   \---elementor-widgets
-|   |           class-mg-elementor-custom-slider-widget.php
-|   |           class-mg-elementor-gallery-grid.php
-|   |           class-mg-elementor-gallery-multi.php
-|   |           class-mg-elementor-gallery-single.php
-|   |           class-mg-elementor-mega-carousel-widget.php
-|   |           class-mg-elementor-neon-carousel-widget.php
-|   |           class-mg-elementor-pro-carousel-widget.php
-|   |           class-mg-elementor-testimonial-carousel.php
-|   |           class-mg-elementor-threed-carousel.php
-|   |           
 |   +---functions
 |   |       class-mgwpp-security-uploads-scanner.php
 |   |       class-mgwpp-shortcode.php
@@ -225,12 +206,7 @@ C:.
 |   |   +---assets
 |   |   |       class-mgwpp-admin-assets.php
 |   |   |       class-mgwpp-assets.php
-|   |   |       class-mgwpp-elementor-assets.php
-|   |   |       class-mgwpp-settings-OLD.php
 |   |   |       class-mgwpp-settings.php
-|   |   |       
-|   |   +---custom-gallery
-|   |   |       class-mgwpp-custom-gallery-registration.php
 |   |   |       
 |   |   +---gallery
 |   |   |       class-mgwpp-gallery-capabilities.php
@@ -242,8 +218,6 @@ C:.
 |   |           class-mgwpp-testimonials-manager.php
 |   |           class-mgwpp-testimonials-post-type.php
 |   |           
-|   \---vc
-|           class-mgwpp-vc-integration.php
 |           
 +---public
 |   +---css

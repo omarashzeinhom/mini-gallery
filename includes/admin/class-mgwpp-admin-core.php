@@ -32,7 +32,6 @@ class MGWPP_Admin_Core
     {
 
         // Views
-        require_once __DIR__ . '/views/editor/class-mgwpp-visual-editor.php';
         require_once __DIR__ . '/views/albums/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/security/class-mgwpp-security-view.php';
         require_once __DIR__ . '/views/galleries/class-mgwpp-galleries-view.php';
@@ -40,12 +39,10 @@ class MGWPP_Admin_Core
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
         require_once __DIR__ . '/views/submodules/class-mgwpp-submodules-view.php';
         require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
-        require_once __DIR__ . '/views/embed-editor/class-mgwpp-embed-editor-view.php';
 
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
-        require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
     }
 
@@ -73,7 +70,6 @@ class MGWPP_Admin_Core
         new MGWPP_Galleries_View($gallery_items);
         new MGWPP_Albums_View();
         new MGWPP_Dashboard_View();
-        new MGWPP_Visual_Editor_View();
     }
 
     public function run()

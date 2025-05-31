@@ -11,6 +11,7 @@ class MGWPP_Admin_Core
         $this->load_dependencies();
         $this->module_loader = new MGWPP_Module_Manager(); // Store as property
         $module_manager = new MGWPP_Module_Manager();
+        $enabled_types = $module_manager->get_enabled_sub_modules();
         $this->module_loader = $module_manager;
         $this->menu_manager  = new MGWPP_Admin_Menu($module_manager, $module_manager);
         $this->init_components();

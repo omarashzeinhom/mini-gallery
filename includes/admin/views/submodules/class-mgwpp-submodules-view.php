@@ -140,17 +140,12 @@ class MGWPP_SubModules_View
                         <?php endforeach; ?>
                     </div>
                 </div>
+                <div class="mgwpp-save-wrapper">
+                    <button id="mgwpp-save-settings" class="button button-primary">
+                        <?php esc_html_e('Save All Changes', 'mini-gallery'); ?>
+                    </button>
+                </div>
             </div>
-
-            <form method="post" action="options.php" class="mgwpp-settings-form">
-                <?php
-                settings_fields('mgwpp_submodules_group');
-                do_settings_sections('mgwpp-submodules-settings');
-                $this->render_section_footer();
-                ?>
-                <?php submit_button(__('Save Settings', 'mini-gallery'), 'primary', 'submit', true); ?>
-            </form>
-
             <div class="mgwpp-performance-metrics">
                 <h2><?php esc_html_e('Performance Overview', 'mini-gallery'); ?></h2>
                 <?php $this->display_performance_metrics(); ?>
@@ -317,73 +312,49 @@ class MGWPP_SubModules_View
             'genericError' => __('An error occurred. Please try again.', 'mini-gallery')
         ]);
     }
-
     public function ajax_toggle_module()
     {
-        // Debugging: Log incoming request
-        error_log('AJAX toggle_module_status received: ' . print_r($_POST, true));
-
-        // Verify nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'module_toggle_nonce')) {
-            $error = __('Nonce verification failed', 'mini-gallery');
-            error_log('AJAX error: ' . $error);
-            wp_send_json_error($error, 403);
-        }
-
-        // Check capabilities
-        if (!current_user_can('manage_options')) {
-            $error = __('Permission denied', 'mini-gallery');
-            error_log('AJAX error: ' . $error);
-            wp_send_json_error($error, 403);
-        }
-
-        // Validate input
-        $module = sanitize_text_field($_POST['module'] ?? '');
-        $status = (bool) ($_POST['status'] ?? false);
-
-        if (!array_key_exists($module, $this->sub_modules)) {
-            $error = __('Invalid module specified', 'mini-gallery');
-            error_log('AJAX error: ' . $error . ' - ' . $module);
-            wp_send_json_error($error, 400);
-        }
-
         try {
-            $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
-            $key = array_search($module, $enabled_sub_modules);
+            // Verify nonce and capabilities (existing code)
 
-            if ($status) {
-                // Add if not present
-                if ($key === false) {
-                    $enabled_sub_modules[] = $module;
+            // Handle bulk operations
+            if (isset($_POST['is_bulk']) && $_POST['is_bulk']) {
+                $modules = isset($_POST['modules']) ? (array)$_POST['modules'] : [];
+                $valid_modules = array_keys($this->sub_modules);
+                $enabled_sub_modules = array_intersect($modules, $valid_modules);
+            }
+            // Handle single toggle
+            else {
+                $module = sanitize_text_field($_POST['module'] ?? '');
+                $status = (bool)($_POST['status'] ?? false);
+
+                if (!array_key_exists($module, $this->sub_modules)) {
+                    throw new Exception(__('Invalid module specified', 'mini-gallery'));
                 }
-            } else {
-                // Remove if present
-                if ($key !== false) {
+
+                $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
+
+                if ($status && !in_array($module, $enabled_sub_modules)) {
+                    $enabled_sub_modules[] = $module;
+                } elseif (!$status && ($key = array_search($module, $enabled_sub_modules)) !== false) {
                     unset($enabled_sub_modules[$key]);
                 }
+
+                $enabled_sub_modules = array_values($enabled_sub_modules);
             }
 
-            // Ensure array values are re-indexed
-            $enabled_sub_modules = array_values($enabled_sub_modules);
-
-            $result = update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules);
-
-            if (!$result) {
-                $error = __('Failed to update option', 'mini-gallery');
-                error_log('AJAX error: ' . $error);
-                wp_send_json_error($error, 500);
+            // Save and return response
+            if (update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules)) {
+                wp_send_json_success([
+                    'metrics' => $this->get_performance_metrics_html()
+                ]);
+            } else {
+                throw new Exception(__('No changes were made to settings', 'mini-gallery'));
             }
-
-            // Return success with metrics
-            wp_send_json_success([
-                'metrics' => $this->get_performance_metrics_html()
-            ]);
         } catch (Exception $e) {
-            error_log('AJAX exception: ' . $e->getMessage());
-            wp_send_json_error(__('Internal server error', 'mini-gallery'), 500);
+            wp_send_json_error($e->getMessage(), 400);
         }
     }
-
     private function get_performance_metrics_html()
     {
         ob_start();

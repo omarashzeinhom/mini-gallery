@@ -82,7 +82,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/registration/class-mgwpp-unin
 
 //Assets
 require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-assets.php';
-//require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-admin-assets.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin/class-mgwpp_ajax_handler.php';
 MGWPP_Ajax_Handler::init();
 // Editor Assets
@@ -105,7 +105,7 @@ function mgwpp_plugin_activate()
     MGWPP_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
     if (false === get_option('mgwpp_enabled_modules')) {
-        update_option('mgwpp_enabled_modules', MGWPP_Settings::get_enabled_modules());
+        //update_option('mgwpp_enabled_modules', MGWPP_Settings::get_enabled_modules());
     }
     flush_rewrite_rules(false); // causes error on true
 }

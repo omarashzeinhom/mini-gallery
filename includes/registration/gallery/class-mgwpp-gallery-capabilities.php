@@ -2,32 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class MGWPP_Capabilities {
-
-    // Add a custom "Marketing Team" role
-    public static function mgwpp_add_marketing_team_role() {
-        if (get_role('marketing_team') === null) {
-            add_role('marketing_team', 'Marketing Team', array(
-                'read' => true,
-                'upload_files' => true,
-                'edit_files' => true,
-                'edit_mgwpp_soora' => true,
-                'read_mgwpp_soora' => true,
-                'delete_mgwpp_soora' => true,
-                'edit_mgwpp_sooras' => true,
-                'edit_others_mgwpp_sooras' => true,
-                'publish_mgwpp_sooras' => true,
-                'read_private_mgwpp_sooras' => true,
-                'delete_mgwpp_sooras' => true,
-                'delete_private_mgwpp_sooras' => true,
-                'delete_published_mgwpp_sooras' => true,
-                'delete_others_mgwpp_sooras' => true,
-                'edit_private_mgwpp_sooras' => true,
-                'edit_published_mgwpp_sooras' => true,
-                'create_mgwpp_sooras' => true,
-            ));
-        }
-    }
+class MGWPP_Gallery_Capabilities {
 
     // Assign custom capabilities to roles
     public static function mgwpp_gallery_capabilities() {
@@ -56,8 +31,8 @@ class MGWPP_Capabilities {
 }
 
 // Hook to initialize custom role on plugin initialization
-add_action('init', array('MGWPP_Capabilities', 'mgwpp_add_marketing_team_role'));
+add_action('init', array('MGWPP_Gallery_Capabilities', 'mgwpp_add_marketing_team_role'));
 
 // Hook to assign custom capabilities after WordPress initializes the roles
-add_action('admin_init', array('MGWPP_Capabilities', 'mgwpp_gallery_capabilities'));
+add_action('admin_init', array('MGWPP_Gallery_Capabilities', 'mgwpp_gallery_capabilities'));
 ?>

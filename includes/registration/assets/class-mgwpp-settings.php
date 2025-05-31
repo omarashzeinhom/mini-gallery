@@ -1,11 +1,11 @@
-<?php 
-
+<?php
 if (!defined('ABSPATH')) {
-    exit;
+    exit();
 }
 
-class MGWPP_Main_Module_Settings_Manager {
-    private static $modules = [];
+class MGWPP_Settings
+{
+ private static $modules = [];
 
     public static function init() {
         // Default module configuration
@@ -53,7 +53,9 @@ class MGWPP_Main_Module_Settings_Manager {
         require_once MG_PLUGIN_URL . 'modules/class-marketing-capabilities.php';
         MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     }
+  
 }
 
-// Initialize the module manager
-MGWPP_Main_Module_Settings_Manager::init();
+if (is_admin()) {
+    new MGWPP_Settings();
+}

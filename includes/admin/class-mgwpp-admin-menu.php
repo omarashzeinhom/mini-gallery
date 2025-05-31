@@ -6,8 +6,8 @@ if (! defined('ABSPATH')) {
 class MGWPP_Admin_Menu
 {
     private $view_classes = [];
-    private $modules_view;
-    private $galleries_view; 
+    private $submodules_view;
+    private $galleries_view;
     private $albums_view;
     private $testimonials_view;
     private $security_view;
@@ -26,14 +26,13 @@ class MGWPP_Admin_Menu
         $this->galleries_view = new MGWPP_Galleries_View($list_table->items);
 
         // Initialize other views
-        $this->modules_view = new MGWPP_Modules_View($module_loader);
+        $this->submodules_view = new MGWPP_SubModules_View($module_loader);
         $this->albums_view = new MGWPP_Albums_View();
         $this->testimonials_view = new MGWPP_Testimonials_View();
         $this->security_view = new MGWPP_Security_View();
         $this->settings_view = new MGWPP_Settings_View();
         $this->embed_editor_view = new MGWPP_Embed_Editor_View();
-        $this->visual_editor_view = new MGWPP_Visual_Editor_View(); 
-
+        $this->visual_editor_view = new MGWPP_Visual_Editor_View();
     }
 
     public function register_menus()
@@ -100,7 +99,7 @@ class MGWPP_Admin_Menu
             ],
             'modules' => [
                 'page_title' => __('Modules', 'mini-gallery'),
-                'callback' => [$this->modules_view, 'render'],
+                'callback' => [$this->submodules_view, 'render'],
                 'capability' => 'manage_options'
             ],
             'settings' => [

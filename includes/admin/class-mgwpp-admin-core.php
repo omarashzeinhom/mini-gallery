@@ -9,7 +9,7 @@ class MGWPP_Admin_Core
     public function __construct()
     {
         $this->load_dependencies();
-        $this->module_loader = new MGWPP_Module_Loader(); // Store as property
+        $this->module_loader = new MGWPP_Module_Manager(); // Store as property
         $this->menu_manager  = new MGWPP_Admin_Menu($this->module_loader);
         $this->init_components();
     }
@@ -30,20 +30,20 @@ class MGWPP_Admin_Core
     {
 
         // Views
-        require_once __DIR__ . '/views/editor/class-mg-visual-editor.php';
+        require_once __DIR__ . '/views/editor/class-mgwpp-visual-editor.php';
         require_once __DIR__ . '/views/albums/class-mgwpp-albums-view.php';
         require_once __DIR__ . '/views/security/class-mgwpp-security-view.php';
         require_once __DIR__ . '/views/galleries/class-mgwpp-galleries-view.php';
         require_once __DIR__ . '/views/testimonials/class-mgwpp-testimonials-view.php';
         require_once __DIR__ . '/views/dashboard/class-mgwpp-dashboard-view.php';
-        require_once __DIR__ . '/views/modules/class-mgwpp-modules-view.php';
+        require_once __DIR__ . '/views/submodules/class-mgwpp-submodules-view.php';
         require_once __DIR__ . '/views/settings/class-mgwpp-settings-view.php';
         require_once __DIR__ . '/views/embed-editor/class-mgwpp-embed-editor-view.php';
 
         // Load files but don't initialize yet
         require_once __DIR__ . '/class-mgwpp-admin-menu.php';
         require_once __DIR__ . '/class-mgwpp-admin-assets.php';
-        require_once __DIR__ . '/class-mgwpp-module-loader.php';
+        require_once __DIR__ . '/class-mgwpp-module-manager.php';
         require_once __DIR__ . '/class-mgwpp-admin-metaboxes.php';
         require_once __DIR__ . '/class-mgwpp-admin-edit-gallery.php';
     }

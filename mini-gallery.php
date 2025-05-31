@@ -53,6 +53,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/gallery-types/mgwpp-spotlight
 
 
 // Capabilities and Post Types
+require_once plugin_dir_path(__FILE__) . 'includes/registration/assets/class-mgwpp-capabilities.php';
+
 // Galleries Registration for Capabilties
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
 require_once plugin_dir_path(__FILE__) . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
@@ -102,7 +104,7 @@ function mgwpp_plugin_activate()
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
-    MGWPP_Capabilities::mgwpp_gallery_capabilities();
+    MGWPP_Gallery_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
     if (false === get_option('mgwpp_enabled_modules')) {
         //update_option('mgwpp_enabled_modules', MGWPP_Settings::get_enabled_modules());

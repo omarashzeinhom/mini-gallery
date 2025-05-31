@@ -30,9 +30,6 @@ class MGWPP_Gallery_Capabilities {
     }
 }
 
-// Hook to initialize custom role on plugin initialization
-add_action('init', array('MGWPP_Gallery_Capabilities', 'mgwpp_add_marketing_team_role'));
-
 // Hook to assign custom capabilities after WordPress initializes the roles
 add_action('admin_init', array('MGWPP_Gallery_Capabilities', 'mgwpp_gallery_capabilities'));
 ?>

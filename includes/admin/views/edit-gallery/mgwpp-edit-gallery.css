@@ -1,0 +1,46 @@
+.mgwpp-edit-gallery {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mgwpp-edit-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+.mgwpp-image-links-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.mgwpp-image-link-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mgwpp-image-link-item img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.mgwpp-cta-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.mgwpp-cta-link {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mgwpp-cta-link input {
+    width: 100%;
+}

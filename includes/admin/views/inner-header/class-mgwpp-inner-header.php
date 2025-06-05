@@ -27,7 +27,7 @@ class MGWPP_Inner_Header
                     class="mgwpp-logo" width="50" height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
                 <div class="mgwpp-titles">
                     <h1 class="mgwpp-title">
-                        <?php esc_html_e('Mini Gallery Dashboard', 'mini-gallery') ?>
+                        <?php esc_html_e('Mini Gallery', 'mini-gallery') ?>
                         <span class="mgwpp-version"><?php echo self::get_plugin_version(); ?></span>
                     </h1>
                     <p class="mgwpp-subtitle">

@@ -29,44 +29,10 @@ class MGWPP_Albums_View
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
-        $galleries_count = self::get_galleries_count();
-        $images_count = self::get_images_count();
-
 ?>
         <?php MGWPP_Inner_Header::render(); ?>
 
         <div class="wrap">
-            <div class="mgwpp-header">
-                <div class="mgwpp-header-content">
-                    <h1><span class="dashicons dashicons-format-gallery"></span> <?php esc_html_e('Albums Management', 'mini-gallery') ?></h1>
-                    <p class="mgwpp-header-description"><?php esc_html_e('Create and manage beautiful photo albums for your website.', 'mini-gallery'); ?></p>
-                </div>
-            </div>
-
-            <div class="mgwpp-stats-grid">
-                <div class="mgwpp-stat-card">
-                    <span class="dashicons dashicons-album"></span>
-                    <div class="mgwpp-stat-content">
-                        <h3><?php echo esc_html($albums_count); ?></h3>
-                        <p><?php esc_html_e('Albums', 'mini-gallery'); ?></p>
-                    </div>
-                </div>
-                <div class="mgwpp-stat-card">
-                    <span class="dashicons dashicons-format-gallery"></span>
-                    <div class="mgwpp-stat-content">
-                        <h3><?php echo esc_html($galleries_count); ?></h3>
-                        <p><?php esc_html_e('Galleries', 'mini-gallery'); ?></p>
-                    </div>
-                </div>
-                <div class="mgwpp-stat-card">
-                    <span class="dashicons dashicons-images-alt2"></span>
-                    <div class="mgwpp-stat-content">
-                        <h3><?php echo esc_html($images_count); ?></h3>
-                        <p><?php esc_html_e('Images', 'mini-gallery'); ?></p>
-                    </div>
-                </div>
-            </div>
-
             <div class="mgwpp-tabs-container">
                 <div id="mgwpp-tabs">
                     <ul class="mgwpp-tabs-nav">

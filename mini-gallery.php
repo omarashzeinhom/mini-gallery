@@ -29,7 +29,8 @@ define('MGWPP_PLUGIN_FILE', plugin_dir_path(__FILE__) . 'includes/admin/images/'
 // ======================
 // CORE FUNCTIONALITY
 // ======================
-function get_plugin_version() {
+function get_plugin_version()
+{
     return defined('MGWPP_ASSET_VERSION') ? MGWPP_ASSET_VERSION : '1.4.0';
 }
 
@@ -91,21 +92,21 @@ MGWPP_Ajax_Handler::init();
 // ======================
 // ACTIVATION/DEACTIVATION
 // ======================
-register_activation_hook(__FILE__, function() {
+register_activation_hook(__FILE__, function () {
     MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Gallery_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
-    
+
     if (false === get_option('mgwpp_enabled_modules')) {
         // Module initialization placeholder
     }
     flush_rewrite_rules(false);
 });
 
-register_deactivation_hook(__FILE__, function() {
+register_deactivation_hook(__FILE__, function () {
     unregister_post_type('mgwpp_testimonials');
     unregister_post_type('mgwpp_soora');
     unregister_post_type('mgwpp_album');
@@ -115,13 +116,14 @@ register_deactivation_hook(__FILE__, function() {
 
 register_uninstall_hook(__FILE__, 'mgwpp_plugin_uninstall');
 
-function mgwpp_plugin_uninstall() {
+function mgwpp_plugin_uninstall()
+{
     $sowar = get_posts([
         'post_type' => 'mgwpp_soora',
         'numberposts' => -1,
         'post_status' => 'any'
     ]);
-    
+
     foreach ($sowar as $gallery_image) {
         wp_delete_post(intval($gallery_image->ID), true);
     }
@@ -131,27 +133,27 @@ function mgwpp_plugin_uninstall() {
 // ======================
 // PLUGIN INITIALIZATION
 // ======================
-add_action('init', function() {
+add_action('init', function () {
     // Register shortcodes
     add_shortcode('mgwpp_gallery', 'mgwpp_gallery_shortcode');
-    
+
     // Initialize post types
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
     MGWPP_Testimonial_Post_Type::mgwpp_register_testimonial_post_type();
-    
+
     // Initialize capabilities
     MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Gallery_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
     MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
-    
+
     // Register hooks
     MGWPP_Gallery_Manager::mgwpp_register_gallery_delete_action();
     MGWPP_Uninstall::mgwpp_register_uninstall_hook();
 });
 
-add_action('after_setup_theme', function() {
+add_action('after_setup_theme', function () {
     if (!current_theme_supports('post-thumbnails')) {
         add_theme_support('post-thumbnails');
     }
@@ -160,7 +162,7 @@ add_action('after_setup_theme', function() {
 // ======================
 // ADMIN FUNCTIONALITY
 // ======================
-add_action('admin_menu', function() {
+add_action('admin_menu', function () {
     if (is_admin()) {
         MGWPP_Admin_Core::init();
     } else {
@@ -171,7 +173,7 @@ add_action('admin_menu', function() {
 // ======================
 // TEMPLATE HANDLING
 // ======================
-add_filter('template_include', function($template) {
+add_filter('template_include', function ($template) {
     if (is_singular('mgwpp_soora')) {
         $custom_template = MG_PLUGIN_PATH . 'templates/single-mgwpp_soora.php';
         return file_exists($custom_template) ? $custom_template : $template;
@@ -184,49 +186,18 @@ add_filter('template_include', function($template) {
 
     return $template;
 });
-
-// ======================
-// PREVIEW HANDLING
-// ======================
-add_action('template_redirect', function() {
-    if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') return;
-
-    $nonce = $_GET['_wpnonce'] ?? '';
-    if (!wp_verify_nonce($nonce, 'mgwpp_preview')) {
-        wp_die(
-            '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
-            '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
-            '<p><a href="' . esc_url(admin_url('edit.php?post_type=mgwpp_soora')) . '">' .
-            esc_html__('Return to Galleries', 'mini-gallery') . '</a></p>'
-        );
-    }
-
-    $gallery_id = absint($_GET['gallery_id'] ?? 0);
-    if (!$gallery_id) wp_die(esc_html__('Invalid gallery ID format.', 'mini-gallery'));
-    
-    $gallery = get_post($gallery_id);
-    if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
-        wp_die(esc_html__('The requested gallery no longer exists.', 'mini-gallery'));
-    }
-    
-    get_header();
-    echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
-    get_footer();
-    exit;
-});
-
 // ======================
 // PLUGIN LINKS
 // ======================
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), function ($links) {
     $docs_link = '<a href="https://minigallery.andgowebsolutions.com/docs/" target="_blank">Docs</a>';
     array_unshift($links, $docs_link);
     return $links;
 });
 
-add_filter('plugin_row_meta', function($links, $file) {
+add_filter('plugin_row_meta', function ($links, $file) {
     if (plugin_basename(__FILE__) !== $file) return $links;
-    
+
     $links[] = '<a href="https://github.com/omarashzeinhom/mini-gallery-dev" target="_blank">Contribute</a>';
     $links[] = '<a href="https://wordpress.org/support/plugin/mini-gallery/reviews/#new-post" target="_blank">Rate Plugin ★★★★★</a>';
     return $links;

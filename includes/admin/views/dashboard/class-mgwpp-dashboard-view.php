@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php'; 
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
 
 
 class MGWPP_Dashboard_View
@@ -39,20 +39,43 @@ class MGWPP_Dashboard_View
 
     private static function render_stats_grid($stats)
     {
+        $admin_url = admin_url('admin.php');
     ?>
         <div class="mgwpp-stats-grid">
             <?php
-            self::render_stat_card(__('Galleries', 'mini-gallery'), $stats['galleries'], 'gallery');
-            self::render_stat_card(__('Albums', 'mini-gallery'), $stats['albums'], 'album');
-            self::render_stat_card(__('Testimonials', 'mini-gallery'), $stats['testimonials'], 'testimonial');
-            self::render_stat_card(__('Storage Usage', 'mini-gallery'), $stats['storage-usage'], 'storage-usage');
+            self::render_stat_card(
+                __('Galleries', 'mini-gallery'),
+                $stats['galleries'],
+                'gallery',
+                add_query_arg('page', 'mgwpp_galleries', $admin_url)
+            );
 
+            self::render_stat_card(
+                __('Albums', 'mini-gallery'),
+                $stats['albums'],
+                'album',
+                add_query_arg('page', 'mgwpp_albums', $admin_url)
+            );
+
+            self::render_stat_card(
+                __('Testimonials', 'mini-gallery'),
+                $stats['testimonials'],
+                'testimonial',
+                add_query_arg('page', 'mgwpp_testimonials', $admin_url)
+            );
+
+            self::render_stat_card(
+                __('Storage Usage', 'mini-gallery'),
+                $stats['storage-usage'],
+                'storage-usage',
+                add_query_arg('page', 'mgwpp_security', $admin_url)
+            );
             ?>
         </div>
     <?php
     }
 
-    private static function render_stat_card($title, $count, $icon)
+    private static function render_stat_card($title, $count, $icon, $url = '')
     {
         $icon_url = MG_PLUGIN_URL . "/includes/admin/images/icons/{$icon}.png";
 
@@ -62,20 +85,34 @@ class MGWPP_Dashboard_View
         } else {
             $display_value = number_format_i18n($count);
         }
-    ?>
-        <div class="mgwpp-stat-card">
-            <div class="mgwpp-stat-content">
-                <div class="mgwpp-stat-icon">
-                    <img src="<?php echo esc_url($icon_url); ?>" alt="<?php echo esc_attr($title) ?>" loading="lazy" width="64"
-                        height="64">
-                </div>
-                <div class="mgwpp-stat-info">
-                    <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>
-                    <p class="mgwpp-stat-count"><?php echo $display_value; ?></p>
-                </div>
+
+        // Add link wrapper if URL is provided
+        $card_content = sprintf(
+            '<div class="mgwpp-stat-content">
+            <div class="mgwpp-stat-icon">
+                <img src="%s" alt="%s" loading="lazy" width="64" height="64">
             </div>
-        </div>
-    <?php
+            <div class="mgwpp-stat-info">
+                <h3 class="mgwpp-stat-title">%s</h3>
+                <p class="mgwpp-stat-count">%s</p>
+            </div>
+        </div>',
+            esc_url($icon_url),
+            esc_attr($title),
+            esc_html($title),
+            $display_value
+        );
+
+        // Wrap with link if URL exists
+        if ($url) {
+            $card_content = sprintf(
+                '<a href="%s" class="mgwpp-stat-card-link">%s</a>',
+                esc_url($url),
+                $card_content
+            );
+        }
+
+        echo '<div class="mgwpp-stat-card">' . $card_content . '</div>';
     }
 
     private static function render_storage_section($storage_data)

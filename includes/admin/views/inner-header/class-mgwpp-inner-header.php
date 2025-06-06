@@ -23,8 +23,13 @@ class MGWPP_Inner_Header
 ?>
         <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
             <div class="mgwpp-branding-group">
-                <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>"
-                    class="mgwpp-logo" width="50" height="50" alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-logo-link">
+                    <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>"
+                        class="mgwpp-logo"
+                        width="50"
+                        height="50"
+                        alt="<?php esc_attr_e('Mini Gallery', 'mini-gallery') ?>">
+                </a>
                 <div class="mgwpp-titles">
                     <h1 class="mgwpp-title">
                         <?php esc_html_e('Mini Gallery', 'mini-gallery') ?>

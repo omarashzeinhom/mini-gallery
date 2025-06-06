@@ -23,7 +23,7 @@ class MGWPP_Inner_Header
 ?>
         <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
             <div class="mgwpp-branding-group">
-                <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-logo-link">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-link-no-decoration">
                     <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>"
                         class="mgwpp-logo"
                         width="50"
@@ -43,7 +43,7 @@ class MGWPP_Inner_Header
 
             <div class="mgwpp-actions-group">
                 <?php self::render_theme_toggle($current_theme); ?>
-                <a class="mgwpp-admin-button" href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>">
+                <a class="mgwpp-admin-button mgwpp-link-no-decoration " href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>">
                     <?php esc_html_e('New Gallery', 'mini-gallery') ?>
                     <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/add-new.png'); ?>"
                         alt="<?php esc_attr_e('New Gallery', 'mini-gallery') ?>" class="mgwpp-admin-button__icon">

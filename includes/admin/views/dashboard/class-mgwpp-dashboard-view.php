@@ -106,7 +106,7 @@ class MGWPP_Dashboard_View
         // Wrap with link if URL exists
         if ($url) {
             $card_content = sprintf(
-                '<a href="%s" class="mgwpp-stat-card-link">%s</a>',
+                '<a href="%s" class="mgwpp-stat-card-link mgwpp-link-no-decoration">%s</a>',
                 esc_url($url),
                 $card_content
             );

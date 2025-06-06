@@ -3,58 +3,74 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// File: includes/admin/views/class-security-view.php
-class MGWPP_Security_View {
-    
-    public static function render() {
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
+
+class MGWPP_Security_View
+{
+
+    public static function render()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'mini-gallery'));
+        }
+
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $suspicious_files = self::scan_directory($upload_path);
-        
-        echo '<div id="mgwpp_security_content" class="mgwpp-tab-content">';
-        self::render_security_header();
-        self::render_scan_results($suspicious_files);
-        self::render_storage_analysis();
-        echo '</div>';
+        $storage_data = self::get_storage_data();
+?>
+        <div class="mgwpp-dashboard-container">
+            <div class="mgwpp-dashboard-wrapper">
+                <div class="mgwpp-glass-container">
+                    <?php MGWPP_Inner_Header::render(); ?>
+                    <div class="mgwpp-security-content">
+                        <?php
+                        self::render_security_header();
+                        self::render_scan_results($suspicious_files);
+                        self::render_storage_analysis($storage_data);
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
     }
 
-    private static function render_security_header() {
-        ?>
-        <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
-        <div class="mgwpp-security-settings">
+    private static function render_security_header()
+    {
+    ?>
+        <div class="mgwpp-security-header">
+            <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
             <p><?php echo esc_html__('This section includes security scan results and will include more options in future updates.', 'mini-gallery'); ?></p>
         </div>
-        <?php
+    <?php
     }
 
-    private static function render_scan_results($suspicious_files) {
-        ?>
-        <div class="mgwpp-scan-results mt-6">
-            <h3 class="text-md font-semibold"><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
+    private static function render_scan_results($suspicious_files)
+    {
+    ?>
+        <div class="mgwpp-scan-results">
+            <h3><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
             <?php self::render_suspicious_report($suspicious_files); ?>
         </div>
-        <?php
+    <?php
     }
 
-    private static function render_storage_analysis() {
-        $storage_data = self::get_storage_data();
-        ?>
-        <div class="mgwpp-storage-analysis mt-6">
-            <h3 class="text-md font-semibold"><?php echo esc_html__('Storage Analysis', 'mini-gallery'); ?></h3>
-            <?php self::render_storage_section(
-                $storage_data['used'],
-                $storage_data['total'],
-                $storage_data['percent'],
-                $storage_data['file_types'],
-                $storage_data['files']
-            ); ?>
+    private static function render_storage_analysis($storage_data)
+    {
+    ?>
+        <div class="mgwpp-storage-analysis">
+            <h3><?php echo esc_html__('Storage Analysis', 'mini-gallery'); ?></h3>
+            <?php self::render_storage_section($storage_data); ?>
         </div>
-        <?php
+    <?php
     }
 
-    public static function scan_directory($path) {
+
+    public static function scan_directory($path)
+    {
         $suspicious_files = [];
-        
+
         if (!is_dir($path)) {
             return $suspicious_files;
         }
@@ -66,7 +82,7 @@ class MGWPP_Security_View {
         foreach ($iterator as $file) {
             if ($file->isFile()) {
                 $ext = strtolower($file->getExtension());
-                
+
                 if (in_array($ext, ['php', 'js', 'exe', 'dll'])) {
                     $content = @file_get_contents($file->getPathname());
                     if ($content && preg_match('/(base64_decode|eval|gzinflate|shell_exec|system|passthru|exec|phpinfo)/i', $content)) {
@@ -83,16 +99,17 @@ class MGWPP_Security_View {
         return $suspicious_files;
     }
 
-    public static function render_suspicious_report($suspicious_files) {
+    public static function render_suspicious_report($suspicious_files)
+    {
         if (empty($suspicious_files)) {
             echo '<div class="notice notice-success"><p>' . esc_html__('No suspicious files found.', 'mini-gallery') . '</p></div>';
             return;
         }
-        
-        echo '<div class="notice notice-warning"><p>' . 
-             esc_html__('Potential security issues found:', 'mini-gallery') . 
-             '</p></div>';
-        
+
+        echo '<div class="notice notice-warning"><p>' .
+            esc_html__('Potential security issues found:', 'mini-gallery') .
+            '</p></div>';
+
         echo '<table class="wp-list-table widefat fixed striped">';
         echo '<thead><tr>
                 <th>' . esc_html__('File Path', 'mini-gallery') . '</th>
@@ -100,7 +117,7 @@ class MGWPP_Security_View {
                 <th>' . esc_html__('Size', 'mini-gallery') . '</th>
               </tr></thead>';
         echo '<tbody>';
-        
+
         foreach ($suspicious_files as $file) {
             echo '<tr>
                     <td>' . esc_html($file['path']) . '</td>
@@ -108,11 +125,12 @@ class MGWPP_Security_View {
                     <td>' . esc_html($file['size']) . '</td>
                   </tr>';
         }
-        
+
         echo '</tbody></table>';
     }
 
-    private static function get_storage_data() {
+    private static function get_storage_data()
+    {
         $upload_dir = wp_upload_dir();
         $upload_path = $upload_dir['basedir'];
         $plugin_image_ids = [];
@@ -148,7 +166,7 @@ class MGWPP_Security_View {
 
                 $plugin_images_total += $file_size;
                 $file_count++;
-                
+
                 if (!isset($all_file_types[$ext])) {
                     $all_file_types[$ext] = ['count' => 0, 'size' => 0];
                 }
@@ -173,52 +191,54 @@ class MGWPP_Security_View {
             'files' => $file_count
         ];
     }
-
-    private static function render_storage_section($used, $total, $percent, $file_types, $file_count) {
-        ?>
-        <div class="mt-4 p-5 bg-white rounded-lg shadow-sm dark:bg-gray-800">
-            <h3 class="text-lg font-semibold mb-4"><?php esc_html_e('Storage Overview', 'mini-gallery'); ?></h3>
-
-            <div class="mb-6">
+    private static function render_storage_section($storage_data)
+    {
+        $used = $storage_data['used'];
+        $total = $storage_data['total'];
+        $percent = $storage_data['percent'];
+        $file_types = $storage_data['file_types'];
+        $file_count = $storage_data['files'];
+    ?>
+        <div class="mgwpp-storage-card">
+            <div class="mgwpp-storage-overview">
                 <strong><?php esc_html_e('Used:', 'mini-gallery'); ?></strong>
                 <?php echo esc_html($used); ?> /
                 <?php echo esc_html($total); ?> (<?php echo esc_html($percent); ?>%)
-                <div class="h-4 w-full bg-gray-200 rounded mt-1">
-                    <div class="h-4 bg-green-500 rounded" style="width: <?php echo esc_attr($percent); ?>%"></div>
+                <div class="mgwpp-progress-bar">
+                    <div class="mgwpp-progress-fill" style="width: <?php echo esc_attr($percent); ?>%"></div>
                 </div>
             </div>
 
-            <h4 class="text-md font-semibold mt-6 mb-2"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
-            <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
+            <h4 class="mgwpp-storage-subtitle"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
+            <table class="mgwpp-storage-table">
                 <thead>
-                    <tr class="border-b dark:border-gray-700">
-                        <th class="py-2 pr-4"><?php esc_html_e('Extension', 'mini-gallery'); ?></th>
-                        <th class="py-2 pr-4"><?php esc_html_e('Count', 'mini-gallery'); ?></th>
-                        <th class="py-2 pr-4"><?php esc_html_e('Size', 'mini-gallery'); ?></th>
-                        <th class="py-2"><?php esc_html_e('Usage %', 'mini-gallery'); ?></th>
+                    <tr>
+                        <th><?php esc_html_e('Extension', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Count', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Size', 'mini-gallery'); ?></th>
+                        <th><?php esc_html_e('Usage %', 'mini-gallery'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($file_types as $ext => $data): ?>
-                        <tr class="border-b dark:border-gray-700">
-                            <td class="py-1 pr-4"><?php echo esc_html($ext); ?></td>
-                            <td class="py-1 pr-4"><?php echo esc_html($data['count']); ?></td>
-                            <td class="py-1 pr-4"><?php echo esc_html($data['size_formatted']); ?></td>
-                            <td class="py-1">
-                                <div class="w-full bg-gray-200 rounded h-3 relative">
-                                    <div class="absolute top-0 left-0 h-3 bg-blue-500 rounded" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
-                                    <span class="absolute left-2 top-0 text-xs text-white leading-3"><?php echo esc_attr($data['percent']); ?>%</span>
+                        <tr>
+                            <td><?php echo esc_html($ext); ?></td>
+                            <td><?php echo esc_html($data['count']); ?></td>
+                            <td><?php echo esc_html($data['size_formatted']); ?></td>
+                            <td>
+                                <div class="mgwpp-usage-bar">
+                                    <div class="mgwpp-usage-fill" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
+                                    <span class="mgwpp-usage-text"><?php echo esc_html($data['percent']); ?>%</span>
                                 </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
-            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            <p class="mgwpp-storage-summary">
                 <?php echo esc_html($file_count); ?> <?php esc_html_e('files scanned.', 'mini-gallery'); ?>
             </p>
         </div>
-        <?php
+<?php
     }
 }

@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 // File: includes/admin/views/class-mgwpp-testimonials-view.php
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
+
 class MGWPP_Testimonials_View
 {
 

@@ -18,10 +18,11 @@ class MGWPP_Edit_Gallery_View
 
     public static function init()
     {
+
         add_action('admin_menu', [self::class, 'register_edit_page']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueue_assets']);
         add_action('admin_post_mgwpp_save_gallery', [self::class, 'handle_save_gallery']);
-        add_action('admin_post_mgwpp_save_gallery_order', [self::class, 'handle_save_gallery_order']);
+        add_action('wp_ajax_mgwpp_save_gallery_order', [self::class, 'handle_save_gallery_order']);
     }
 
     public static function register_edit_page()
@@ -46,7 +47,7 @@ class MGWPP_Edit_Gallery_View
 
         // Load GALLERY EDIT specific CSS
         wp_enqueue_style(
-            'mgwpp-edit-gallery-styles', 
+            'mgwpp-edit-gallery-styles',
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css",
             [],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css")
@@ -123,7 +124,7 @@ class MGWPP_Edit_Gallery_View
                 );
                 ?></h1>
 
-            <div class="mgwpp-edit-container">
+            <div class="mgwpp-glass-container">
                 <div class="mgwpp-editor-column">
                     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" id="mgwpp-gallery-form">
                         <input type="hidden" name="action" value="mgwpp_save_gallery">
@@ -133,6 +134,16 @@ class MGWPP_Edit_Gallery_View
                         <div class="mgwpp-edit-section">
                             <h2><?php esc_html_e('Gallery Title', 'mini-gallery'); ?></h2>
                             <input type="text" name="post_title" value="<?php echo esc_attr($gallery->post_title); ?>" class="widefat">
+                        </div>
+
+                        <div class="mgwpp-preview-column">
+                            <div class="mgwpp-preview-container">
+                                <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>
+                                <div class="mgwpp-preview-frame-container">
+                                    <iframe id="mgwpp-preview-frame" src="<?php echo esc_url($preview_url); ?>"></iframe>
+                                </div>
+                                <p class="description"><?php esc_html_e('Preview updates automatically when you save changes.', 'mini-gallery'); ?></p>
+                            </div>
                         </div>
 
                         <div class="mgwpp-edit-section">
@@ -146,7 +157,7 @@ class MGWPP_Edit_Gallery_View
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
                                                 <?php checked($type, $current_type); ?>>
                                             <div class="mgwpp-stats-grid">
-                                                <img class="mgwpp-stat-card " src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
+                                                <img class="mgwpp-stat-card" src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
                                                     alt="<?php echo esc_attr($details[0]); ?>">
                                                 <span><?php echo esc_html($details[0]); ?></span>
                                             </div>
@@ -199,20 +210,11 @@ class MGWPP_Edit_Gallery_View
                     </form>
                 </div>
 
-                <div class="mgwpp-preview-column">
-                    <div class="mgwpp-preview-container">
-                        <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>
-                        <div class="mgwpp-preview-frame-container">
-                            <iframe id="mgwpp-preview-frame" src="<?php echo esc_url($preview_url); ?>"></iframe>
-                        </div>
-                        <p class="description"><?php esc_html_e('Preview updates automatically when you save changes.', 'mini-gallery'); ?></p>
-                    </div>
-                </div>
+
             </div>
         </div>
 <?php
     }
-
     public static function handle_save_gallery()
     {
         // Verify nonce and permissions
@@ -252,6 +254,7 @@ class MGWPP_Edit_Gallery_View
         wp_redirect(admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $gallery_id . '&updated=1'));
         exit;
     }
+
 
     public static function handle_save_gallery_order()
     {

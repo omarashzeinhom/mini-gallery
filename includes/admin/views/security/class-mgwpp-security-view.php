@@ -171,14 +171,14 @@ class MGWPP_Security_View
                                                 <div class="mgwpp-file-breakdown-item">
                                                     <div class="mgwpp-breakdown-header">
                                                         <div class="mgwpp-breakdown-info">
-                                                            <span class="mgwpp-breakdown-color" style="background-color: <?php echo self::get_file_type_color($ext); ?>"></span>
-                                                            <span class="mgwpp-breakdown-name"><?php echo strtoupper($ext); ?></span>
+                                                            <span class="mgwpp-breakdown-color" style="background-color: <?php echo esc_attr(self::get_file_type_color($ext)); ?>"></span>
+                                                            <span class="mgwpp-breakdown-name"><?php echo esc_html(strtoupper($ext)); ?></span>
                                                         </div>
-                                                        <span class="mgwpp-breakdown-count"><?php echo $data['count']; ?> <?php esc_html_e('files', 'mini-gallery'); ?></span>
+                                                        <span class="mgwpp-breakdown-count"><?php echo esc_html($data['count']); ?> <?php esc_html_e('files', 'mini-gallery'); ?></span>
                                                     </div>
                                                     <div class="mgwpp-breakdown-bar">
-                                                        <div class="mgwpp-breakdown-fill" style="width: <?php echo $data['percent']; ?>%; background-color: <?php echo self::get_file_type_color($ext); ?>"></div>
-                                                        <span class="mgwpp-breakdown-percent"><?php echo $data['percent']; ?>%</span>
+                                                        <div class="mgwpp-breakdown-fill" style="width: <?php echo esc_attr($data['percent']); ?>%; background-color: <?php echo esc_attr(self::get_file_type_color($ext)); ?>"></div>
+                                                        <span class="mgwpp-breakdown-percent"><?php echo esc_html($data['percent']); ?>%</span>
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
@@ -186,7 +186,7 @@ class MGWPP_Security_View
 
                                         <div class="mgwpp-storage-summary">
                                             <p>
-                                                <?php echo number_format($storage_data['files']); ?>
+                                                <?php echo esc_html(number_format($storage_data['files'])); ?>
                                                 <?php esc_html_e('files scanned across all directories', 'mini-gallery'); ?>
                                             </p>
                                         </div>
@@ -260,15 +260,15 @@ class MGWPP_Security_View
         $status_class = 'mgwpp-status-' . $status;
         $icon_class = 'dashicons dashicons-' . $icon;
     ?>
-        <div class="mgwpp-stat-card <?php echo $status_class; ?>">
+        <div class="mgwpp-stat-card <?php echo esc_attr($status_class); ?>">
             <div class="mgwpp-stat-header">
                 <div class="mgwpp-stat-icon">
-                    <span class="<?php echo $icon_class; ?>"></span>
+                    <span class="<?php echo esc_attr($icon_class); ?>"></span>
                 </div>
-                <span class="mgwpp-stat-status"><?php echo $status_text; ?></span>
+                <span class="mgwpp-stat-status"><?php echo esc_html($status_text); ?></span>
             </div>
-            <h3 class="mgwpp-stat-title"><?php echo $title; ?></h3>
-            <p class="mgwpp-stat-description"><?php echo $description; ?></p>
+            <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>
+            <p class="mgwpp-stat-description"><?php echo esc_html($description); ?></p>
         </div>
     <?php
     }
@@ -279,11 +279,11 @@ class MGWPP_Security_View
     ?>
         <div class="mgwpp-config-item">
             <div class="mgwpp-config-header">
-                <span class="mgwpp-config-icon <?php echo $icon_class; ?>"></span>
-                <span class="mgwpp-config-status"><?php echo $status; ?></span>
+                <span class="mgwpp-config-icon <?php echo esc_attr($icon_class); ?>"></span>
+                <span class="mgwpp-config-status"><?php echo esc_html($status); ?></span>
             </div>
-            <h4 class="mgwpp-config-title"><?php echo $title; ?></h4>
-            <p class="mgwpp-config-description"><?php echo $description; ?></p>
+            <h4 class="mgwpp-config-title"><?php echo esc_html($title); ?></h4>
+            <p class="mgwpp-config-description"><?php echo esc_html($description); ?></p>
         </div>
     <?php
     }
@@ -453,43 +453,49 @@ class MGWPP_Security_View
     ?>
         <div class="mgwpp-storage-card">
             <div class="mgwpp-storage-overview">
-                <strong><?php esc_html_e('Used:', 'mini-gallery'); ?></strong>
-                <?php echo esc_html($used); ?> /
-                <?php echo esc_html($total); ?> (<?php echo esc_html($percent); ?>%)
+                <div class="mgwpp-storage-info">
+                    <span><?php esc_html_e('Storage Usage', 'mini-gallery'); ?></span>
+                    <span class="mgwpp-storage-percent"><?php echo esc_html($storage_data['percent']); ?>%</span>
+                </div>
                 <div class="mgwpp-progress-bar">
-                    <div class="mgwpp-progress-fill" style="width: <?php echo esc_attr($percent); ?>%"></div>
+                    <div class="mgwpp-progress-fill" style="width: <?php echo esc_attr($storage_data['percent']); ?>%"></div>
+                </div>
+                <div class="mgwpp-storage-numbers">
+                    <span><?php echo esc_html($storage_data['used']); ?> <?php esc_html_e('used', 'mini-gallery'); ?></span>
+                    <span><?php echo esc_html($storage_data['total']); ?> <?php esc_html_e('total', 'mini-gallery'); ?></span>
                 </div>
             </div>
+        </div>
 
-            <h4 class="mgwpp-storage-subtitle"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
-            <table class="mgwpp-storage-table">
-                <thead>
+        <h4 class="mgwpp-storage-subtitle"><?php esc_html_e('File Types Breakdown', 'mini-gallery'); ?></h4>
+        <table class="mgwpp-storage-table">
+            <thead>
+                <tr>
+                    <th><?php esc_html_e('Extension', 'mini-gallery'); ?></th>
+                    <th><?php esc_html_e('Count', 'mini-gallery'); ?></th>
+                    <th><?php esc_html_e('Size', 'mini-gallery'); ?></th>
+                    <th><?php esc_html_e('Usage %', 'mini-gallery'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($file_types as $ext => $data): ?>
                     <tr>
-                        <th><?php esc_html_e('Extension', 'mini-gallery'); ?></th>
-                        <th><?php esc_html_e('Count', 'mini-gallery'); ?></th>
-                        <th><?php esc_html_e('Size', 'mini-gallery'); ?></th>
-                        <th><?php esc_html_e('Usage %', 'mini-gallery'); ?></th>
+                        <td><?php echo esc_html($ext); ?></td>
+                        <td><?php echo esc_html($data['count']); ?></td>
+                        <td><?php echo esc_html($data['size_formatted']); ?></td>
+                        <td>
+                            <div class="mgwpp-usage-bar">
+                                <div class="mgwpp-usage-fill" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
+                                <span class="mgwpp-usage-text"><?php echo esc_html($data['percent']); ?>%</span>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($file_types as $ext => $data): ?>
-                        <tr>
-                            <td><?php echo esc_html($ext); ?></td>
-                            <td><?php echo esc_html($data['count']); ?></td>
-                            <td><?php echo esc_html($data['size_formatted']); ?></td>
-                            <td>
-                                <div class="mgwpp-usage-bar">
-                                    <div class="mgwpp-usage-fill" style="width: <?php echo esc_attr($data['percent']); ?>%"></div>
-                                    <span class="mgwpp-usage-text"><?php echo esc_html($data['percent']); ?>%</span>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <p class="mgwpp-storage-summary">
-                <?php echo esc_html($file_count); ?> <?php esc_html_e('files scanned.', 'mini-gallery'); ?>
-            </p>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <p class="mgwpp-storage-summary">
+            <?php echo esc_html($file_count); ?> <?php esc_html_e('files scanned.', 'mini-gallery'); ?>
+        </p>
         </div>
 <?php
     }

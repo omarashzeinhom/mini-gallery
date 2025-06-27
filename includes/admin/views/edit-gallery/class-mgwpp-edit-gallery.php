@@ -39,29 +39,24 @@ class MGWPP_Edit_Gallery_View
     public static function enqueue_assets($hook)
     {
         if ($hook !== 'gallery_page_mgwpp-edit-gallery') return;
-        $plugin_data = get_file_data(__FILE__, ['Version' => 'Version']);
-        $plugin_version = $plugin_data['Version'];
-
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-sortable');
 
-        // Enqueue main admin CSS
         wp_enqueue_style(
-            'mgwpp-admin-edit-gallery-styles',
-            plugins_url('/admin/views/edit-gallery/mgwpp-edit-gallery.css', dirname(__FILE__, 3)),
-            array(),
-            $plugin_version
+            'mgwpp-modules-styles',
+            MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css",
+            [],
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css")
         );
 
-        // Enqueue custom admin JS
         wp_enqueue_script(
-            'mgwpp-admin-edit-gallery-js',
-            plugins_url('admin/views/edit-gallery/mgwpp-edit-gallery.js', dirname(__FILE__, 3)),
-            ['jquery', 'jquery-ui-sortable'],
-            $plugin_version,
+            'mgwpp-modules-scripts',
+            MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js",
+            ['jquery'],
+            filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js"),
             true
         );
-        
+
         // Localize script
         wp_localize_script('mgwpp-admin-edit-gallery-js', 'mgwppEdit', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -132,15 +127,15 @@ class MGWPP_Edit_Gallery_View
                         <div class="mgwpp-edit-section">
                             <h2><?php esc_html_e('Gallery Type', 'mini-gallery'); ?></h2>
                             <div class="mgwpp-gallery-types">
-                                <?php foreach (self::$gallery_types as $type => $details) : 
+                                <?php foreach (self::$gallery_types as $type => $details) :
                                     $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
                                 ?>
-                                    <div class="mgwpp-stats-grid <?php echo $type === $current_type ? 'active' : ''; ?>">
+                                    <div class="mgwpp-gallery-type <?php echo $type === $current_type ? 'active' : ''; ?>">
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
                                                 <?php checked($type, $current_type); ?>>
-                                            <div class="mgwpp-stat-card" >
-                                                <img src="<?php echo esc_url($type_image_url); ?>" width="75" height="75" 
+                                            <div class="mgwpp-type-preview">
+                                                <img src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
                                                     alt="<?php echo esc_attr($details[0]); ?>">
                                                 <span><?php echo esc_html($details[0]); ?></span>
                                             </div>
@@ -157,17 +152,17 @@ class MGWPP_Edit_Gallery_View
                             </h2>
                             <div class="mgwpp-image-manager">
                                 <div class="mgwpp-image-container sortable">
-                                    <?php if (!empty($images)) : 
+                                    <?php if (!empty($images)) :
                                         foreach ($images as $image_id) :
-                                            if ($image_url = wp_get_attachment_url($image_id)) : 
+                                            if ($image_url = wp_get_attachment_url($image_id)) :
                                                 $thumb_url = wp_get_attachment_image_url($image_id, 'thumbnail');
-                                                ?>
+                                    ?>
                                                 <div class="mgwpp-image-item" data-id="<?php echo esc_attr($image_id); ?>">
                                                     <img src="<?php echo esc_url($thumb_url); ?>">
                                                     <input type="hidden" name="gallery_images[]" value="<?php echo esc_attr($image_id); ?>">
                                                     <button type="button" class="mgwpp-remove-image" title="<?php esc_attr_e('Remove image', 'mini-gallery'); ?>">×</button>
                                                 </div>
-                                    <?php endif;
+                                        <?php endif;
                                         endforeach;
                                     else : ?>
                                         <p class="mgwpp-no-images"><?php esc_html_e('No images added to this gallery yet.', 'mini-gallery'); ?></p>
@@ -192,7 +187,7 @@ class MGWPP_Edit_Gallery_View
                         </div>
                     </form>
                 </div>
-                
+
                 <div class="mgwpp-preview-column">
                     <div class="mgwpp-preview-container">
                         <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>

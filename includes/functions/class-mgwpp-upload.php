@@ -45,6 +45,9 @@ class MGWPP_Upload {
             $media_input = sanitize_text_field(wp_unslash($_POST['selected_media']));
             $media_ids = array_filter(array_map('absint', explode(',', $media_input)));
             
+            // SAVE IMAGE IDS TO GALLERY_META - CRITICAL MISSING LINE
+            update_post_meta($post_id, 'gallery_images', $media_ids);
+            
             foreach ($media_ids as $media_id) {
                 $attachment_post = get_post($media_id);
                 if ($attachment_post && $attachment_post->post_type === 'attachment') {

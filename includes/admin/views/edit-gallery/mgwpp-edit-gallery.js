@@ -236,3 +236,57 @@ jQuery(document).ready(function ($) {
         }
     });
 });
+
+// Add this after the existing JavaScript code
+jQuery(function ($) {
+    // Save Gallery Order - AJAX handler
+    $('#mgwpp-save-order-btn').on('click', function (e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+        const originalText = $btn.text();
+        $btn.text(mgwppEdit.i18n.saving).prop('disabled', true);
+
+        // Get ordered image IDs
+        const imageIds = [];
+        $('.mgwpp-image-container .mgwpp-image-item').each(function () {
+            imageIds.push($(this).data('id'));
+        });
+
+        // AJAX request
+        $.ajax({
+            url: mgwppEdit.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'mgwpp_save_gallery_order',
+                gallery_id: $('input[name="gallery_id"]').val(),
+                image_ids: imageIds,
+                nonce: mgwppEdit.nonce
+            },
+            success: function (response) {
+                if (response.success) {
+                    $btn.text(mgwppEdit.i18n.saved);
+                    setTimeout(() => {
+                        $btn.text(originalText).prop('disabled', false);
+                    }, 2000);
+                } else {
+                    alert('Error: ' + response.data.message);
+                    $btn.text(originalText).prop('disabled', false);
+                }
+            },
+            error: function () {
+                alert(mgwppEdit.i18n.saveFailed);
+                $btn.text(originalText).prop('disabled', false);
+            }
+        });
+    });
+
+    // Initialize sortable with update event
+    $('.mgwpp-image-container.sortable').sortable({
+        placeholder: 'mgwpp-image-item ui-sortable-placeholder',
+        update: function () {
+            // Visual feedback that order changed
+            $('#mgwpp-save-order-btn').css('background-color', '#d54e21');
+        }
+    });
+});

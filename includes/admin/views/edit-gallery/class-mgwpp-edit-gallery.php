@@ -146,27 +146,7 @@ class MGWPP_Edit_Gallery_View
                             </div>
                         </div>
 
-                        <div class="mgwpp-edit-section">
-                            <h2><?php esc_html_e('Gallery Type', 'mini-gallery'); ?></h2>
-                            <div class="mgwpp-gallery-types">
-                                <?php foreach (self::$gallery_types as $type => $details) :
-                                    $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
-                                ?>
-                                    <div class="mgwpp-gallery-type <?php echo $type === $current_type ? 'active' : ''; ?>">
-                                        <label>
-                                            <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
-                                                <?php checked($type, $current_type); ?>>
-                                            <div class="mgwpp-stats-grid">
-                                                <img class="mgwpp-stat-card" src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
-                                                    alt="<?php echo esc_attr($details[0]); ?>">
-                                                <span><?php echo esc_html($details[0]); ?></span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-
+                        
                         <div class="mgwpp-edit-section">
                             <h2>
                                 <?php esc_html_e('Gallery Images', 'mini-gallery'); ?>
@@ -201,10 +181,28 @@ class MGWPP_Edit_Gallery_View
                             </div>
                         </div>
 
+                        <div class="mgwpp-edit-section">
+                            <h2><?php esc_html_e('Gallery Type', 'mini-gallery'); ?></h2>
+                            <div class="mgwpp-gallery-types">
+                                <?php foreach (self::$gallery_types as $type => $details) :
+                                    $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
+                                ?>
+                                    <div class="mgwpp-gallery-type <?php echo $type === $current_type ? 'active' : ''; ?>">
+                                        <label>
+                                            <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
+                                                <?php checked($type, $current_type); ?>>
+                                            <div class="mgwpp-stats-grid">
+                                                <img class="mgwpp-stat-card" src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
+                                                    alt="<?php echo esc_attr($details[0]); ?>">
+                                                <span><?php echo esc_html($details[0]); ?></span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
                         <div class="mgwpp-edit-actions">
-                            <button type="button" class="button mgwpp-preview-gallery" data-preview-url="<?php echo esc_url($preview_url); ?>">
-                                <?php esc_html_e('Preview Gallery', 'mini-gallery'); ?>
-                            </button>
                             <?php submit_button(__('Save Changes', 'mini-gallery'), 'primary', 'submit', false); ?>
                         </div>
                     </form>

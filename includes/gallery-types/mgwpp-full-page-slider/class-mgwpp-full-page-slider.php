@@ -8,6 +8,7 @@ class MGWPP_Full_Page_Slider
     {
         if (empty($images) || ! is_array($images)) {
             return ''; // Exit early if images are not valid
+            wp_die();
         }
 
         ob_start(); ?>

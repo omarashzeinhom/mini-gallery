@@ -341,3 +341,8 @@ input:checked + .mgwpp-switch-slider:before {
   margin-right: 8px;
   object-fit: contain;
 }
+
+.mgwpp-preview-container,.mgwpp-preview-frame-container, #mgwpp-preview-frame{
+  width: 100%;
+  height: 100vh;
+}

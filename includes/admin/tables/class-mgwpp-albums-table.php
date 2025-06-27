@@ -157,7 +157,7 @@ add_action('admin_post_mgwpp_delete_album', function () {
         wp_die(__('Specified album does not exist', 'mini-gallery'));
     }
 
-    if (!current_user_can('delete_post', $album_id)) {
+    if (!current_user_can('delete_mgwpp_album', $album_id)) {
         wp_die(__('You lack permissions for this action', 'mini-gallery'));
     }
 

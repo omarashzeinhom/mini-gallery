@@ -169,44 +169,120 @@ class MGWPP_Galleries_View
     }
     private function get_gallery_preview($gallery_id)
     {
-        // Get gallery images
+        // Validate gallery ID
+        if (empty($gallery_id) || !is_numeric($gallery_id)) {
+            return $this->get_fallback_preview();
+        }
+
+        // Get gallery images with proper sanitization
         $images = get_post_meta($gallery_id, 'gallery_images', true);
 
         // If we have actual images, use them for preview
         if (!empty($images)) {
-            $images = is_array($images) ? $images : explode(',', $images);
-            $output = '<div class="mgwpp-preview-thumbnails">';
-
-            // Show up to 4 thumbnails
-            $count = 0;
-            foreach ($images as $image_id) {
-                if ($count >= 4) break;
-                $thumb = wp_get_attachment_image_url($image_id, 'thumbnail');
-                if ($thumb) {
-                    $output .= '<img src="' . esc_url($thumb) . '" class="mgwpp-preview-thumb">';
-                    $count++;
-                }
-            }
-            $output .= '</div>';
-            return $output;
+            return $this->render_image_thumbnails($images);
         }
 
-        // Fallback to gallery type image or featured image
+        // Try featured image as secondary option
+        $featured_image = get_the_post_thumbnail_url($gallery_id, 'medium');
+        if ($featured_image) {
+            return '<img src="' . esc_url($featured_image) . '" class="mgwpp-card-image" alt="' . esc_attr__('Gallery preview', 'mini-gallery') . '">';
+        }
+
+        // Fall back to gallery type specific image
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
-        $thumbnail = get_the_post_thumbnail_url($gallery_id, 'medium');
-
-        if ($thumbnail) {
-            return '<img src="' . esc_url($thumbnail) . '" class="mgwpp-card-image">';
-        }
-
-        // Default image based on gallery type
-        if (isset(self::$gallery_types[$gallery_type])) {
-            $default_img = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . self::$gallery_types[$gallery_type][1];
-            return '<img src="' . esc_url($default_img) . '" class="mgwpp-card-image">';
+        if (!empty($gallery_type) && isset(self::$gallery_types[$gallery_type])) {
+            $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . self::$gallery_types[$gallery_type][1];
+            return '<img src="' . esc_url($type_image_url) . '" class="mgwpp-card-image" alt="' . esc_attr(self::$gallery_types[$gallery_type][0]) . '">';
         }
 
         // Ultimate fallback
-        return '<img src="' . esc_url(MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp') . '" class="mgwpp-card-image">';
+        return $this->get_fallback_preview();
+    }
+
+    /**
+     * Render thumbnails from gallery images
+     */
+    private function render_image_thumbnails($images)
+    {
+        // Normalize images to array
+        if (is_string($images)) {
+            $images = array_filter(explode(',', $images));
+        }
+
+        if (!is_array($images) || empty($images)) {
+            return $this->get_fallback_preview();
+        }
+
+        $output = '<div class="mgwpp-preview-thumbnails">';
+        $count = 0;
+        $max_thumbnails = 4;
+
+        foreach ($images as $image_id) {
+            if ($count >= $max_thumbnails) {
+                break;
+            }
+
+            // Sanitize and validate image ID
+            $image_id = intval(trim($image_id));
+            if ($image_id <= 0) {
+                continue;
+            }
+
+            // Check if attachment exists and is an image
+            if (!wp_attachment_is_image($image_id)) {
+                continue;
+            }
+
+            // Get thumbnail URL
+            $thumb_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+            if (!$thumb_url) {
+                continue;
+            }
+
+            // Get image alt text for accessibility
+            $alt_text = get_post_meta($image_id, '_wp_attachment_image_alt', true);
+            if (empty($alt_text)) {
+                $alt_text = get_the_title($image_id);
+            }
+            if (empty($alt_text)) {
+                $alt_text = __('Gallery image', 'mini-gallery');
+            }
+
+            $output .= sprintf(
+                '<img src="%s" class="mgwpp-preview-thumb" alt="%s" loading="lazy">',
+                esc_url($thumb_url),
+                esc_attr($alt_text)
+            );
+
+            $count++;
+        }
+
+        // If no valid images were found, return fallback
+        if ($count === 0) {
+            return $this->get_fallback_preview();
+        }
+
+        // Add count indicator if there are more images
+        $total_images = count($images);
+        if ($total_images > $max_thumbnails) {
+            $remaining = $total_images - $max_thumbnails;
+            $output .= sprintf(
+                '<div class="mgwpp-preview-more">+%d</div>',
+                $remaining
+            );
+        }
+
+        $output .= '</div>';
+        return $output;
+    }
+
+    /**
+     * Get fallback preview image
+     */
+    private function get_fallback_preview()
+    {
+        $fallback_url = MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp';
+        return '<img src="' . esc_url($fallback_url) . '" class="mgwpp-card-image" alt="' . esc_attr__('Default gallery preview', 'mini-gallery') . '">';
     }
 
     private static function render_create_gallery_modal()

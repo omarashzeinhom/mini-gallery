@@ -21,7 +21,8 @@ jQuery(document).ready(function($) {
             shortcodeInput.select();
             
             try {
-                document.execCommand('copy');
+                // Chg this
+                // document.execCommand('copy');
                 $(this).text(mgwppAdmin.i18n.copied);
                 setTimeout(() => {
                     $(this).text(mgwppAdmin.i18n.copy);

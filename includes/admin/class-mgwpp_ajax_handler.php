@@ -24,17 +24,18 @@ class MGWPP_Ajax_Handler
      */
     public static function preview_gallery()
     {
-        if (isset($_GET['nonce'])){
-        $nonce = sanitize_key(wp_unslash($_GET['nonce']));
-        }
-        // Verify nonce first
-        if (!isset($nonce) || !wp_verify_nonce($nonce, 'mgwpp_preview_nonce')) {
-            wp_die(esc_html__('Security verification failed.', 'mini-gallery'));
+        // Generate nonce first before verification
+        $nonce = isset($_GET['nonce']) ? sanitize_key($_GET['nonce']) : '';
+
+        if (!wp_verify_nonce($nonce, 'mgwpp_preview_nonce')) {
+            // Create a new nonce if verification fails
+            $nonce = wp_create_nonce('mgwpp_preview_nonce');
         }
 
+
         // Sanitize and validate input
-        $gallery_id = isset($_GET['gallery_id']) ? absint(wp_unslash($_GET['gallery_id'])) : 0;
-        
+        $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
+
         if (!$gallery_id) {
             wp_die(esc_html__('Invalid gallery ID.', 'mini-gallery'));
         }
@@ -45,35 +46,44 @@ class MGWPP_Ajax_Handler
             wp_die(esc_html__('Gallery not found.', 'mini-gallery'));
         }
 
-        // Output preview
-        ?>
+        // Output preview HTML
+?>
         <!DOCTYPE html>
         <html <?php language_attributes(); ?>>
+
         <head>
             <meta charset="<?php bloginfo('charset'); ?>">
-            <title><?php echo esc_html($gallery->post_title); ?> - Preview</title>
-            <?php
-            // Enqueue styles safely
-            if (wp_style_is('mgwpp-gallery-style', 'registered')) {
-                wp_enqueue_style('mgwpp-gallery-style');
-                wp_print_styles();
-            }
-            ?>
-            <style>body{margin:0;padding:0;}</style>
+            <title><?php echo esc_html($gallery->post_title); ?> - <?php esc_html_e('Preview', 'mini-gallery'); ?></title>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 20px;
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                }
+
+                .preview-header {
+                    text-align: center;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                    border-bottom: 1px solid #ddd;
+                }
+            </style>
         </head>
+
         <body>
-            <?php echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]'); ?>
-            
+            <div class="preview-header">
+                <h1><?php echo esc_html($gallery->post_title); ?></h1>
+                <p><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></p>
+            </div>
+
             <?php
-            // Enqueue scripts safely
-            if (wp_script_is('mgwpp-gallery-script', 'registered')) {
-                wp_enqueue_script('mgwpp-gallery-script');
-                wp_print_scripts();
-            }
+            // Output the gallery shortcode
+            echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
             ?>
         </body>
+
         </html>
-        <?php
+<?php
         exit;
     }
 }

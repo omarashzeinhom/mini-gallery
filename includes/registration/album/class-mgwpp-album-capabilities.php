@@ -1,12 +1,14 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Album_Capabilities {
-    public static function mgwpp_album_capabilities() {
+class MGWPP_Album_Capabilities
+{
+    public static function mgwpp_album_capabilities()
+    {
         // Get the administrator role
         $admin = get_role('administrator');
-        
+
         // Add album management capabilities to administrator
         $capabilities = array(
             'edit_mgwpp_album',
@@ -38,3 +40,14 @@ class MGWPP_Album_Capabilities {
         }
     }
 }
+
+
+add_filter('map_meta_cap', function ($caps, $cap, $user_id, $args) {
+    if ('delete_post' === $cap && isset($args[0])) {
+        $post = get_post($args[0]);
+        if ('mgwpp_album' === $post->post_type) {
+            $caps = ['delete_mgwpp_album'];
+        }
+    }
+    return $caps;
+}, 10, 4);

@@ -2,29 +2,35 @@
 
 
 
-class MGWPP_Assets {
+class MGWPP_Assets
+{
     private static $load_assets = false;
     private static $shortcode_gallery_type = '';
 
-    private function get_enabled_sub_modules() {
+    public static function get_enabled_sub_modules()
+    {
         $manager = new MGWPP_Module_Manager();
         $sub_modules = $manager->get_sub_modules();
         return array_keys($sub_modules);
     }
 
-    public static function get_enabled_main_modules() {
+    public static function get_enabled_main_modules()
+    {
         return MGWPP_Module_Manager::get_enabled_modules();
     }
 
-    public static function enable_assets() {
+    public static function enable_assets()
+    {
         self::$load_assets = true;
     }
-        
-    public static function set_gallery_type($type) {
+
+    public static function set_gallery_type($type)
+    {
         self::$shortcode_gallery_type = $type;
     }
 
-    public function register_assets() {
+    public function register_assets()
+    {
         $enabled_sub = $this->get_enabled_sub_modules();
         $enabled_main = $this->get_enabled_main_modules();
 
@@ -34,22 +40,22 @@ class MGWPP_Assets {
         $gallery_types_url = MG_PLUGIN_URL . '/includes/gallery-types/';
 
 
-        if (in_array('single_carousel', $enabled_sub )) {
+        if (in_array('single_carousel', $enabled_sub)) {
             wp_register_script('mg-single-carousel-js', $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js', array(), '1.0', true);
             wp_register_style('mg-single-carousel-styles', $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.css');
         }
 
-        if (in_array('multi_carousel',$enabled_sub )) {
+        if (in_array('multi_carousel', $enabled_sub)) {
             wp_register_script('mg-multi-carousel-js', $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js', array(), '1.0', true);
             wp_register_style('mg-multi-carousel-styles', $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.css');
         }
 
-        if (in_array('grid',$enabled_sub )) {
+        if (in_array('grid', $enabled_sub)) {
             wp_register_style('mg-grid-styles', $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.css');
             wp_register_script('mg-grid-gallery-js', $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js', array(), file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') : '1.0', true);
         }
 
-        if (in_array('mega_slider', $enabled_sub )) {
+        if (in_array('mega_slider', $enabled_sub)) {
             wp_register_style('mg-mega-carousel-styles', $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.css');
             wp_register_script('mg-mega-carousel-js', $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.js', array(), file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') : '1.0', true);
         }
@@ -89,11 +95,12 @@ class MGWPP_Assets {
         }
     }
 
-    public function enqueue_assets() {
+    public function enqueue_assets()
+    {
         $enabled = $this->get_enabled_sub_modules();
-        
+
         wp_enqueue_script('mg-universal-init');
-        
+
         if (in_array('albums', $enabled)) {
             wp_enqueue_style('mg-album-styles');
             wp_enqueue_script('mg-albums-script');
@@ -155,7 +162,8 @@ class MGWPP_Assets {
         }
     }
 
-    public function enqueue_admin_assets($hook_suffix) {
+    public function enqueue_admin_assets($hook_suffix)
+    {
         if (in_array($hook_suffix, array('post.php', 'post-new.php'))) {
             $screen = get_current_screen();
             if ($screen && ('post' === $screen->base || 'page' === $screen->base)) {
@@ -164,13 +172,15 @@ class MGWPP_Assets {
         }
     }
 
-    public function init() {
+    public function init()
+    {
         add_action('wp_enqueue_scripts', array($this, 'register_assets'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'), 20);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
     }
 
-    public static function enqueue_assets_for($gallery_type) {
+    public static function enqueue_assets_for($gallery_type)
+    {
         $enabled = self::get_enabled_sub_modules();
         $style_handle = 'mgwpp-' . $gallery_type . '-styles';
         $script_handle = 'mgwpp-' . $gallery_type . '-js';
@@ -180,9 +190,39 @@ class MGWPP_Assets {
             if (wp_script_is($script_handle, 'registered')) wp_enqueue_script($script_handle);
         }
     }
+
+    // In MGWPP_Assets class
+    public static function enqueue_preview_assets($gallery_type)
+    {
+        $enabled = self::get_enabled_sub_modules();
+        if (in_array($gallery_type, $enabled)) {
+            self::enable_assets();
+            self::set_gallery_type($gallery_type);
+
+            // Manually load required assets
+            $asset_class = new self();
+            $asset_class->register_assets();
+            $asset_class->enqueue_assets();
+        }
+    }
 }
 
 add_action('init', function () {
     $mgwpp_assets = new MGWPP_Assets();
     $mgwpp_assets->init();
+});
+
+
+// In preview handler
+add_action('wp_ajax_mgwpp_preview', function () {
+    // Verify nonce and get gallery ID
+    $gallery_id = intval($_GET['gallery_id']);
+    $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
+
+    // Enqueue SPECIFIC gallery assets
+    MGWPP_Assets::enqueue_preview_assets($gallery_type);
+
+    // Output preview HTML
+    echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+    exit;
 });

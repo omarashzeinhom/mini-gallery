@@ -36,29 +36,33 @@ class MGWPP_Edit_Gallery_View
         );
     }
 
+    // CORRECTED: Use gallery edit specific assets
     public static function enqueue_assets($hook)
     {
         if ($hook !== 'gallery_page_mgwpp-edit-gallery') return;
+
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-sortable');
 
+        // Load GALLERY EDIT specific CSS
         wp_enqueue_style(
-            'mgwpp-modules-styles',
+            'mgwpp-edit-gallery-styles', // Unique handle
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css",
             [],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css")
         );
 
+        // Load GALLERY EDIT specific JS
         wp_enqueue_script(
-            'mgwpp-modules-scripts',
+            'mgwpp-edit-gallery-scripts',
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js",
             ['jquery'],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js"),
             true
         );
 
-        // Localize script
-        wp_localize_script('mgwpp-admin-edit-gallery-js', 'mgwppEdit', [
+        // Localize to GALLERY EDIT script
+        wp_localize_script('mgwpp-edit-gallery-scripts', 'mgwppEdit', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp_edit_gallery'),
             'i18n' => [
@@ -75,19 +79,19 @@ class MGWPP_Edit_Gallery_View
     {
         // Check permissions
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_die(__('You do not have sufficient permissions to access this page.'));
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'mini-gallery'));
         }
 
         // Get gallery ID and verify nonce
         $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
         if (!$gallery_id || !isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_edit_gallery')) {
-            wp_die(__('Invalid gallery or security check failed.'));
+            wp_die(esc_html__('Invalid gallery or security check failed.', 'mini-gallery'));
         }
 
         // Get gallery data
         $gallery = get_post($gallery_id);
         if (!$gallery || $gallery->post_type !== 'mgwpp_soora') {
-            wp_die(__('Gallery not found.'));
+            wp_die(esc_html__('Gallery not found.', 'mini-gallery'));
         }
 
         // Get gallery data
@@ -109,12 +113,19 @@ class MGWPP_Edit_Gallery_View
             'mgwpp_preview_nonce'
         );
 ?>
-        <div class="wrap mgwpp-edit-gallery">
-            <h1><?php echo esc_html__('Edit Gallery', 'mini-gallery') . ': ' . esc_html($gallery->post_title); ?></h1>
+        <div class="mgwpp-dashboard-container">
+            <h1><?php
+                echo esc_html(
+                    sprintf(
+                        __('Edit Gallery: %s', 'mini-gallery'),
+                        $gallery->post_title
+                    )
+                );
+                ?></h1>
 
             <div class="mgwpp-edit-container">
                 <div class="mgwpp-editor-column">
-                    <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" id="mgwpp-gallery-form">
+                    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" id="mgwpp-gallery-form">
                         <input type="hidden" name="action" value="mgwpp_save_gallery">
                         <input type="hidden" name="gallery_id" value="<?php echo esc_attr($gallery->ID); ?>">
                         <?php wp_nonce_field('mgwpp_save_gallery_data', 'mgwpp_gallery_nonce'); ?>
@@ -134,8 +145,8 @@ class MGWPP_Edit_Gallery_View
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
                                                 <?php checked($type, $current_type); ?>>
-                                            <div class="mgwpp-type-preview">
-                                                <img src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
+                                            <div class="mgwpp-stats-grid">
+                                                <img class="mgwpp-stat-card " src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
                                                     alt="<?php echo esc_attr($details[0]); ?>">
                                                 <span><?php echo esc_html($details[0]); ?></span>
                                             </div>
@@ -206,16 +217,16 @@ class MGWPP_Edit_Gallery_View
     {
         // Verify nonce and permissions
         if (!isset($_POST['mgwpp_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')) {
-            wp_die(__('Security check failed.'));
+            wp_die(__('Security check failed.', 'mini-gallery'));
         }
 
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_die(__('You do not have sufficient permissions.'));
+            wp_die(__('You do not have sufficient permissions.', 'mini-gallery'));
         }
 
         $gallery_id = isset($_POST['gallery_id']) ? intval($_POST['gallery_id']) : 0;
         if (!$gallery_id) {
-            wp_die(__('Invalid gallery ID.'));
+            wp_die(__('Invalid gallery ID.', 'mini-gallery'));
         }
 
         // Update title

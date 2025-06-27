@@ -41,7 +41,6 @@ class MGWPP_Admin_Core
         // Admin classes
         require_once $base_path . '/class-mgwpp-admin-menu.php';
         require_once $base_path . '/class-mgwpp-admin-assets.php';
-        require_once $base_path . '/class-mgwpp-admin-edit-gallery.php';
 
         // Module manager (if exists)
         if (class_exists('MGWPP_Module_Manager')) {

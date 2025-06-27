@@ -470,11 +470,6 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
 
         private function get_row_actions($gallery_id)
         {
-            $preview_url = wp_nonce_url(
-                admin_url('admin.php?page=mgwpp-galleries&action=preview&gallery_id=' . $gallery_id),
-                'mgwpp_preview_gallery'
-            );
-
             $edit_url = wp_nonce_url(
                 admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $gallery_id),
                 'mgwpp_edit_gallery'
@@ -486,11 +481,8 @@ if (!class_exists('MGWPP_Galleries_List_Table')) {
             );
 
             return sprintf(
-                '<a href="%s" class="button thickbox">%s</a>
-        <a href="%s" class="button">%s</a>
+                '<a href="%s" class="button">%s</a>
         <a href="%s" class="button button-link-delete" onclick="return confirm(\'%s\')">%s</a>',
-                esc_url($preview_url . '&TB_iframe=true&width=800&height=600'),
-                esc_html__('Preview', 'mini-gallery'),
                 esc_url($edit_url),
                 esc_html__('Edit', 'mini-gallery'),
                 esc_url($delete_url),

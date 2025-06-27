@@ -12,9 +12,18 @@ class MGWPP_Admin_Assets
 
     public function mgwpp_enqueue_admin_assets($hook)
     {
-        // Load only on plugin pages
-        if (strpos($hook, 'mgwpp_') === false) return;
+        // Allow these plugin pages
+        $plugin_pages = [
+            'toplevel_page_mgwpp_dashboard',
+            'gallery_page_mgwpp-galleries',
+            'gallery_page_mgwpp-edit-gallery',
+            'admin_page_mgwpp-edit-gallery' // Add this for the edit page
+        ];
 
+        // Check if it's one of our plugin pages
+        if (!in_array($hook, $plugin_pages) && strpos($hook, 'mgwpp') === false) {
+            return;
+        }
         // Load core assets first
         $this->load_core_assets();
 

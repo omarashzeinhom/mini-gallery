@@ -46,7 +46,7 @@ class MGWPP_Edit_Gallery_View
 
         // Load GALLERY EDIT specific CSS
         wp_enqueue_style(
-            'mgwpp-edit-gallery-styles', // Unique handle
+            'mgwpp-edit-gallery-styles', 
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css",
             [],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css")

@@ -74,11 +74,11 @@ class MGWPP_Gallery_Single
                                     $link_attrs .= ' rel="' . esc_attr(implode(' ', $rel_attrs)) . '"';
                                 }
                             }
-                        ?>
+                            ?>
                             <div class="mgwpp-single-carousel__slide <?php echo $index === 0 ? 'mgwpp-single-carousel__slide--active' : ''; ?>">
                                 <?php if ($has_link) : ?>
                                     <a <?php echo $link_attrs; ?> class="mgwpp-single-carousel__link">
-                                    <?php endif; ?>
+                                <?php endif; ?>
 
                                     <?php echo wp_get_attachment_image($image_id, 'large', false, [
                                         'class' => 'mgwpp-single-carousel__image',
@@ -88,7 +88,7 @@ class MGWPP_Gallery_Single
 
                                     <?php if ($has_link) : ?>
                                     </a>
-                                <?php endif; ?>
+                                    <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -105,7 +105,7 @@ class MGWPP_Gallery_Single
                 <?php endif; ?>
             </div>
         </div>
-<?php
+        <?php
         return ob_get_clean();
     }
 }

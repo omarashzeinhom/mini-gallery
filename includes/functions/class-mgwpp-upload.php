@@ -2,8 +2,10 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Upload {
-    public static function mgwpp_create_gallery() {
+class MGWPP_Upload
+{
+    public static function mgwpp_create_gallery()
+    {
         // Verify nonce (with unslashing and sanitization)
         if (!isset($_POST['mgwpp_gallery_nonce'])) {
             wp_die('Security check failed');
@@ -14,11 +16,11 @@ class MGWPP_Upload {
         }
 
         // Validate required fields (with unslashing)
-        $gallery_title = isset($_POST['gallery_title']) 
-            ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) 
+        $gallery_title = isset($_POST['gallery_title'])
+            ? sanitize_text_field(wp_unslash($_POST['gallery_title']))
             : '';
-        $gallery_type = isset($_POST['gallery_type']) 
-            ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) 
+        $gallery_type = isset($_POST['gallery_type'])
+            ? sanitize_text_field(wp_unslash($_POST['gallery_type']))
             : '';
 
         if (empty($gallery_title) || empty($gallery_type)) {

@@ -4,75 +4,78 @@
 
 ;(($) => {
   // Initialize when document is ready
-  $(document).ready(() => {
-    // Add animation classes to elements
-    animateElements()
+    $(document).ready(() => {
+      // Add animation classes to elements
+        animateElements()
 
-    // Initialize sortable galleries
-    initSortableGalleries()
+      // Initialize sortable galleries
+        initSortableGalleries()
 
-    // Initialize tooltips
-    initTooltips()
-  })
+      // Initialize tooltips
+        initTooltips()
+    })
 
   /**
    * Add animation classes to elements for a staggered entrance effect
    */
-  function animateElements() {
+function animateElements()
+{
     const elements = [
-      ".mgwpp-header",
-      ".mgwpp-stat-card",
-      ".mgwpp-tabs-container",
-      ".mgwpp-album-form-card",
-      ".mgwpp-album-preview-card",
+    ".mgwpp-header",
+    ".mgwpp-stat-card",
+    ".mgwpp-tabs-container",
+    ".mgwpp-album-form-card",
+    ".mgwpp-album-preview-card",
     ]
 
     elements.forEach((selector, index) => {
-      setTimeout(() => {
-        $(selector).addClass("mgwpp-animated")
-      }, index * 100)
+        setTimeout(() => {
+            $(selector).addClass("mgwpp-animated")
+        }, index * 100)
     })
-  }
+}
 
   /**
    * Initialize sortable functionality for galleries
    */
-  function initSortableGalleries() {
+function initSortableGalleries()
+{
     if ($.fn.sortable) {
-      $(".mgwpp-gallery-grid").sortable({
-        items: ".mgwpp-gallery-item",
-        placeholder: "mgwpp-sortable-placeholder",
-        opacity: 0.7,
-        cursor: "move",
-        update: (event, ui) => {
-          // Update the order in the preview
-          updateGalleriesPreview()
-        },
-      })
+        $(".mgwpp-gallery-grid").sortable({
+            items: ".mgwpp-gallery-item",
+            placeholder: "mgwpp-sortable-placeholder",
+            opacity: 0.7,
+            cursor: "move",
+            update: (event, ui) => {
+              // Update the order in the preview
+                updateGalleriesPreview()
+            },
+        })
     }
-  }
+}
 
   /**
    * Initialize tooltips for better UX
    */
-  function initTooltips() {
+function initTooltips()
+{
     $(".mgwpp-help-tip").each(function () {
-      $(this).attr("title", $(this).data("tip"))
+        $(this).attr("title", $(this).data("tip"))
 
-      if ($.fn.tooltip) {
-        $(this).tooltip({
-          position: {
-            my: "center bottom-10",
-            at: "center top",
-          },
-          tooltipClass: "mgwpp-tooltip",
-          content: function () {
-            return $(this).data("tip")
-          },
-        })
-      }
+        if ($.fn.tooltip) {
+            $(this).tooltip({
+                position: {
+                    my: "center bottom-10",
+                    at: "center top",
+                },
+                tooltipClass: "mgwpp-tooltip",
+                content: function () {
+                    return $(this).data("tip")
+                },
+            })
+        }
     })
-  }
+}
 
   /**
    * Handle bulk actions for albums
@@ -81,9 +84,9 @@
     const action = $(this).prev("select").val()
 
     if (action === "delete") {
-      if (!confirm(mgwpp_admin_vars.confirm_delete)) {
-        e.preventDefault()
-      }
+        if (!confirm(mgwpp_admin_vars.confirm_delete)) {
+            e.preventDefault()
+        }
     }
   })
 
@@ -91,10 +94,10 @@
    * Handle album deletion confirmation
    */
   $(document).on("click", ".mgwpp-delete-album", (e) => {
-    if (!confirm(mgwpp_admin_vars.confirm_delete_single)) {
-      e.preventDefault()
-    }
-  })
+        if (!confirm(mgwpp_admin_vars.confirm_delete_single)) {
+            e.preventDefault()
+        }
+    })
 
   /**
    * Toggle all checkboxes in the table
@@ -107,8 +110,9 @@
   /**
    * Update galleries preview (dummy function, needs implementation)
    */
-  function updateGalleriesPreview() {
+function updateGalleriesPreview()
+{
     // TODO: Implement the logic to update the galleries preview
     console.log("Update galleries preview function called")
-  }
+}
 })(jQuery)

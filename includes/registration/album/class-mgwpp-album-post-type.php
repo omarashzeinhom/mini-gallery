@@ -93,8 +93,7 @@ class MGWPP_Album_Post_Type
     public static function save_album_galleries_meta($post_id)
     {
         // Verify nonce
-        if (
-            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+        if (!isset($_POST['mgwpp_album_galleries_nonce']) ||
             !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')
         ) {
             return;

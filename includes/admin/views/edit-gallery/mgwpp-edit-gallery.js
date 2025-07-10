@@ -1,4 +1,14 @@
-jQuery(document).ready(function ($) {
+jQuery(function ($) {
+    // Initialize sortable
+    $('.mgwpp-image-container.sortable').sortable({
+        placeholder: 'mgwpp-image-item ui-sortable-placeholder',
+        opacity: 0.6,
+        revert: 200,
+        start: function () {
+            $('.mgwpp-remove-image').hide();
+        }
+    });
+
     // Initialize variables
     var mediaUploader;
     var isReordering = false;
@@ -106,39 +116,7 @@ jQuery(document).ready(function ($) {
 
     // Called In edit gallery in root folder
 
-    jQuery(function ($) {
-        // Refresh preview handler
-        $('#mgwpp-refresh-preview').on('click', function () {
-            const container = $('#mgwpp-preview-container');
-            const galleryId = $('.mgwpp-gallery-id').text().replace('ID: ', '');
-
-            container.html('<div class="mgwpp-preview-loading"><p>' + mgwpp_preview.loading_msg + '</p></div>');
-
-            $.ajax({
-                url: mgwpp_preview.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'mgwpp_refresh_preview',
-                    gallery_id: galleryId,
-                    nonce: mgwpp_preview.nonce
-                },
-                success: function (response) {
-                    if (response.success) {
-                        container.html(response.data.html);
-                    } else {
-                        container.html('<div class="error">' + mgwpp_preview.error_msg + '</div>');
-                    }
-                },
-                error: function () {
-                    container.html('<div class="error">' + mgwpp_preview.error_msg + '</div>');
-                }
-            });
-        });
-
-        // Initial preview load
-        $('#mgwpp-refresh-preview').trigger('click');
-    });
-
+  
 
     // Initialize color pickers
     $('.mgwpp-color-field').wpColorPicker();

@@ -8,6 +8,5 @@ final class MiniGalleryTests extends TestCase
 {
     public function testPluginFuncs()
     {
-       
     }
 };

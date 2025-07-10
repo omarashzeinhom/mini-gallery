@@ -11,7 +11,7 @@ class MGWPP_Testimonials_View
     public static function render()
     {
         $testimonials = self::get_testimonials();
-?>
+        ?>
         <div class="wrap">
             <h1><?php esc_html_e('Testimonials Management', 'mini-gallery') ?></h1>
 
@@ -21,7 +21,7 @@ class MGWPP_Testimonials_View
                 <?php self::render_table($testimonials); ?>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private static function get_testimonials()
@@ -35,17 +35,17 @@ class MGWPP_Testimonials_View
 
     private static function render_create_button()
     {
-    ?>
+        ?>
         <a href="<?php echo esc_url(admin_url('post-new.php?post_type=mgwpp_testimonial')); ?>"
             class="page-title-action">
             <?php esc_html_e('Add New', 'mini-gallery') ?>
         </a>
-    <?php
+        <?php
     }
 
     private static function render_table($testimonials)
     {
-    ?>
+        ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
@@ -63,7 +63,7 @@ class MGWPP_Testimonials_View
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php
+        <?php
     }
 
     private static function render_row($testimonial)
@@ -75,17 +75,17 @@ class MGWPP_Testimonials_View
         $position = sanitize_text_field(
             get_post_meta($testimonial->ID, '_mgwpp_position', true)
         );
-    ?>
+        ?>
         <td><?php echo esc_html($author) ?></td>
         <td><?php echo esc_html($position) ?></td>
         <td><?php echo wp_kses_post(wp_trim_words($testimonial->post_content, 20)) ?></td>
         <td><?php self::render_actions($testimonial->ID) ?></td>
-    <?php
+        <?php
     }
 
     private static function render_actions($post_id)
     {
-    ?>
+        ?>
         <div class="row-actions">
             <?php
             // Always show edit link if user has any edit capability
@@ -122,7 +122,7 @@ class MGWPP_Testimonials_View
             }
             ?>
         </div>
-<?php
+        <?php
     }
 }
 ?>

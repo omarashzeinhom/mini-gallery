@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class MGWPP_Inner_Header
 {
@@ -20,7 +22,7 @@ class MGWPP_Inner_Header
     {
         $current_theme = self::get_user_theme_preference();
         $theme_class = $current_theme === 'dark' ? 'mgwpp-dark-mode' : '';
-?>
+        ?>
         <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
             <div class="mgwpp-branding-group">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-link-no-decoration">
@@ -50,7 +52,7 @@ class MGWPP_Inner_Header
                 </a>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     public static function get_user_theme_preference()
@@ -71,7 +73,7 @@ class MGWPP_Inner_Header
 
         $sun_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png?v=' . $version;
         $moon_icon = MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png?v=' . $version;
-    ?>
+        ?>
         <div class="mgwpp-theme-toggle-wrapper">
             <button id="mgwpp-theme-toggle"
                 data-current-theme="<?php echo esc_attr($current_theme); ?>"
@@ -85,7 +87,7 @@ class MGWPP_Inner_Header
             </button>
             </button>
         </div>
-<?php
+        <?php
     }
 
     public static function handle_theme_toggle()

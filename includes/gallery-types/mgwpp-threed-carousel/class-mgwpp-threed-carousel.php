@@ -42,7 +42,7 @@ class MGWPP_3D_Carousel
                 <div class="mg-spin-container">
                     <?php foreach ($images as $image) :
                         $img_alt = esc_attr(get_post_meta($image->ID, '_wp_attachment_image_alt', true));
-                    ?>
+                        ?>
                         <div class="mg-3d-item">
                             <?php echo wp_get_attachment_image(
                                 $image->ID,
@@ -68,7 +68,7 @@ class MGWPP_3D_Carousel
                 </div>
             <?php endif; ?>
         </div>
-<?php
+        <?php
         return ob_get_clean();
     }
 }

@@ -24,7 +24,7 @@ class MGWPP_Full_Page_Slider
                     $image_title   = $image_id ? esc_html($image_title_raw) : '';
                     $image_content_raw = $image_id ? get_post_field('post_content', $image_id) : '';
                     $image_content = $image_id ? wp_kses_post($image_content_raw) : '';
-                ?>
+                    ?>
                     <div class="mg-fullpage-slide <?php echo ($index === 0 ? 'mg-active' : ''); ?>">
                         <div class="mg-fullpage-overlay"></div>
                         <?php if ($image_url) : ?>
@@ -47,7 +47,7 @@ class MGWPP_Full_Page_Slider
             <button class="mg-fullpage-nav mg-fullpage-slider-prev">❮</button>
             <button class="mg-fullpage-nav mg-fullpage-slider-next">❯</button>
         </div>
-<?php
+        <?php
         return ob_get_clean();
     }
 }

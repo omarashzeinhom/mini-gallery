@@ -1,10 +1,13 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 get_header();
 
 if (have_posts()) :
-    while (have_posts()) : the_post();
+    while (have_posts()) :
+        the_post();
         echo '<div class="mgwpp-album">';
 
         // Album title
@@ -30,9 +33,9 @@ if (have_posts()) :
                     echo do_shortcode('[mgwpp_gallery id="' . absint($gallery_id) . '"]');
                     echo '</div>';
                 } else {
-                    echo '<p class="mgwpp-invalid-gallery">' . 
-                        esc_html__('Invalid gallery ID:', 'mini-gallery') . ' ' . 
-                        absint($gallery_id) . 
+                    echo '<p class="mgwpp-invalid-gallery">' .
+                        esc_html__('Invalid gallery ID:', 'mini-gallery') . ' ' .
+                        absint($gallery_id) .
                         '</p>';
                 }
             }

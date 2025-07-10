@@ -121,8 +121,6 @@ function mgwpp_gallery_shortcode($atts)
         } else {
             $output .= '<p>No images found for this gallery.</p>';
         }
-
-      
     } else {
         $output .= '<p>Invalid gallery ID.</p>';
     }

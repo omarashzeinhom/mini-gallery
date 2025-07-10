@@ -137,11 +137,13 @@ class MGWPP_Module_Manager
         return self::$enabled_modules;
     }
 
-    public static function get_enabled_sub_modules() {
+    public static function get_enabled_sub_modules()
+    {
         return get_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));
     }
 
-    public function get_sub_modules() {
+    public function get_sub_modules()
+    {
         $modules = self::$sub_modules;
         
         foreach ($modules as $slug => &$module) {
@@ -193,7 +195,8 @@ class MGWPP_Module_Manager
         self::load_enabled_gallery_types();
     }
     
-    public static function load_enabled_gallery_types() {
+    public static function load_enabled_gallery_types()
+    {
         $enabled_types = self::get_enabled_sub_modules();
         
         foreach ($enabled_types as $type) {
@@ -204,7 +207,8 @@ class MGWPP_Module_Manager
         }
     }
     
-    private static function get_gallery_type_path($type) {
+    private static function get_gallery_type_path($type)
+    {
         if (!isset(self::$gallery_type_files[$type])) {
             return false;
         }
@@ -222,7 +226,8 @@ class MGWPP_Module_Manager
         return MG_PLUGIN_PATH . 'includes/gallery-types/' . $file;
     }
     
-    public static function reset_to_defaults() {
+    public static function reset_to_defaults()
+    {
         update_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));
         return array_keys(self::$sub_modules);
     }

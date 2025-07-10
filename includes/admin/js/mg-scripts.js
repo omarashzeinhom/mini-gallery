@@ -6,14 +6,16 @@ document.addEventListener("DOMContentLoaded", function () {
         var slides = carousel.querySelectorAll(".carousel-slide");
         var currentIndex = 0;
 
-        function showSlide(index) {
+        function showSlide(index)
+        {
             slides.forEach(function (slide) {
                 slide.style.display = "none";
             });
             slides[index].style.display = "block";
         }
 
-        function nextSlide() {
+        function nextSlide()
+        {
             currentIndex = (currentIndex + 1) % slides.length;
             showSlide(currentIndex);
         }
@@ -36,7 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
         var visibleSlides = [];
 
         // Function to update the number of images per page based on screen width
-        function updateImagesPerPage() {
+        function updateImagesPerPage()
+        {
             if (window.innerWidth < 768) {
                 imagesPerPage = 2; // 2 images per page on mobile
             } else {
@@ -45,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Function to show the current page of slides
-        function showSlides() {
+        function showSlides()
+        {
             var totalSlides = slides.length;
             slides.forEach(function (slide, index) {
                 if (index >= currentIndex * imagesPerPage && index < (currentIndex + 1) * imagesPerPage) {
@@ -57,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Function to go to the next page of slides
-        function nextSlide() {
+        function nextSlide()
+        {
             updateImagesPerPage();
             var totalSlides = slides.length;
             currentIndex = (currentIndex + 1) % Math.ceil(totalSlides / imagesPerPage);

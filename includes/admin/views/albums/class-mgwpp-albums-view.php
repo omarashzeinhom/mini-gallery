@@ -29,7 +29,7 @@ class MGWPP_Albums_View
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
-?>
+        ?>
         <?php MGWPP_Inner_Header::render(); ?>
 
         <div class="wrap">
@@ -120,12 +120,12 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-    <?php
+        <?php
     }
 
     private static function render_creation_form()
     {
-    ?>
+        ?>
         <div class="mgwpp-album-form-container">
             <div class="mgwpp-album-form-card">
                 <div class="mgwpp-form-header">
@@ -326,7 +326,7 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-    <?php
+        <?php
     }
 
     private static function render_gallery_selector()
@@ -337,7 +337,7 @@ class MGWPP_Albums_View
             'orderby'        => 'title',
             'order'          => 'ASC'
         ]);
-    ?>
+        ?>
         <div class="mgwpp-gallery-selector">
             <?php if (empty($galleries)) : ?>
                 <div class="mgwpp-no-galleries">
@@ -353,7 +353,7 @@ class MGWPP_Albums_View
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
                         $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/images/placeholder.jpg';
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
-                    ?>
+                        ?>
                         <label class="mgwpp-gallery-item">
                             <div class="mgwpp-gallery-checkbox">
                                 <input type="checkbox"
@@ -377,20 +377,20 @@ class MGWPP_Albums_View
                 </div>
             <?php endif; ?>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_albums_table()
     {
         $table = new MGWPP_Albums_Table();
         $table->prepare_items();
-    ?>
+        ?>
         <div class="mgwpp-albums-table-container">
             <form method="post">
                 <?php $table->display(); ?>
             </form>
         </div>
-<?php
+        <?php
     }
 
     // Helper methods for stats

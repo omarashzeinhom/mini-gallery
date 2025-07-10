@@ -15,8 +15,7 @@ class MGWPP_Album_Submit
     public static function handle_album_submission()
     {
         // Verify nonce
-        if (
-            !isset($_POST['mgwpp_album_submit_nonce']) ||
+        if (!isset($_POST['mgwpp_album_submit_nonce']) ||
             !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_submit_nonce'])), 'mgwpp_album_submit_nonce')
         ) {
             wp_die('Security check failed for Submitting Album', 'Error', array('response' => 403));
@@ -80,8 +79,7 @@ class MGWPP_Album_Submit
         }
 
         // Verify nonce
-        if (
-            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+        if (!isset($_POST['mgwpp_album_galleries_nonce']) ||
             !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')
         ) {
             return;

@@ -45,7 +45,7 @@ class MGWPP_Testimonial_Manager
         $position = get_post_meta($post->ID, '_mgwpp_position', true);
         $image_id = get_post_meta($post->ID, '_mgwpp_image_id', true);
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
-?>
+        ?>
 
         <div class="mgwpp-meta-field">
             <label for="mgwpp_author"><?php esc_html_e('Author Name:', 'mini-gallery'); ?></label>
@@ -58,14 +58,13 @@ class MGWPP_Testimonial_Manager
             <input type="text" id="mgwpp_position" name="mgwpp_position"
                 value="<?php echo esc_attr($position); ?>" class="widefat">
         </div>
-<?php
+        <?php
     }
 
     public function save_testimonial($post_id, $post)
     {
         // Verify nonce first
-        if (
-            !isset($_POST['mgwpp_testimonial_nonce']) ||
+        if (!isset($_POST['mgwpp_testimonial_nonce']) ||
             !wp_verify_nonce(sanitize_key($_POST['mgwpp_testimonial_nonce']), 'mgwpp_testimonial_nonce') ||
             !current_user_can('edit_post', $post_id) ||
             wp_is_post_autosave($post_id) ||

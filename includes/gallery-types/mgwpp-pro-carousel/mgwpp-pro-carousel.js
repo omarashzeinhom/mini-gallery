@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     class MGWPPCarousel {
-        constructor(element) {
+        constructor(element)
+        {
             this.element = element;
             this.container = element.querySelector('.mgwpp-pro-carousel__container');
             this.track = element.querySelector('.mgwpp-pro-carousel__track');
@@ -23,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.init();
         }
 
-        cloneSlides() {
+        cloneSlides()
+        {
             // Clone first and last few slides
             const clonesStart = this.originalCards.slice(-this.visibleCardCount).map(card => {
                 const clone = card.cloneNode(true);
@@ -42,15 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
             this.cards = Array.from(this.track.querySelectorAll('.mgwpp-pro-carousel__card'));
         }
 
-        init() {
+        init()
+        {
             this.calculateDimensions();
             this.setupEventListeners();
             this.jumpToStart();
         }
 
-        calculateDimensions() {
+        calculateDimensions()
+        {
             const firstCard = this.originalCards[0];
-            if (!firstCard) return;
+            if (!firstCard) {
+                return;
+            }
 
             const styles = getComputedStyle(this.element);
             this.cardWidth = firstCard.offsetWidth;
@@ -58,32 +64,39 @@ document.addEventListener('DOMContentLoaded', () => {
             this.visibleCardCount = Math.floor(this.element.offsetWidth / (this.cardWidth + this.gap));
         }
 
-        jumpToStart() {
+        jumpToStart()
+        {
             this.currentIndex = this.visibleCardCount;
             this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
         }
 
-        setTransform(position, smooth = true) {
+        setTransform(position, smooth = true)
+        {
             this.track.style.transition = smooth ? 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none';
             this.track.style.transform = `translateX(${position}px)`;
             this.currentTranslate = position;
         }
 
-        handleTouchStart(e) {
+        handleTouchStart(e)
+        {
             this.isDragging = true;
             this.startPos = this.getPositionX(e);
             this.prevTranslate = this.currentTranslate;
             this.setTransform(this.currentTranslate, false);
         }
 
-        handleTouchMove(e) {
-            if (!this.isDragging) return;
+        handleTouchMove(e)
+        {
+            if (!this.isDragging) {
+                return;
+            }
             const currentPos = this.getPositionX(e);
             this.currentTranslate = this.prevTranslate + currentPos - this.startPos;
             this.track.style.transform = `translateX(${this.currentTranslate}px)`;
         }
 
-        handleTouchEnd() {
+        handleTouchEnd()
+        {
             this.isDragging = false;
             const movedBy = this.currentTranslate - this.prevTranslate;
             const threshold = (this.cardWidth + this.gap) * 0.25;
@@ -95,26 +108,28 @@ document.addEventListener('DOMContentLoaded', () => {
             this.navigateTo(this.currentIndex);
         }
 
-        navigateTo(index) {
+        navigateTo(index)
+        {
             this.currentIndex = index;
             const targetPosition = -this.currentIndex * (this.cardWidth + this.gap);
             this.setTransform(targetPosition);
         }
 
-        checkBoundary() {
+        checkBoundary()
+        {
             const totalSlides = this.originalCards.length;
             
             if (this.currentIndex <= 0) {
                 this.currentIndex = totalSlides;
                 this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
-            }
-            else if (this.currentIndex >= totalSlides + this.visibleCardCount) {
+            } else if (this.currentIndex >= totalSlides + this.visibleCardCount) {
                 this.currentIndex = this.visibleCardCount;
                 this.setTransform(-this.currentIndex * (this.cardWidth + this.gap), false);
             }
         }
 
-        setupEventListeners() {
+        setupEventListeners()
+        {
             // Touch/Mouse events
             const handleStart = e => this.handleTouchStart(e);
             const handleMove = e => this.handleTouchMove(e);
@@ -153,7 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        getPositionX(event) {
+        getPositionX(event)
+        {
             return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
         }
     }

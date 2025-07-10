@@ -1,4 +1,4 @@
-jQuery(document).ready(function ($) {
+jQuery(function ($) {
     $('.mgwpp-single-carousel').each(function () {
         const $carousel = $(this);
         const $slides = $carousel.find('.mgwpp-single-carousel__slide');
@@ -8,7 +8,9 @@ jQuery(document).ready(function ($) {
         let isDragging = false;
         const swipeThreshold = $carousel.data('swipe-threshold') || 30;
 
-        if (!$slides.length) return;
+        if (!$slides.length) {
+            return;
+        }
         if ($slides.length < 2) {
             $carousel.find('.mgwpp-single-carousel__controls').hide();
             return;
@@ -21,7 +23,9 @@ jQuery(document).ready(function ($) {
             isDragging = true;
         });
         $carousel.on('pointerup pointerleave', e => {
-            if (!isDragging) return;
+            if (!isDragging) {
+                return;
+            }
             isDragging = false;
             handleSwipe(startX, e.clientX);
         });
@@ -30,14 +34,16 @@ jQuery(document).ready(function ($) {
         $carousel.find('.mgwpp-single-carousel__nav--prev').click(() => updateSlide(-1));
         $carousel.find('.mgwpp-single-carousel__nav--next').click(() => updateSlide(1));
 
-        function handleSwipe(start, end) {
+        function handleSwipe(start, end)
+        {
             const delta = start - end;
             if (Math.abs(delta) > swipeThreshold) {
                 updateSlide(delta > 0 ? 1 : -1);
             }
         }
 
-        function updateSlide(direction) {
+        function updateSlide(direction)
+        {
             $slides.removeClass('mgwpp-single-carousel__slide--active');
             currentIndex = (currentIndex + direction + $slides.length) % $slides.length;
             $slides.eq(currentIndex).addClass('mgwpp-single-carousel__slide--active');
@@ -47,7 +53,8 @@ jQuery(document).ready(function ($) {
         // Auto‑rotation
         let rotationInterval;
         const autoRotateSpeed = $carousel.data('auto-rotate') || 3000;
-        function startRotation() {
+        function startRotation()
+        {
             clearInterval(rotationInterval);
             console.log('▶️ starting rotation, speed =', autoRotateSpeed);
             if (autoRotateSpeed > 0) {

@@ -6,7 +6,8 @@
     </header>
 
     <div class="testimonials-grid">
-        <?php while (have_posts()) : the_post(); ?>
+        <?php while (have_posts()) :
+            the_post(); ?>
             <article class="testimonial-card">
                 <a href="<?php the_permalink(); ?>">
                     <?php if (has_post_thumbnail()) : ?>
@@ -16,9 +17,9 @@
                     <?php endif; ?>
 
                     <div class="testimonial-excerpt">
-                        <?php 
+                        <?php
                         $excerpt = get_the_excerpt();
-                        echo wp_trim_words($excerpt, 20); 
+                        echo wp_trim_words($excerpt, 20);
                         ?>
                     </div>
 
@@ -27,7 +28,7 @@
                         <?php
                         $position = get_post_meta(get_the_ID(), '_mgwpp_position', true);
                         if ($position) :
-                        ?>
+                            ?>
                             <div class="testimonial-position"><?php echo esc_html($position); ?></div>
                         <?php endif; ?>
                     </footer>

@@ -1,11 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
-class MGWPP_Gallery_Capabilities {
+class MGWPP_Gallery_Capabilities
+{
 
     // Assign custom capabilities to roles
-    public static function mgwpp_gallery_capabilities() {
+    public static function mgwpp_gallery_capabilities()
+    {
         $roles = ['administrator', 'marketing_team'];
         foreach ($roles as $role_name) {
             $role = get_role($role_name);
@@ -32,4 +34,3 @@ class MGWPP_Gallery_Capabilities {
 
 // Hook to assign custom capabilities after WordPress initializes the roles
 add_action('admin_init', array('MGWPP_Gallery_Capabilities', 'mgwpp_gallery_capabilities'));
-?>

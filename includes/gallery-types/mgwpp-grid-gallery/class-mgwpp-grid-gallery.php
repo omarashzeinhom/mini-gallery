@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class MGWPP_Gallery_Grid
 {
@@ -34,7 +36,7 @@ class MGWPP_Gallery_Grid
 
         <!-- Image Grid Container -->
         <div class="mgwpp-grid-container" data-layout="grid">
-            <?php foreach ($images as $image): ?>
+            <?php foreach ($images as $image) : ?>
                 <div class="mgwpp-grid-item">
                     <?php
                     // Get the image HTML
@@ -47,7 +49,7 @@ class MGWPP_Gallery_Grid
                     echo wp_kses_post($image_html);
 
                     if ($caption = wp_get_attachment_caption($image->ID)) :
-                    ?>
+                        ?>
                         <div class="mgwpp-image-caption"><?php esc_html($caption); ?></div>
                     <?php endif; ?>
                 </div>
@@ -72,6 +74,6 @@ class MGWPP_Gallery_Grid
             });
         </script>
 
-<?php return ob_get_clean();
+        <?php return ob_get_clean();
     }
 }

@@ -47,12 +47,12 @@ jQuery(document).ready(function ($) {
             this.slides.forEach((slide, index) => {
                 const slideHTML =
                     `
-                <div 
+                <div
                 className="mgwpp-slide ${index === this.currentSlideIndex ? 'active' : ''}"
                 data-slide-index="${index}"
                 >
 
-                <div class="mgwpp-slide-number"> 
+                <div class="mgwpp-slide-number">
                 ${index + 1}
                 </div>
                 <div class="mgwpp-slide-items">
@@ -74,12 +74,12 @@ jQuery(document).ready(function ($) {
             const $tab = $(e.currentTarget);
             const target = $tab.data('target');
 
-            // remove active classes 
+            // remove active classes
             $tab.closest('.mgwpp-properties-tabs').find('.nav-tab').removeClass('active');
 
             $tab.closest('.mgwpp-properties-content').find('.mgwpp-tab-content').removeClass('active');
 
-            // Add active classes 
+            // Add active classes
             $tab.addClass('active');
             $(`.mgwpp-tab-content[data-tab="${target}"]`).addClass('active');
         },
@@ -161,7 +161,9 @@ jQuery(document).ready(function ($) {
         },
 
         loadGalleryData: function () {
-            if (!mgwppEditor.galleryId) return;
+            if (!mgwppEditor.galleryId) {
+                return;
+            }
 
             $.post(mgwppEditor.ajaxUrl, {
                 action: 'mgwpp_get_gallery_data',
@@ -228,7 +230,7 @@ jQuery(document).ready(function ($) {
                 id: 'item_' + Date.now(),
                 type: type,
 
-                // Common Properties 
+                // Common Properties
                 position: {
                     x: 0,
                     y: 0
@@ -250,23 +252,23 @@ jQuery(document).ready(function ($) {
                     style: 'primary',
                 }),
 
-                title: mgwppEditor.strings.newItem || 'New Item',
-                image_url: '',
-                image_id: 0,
-                alt_text: '',
-                width_value: 100,
-                width_unit: '%',
-                margin: 0,
-                padding: 0,
-                background_color: '#ffffff',
-                border_radius: 0,
-                entrance_animation: 'none',
-                animation_duration: 0.5,
-                animation_delay: 0,
-                custom_class: '',
-                custom_css: '',
-                hide_on_mobile: false,
-                hide_on_tablet: false
+            title: mgwppEditor.strings.newItem || 'New Item',
+            image_url: '',
+            image_id: 0,
+            alt_text: '',
+            width_value: 100,
+            width_unit: '%',
+            margin: 0,
+            padding: 0,
+            background_color: '#ffffff',
+            border_radius: 0,
+            entrance_animation: 'none',
+            animation_duration: 0.5,
+            animation_delay: 0,
+            custom_class: '',
+            custom_css: '',
+            hide_on_mobile: false,
+            hide_on_tablet: false
             };
 
 
@@ -327,7 +329,9 @@ jQuery(document).ready(function ($) {
             e.preventDefault();
             e.stopPropagation();
 
-            if (!confirm(mgwppEditor.strings.confirmDelete)) return;
+            if (!confirm(mgwppEditor.strings.confirmDelete)) {
+                return;
+            }
 
             const $item = $(e.currentTarget).closest('.mgwpp-gallery-item');
             const itemId = $item.data('item-id');
@@ -431,7 +435,8 @@ jQuery(document).ready(function ($) {
 
         },
 
-        populatePropertiesPanel: function (item) {  // Changed parameter to item
+        populatePropertiesPanel: function (item) {
+  // Changed parameter to item
             // Corrected selector typo
             $('.mgwpp-properties-panel input, .mgwpp-properties-panel select, .mgwpp-properties-panel textarea').val('');
 
@@ -501,7 +506,8 @@ jQuery(document).ready(function ($) {
 
         // Fixed method name spelling
 
-        setCheckboxState: function (selector, state) {  // Changed parameter name
+        setCheckboxState: function (selector, state) {
+  // Changed parameter name
             $(`#${selector}`).prop('checked', Boolean(state));
         },
 
@@ -575,7 +581,7 @@ jQuery(document).ready(function ($) {
                 if (!MGWPPEnhancedEditor.galleryData.canvas_items ||
                     MGWPPEnhancedEditor.galleryData.canvas_items.length === 0) {
                     this.$canvas.html(`<div class="mgwpp-empty-canvas">
-                <p>${mgwppEditor.strings.emptyCanvas || 'No items on canvas yet.'}</p></div>`);
+                    <p>${mgwppEditor.strings.emptyCanvas || 'No items on canvas yet.'}</p></div>`);
                     return;
                 }
 
@@ -648,7 +654,9 @@ jQuery(document).ready(function ($) {
             },
 
             updatePosition: function () {
-                if (!this.currentItem) return;
+                if (!this.currentItem) {
+                    return;
+                }
 
                 const x = parseInt($('.mgwpp-pos-x').val()) || 0;
                 const y = parseInt($('.mgwpp-pos-y').val()) || 0;
@@ -661,7 +669,9 @@ jQuery(document).ready(function ($) {
             },
 
             updateSize: function () {
-                if (!this.currentItem) return;
+                if (!this.currentItem) {
+                    return;
+                }
 
                 const width = parseInt($('.mgwpp-width').val()) || 100;
                 const height = parseInt($('.mgwpp-height').val()) || 100;
@@ -674,7 +684,9 @@ jQuery(document).ready(function ($) {
             },
 
             updateRotation: function (e) {
-                if (!this.currentItem) return;
+                if (!this.currentItem) {
+                    return;
+                }
 
                 const rotation = parseInt($(e.currentTarget).val()) || 0;
                 this.currentItem.rotation = rotation;
@@ -686,7 +698,9 @@ jQuery(document).ready(function ($) {
             },
 
             bringToFront: function () {
-                if (!this.currentItem) return;
+                if (!this.currentItem) {
+                    return;
+                }
 
                 this.currentItem.z_index = this.getNextZIndex();
                 this.updateCanvasItem(this.currentItem);
@@ -694,7 +708,9 @@ jQuery(document).ready(function ($) {
             },
 
             sendToBack: function () {
-                if (!this.currentItem) return;
+                if (!this.currentItem) {
+                    return;
+                }
 
                 if (!this.galleryData.canvas_items || this.galleryData.canvas_items.length === 0) {
                     this.currentItem.z_index = 0;
@@ -712,7 +728,7 @@ jQuery(document).ready(function ($) {
 
                 if ($item.length) {
                     const style = `left:${item.position.x}px;top:${item.position.y}px;` +
-                        `width:${item.dimensions.width}px;height:${item.dimensions.height}px;` +
+                    `width:${item.dimensions.width}px;height:${item.dimensions.height}px;` +
                         `z-index:${item.z_index};` +
                         (item.rotation ? `transform:rotate(${item.rotation}deg);` : '');
 

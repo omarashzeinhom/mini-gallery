@@ -1,8 +1,8 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     // Only run on galleries page
     if ($('.mgwpp-admin-galleries').length) {
         // Copy shortcode to clipboard - namespaced to galleries
-        $('.mgwpp-admin-galleries').on('click', '.mgwpp-shortcode-input', function() {
+        $('.mgwpp-admin-galleries').on('click', '.mgwpp-shortcode-input', function () {
             this.select();
             document.execCommand('copy');
             
@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
         });
         
         // Enhanced copy with button - namespaced to galleries
-        $('.mgwpp-admin-galleries').on('click', '.mgwpp-copy-shortcode', function(e) {
+        $('.mgwpp-admin-galleries').on('click', '.mgwpp-copy-shortcode', function (e) {
             e.preventDefault();
             var shortcodeInput = $(this).siblings('.mgwpp-shortcode-input');
             shortcodeInput.select();

@@ -187,5 +187,3 @@ add_action('admin_notices', function () {
             . '</p></div>';
     }
 });
-
-

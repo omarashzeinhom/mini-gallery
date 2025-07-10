@@ -256,3 +256,29 @@ C:.
 \---tests
         test.php
         
+
+=======Imrpoved Structure in Future =====
+includes/
++-- core/               # Core systems
+|   |-- class-plugin-core.php
+|   |-- class-registry.php
+|
++-- services/           # Business logic
+|   |-- class-gallery-service.php
+|   |-- class-image-service.php
+|
++-- admin/
+|   +-- controllers/    # Request handlers
+|   |   |-- class-edit-gallery-controller.php
+|   |
+|   +-- views/          # Templates
+|   |   |-- edit-gallery.php
+|
++-- public/
+|   +-- controllers/    # Shortcode handlers
+|   |   |-- class-gallery-controller.php
+|
++-- gallery-types/      # Your existing components
+|   |-- class-gallery-interface.php
+|   |-- single-carousel/
+|   |-- grid-gallery/

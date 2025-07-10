@@ -1,5 +1,6 @@
 jQuery(document).ready(function ($) {
-    function showNotice(message, type = 'success') {
+    function showNotice(message, type = 'success')
+    {
         $('#mgwpp-notice-area').html(
             `<div class="notice notice-${type} is-dismissible"><p>${message}</p></div>`
         );
@@ -144,7 +145,8 @@ jQuery(document).ready(function ($) {
         });
 
         // Update enabled gallery types display
-        function updateEnabledGalleryTypes(module, status) {
+        function updateEnabledGalleryTypes(module, status)
+        {
             const $container = $('.mgwpp-enabled-gallery-types .mgwpp-stats-grid');
             const $badge = $container.find(`.mgwpp-stat-card[data-module="${module}"]`);
 

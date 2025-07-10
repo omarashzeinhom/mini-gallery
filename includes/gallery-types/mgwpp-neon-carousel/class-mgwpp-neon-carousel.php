@@ -2,8 +2,10 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-class MGWPP_Neon_Carousel {
-    public static function render($post_id, $images) {
+class MGWPP_Neon_Carousel
+{
+    public static function render($post_id, $images)
+    {
         // Validate inputs
         $post_id = absint($post_id);
         if ($post_id <= 0) {
@@ -21,13 +23,15 @@ class MGWPP_Neon_Carousel {
         ?>
         <div class="neon-slider" id="<?php echo esc_attr(sanitize_key($unique_id)); ?>">
             <div class="neon-slides">
-                <?php foreach ($images as $index => $image) : 
-                    if (!isset($image->ID)) continue;
+                <?php foreach ($images as $index => $image) :
+                    if (!isset($image->ID)) {
+                        continue;
+                    }
                     $image_id = absint($image->ID);
                     $alt_text = sanitize_text_field(
                         get_post_meta($image_id, '_wp_attachment_image_alt', true) ?: ''
                     );
-                ?>
+                    ?>
                 <div class="neon-slide <?php echo esc_attr(($index === 0) ? 'first-neon-slide active' : ''); ?>">
                     <?php echo wp_get_attachment_image(
                         $image_id,
@@ -47,12 +51,14 @@ class MGWPP_Neon_Carousel {
                             <?php endif; ?>
                             <div class="neon-preview-images">
                                 <?php foreach ($images as $thumb_index => $thumb) :
-                                    if (!isset($thumb->ID)) continue;
+                                    if (!isset($thumb->ID)) {
+                                        continue;
+                                    }
                                     $thumb_id = absint($thumb->ID);
                                     $thumb_alt = sanitize_text_field(
                                         get_post_meta($thumb_id, '_wp_attachment_image_alt', true) ?: ''
                                     );
-                                ?>
+                                    ?>
                                 <img 
                                     src="<?php echo esc_url(wp_get_attachment_image_url($thumb_id, 'thumbnail')); ?>" 
                                     alt="<?php echo esc_attr($thumb_alt); ?>"

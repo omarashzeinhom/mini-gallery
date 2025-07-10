@@ -21,7 +21,7 @@ class MGWPP_Security_View
         $suspicious_by_type = self::group_suspicious_files($suspicious_files);
         $system_status = empty($suspicious_files) ? 'secure' : 'warning';
         $storage_status = ($storage_data['percent'] < 80) ? 'optimized' : 'warning';
-?>
+        ?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -84,14 +84,14 @@ class MGWPP_Security_View
                                     </div>
 
                                     <div class="mgwpp-card-body">
-                                        <?php if (empty($suspicious_files)): ?>
+                                        <?php if (empty($suspicious_files)) : ?>
                                             <div class="mgwpp-clean-status">
                                                 <div class="mgwpp-status-icon">
                                                     <span class="dashicons dashicons-yes"></span>
                                                 </div>
                                                 <p><?php esc_html_e('No suspicious files found', 'mini-gallery'); ?></p>
                                             </div>
-                                        <?php else: ?>
+                                        <?php else : ?>
                                             <div class="mgwpp-warning-status">
                                                 <div class="mgwpp-status-icon">
                                                     <span class="dashicons dashicons-no"></span>
@@ -166,8 +166,8 @@ class MGWPP_Security_View
                                         <div class="mgwpp-file-breakdown">
                                             <?php
                                             $top_file_types = array_slice($storage_data['file_types'], 0, 3);
-                                            foreach ($top_file_types as $ext => $data):
-                                            ?>
+                                            foreach ($top_file_types as $ext => $data) :
+                                                ?>
                                                 <div class="mgwpp-file-breakdown-item">
                                                     <div class="mgwpp-breakdown-header">
                                                         <div class="mgwpp-breakdown-info">
@@ -217,7 +217,7 @@ class MGWPP_Security_View
                 </div>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private static function group_suspicious_files($suspicious_files)
@@ -259,7 +259,7 @@ class MGWPP_Security_View
     {
         $status_class = 'mgwpp-status-' . $status;
         $icon_class = 'dashicons dashicons-' . $icon;
-    ?>
+        ?>
         <div class="mgwpp-stat-card <?php echo esc_attr($status_class); ?>">
             <div class="mgwpp-stat-header">
                 <div class="mgwpp-stat-icon">
@@ -270,13 +270,13 @@ class MGWPP_Security_View
             <h3 class="mgwpp-stat-title"><?php echo esc_html($title); ?></h3>
             <p class="mgwpp-stat-description"><?php echo esc_html($description); ?></p>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_config_item($icon, $title, $status, $description, $key)
     {
         $icon_class = 'dashicons dashicons-' . $icon;
-    ?>
+        ?>
         <div class="mgwpp-config-item">
             <div class="mgwpp-config-header">
                 <span class="mgwpp-config-icon <?php echo esc_attr($icon_class); ?>"></span>
@@ -285,37 +285,37 @@ class MGWPP_Security_View
             <h4 class="mgwpp-config-title"><?php echo esc_html($title); ?></h4>
             <p class="mgwpp-config-description"><?php echo esc_html($description); ?></p>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_security_header()
     {
-    ?>
+        ?>
         <div class="mgwpp-security-header">
             <h2><?php echo esc_html__('Security Settings', 'mini-gallery'); ?></h2>
             <p><?php echo esc_html__('This section includes security scan results and will include more options in future updates.', 'mini-gallery'); ?></p>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_scan_results($suspicious_files)
     {
-    ?>
+        ?>
         <div class="mgwpp-scan-results">
             <h3><?php echo esc_html__('Suspicious File Scan', 'mini-gallery'); ?></h3>
             <?php self::render_suspicious_report($suspicious_files); ?>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_storage_analysis($storage_data)
     {
-    ?>
+        ?>
         <div class="mgwpp-storage-analysis">
             <h3><?php echo esc_html__('Storage Analysis', 'mini-gallery'); ?></h3>
             <?php self::render_storage_section($storage_data); ?>
         </div>
-    <?php
+        <?php
     }
 
 
@@ -450,7 +450,7 @@ class MGWPP_Security_View
         $percent = $storage_data['percent'];
         $file_types = $storage_data['file_types'];
         $file_count = $storage_data['files'];
-    ?>
+        ?>
         <div class="mgwpp-storage-card">
             <div class="mgwpp-storage-overview">
                 <div class="mgwpp-storage-info">
@@ -478,7 +478,7 @@ class MGWPP_Security_View
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($file_types as $ext => $data): ?>
+                <?php foreach ($file_types as $ext => $data) : ?>
                     <tr>
                         <td><?php echo esc_html($ext); ?></td>
                         <td><?php echo esc_html($data['count']); ?></td>
@@ -497,6 +497,6 @@ class MGWPP_Security_View
             <?php echo esc_html($file_count); ?> <?php esc_html_e('files scanned.', 'mini-gallery'); ?>
         </p>
         </div>
-<?php
+        <?php
     }
 }

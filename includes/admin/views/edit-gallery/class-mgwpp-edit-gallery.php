@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class MGWPP_Edit_Gallery_View
 {
@@ -40,7 +42,9 @@ class MGWPP_Edit_Gallery_View
     // CORRECTED: Use gallery edit specific assets
     public static function enqueue_assets($hook)
     {
-        if ($hook !== 'gallery_page_mgwpp-edit-gallery') return;
+        if ($hook !== 'gallery_page_mgwpp-edit-gallery') {
+            return;
+        }
 
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-sortable');
@@ -98,6 +102,28 @@ class MGWPP_Edit_Gallery_View
         // Get gallery data
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
         $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
+        $images = [];
+        if (!empty($gallery_images)) {
+            if (is_array($gallery_images)) {
+                $images = $gallery_images;
+            } else {
+                $images = explode(',', $gallery_images);
+            }
+        }
+        $images = array_map('intval', $images); // Ensure integer IDs
+
+        error_log("Gallery ID: $gallery_id"); // Check error log
+        error_log(print_r($gallery_images, true)); // Check what's stored
+
+        if (!empty($gallery_images)) {
+            $images = array_map('intval', (array) $gallery_images);
+
+            // Debug each image
+            foreach ($images as $image_id) {
+                $exists = wp_get_attachment_url($image_id);
+                error_log("Image $image_id exists: " . ($exists ? 'Yes' : 'No'));
+            }
+        }
         $images = !empty($gallery_images) ? (is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images)) : [];
 
         self::render_editor($gallery, $gallery_type, $images);
@@ -113,7 +139,7 @@ class MGWPP_Edit_Gallery_View
             ], admin_url('admin-ajax.php')),
             'mgwpp_preview_nonce'
         );
-?>
+        ?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
                 echo esc_html(
@@ -156,15 +182,16 @@ class MGWPP_Edit_Gallery_View
                                 <div class="mgwpp-image-container sortable">
                                     <?php if (!empty($images)) :
                                         foreach ($images as $image_id) :
-                                            if ($image_url = wp_get_attachment_url($image_id)) :
-                                                $thumb_url = wp_get_attachment_image_url($image_id, 'thumbnail');
-                                    ?>
+                                            $image_url = wp_get_attachment_url($image_id);
+                                            $thumb_url = $image_url ? wp_get_attachment_image_url($image_id, 'thumbnail') : false;
+
+                                            if ($thumb_url) : ?>
                                                 <div class="mgwpp-image-item" data-id="<?php echo esc_attr($image_id); ?>">
                                                     <img src="<?php echo esc_url($thumb_url); ?>">
                                                     <input type="hidden" name="gallery_images[]" value="<?php echo esc_attr($image_id); ?>">
                                                     <button type="button" class="mgwpp-remove-image" title="<?php esc_attr_e('Remove image', 'mini-gallery'); ?>">×</button>
                                                 </div>
-                                        <?php endif;
+                                            <?php endif;
                                         endforeach;
                                     else : ?>
                                         <p class="mgwpp-no-images"><?php esc_html_e('No images added to this gallery yet.', 'mini-gallery'); ?></p>
@@ -186,7 +213,7 @@ class MGWPP_Edit_Gallery_View
                             <div class="mgwpp-gallery-types">
                                 <?php foreach (self::$gallery_types as $type => $details) :
                                     $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
-                                ?>
+                                    ?>
                                     <div class="mgwpp-gallery-type <?php echo $type === $current_type ? 'active' : ''; ?>">
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
@@ -211,7 +238,7 @@ class MGWPP_Edit_Gallery_View
 
             </div>
         </div>
-<?php
+        <?php
     }
     public static function handle_save_gallery()
     {
@@ -228,6 +255,16 @@ class MGWPP_Edit_Gallery_View
         if (!$gallery_id) {
             wp_die(__('Invalid gallery ID.', 'mini-gallery'));
         }
+
+        // Add debug before saving images:
+        error_log("Saving images for gallery $gallery_id: " . print_r($_POST['gallery_images'], true));
+
+        $images = isset($_POST['gallery_images']) ? array_map('intval', (array) $_POST['gallery_images']) : [];
+        update_post_meta($gallery_id, 'gallery_images', $images);
+
+        // Add immediate retrieval check:
+        $saved = get_post_meta($gallery_id, 'gallery_images', true);
+        error_log("Saved images: " . print_r($saved, true));
 
         // Update title
         if (isset($_POST['post_title'])) {

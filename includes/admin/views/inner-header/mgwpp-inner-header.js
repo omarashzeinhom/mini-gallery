@@ -13,14 +13,16 @@ jQuery(document).ready(function ($) {
         // Handle image loading errors
         icon.on('error', function () {
             const isDark = body.hasClass('mgwpp-dark-mode');
-            $(this).attr('src',
+            $(this).attr(
+                'src',
                 isDark ? $(this).data('sun-fallback') : $(this).data('moon-fallback')
             );
         });
 
         // Initialize icon from body class
         const isDarkMode = body.hasClass('mgwpp-dark-mode');
-        icon.attr('src',
+        icon.attr(
+            'src',
             isDarkMode ? themeToggle.data('sun') : themeToggle.data('moon')
         );
 
@@ -36,7 +38,8 @@ jQuery(document).ready(function ($) {
 
             // Optimistic UI update
             body.toggleClass('mgwpp-dark-mode', newTheme === 'dark');
-            icon.attr('src',
+            icon.attr(
+                'src',
                 newTheme === 'dark' ? themeToggle.data('sun') : themeToggle.data('moon')
             );
             themeToggle.data('current-theme', newTheme);
@@ -59,14 +62,15 @@ jQuery(document).ready(function ($) {
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error(`AJAX Error (${xhr.status}):`, error);
+                    console.error(`AJAX Error(${xhr.status}):`, error);
                     revertUI();
                     showErrorToast('Connection error - settings not saved');
                 }
             });
 
             // Add error notification function
-            function showErrorToast(message) {
+            function showErrorToast(message)
+            {
                 const toast = $(`<div class="mgwpp-error-toast">${message}</div>`);
                 $('body').append(toast);
                 setTimeout(() => toast.remove(), 3000);

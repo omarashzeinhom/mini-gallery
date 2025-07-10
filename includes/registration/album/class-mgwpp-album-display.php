@@ -193,7 +193,7 @@ class MGWPP_Album_Display
     public static function get_lightbox_html()
     {
         ob_start();
-?>
+        ?>
         <div id="mgwpp-lightbox" class="mgwpp-lightbox">
             <span class="mgwpp-close">&times;</span>
             <div class="mgwpp-lightbox-overlay"></div>
@@ -204,7 +204,7 @@ class MGWPP_Album_Display
             <a class="mgwpp-prev">&#10094;</a>
             <a class="mgwpp-next">&#10095;</a>
         </div>
-<?php
+        <?php
         return ob_get_clean();
     }
 

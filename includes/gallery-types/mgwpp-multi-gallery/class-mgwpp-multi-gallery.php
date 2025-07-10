@@ -31,7 +31,7 @@ class MGWPP_Gallery_Multi
         wp_enqueue_script('mgwpp-multi-carousel');
 
         ob_start();
-?>
+        ?>
         <!-- Pass options via data attributes. display_mode will allow CSS and JS to adjust layout -->
         <div class="mg-gallery multi-carousel <?php echo esc_attr($args['display_mode']); ?>"
             data-auto-rotate="<?php echo intval($args['auto_rotate_speed']); ?>"
@@ -54,12 +54,12 @@ class MGWPP_Gallery_Multi
                             ?>
                         </div>
                     <?php endforeach; ?>
-                <?php else: ?>
+                <?php else : ?>
                     <div class="no-images"><?php esc_html_e('No images found', 'mini-gallery'); ?></div>
                 <?php endif; ?>
             </div><!-- .slides-wrapper -->
         </div><!-- .multi-carousel -->
-<?php
+        <?php
         return ob_get_clean();
     }
 }

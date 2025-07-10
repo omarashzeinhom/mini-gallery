@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
 
 
@@ -90,7 +92,8 @@ class MGWPP_Galleries_View
     }
 
     public function render()
-    { ?>
+    {
+        ?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -162,7 +165,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-    <?php
+        <?php
         // Render modal and scripts
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
@@ -287,7 +290,7 @@ class MGWPP_Galleries_View
 
     private static function render_create_gallery_modal()
     {
-    ?>
+        ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
@@ -318,7 +321,7 @@ class MGWPP_Galleries_View
                                     for="gallery_type"><?php esc_html_e('Gallery Style:', 'mini-gallery'); ?></label></th>
                             <td>
                                 <select id="gallery_type" name="gallery_type" required class="regular-text">
-                                    <?php foreach (self::$gallery_types as $key => $type): ?>
+                                    <?php foreach (self::$gallery_types as $key => $type) : ?>
                                         <option value="<?php echo esc_attr($key); ?>">
                                             <?php echo esc_html($type[0]); ?>
                                         </option>
@@ -336,8 +339,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-<?php
-
+        <?php
     }
 }
 

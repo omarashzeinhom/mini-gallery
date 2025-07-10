@@ -43,7 +43,9 @@ class MGWPP_Admin_Assets
 
     public function maybe_enqueue_assets($hook)
     {
-        if (!$this->is_plugin_page($hook)) return;
+        if (!$this->is_plugin_page($hook)) {
+            return;
+        }
 
         // Enqueue core assets
         wp_enqueue_style('mg-admin-styles');

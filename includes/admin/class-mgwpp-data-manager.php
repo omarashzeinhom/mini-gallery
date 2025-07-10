@@ -1,6 +1,8 @@
 <?php
 // File: includes/admin/class-mgwpp-data-manager.php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class MGWPP_Data_Manager
 {

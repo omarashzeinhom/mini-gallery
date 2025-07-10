@@ -1,5 +1,7 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 get_header();
 
@@ -18,9 +20,9 @@ echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
 // Back to album link
 $album_id = get_post_meta($gallery_id, '_mgwpp_parent_album', true);
 if ($album_id) {
-  echo '<a href="' . esc_url(get_permalink($album_id)) . '" class="mgwpp-back-to-album">';
-  echo '&larr; ' . esc_html__('Back to Album', 'mini-gallery');
-  echo '</a>';
+    echo '<a href="' . esc_url(get_permalink($album_id)) . '" class="mgwpp-back-to-album">';
+    echo '&larr; ' . esc_html__('Back to Album', 'mini-gallery');
+    echo '</a>';
 }
 
 echo '</div>';

@@ -6,7 +6,8 @@ get_header();
 ?>
 
 <main class="mgwpp-testimonial-single">
-    <?php while (have_posts()) : the_post(); ?>
+    <?php while (have_posts()) :
+        the_post(); ?>
         <article <?php post_class('testimonial-content'); ?>>
             
             <!-- Featured Image -->

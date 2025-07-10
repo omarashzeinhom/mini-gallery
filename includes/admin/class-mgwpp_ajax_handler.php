@@ -68,6 +68,10 @@ class MGWPP_Ajax_Handler
                     border-bottom: 1px solid #ddd;
                 }
             </style>
+            <?php
+            // Print scripts in head
+            wp_print_scripts(['jquery']);
+            ?>
         </head>
 
         <body>
@@ -79,6 +83,7 @@ class MGWPP_Ajax_Handler
             <?php
             // Output the gallery shortcode
             echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+            wp_print_scripts();
             ?>
         </body>
 

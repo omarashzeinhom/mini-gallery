@@ -41,7 +41,13 @@ class MGWPP_Assets
 
 
         if (in_array('single_carousel', $enabled_sub)) {
-            wp_register_script('mg-single-carousel-js', $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js', array(), '1.0', true);
+            wp_register_script(
+                'mg-single-carousel-js',
+                $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js',
+                ['jquery'], // Add jQuery as dependency here
+                '1.0',
+                true
+            );
             wp_register_style('mg-single-carousel-styles', $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.css');
         }
 
@@ -191,18 +197,31 @@ class MGWPP_Assets
         }
     }
 
-    // In MGWPP_Assets class
     public static function enqueue_preview_assets($gallery_type)
     {
         $enabled = self::get_enabled_sub_modules();
         if (in_array($gallery_type, $enabled)) {
-            self::enable_assets();
-            self::set_gallery_type($gallery_type);
+            // Force enable assets
+            self::$load_assets = true;
+            self::$shortcode_gallery_type = $gallery_type;
 
-            // Manually load required assets
-            $asset_class = new self();
-            $asset_class->register_assets();
-            $asset_class->enqueue_assets();
+            // Manually register and enqueue
+            $instance = new self();
+            $instance->register_assets();
+            $instance->enqueue_assets();
+        }
+    }
+
+    public static function print_inline_scripts($gallery_type)
+    {
+        switch ($gallery_type) {
+            case 'single_carousel':
+                echo '<script>MGWPP_SingleCarousel.initAll();</script>';
+                break;
+            case 'multi_carousel':
+                echo '<script>MGWPP_MultiCarousel.initAll();</script>';
+                break;
+                // Add other gallery types as needed
         }
     }
 }
@@ -214,15 +233,53 @@ add_action('init', function () {
 
 
 // In preview handler
+// In your preview handler file (e.g., includes/admin/class-mgwpp-preview.php)
 add_action('wp_ajax_mgwpp_preview', function () {
-    // Verify nonce and get gallery ID
+    // Verify nonce
+    if (
+        !isset($_GET['gallery_id']) ||
+        !wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview_nonce')
+    ) {
+        wp_send_json_error(__('Invalid request', 'mini-gallery'), 403);
+        exit;
+    }
+
     $gallery_id = intval($_GET['gallery_id']);
     $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-    // Enqueue SPECIFIC gallery assets
-    MGWPP_Assets::enqueue_preview_assets($gallery_type);
+    // Generate minimal HTML document
+?>
+    <!DOCTYPE html>
+    <html>
 
-    // Output preview HTML
-    echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></title>
+
+        <?php
+        // Load critical CSS directly
+        $critical_css = file_get_contents(MG_PLUGIN_PATH . 'public/css/mgwpp-preview-critical.css');
+        echo '<style>' . $critical_css . '</style>';
+
+        // Enqueue gallery-specific assets
+        MGWPP_Assets::enqueue_preview_assets($gallery_type);
+        wp_print_styles();
+        ?>
+    </head>
+
+    <body class="mgwpp-preview-body">
+        <div class="mgwpp-preview-container">
+            <?php echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]'); ?>
+        </div>
+
+        <?php
+        wp_print_scripts();
+        MGWPP_Assets::print_inline_scripts($gallery_type);
+        ?>
+    </body>
+
+    </html>
+<?php
     exit;
 });

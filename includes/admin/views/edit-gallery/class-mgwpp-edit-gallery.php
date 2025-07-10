@@ -146,7 +146,7 @@ class MGWPP_Edit_Gallery_View
                             </div>
                         </div>
 
-                        
+
                         <div class="mgwpp-edit-section">
                             <h2>
                                 <?php esc_html_e('Gallery Images', 'mini-gallery'); ?>

@@ -41,15 +41,15 @@ class MGWPP_Upload
 
         // Save gallery type (already sanitized)
         update_post_meta($post_id, 'gallery_type', $gallery_type);
-
+        // ADD THIS LINE TO SAVE IMAGES TO GALLERY
         // Handle media attachments safely
         if (!empty($_POST['selected_media'])) {
             $media_input = sanitize_text_field(wp_unslash($_POST['selected_media']));
             $media_ids = array_filter(array_map('absint', explode(',', $media_input)));
-            
+
             // SAVE IMAGE IDS TO GALLERY_META - CRITICAL MISSING LINE
             update_post_meta($post_id, 'gallery_images', $media_ids);
-            
+
             foreach ($media_ids as $media_id) {
                 $attachment_post = get_post($media_id);
                 if ($attachment_post && $attachment_post->post_type === 'attachment') {
@@ -60,6 +60,7 @@ class MGWPP_Upload
                 }
             }
         }
+        update_post_meta($post_id, 'gallery_images', $media_ids);
 
         wp_redirect(admin_url('admin.php?page=mgwpp_galleries'));
         exit;

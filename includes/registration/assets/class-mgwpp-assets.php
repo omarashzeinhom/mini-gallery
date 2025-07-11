@@ -164,6 +164,12 @@ class MGWPP_Assets
                         wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                     }
                     break;
+                case 'full_page_slider':
+                    if (in_array('full_page_slider', $enabled)) {
+                        wp_enqueue_script('mgwpp-fullpage-slider-js');
+                        wp_enqueue_style('mgwpp-fullpage-slider-styles');
+                    }
+                    break;
             }
         }
     }
@@ -240,7 +246,8 @@ add_action('init', function () {
 // In your preview handler file (e.g., includes/admin/class-mgwpp-preview.php)
 add_action('wp_ajax_mgwpp_preview', function () {
     // Verify nonce
-    if (!isset($_GET['gallery_id']) ||
+    if (
+        !isset($_GET['gallery_id']) ||
         !wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview_nonce')
     ) {
         wp_send_json_error(__('Invalid request', 'mini-gallery'), 403);
@@ -251,7 +258,7 @@ add_action('wp_ajax_mgwpp_preview', function () {
     $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
     // Generate minimal HTML document
-    ?>
+?>
     <!DOCTYPE html>
     <html>
 
@@ -283,6 +290,6 @@ add_action('wp_ajax_mgwpp_preview', function () {
     </body>
 
     </html>
-    <?php
+<?php
     exit;
 });

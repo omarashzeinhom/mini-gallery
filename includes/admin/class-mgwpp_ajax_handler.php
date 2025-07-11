@@ -56,34 +56,15 @@ class MGWPP_Ajax_Handler
         <head>
             <meta charset="<?php bloginfo('charset'); ?>">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title><?php 
+            <title>
+                <?php
+                /* translators: %1$s is the gallery title */
                 printf(
                     esc_html__('%1$s - Preview | Mini Gallery', 'mini-gallery'),
                     esc_html($gallery->post_title)
                 ); 
-            ?></title>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 20px;
-                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-                    background-color: #f5f5f5;
-                }
-                .preview-header {
-                    text-align: center;
-                    margin-bottom: 20px;
-                    padding-bottom: 20px;
-                    border-bottom: 1px solid #ddd;
-                }
-                .preview-container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    background: white;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                }
-            </style>
+                ?>
+            </title>
             <?php wp_head(); ?>
         </head>
 

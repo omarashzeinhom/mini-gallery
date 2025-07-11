@@ -66,11 +66,7 @@ class MGWPP_Albums_Table extends WP_List_Table
                 esc_url($edit_url),
                 __('Edit', 'mini-gallery')
             ),
-            'delete' => sprintf(
-                '<a href="%s" class="submitdelete">%s</a>',
-                esc_url($delete_url),
-                __('Delete', 'mini-gallery')
-            )
+
         ]);
     }
 
@@ -118,11 +114,13 @@ class MGWPP_Albums_Table extends WP_List_Table
         echo '</td>';
         echo '</tr>';
     }
-
     private function album_details_content($item)
     {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
-        echo '<div class="mgwpp-album-details"><h4>' . esc_html__('Album Contents', 'mini-gallery') . '</h4>';
+        echo '<div class="mgwpp-album-details"><h4>';
+        esc_html_e('Album Contents', 'mini-gallery');
+        echo '</h4>';
+
         if (!empty($galleries)) {
             echo '<ul class="mgwpp-album-galleries">';
             foreach ($galleries as $gallery_id) {
@@ -135,7 +133,9 @@ class MGWPP_Albums_Table extends WP_List_Table
             }
             echo '</ul>';
         } else {
-            echo '<p>' . esc_html__('No galleries in this album.', 'mini-gallery') . '</p>';
+            echo '<p>';
+            esc_html_e('No galleries in this album.', 'mini-gallery');
+            echo '</p>';
         }
         echo '</div>';
     }
@@ -177,13 +177,13 @@ add_action('admin_post_mgwpp_delete_album', function () {
 
 add_action('admin_notices', function () {
     if (isset($_GET['mgwpp_deleted'])) {
-        echo '<div class="notice notice-success is-dismissible"><p>'
-            . esc_html__('Album successfully removed.', 'mini-gallery')
-            . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>';
+        esc_html_e('Album successfully removed.', 'mini-gallery');
+        echo '</p></div>';
     }
     if (isset($_GET['mgwpp_delete_error'])) {
-        echo '<div class="notice notice-error is-dismissible"><p>'
-            . esc_html__('Failed to delete album.', 'mini-gallery')
-            . '</p></div>';
+        echo '<div class="notice notice-error is-dismissible"><p>';
+        esc_html_e('Failed to delete album.', 'mini-gallery');
+        echo '</p></div>';
     }
 });

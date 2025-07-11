@@ -1,144 +1,116 @@
-// mega-carousel.js
-
 class MegaCarousel {
-    constructor()
-    {
-        this.carousel = document.querySelector('.mg-mega-carousel');
-        if (!this.carousel) {
-            return;
-        }
-        
+    constructor(carouselElement) {
+        this.carousel = carouselElement;
         this.slides = Array.from(this.carousel.querySelectorAll('.mg-carousel__slide'));
         this.dotsContainer = this.carousel.querySelector('.mg-mega-carousel-dots-container');
         this.currentIndex = 0;
         this.autoPlayInterval = null;
 
-        // Immediately show the first slide if it exists.
-        if (this.slides[0]) {
-            this.slides[0].style.opacity = '1';
-            this.slides[0].style.transform = 'scale(1)';
-        }
-        
-        // Enable transitions after a short delay.
-        setTimeout(() => {
-            this.carousel.classList.add('loaded');
-        }, 50);
-        
+        // Initialize immediately
         this.initDots();
         this.addEventListeners();
         this.startAutoPlay();
+        
+        // Show first slide immediately
+        if (this.slides.length > 0) {
+            this.slides[0].classList.add('mg-active');
+        }
     }
 
-    initDots()
-    {
-        if (!this.dotsContainer) {
-            return;
-        }
+    initDots() {
+        if (!this.dotsContainer) return;
+        
+        // Clear existing dots
+        this.dotsContainer.innerHTML = '';
+        
+        // Create new dots
         this.slides.forEach((_, index) => {
             const dot = document.createElement('div');
             dot.classList.add('mg-mega-carousel-dot');
-            if (index === 0) {
-                dot.classList.add('active');
-            }
+            if (index === 0) dot.classList.add('active');
             dot.addEventListener('click', () => this.goToSlide(index));
             this.dotsContainer.appendChild(dot);
         });
     }
 
-    updateDots()
-    {
-        if (!this.dotsContainer) {
-            return;
-        }
-        const dots = Array.from(this.dotsContainer.children);
+    updateDots() {
+        if (!this.dotsContainer) return;
+        
+        const dots = this.dotsContainer.querySelectorAll('.mg-mega-carousel-dot');
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === this.currentIndex);
         });
     }
 
-    goToSlide(index)
-    {
-        if (index === this.currentIndex || !this.slides.length) {
-            return;
-        }
+    goToSlide(index) {
+        // Validate index
+        if (index < 0) index = this.slides.length - 1;
+        if (index >= this.slides.length) index = 0;
+        if (index === this.currentIndex) return;
+        
+        // Update classes
         this.slides[this.currentIndex].classList.remove('mg-active');
-        this.currentIndex = (index + this.slides.length) % this.slides.length;
-        this.slides[this.currentIndex].classList.add('mg-active');
+        this.slides[index].classList.add('mg-active');
+        
+        // Update state
+        this.currentIndex = index;
         this.updateDots();
         this.resetAutoPlay();
     }
 
-    addEventListeners()
-    {
-        // Navigation arrows using new class names.
+    addEventListeners() {
+        // Previous button
         const prevArrow = this.carousel.querySelector('.mgwpp__prev-mega-slider');
-        const nextArrow = this.carousel.querySelector('.mgwpp__next-mega-slider');
-
         if (prevArrow) {
-            prevArrow.addEventListener('click', () => this.prevSlide());
+            prevArrow.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.prevSlide();
+            });
         }
+        
+        // Next button
+        const nextArrow = this.carousel.querySelector('.mgwpp__next-mega-slider');
         if (nextArrow) {
-            nextArrow.addEventListener('click', () => this.nextSlide());
+            nextArrow.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.nextSlide();
+            });
         }
-
-        // Use pointer events for both mouse and touch interactions.
-        let pointerStartX = 0;
-        let isDragging = false;
-        const swipeThreshold = 30; // Lower threshold for swipe
-
-        this.carousel.addEventListener('pointerdown', e => {
-            pointerStartX = e.clientX;
-            isDragging = true;
-            this.carousel.setPointerCapture(e.pointerId);
-        });
-
-        // Optional: add pointermove for live feedback during drag.
-        this.carousel.addEventListener('pointermove', e => {
-            if (!isDragging) {
-                return;
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        
+        this.carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        
+        this.carousel.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > 50) { // Minimum swipe distance
+                diff > 0 ? this.nextSlide() : this.prevSlide();
             }
-            // Optionally, add visual feedback during dragging.
-        });
-
-        const pointerUpHandler = e => {
-            if (!isDragging) {
-                return;
-            }
-            isDragging = false;
-            const pointerEndX = e.clientX;
-            const delta = pointerEndX - pointerStartX;
-            if (Math.abs(delta) >= swipeThreshold) {
-                delta < 0 ? this.nextSlide() : this.prevSlide();
-            }
-        };
-
-        this.carousel.addEventListener('pointerup', pointerUpHandler);
-        this.carousel.addEventListener('pointercancel', pointerUpHandler);
+        }, { passive: true });
     }
 
-    nextSlide()
-    {
+    nextSlide() {
         this.goToSlide(this.currentIndex + 1);
     }
 
-    prevSlide()
-    {
+    prevSlide() {
         this.goToSlide(this.currentIndex - 1);
     }
 
-    startAutoPlay()
-    {
-        const autoplayEnabled = this.carousel.getAttribute('data-autoplay') === 'true';
-        if (autoplayEnabled) {
-            this.autoPlayInterval = setInterval(
-                () => this.nextSlide(),
-                parseInt(this.carousel.getAttribute('data-autoplay-delay')) || 5000
-            );
-        }
+    startAutoPlay() {
+        const autoplay = this.carousel.dataset.autoplay === 'true';
+        if (!autoplay) return;
+        
+        const delay = parseInt(this.carousel.dataset.autoplayDelay) || 3000;
+        this.autoPlayInterval = setInterval(() => this.nextSlide(), delay);
     }
 
-    resetAutoPlay()
-    {
+    resetAutoPlay() {
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
             this.startAutoPlay();
@@ -146,18 +118,17 @@ class MegaCarousel {
     }
 }
 
-// Initialize the carousel after the DOM is loaded.
+// Initialize all mega carousels on the page
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.querySelector('.mg-mega-carousel')) {
-        new MegaCarousel();
-    }
+    document.querySelectorAll('.mg-mega-carousel').forEach(carousel => {
+        new MegaCarousel(carousel);
+    });
 });
 
-// Lazy-load the first image if necessary.
+// Lazy loading for first image
 document.addEventListener('DOMContentLoaded', () => {
-    const firstImage = document.querySelector('.lazy-first');
-    if (firstImage) {
-        firstImage.src = firstImage.getAttribute('data-src');
-        firstImage.classList.remove('lazy-first');
-    }
+    document.querySelectorAll('.lazy-first').forEach(img => {
+        img.src = img.dataset.src;
+        img.classList.remove('lazy-first');
+    });
 });

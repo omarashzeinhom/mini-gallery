@@ -170,38 +170,23 @@ class MGWPP_Galleries_View
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
-    private function get_gallery_preview($gallery_id)
-    {
-        // Validate gallery ID
-        if (empty($gallery_id) || !is_numeric($gallery_id)) {
-            return $this->get_fallback_preview();
-        }
+   private function get_gallery_preview($gallery_id)
+{
+    // Generate nonced preview URL
+    $preview_url = wp_nonce_url(
+        add_query_arg([
+            'action' => 'mgwpp_preview',
+            'gallery_id' => $gallery_id
+        ], admin_url('admin-ajax.php')),
+        'mgwpp_preview_nonce'
+    );
 
-        // Get gallery images with proper sanitization
-        $images = get_post_meta($gallery_id, 'gallery_images', true);
-
-        // If we have actual images, use them for preview
-        if (!empty($images)) {
-            return $this->render_image_thumbnails($images);
-        }
-
-        // Try featured image as secondary option
-        $featured_image = get_the_post_thumbnail_url($gallery_id, 'medium');
-        if ($featured_image) {
-            return '<img src="' . esc_url($featured_image) . '" class="mgwpp-card-image" alt="' . esc_attr__('Gallery preview', 'mini-gallery') . '">';
-        }
-
-        // Fall back to gallery type specific image
-        $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
-        if (!empty($gallery_type) && isset(self::$gallery_types[$gallery_type])) {
-            $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . self::$gallery_types[$gallery_type][1];
-            return '<img src="' . esc_url($type_image_url) . '" class="mgwpp-card-image" alt="' . esc_attr(self::$gallery_types[$gallery_type][0]) . '">';
-        }
-
-        // Ultimate fallback
-        return $this->get_fallback_preview();
-    }
-
+    // Return iframe preview
+    return sprintf(
+        '<iframe src="%s" class="mgwpp-preview-iframe" loading="lazy"></iframe>',
+        esc_url($preview_url)
+    );
+}
     /**
      * Render thumbnails from gallery images
      */

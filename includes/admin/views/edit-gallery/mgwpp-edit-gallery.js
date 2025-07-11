@@ -1,45 +1,57 @@
 jQuery(function ($) {
-    // Initialize sortable
-    $('.mgwpp-image-container.sortable').sortable({
-        placeholder: 'mgwpp-image-item ui-sortable-placeholder',
-        opacity: 0.6,
-        revert: 200,
-        start: function () {
-            $('.mgwpp-remove-image').hide();
-        }
-    });
-
     // Initialize variables
     var mediaUploader;
-    var isReordering = false;
     var $imageContainer = $('.mgwpp-image-container');
 
-    // Make images sortable
+    // SINGLE sortable initialization - remove duplicates
     $imageContainer.sortable({
         placeholder: 'mgwpp-image-item ui-sortable-placeholder',
         opacity: 0.6,
         revert: 200,
-        start: function () {
-            isReordering = true;
+        cursor: 'move',
+        start: function (event, ui) {
+            // Hide remove buttons during drag
             $('.mgwpp-remove-image').hide();
+            ui.placeholder.height(ui.item.height());
         },
-        stop: function () {
-            isReordering = false;
+        stop: function (event, ui) {
+            // Show remove buttons after drag
+            $('.mgwpp-remove-image').show();
+            
+            // Update hidden input order to match visual order
+            updateHiddenInputOrder();
+            
+            // Visual feedback that order changed
+            $('#mgwpp-save-order-btn').css('background-color', '#d54e21');
         }
     });
+
+    // Function to update hidden input order
+    function updateHiddenInputOrder() {
+        $imageContainer.find('.mgwpp-image-item').each(function(index) {
+            var $item = $(this);
+            var imageId = $item.data('id');
+            
+            // Update or create hidden input with correct order
+            var $hiddenInput = $item.find('input[name="gallery_images[]"]');
+            if ($hiddenInput.length === 0) {
+                $hiddenInput = $('<input type="hidden" name="gallery_images[]">');
+                $item.append($hiddenInput);
+            }
+            $hiddenInput.val(imageId);
+        });
+    }
 
     // Add Images button
     $('.mgwpp-add-images').on('click', function (e) {
         e.preventDefault();
 
-        // If the uploader object has already been created, reopen the dialog
         if (mediaUploader) {
             mediaUploader.open();
             return;
         }
 
-        // Extend the wp.media object
-        mediaUploader = wp.media.frames.file_frame = wp.media({
+        mediaUploader = wp.media({
             title: 'Select Images for Gallery',
             button: {
                 text: 'Add to Gallery'
@@ -50,18 +62,23 @@ jQuery(function ($) {
             }
         });
 
-        // When a file is selected, grab the IDs and add them to the container
         mediaUploader.on('select', function () {
             var attachments = mediaUploader.state().get('selection').toJSON();
+            var $noImages = $('.mgwpp-no-images');
+            
+            // Remove "no images" message if present
+            if ($noImages.length) {
+                $noImages.remove();
+            }
 
             attachments.forEach(function (attachment) {
                 // Check if image already exists
                 if ($imageContainer.find('[data-id="' + attachment.id + '"]').length === 0) {
                     var imageItem = $(
                         '<div class="mgwpp-image-item" data-id="' + attachment.id + '">' +
-                        '<img src="' + attachment.sizes.thumbnail.url + '">' +
+                        '<img src="' + attachment.sizes.thumbnail.url + '" alt="">' +
                         '<input type="hidden" name="gallery_images[]" value="' + attachment.id + '">' +
-                        '<button type="button" class="mgwpp-remove-image">×</button>' +
+                        '<button type="button" class="mgwpp-remove-image" title="Remove image">×</button>' +
                         '</div>'
                     );
 
@@ -70,7 +87,6 @@ jQuery(function ($) {
             });
         });
 
-        // Open the uploader dialog
         mediaUploader.open();
     });
 
@@ -79,144 +95,23 @@ jQuery(function ($) {
         e.preventDefault();
         $(this).closest('.mgwpp-image-item').fadeOut(300, function () {
             $(this).remove();
-        });
-    });
-
-    // Reorder button
-    $('.mgwpp-reorder-images').on('click', function (e) {
-        e.preventDefault();
-        isReordering = !isReordering;
-
-        if (isReordering) {
-            $(this).addClass('button-primary');
-            $('.mgwpp-remove-image').hide();
-            $imageContainer.sortable('enable');
-        } else {
-            $(this).removeClass('button-primary');
-            $imageContainer.sortable('disable');
-        }
-    });
-
-    // Preview button
-    $('.mgwpp-preview-gallery').on('click', function (e) {
-        e.preventDefault();
-        var galleryId = $('input[name="gallery_id"]').val();
-        var previewUrl = '?mgwpp_preview=1&gallery_id=' + galleryId + '&_wpnonce=' + mgwpp_preview_nonce;
-        window.open(previewUrl, '_blank');
-    });
-
-    // Show remove buttons on hover (except when reordering)
-    $imageContainer.on('mouseenter', '.mgwpp-image-item', function () {
-        if (!isReordering) {
-            $(this).find('.mgwpp-remove-image').show();
-        }
-    }).on('mouseleave', '.mgwpp-image-item', function () {
-        $(this).find('.mgwpp-remove-image').hide();
-    });
-
-    // Called In edit gallery in root folder
-
-  
-
-    // Initialize color pickers
-    $('.mgwpp-color-field').wpColorPicker();
-
-    // Refresh preview handler
-    $('#mgwpp-refresh-preview').on('click', function () {
-        const container = $('#mgwpp-preview-container');
-        const galleryId = $('.mgwpp-gallery-id').text().replace('ID: ', '');
-
-        container.html('<div class="mgwpp-preview-loading"><p>' + mgwpp_preview.loading_msg + '</p></div>');
-
-        $.ajax({
-            url: mgwpp_preview.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'mgwpp_refresh_preview',
-                gallery_id: galleryId,
-                nonce: mgwpp_preview.nonce
-            },
-            success: function (response) {
-                if (response.success) {
-                    container.html(response.data.html);
-                } else {
-                    container.html('<div class="error">' + response.data + '</div>');
-                }
-            },
-            error: function (xhr) {
-                container.html('<div class="error">' + mgwpp_preview.error_msg + '</div>');
-                console.error('Preview error:', xhr.responseText);
+            
+            // Check if container is empty
+            if ($imageContainer.find('.mgwpp-image-item').length === 0) {
+                $imageContainer.append('<p class="mgwpp-no-images">No images added to this gallery yet.</p>');
             }
         });
     });
 
-    // Initial preview load
-    $('#mgwpp-refresh-preview').trigger('click');
-
-    // Image uploader
-    $('#mgwpp-add-images').on('click', function (e) {
-        e.preventDefault();
-
-        const frame = wp.media({
-            title: 'Select Gallery Images',
-            multiple: true,
-            library: { type: 'image' }
-        });
-
-        frame.on('select', function () {
-            const attachments = frame.state().get('selection').toJSON();
-            const container = $('#mgwpp-images-container');
-
-            attachments.forEach(function (attachment) {
-                const index = Date.now(); // Unique index
-
-                const item = $(
-                    '<div class="mgwpp-image-item" data-index="' + index + '">' +
-                    '  <div class="mgwpp-image-preview">' +
-                    '    <img src="' + attachment.url + '" alt="Gallery image">' +
-                    '    <button type="button" class="mgwpp-remove-image">×</button>' +
-                    '  </div>' +
-                    '  <input type="hidden" name="mgwpp_gallery_images[' + index + '][id]" value="' + attachment.id + '">' +
-                    '  <div class="mgwpp-image-cta">' +
-                    '    <input type="text" name="mgwpp_gallery_images[' + index + '][cta_text]" placeholder="">' +
-                    '    <input type="url" name="mgwpp_gallery_images[' + index + '][cta_link]" placeholder="">' +
-                    '  </div>' +
-                    '</div>'
-                );
-
-                container.append(item);
-            });
-        });
-
-        frame.open();
-    });
-
-    // Remove image
-    $(document).on('click', '.mgwpp-remove-image', function () {
-        $(this).closest('.mgwpp-image-item').remove();
-    });
-
-    // Make images sortable
-    $('#mgwpp-images-container').sortable({
-        handle: '.mgwpp-image-preview',
-        placeholder: 'mgwpp-sortable-placeholder',
-        update: function () {
-            // Re-index items after sorting
-            $('#mgwpp-images-container .mgwpp-image-item').each(function (index) {
-                $(this).attr('data-index', index);
-
-                // Update input names with new index
-                $(this).find('[name^="mgwpp_gallery_images"]').each(function () {
-                    const name = $(this).attr('name').replace(/\[\d+\]/, '[' + index + ']');
-                    $(this).attr('name', name);
-                });
-            });
+    // Show/hide remove buttons on hover
+    $imageContainer.on('mouseenter', '.mgwpp-image-item', function () {
+        $(this).find('.mgwpp-remove-image').show();
+    }).on('mouseleave', '.mgwpp-image-item', function () {
+        if (!$(this).is('.ui-sortable-helper')) {
+            $(this).find('.mgwpp-remove-image').hide();
         }
     });
-});
 
-// Add this after the existing JavaScript code
-jQuery(function ($) {
     // Save Gallery Order - AJAX handler
     $('#mgwpp-save-order-btn').on('click', function (e) {
         e.preventDefault();
@@ -225,11 +120,17 @@ jQuery(function ($) {
         const originalText = $btn.text();
         $btn.text(mgwppEdit.i18n.saving).prop('disabled', true);
 
-        // Get ordered image IDs
+        // Get ordered image IDs from data attributes (more reliable)
         const imageIds = [];
-        $('.mgwpp-image-container .mgwpp-image-item').each(function () {
-            imageIds.push($(this).data('id'));
+        $imageContainer.find('.mgwpp-image-item').each(function () {
+            const imageId = $(this).data('id');
+            if (imageId) {
+                imageIds.push(parseInt(imageId));
+            }
         });
+
+        // Debug log
+        console.log('Saving order:', imageIds);
 
         // AJAX request
         $.ajax({
@@ -242,29 +143,32 @@ jQuery(function ($) {
                 nonce: mgwppEdit.nonce
             },
             success: function (response) {
+                console.log('Save response:', response);
+                
                 if (response.success) {
-                    $btn.text(mgwppEdit.i18n.saved);
+                    $btn.text(mgwppEdit.i18n.saved).css('background-color', '#46b450');
+                    
+                    // Update hidden inputs to match saved order
+                    updateHiddenInputOrder();
+                    
                     setTimeout(() => {
-                        $btn.text(originalText).prop('disabled', false);
+                        $btn.text(originalText).prop('disabled', false).css('background-color', '');
                     }, 2000);
                 } else {
-                    alert('Error: ' + response.data.message);
-                    $btn.text(originalText).prop('disabled', false);
+                    alert('Error: ' + (response.data.message || 'Unknown error'));
+                    $btn.text(originalText).prop('disabled', false).css('background-color', '');
                 }
             },
-            error: function () {
-                alert(mgwppEdit.i18n.saveFailed);
-                $btn.text(originalText).prop('disabled', false);
+            error: function (xhr, status, error) {
+                console.error('AJAX error:', xhr.responseText);
+                alert(mgwppEdit.i18n.saveFailed + ': ' + error);
+                $btn.text(originalText).prop('disabled', false).css('background-color', '');
             }
         });
     });
 
-    // Initialize sortable with update event
-    $('.mgwpp-image-container.sortable').sortable({
-        placeholder: 'mgwpp-image-item ui-sortable-placeholder',
-        update: function () {
-            // Visual feedback that order changed
-            $('#mgwpp-save-order-btn').css('background-color', '#d54e21');
-        }
-    });
+    // Initialize color pickers if they exist
+    if ($.fn.wpColorPicker) {
+        $('.mgwpp-color-field').wpColorPicker();
+    }
 });

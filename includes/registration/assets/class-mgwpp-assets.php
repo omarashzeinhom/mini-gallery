@@ -96,7 +96,7 @@ class MGWPP_Assets
         }
 
         if (in_array('albums', $enabled_sub)) {
-            wp_register_style('mg-album-styles', $base_url . 'css/mgwpp-album-styles.css', array(), file_exists(MG_PLUGIN_PATH . '/public/css/mgwpp-album-styles.css') ? filemtime(MG_PLUGIN_PATH . '/public/css/mgwpp-album-styles.css') : '1.0');
+            wp_register_style('mg-album-styles', $base_url . 'css/mgwpp-albums.css', array(), file_exists(MG_PLUGIN_PATH . '/public/css/mgwpp-albums.css') ? filemtime(MG_PLUGIN_PATH . '/public/css/mgwpp-albums.css') : '1.0');
             //wp_register_script('mg-albums-script', $base_url . 'js/mgwpp-album-scripts.js', array(), file_exists(MG_PLUGIN_PATH . '/public/js/mgwpp-album-scripts.js') ? filemtime(MG_PLUGIN_PATH . '/public/js/mgwpp-album-scripts.js') : '1.0', true);
         }
     }

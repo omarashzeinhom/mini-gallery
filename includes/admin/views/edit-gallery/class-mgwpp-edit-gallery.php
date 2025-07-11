@@ -20,7 +20,6 @@ class MGWPP_Edit_Gallery_View
 
     public static function init()
     {
-
         add_action('admin_menu', [self::class, 'register_edit_page']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueue_assets']);
         add_action('admin_post_mgwpp_save_gallery', [self::class, 'handle_save_gallery']);
@@ -39,17 +38,19 @@ class MGWPP_Edit_Gallery_View
         );
     }
 
-    // CORRECTED: Use gallery edit specific assets
     public static function enqueue_assets($hook)
     {
-        if ($hook !== 'gallery_page_mgwpp-edit-gallery') {
+        // Use the correct hook for our hidden edit page
+        $is_edit_page = ($hook === 'admin_page_mgwpp-edit-gallery');
+
+        if (!$is_edit_page) {
             return;
         }
 
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-sortable');
 
-        // Load GALLERY EDIT specific CSS
+        // Enqueue styles
         wp_enqueue_style(
             'mgwpp-edit-gallery-styles',
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css",
@@ -57,27 +58,31 @@ class MGWPP_Edit_Gallery_View
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.css")
         );
 
-        // Load GALLERY EDIT specific JS
+        // Enqueue scripts
         wp_enqueue_script(
             'mgwpp-edit-gallery-scripts',
             MG_PLUGIN_URL . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js",
-            ['jquery'],
+            ['jquery', 'jquery-ui-sortable'],
             filemtime(MG_PLUGIN_PATH . "/includes/admin/views/edit-gallery/mgwpp-edit-gallery.js"),
             true
         );
 
-        // Localize to GALLERY EDIT script
+        // Localize script data
         wp_localize_script('mgwpp-edit-gallery-scripts', 'mgwppEdit', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp_edit_gallery'),
             'i18n' => [
-                'reorderImages' => __('Drag to reorder images', 'mini-gallery'),
                 'saveOrder' => __('Save Order', 'mini-gallery'),
                 'saving' => __('Saving...', 'mini-gallery'),
                 'saved' => __('Order saved!', 'mini-gallery'),
-                'saveFailed' => __('Failed to save order', 'mini-gallery')
+                'saveFailed' => __('Failed to save order', 'mini-gallery'),
+                'noImages' => __('No images added to this gallery yet.', 'mini-gallery')
             ]
         ]);
+
+        // Ensure color picker is available
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
     }
 
     public static function render_edit_page()
@@ -87,8 +92,8 @@ class MGWPP_Edit_Gallery_View
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'mini-gallery'));
         }
 
-        // Get gallery ID and verify nonce
-        $gallery_id = isset($_GET['gallery_id']) ? intval($_GET['gallery_id']) : 0;
+        // Get and validate gallery ID
+        $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
         if (!$gallery_id || !isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_edit_gallery')) {
             wp_die(esc_html__('Invalid gallery or security check failed.', 'mini-gallery'));
         }
@@ -99,38 +104,24 @@ class MGWPP_Edit_Gallery_View
             wp_die(esc_html__('Gallery not found.', 'mini-gallery'));
         }
 
-        // Get gallery data
-        $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
+        // Get gallery images
         $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
         $images = [];
-        if (!empty($gallery_images)) {
-            if (is_array($gallery_images)) {
-                $images = $gallery_images;
-            } else {
-                $images = explode(',', $gallery_images);
-            }
-        }
-        $images = array_map('intval', $images); // Ensure integer IDs
-
-        error_log("Gallery ID: $gallery_id"); // Check error log
-        error_log(print_r($gallery_images, true)); // Check what's stored
 
         if (!empty($gallery_images)) {
-            $images = array_map('intval', (array) $gallery_images);
-
-            // Debug each image
-            foreach ($images as $image_id) {
-                $exists = wp_get_attachment_url($image_id);
-                error_log("Image $image_id exists: " . ($exists ? 'Yes' : 'No'));
-            }
+            $images = is_array($gallery_images)
+                ? array_map('absint', $gallery_images)
+                : array_map('absint', explode(',', $gallery_images));
         }
-        $images = !empty($gallery_images) ? (is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images)) : [];
 
-        self::render_editor($gallery, $gallery_type, $images);
+        self::render_editor($gallery, $gallery_id, $images);
     }
 
-    private static function render_editor($gallery, $current_type, $images)
+    private static function render_editor($gallery, $gallery_id, $images)
     {
+        // Get gallery type
+        $current_type = get_post_meta($gallery_id, 'gallery_type', true);
+
         // Get preview URL
         $preview_url = wp_nonce_url(
             add_query_arg([
@@ -139,16 +130,13 @@ class MGWPP_Edit_Gallery_View
             ], admin_url('admin-ajax.php')),
             'mgwpp_preview_nonce'
         );
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
-                echo esc_html(
-                    sprintf(
-                        __('Edit Gallery: %s', 'mini-gallery'),
-                        $gallery->post_title
-                    )
-                );
-                ?></h1>
+                echo esc_html(sprintf(
+                    __('Edit Gallery: %s', 'mini-gallery'),
+                    $gallery->post_title
+                )); ?></h1>
 
             <div class="mgwpp-glass-container">
                 <div class="mgwpp-editor-column">
@@ -162,17 +150,6 @@ class MGWPP_Edit_Gallery_View
                             <input type="text" name="post_title" value="<?php echo esc_attr($gallery->post_title); ?>" class="widefat">
                         </div>
 
-                        <div class="mgwpp-preview-column">
-                            <div class="mgwpp-preview-container">
-                                <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>
-                                <div class="mgwpp-preview-frame-container">
-                                    <iframe id="mgwpp-preview-frame" src="<?php echo esc_url($preview_url); ?>"></iframe>
-                                </div>
-                                <p class="description"><?php esc_html_e('Preview updates automatically when you save changes.', 'mini-gallery'); ?></p>
-                            </div>
-                        </div>
-
-
                         <div class="mgwpp-edit-section">
                             <h2>
                                 <?php esc_html_e('Gallery Images', 'mini-gallery'); ?>
@@ -180,20 +157,18 @@ class MGWPP_Edit_Gallery_View
                             </h2>
                             <div class="mgwpp-image-manager">
                                 <div class="mgwpp-image-container sortable">
-                                    <?php if (!empty($images)) :
-                                        foreach ($images as $image_id) :
-                                            $image_url = wp_get_attachment_url($image_id);
-                                            $thumb_url = $image_url ? wp_get_attachment_image_url($image_id, 'thumbnail') : false;
-
+                                    <?php if (!empty($images)) : ?>
+                                        <?php foreach ($images as $image_id) :
+                                            $thumb_url = wp_get_attachment_image_url($image_id, 'thumbnail');
                                             if ($thumb_url) : ?>
                                                 <div class="mgwpp-image-item" data-id="<?php echo esc_attr($image_id); ?>">
                                                     <img src="<?php echo esc_url($thumb_url); ?>">
                                                     <input type="hidden" name="gallery_images[]" value="<?php echo esc_attr($image_id); ?>">
                                                     <button type="button" class="mgwpp-remove-image" title="<?php esc_attr_e('Remove image', 'mini-gallery'); ?>">×</button>
                                                 </div>
-                                            <?php endif;
-                                        endforeach;
-                                    else : ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
                                         <p class="mgwpp-no-images"><?php esc_html_e('No images added to this gallery yet.', 'mini-gallery'); ?></p>
                                     <?php endif; ?>
                                 </div>
@@ -208,18 +183,32 @@ class MGWPP_Edit_Gallery_View
                             </div>
                         </div>
 
+                        <div class="mgwpp-preview-column">
+                            <div class="mgwpp-preview-container">
+                                <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>
+                                <div class="mgwpp-preview-frame-container">
+                                    <iframe id="mgwpp-preview-frame" src="<?php echo esc_url($preview_url); ?>"></iframe>
+                                </div>
+                                <p class="description"><?php esc_html_e('Preview updates automatically when you save changes.', 'mini-gallery'); ?></p>
+                            </div>
+                        </div>
+
                         <div class="mgwpp-edit-section">
                             <h2><?php esc_html_e('Gallery Type', 'mini-gallery'); ?></h2>
                             <div class="mgwpp-gallery-types">
                                 <?php foreach (self::$gallery_types as $type => $details) :
                                     $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
-                                    ?>
-                                    <div class="mgwpp-gallery-type <?php echo $type === $current_type ? 'active' : ''; ?>">
+                                    $is_active = $type === $current_type;
+                                ?>
+                                    <div class="mgwpp-gallery-type <?php echo $is_active ? 'active' : ''; ?>">
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
-                                                <?php checked($type, $current_type); ?>>
+                                                <?php checked($is_active); ?>>
                                             <div class="mgwpp-stats-grid">
-                                                <img class="mgwpp-stat-card" src="<?php echo esc_url($type_image_url); ?>" width="75" height="75"
+                                                <img class="mgwpp-stat-card"
+                                                    src="<?php echo esc_url($type_image_url); ?>"
+                                                    width="75"
+                                                    height="75"
                                                     alt="<?php echo esc_attr($details[0]); ?>">
                                                 <span><?php echo esc_html($details[0]); ?></span>
                                             </div>
@@ -234,16 +223,51 @@ class MGWPP_Edit_Gallery_View
                         </div>
                     </form>
                 </div>
-
-
             </div>
         </div>
-        <?php
+<?php
     }
+
+    public static function handle_save_gallery_order()
+    {
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
+            wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+        }
+
+        // Check permissions
+        if (!current_user_can('edit_mgwpp_sooras')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
+        }
+
+        // Get gallery ID and images
+        $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
+        $image_ids = isset($_POST['image_ids']) ? array_map('absint', $_POST['image_ids']) : [];
+
+        // Validate inputs
+        if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
+            wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
+        }
+
+        // Filter out non-image attachments
+        $valid_ids = array_filter($image_ids, 'wp_attachment_is_image');
+
+        // Save the new order
+        update_post_meta($gallery_id, 'gallery_images', $valid_ids);
+
+        wp_send_json_success([
+            'message' => __('Image order saved', 'mini-gallery'),
+            'total_images' => count($valid_ids)
+        ]);
+    }
+
     public static function handle_save_gallery()
     {
         // Verify nonce and permissions
-        if (!isset($_POST['mgwpp_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')) {
+        if (
+            !isset($_POST['mgwpp_gallery_nonce']) ||
+            !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')
+        ) {
             wp_die(__('Security check failed.', 'mini-gallery'));
         }
 
@@ -251,20 +275,10 @@ class MGWPP_Edit_Gallery_View
             wp_die(__('You do not have sufficient permissions.', 'mini-gallery'));
         }
 
-        $gallery_id = isset($_POST['gallery_id']) ? intval($_POST['gallery_id']) : 0;
-        if (!$gallery_id) {
+        $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
+        if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
             wp_die(__('Invalid gallery ID.', 'mini-gallery'));
         }
-
-        // Add debug before saving images:
-        error_log("Saving images for gallery $gallery_id: " . print_r($_POST['gallery_images'], true));
-
-        $images = isset($_POST['gallery_images']) ? array_map('intval', (array) $_POST['gallery_images']) : [];
-        update_post_meta($gallery_id, 'gallery_images', $images);
-
-        // Add immediate retrieval check:
-        $saved = get_post_meta($gallery_id, 'gallery_images', true);
-        error_log("Saved images: " . print_r($saved, true));
 
         // Update title
         if (isset($_POST['post_title'])) {
@@ -280,41 +294,21 @@ class MGWPP_Edit_Gallery_View
         }
 
         // Update gallery images
-        if (isset($_POST['gallery_images'])) {
-            $images = array_map('intval', $_POST['gallery_images']);
-            update_post_meta($gallery_id, 'gallery_images', $images);
+        if (isset($_POST['gallery_images']) && is_array($_POST['gallery_images'])) {
+            $images = array_map('absint', $_POST['gallery_images']);
+            $valid_images = array_filter($images, 'wp_attachment_is_image');
+            update_post_meta($gallery_id, 'gallery_images', $valid_images);
         }
 
         // Redirect back
-        wp_redirect(admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $gallery_id . '&updated=1'));
+        $redirect_url = add_query_arg([
+            'gallery_id' => $gallery_id,
+            '_wpnonce' => wp_create_nonce('mgwpp_edit_gallery'),
+            'updated' => 1
+        ], admin_url('admin.php?page=mgwpp-edit-gallery'));
+
+        wp_redirect($redirect_url);
         exit;
-    }
-
-
-    public static function handle_save_gallery_order()
-    {
-        // Verify nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
-            wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
-        }
-
-        // Check permissions
-        if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
-        }
-
-        // Get gallery ID and images
-        $gallery_id = isset($_POST['gallery_id']) ? intval($_POST['gallery_id']) : 0;
-        $image_ids = isset($_POST['image_ids']) ? array_map('intval', $_POST['image_ids']) : [];
-
-        if (!$gallery_id) {
-            wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
-        }
-
-        // Update gallery images with new order
-        update_post_meta($gallery_id, 'gallery_images', $image_ids);
-
-        wp_send_json_success(['message' => __('Image order saved', 'mini-gallery')]);
     }
 }
 

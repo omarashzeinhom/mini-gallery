@@ -11,6 +11,7 @@ class MGWPP_Admin_Menu
     private $albums_view;
     private $testimonials_view;
     private $security_view;
+    private $extensions_view;
 
 
     // In class-mgwpp-admin-menu.php
@@ -28,6 +29,7 @@ class MGWPP_Admin_Menu
         $this->albums_view = new MGWPP_Albums_View();
         $this->testimonials_view = new MGWPP_Testimonials_View();
         $this->security_view = new MGWPP_Security_View();
+        $this->extensions_view = new MGWPP_Extensions_View();
     }
 
     public function register_menus()
@@ -85,6 +87,11 @@ class MGWPP_Admin_Menu
             'modules' => [
                 'page_title' => __('Modules', 'mini-gallery'),
                 'callback' => [$this->submodules_view, 'render'],
+                'capability' => 'manage_options'
+            ],
+            'extensions' => [
+                'page_title' => __('Extensions', 'mini-gallery'),
+                'callback' => [$this->extensions_view, 'render_extensions_page'],
                 'capability' => 'manage_options'
             ],
         ];

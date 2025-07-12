@@ -93,7 +93,7 @@ class MGWPP_Galleries_View
 
     public function render()
     {
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -165,30 +165,29 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+    <?php
         // Render modal and scripts
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
-   private function get_gallery_preview($gallery_id)
-{
-    // Generate nonced preview URL
-    $preview_url = wp_nonce_url(
-        add_query_arg([
-            'action' => 'mgwpp_preview',
-            'gallery_id' => $gallery_id
-        ], admin_url('admin-ajax.php')),
-        'mgwpp_preview_nonce'
-    );
+    private function get_gallery_preview($gallery_id)
+    {
+        // Get gallery images from post meta
+        $image_ids = get_post_meta($gallery_id, 'gallery_images', true);
+        
+        // If no images, return fallback
+        if (empty($image_ids)) {
+            return $this->get_fallback_preview();
+        }
 
-    // Return iframe preview
-    return sprintf(
-        '<iframe src="%s" class="mgwpp-preview-iframe" loading="lazy"></iframe>',
-        esc_url($preview_url)
-    );
-}
+        // Normalize to array
+        $image_ids = is_array($image_ids) ? $image_ids : explode(',', $image_ids);
+        
+        return $this->render_image_thumbnails($image_ids);
+    }
+
     /**
-     * Render thumbnails from gallery images
+     * Render enhanced thumbnail preview
      */
     private function render_image_thumbnails($images)
     {
@@ -199,6 +198,11 @@ class MGWPP_Galleries_View
 
         if (!is_array($images) || empty($images)) {
             return $this->get_fallback_preview();
+        }
+
+        // For single image galleries
+        if (count($images) === 1) {
+            return $this->render_single_preview($images[0]);
         }
 
         $output = '<div class="mgwpp-preview-thumbnails">';
@@ -222,7 +226,7 @@ class MGWPP_Galleries_View
             }
 
             // Get thumbnail URL
-            $thumb_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+            $thumb_url = wp_get_attachment_image_url($image_id, 'medium');
             if (!$thumb_url) {
                 continue;
             }
@@ -265,17 +269,56 @@ class MGWPP_Galleries_View
     }
 
     /**
+     * Special preview for single-image galleries
+     */
+    private function render_single_preview($image_id)
+    {
+        $image_id = intval(trim($image_id));
+        if ($image_id <= 0 || !wp_attachment_is_image($image_id)) {
+            return $this->get_fallback_preview();
+        }
+
+        $thumb_url = wp_get_attachment_image_url($image_id, 'medium');
+        if (!$thumb_url) {
+            return $this->get_fallback_preview();
+        }
+
+        $alt_text = get_post_meta($image_id, '_wp_attachment_image_alt', true);
+        if (empty($alt_text)) {
+            $alt_text = get_the_title($image_id);
+        }
+        if (empty($alt_text)) {
+            $alt_text = __('Gallery image', 'mini-gallery');
+        }
+
+        return sprintf(
+            '<div class="mgwpp-single-preview">
+                <img src="%s" class="mgwpp-preview-thumb" alt="%s" loading="lazy">
+            </div>',
+            esc_url($thumb_url),
+            esc_attr($alt_text)
+        );
+    }
+
+    /**
      * Get fallback preview image
      */
     private function get_fallback_preview()
     {
         $fallback_url = MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp';
-        return '<img src="' . esc_url($fallback_url) . '" class="mgwpp-card-image" alt="' . esc_attr__('Default gallery preview', 'mini-gallery') . '">';
+        return sprintf(
+            '<div class="mgwpp-preview-fallback">
+                <img src="%s" alt="%s">
+            </div>',
+            esc_url($fallback_url),
+            esc_attr__('Default gallery preview', 'mini-gallery')
+        );
     }
 
+    
     private static function render_create_gallery_modal()
     {
-        ?>
+    ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
@@ -324,7 +367,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+<?php
     }
 }
 

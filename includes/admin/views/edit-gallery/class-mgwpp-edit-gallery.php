@@ -230,37 +230,42 @@ class MGWPP_Edit_Gallery_View
 
     public static function handle_save_gallery_order()
     {
-        // Verify nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
-            wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+        try {
+            // Verify nonce
+            if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
+                wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+            }
+
+            // Check permissions
+            if (!current_user_can('edit_mgwpp_sooras')) {
+                wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
+            }
+
+            // Get gallery ID and images
+            $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
+            $image_ids = isset($_POST['image_ids']) ? array_map('absint', $_POST['image_ids']) : [];
+
+            // Validate inputs
+            if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
+                wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
+            }
+
+            // Filter out non-image attachments
+            $valid_ids = array_filter($image_ids, 'wp_attachment_is_image');
+
+            // Save the new order
+            update_post_meta($gallery_id, 'gallery_images', $valid_ids);
+
+            wp_send_json_success([
+                'message' => __('Image order saved', 'mini-gallery'),
+                'total_images' => count($valid_ids)
+            ]);
+        } catch (Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage(),
+            ], 400);
         }
-
-        // Check permissions
-        if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
-        }
-
-        // Get gallery ID and images
-        $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
-        $image_ids = isset($_POST['image_ids']) ? array_map('absint', $_POST['image_ids']) : [];
-
-        // Validate inputs
-        if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
-            wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
-        }
-
-        // Filter out non-image attachments
-        $valid_ids = array_filter($image_ids, 'wp_attachment_is_image');
-
-        // Save the new order
-        update_post_meta($gallery_id, 'gallery_images', $valid_ids);
-
-        wp_send_json_success([
-            'message' => __('Image order saved', 'mini-gallery'),
-            'total_images' => count($valid_ids)
-        ]);
     }
-
     public static function handle_save_gallery()
     {
         // Verify nonce and permissions

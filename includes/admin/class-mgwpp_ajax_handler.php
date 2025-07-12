@@ -42,17 +42,18 @@ class MGWPP_Ajax_Handler
         }
 
         // Get gallery type for asset loading
-        $gallery_type = get_post_meta($gallery_id, '_mgwpp_gallery_type', true);
-        
+        $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
+
         // Enqueue necessary assets
         if (class_exists('MGWPP_Assets')) {
             MGWPP_Assets::enqueue_preview_assets($gallery_type);
         }
 
         // Output preview HTML
-        ?>
+?>
         <!DOCTYPE html>
         <html <?php language_attributes(); ?>>
+
         <head>
             <meta charset="<?php bloginfo('charset'); ?>">
             <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,7 +63,7 @@ class MGWPP_Ajax_Handler
                 printf(
                     esc_html__('%1$s - Preview | Mini Gallery', 'mini-gallery'),
                     esc_html($gallery->post_title)
-                ); 
+                );
                 ?>
             </title>
             <?php wp_head(); ?>
@@ -79,8 +80,34 @@ class MGWPP_Ajax_Handler
             </div>
             <?php wp_footer(); ?>
         </body>
+
         </html>
-        <?php
+<?php
         exit;
     }
 }
+
+add_action('wp_ajax_mgwpp_bulk_delete_galleries', function () {
+    check_ajax_referer('mgwpp-admin-nonce', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Unauthorized', 403);
+    }
+
+    $ids = $_POST['ids'] ?? [];
+    if (empty($ids)) {
+        wp_send_json_error('No IDs provided');
+    }
+
+    $deleted = 0;
+    foreach ($ids as $id) {
+        $id = absint($id);
+        if ($id && wp_delete_post($id, true)) {
+            $deleted++;
+        }
+    }
+
+    wp_send_json_success([
+        'message' => sprintf(__('Deleted %d galleries', 'mini-gallery'), $deleted)
+    ]);
+});

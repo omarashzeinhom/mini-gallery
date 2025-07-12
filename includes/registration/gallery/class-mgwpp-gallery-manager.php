@@ -9,8 +9,8 @@ class MGWPP_Gallery_Manager
     // Function to delete the gallery
     public static function mgwpp_delete_gallery()
     {
-        // Security check
-        if (!isset($_GET['gallery_id']) || !isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'mgwpp_delete_gallery')) {
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field($_GET['_wpnonce']) : '';
+        if (!wp_verify_nonce($nonce, 'mgwpp_delete_gallery')){
             wp_die('Security check failed for deleting gallery');
         }
 
@@ -25,7 +25,7 @@ class MGWPP_Gallery_Manager
         wp_delete_post($gallery_id, true);
 
         // Redirect to the gallery page
-        wp_redirect(esc_url_raw(admin_url('admin.php?page=mini-gallery')));
+        wp_redirect(esc_url_raw(admin_url('admin.php?page=mgwpp_galleries')));
         exit;
     }
 

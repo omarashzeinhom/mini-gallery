@@ -67,27 +67,27 @@ class MGWPP_Admin_Core
         $this->asset_manager = new MGWPP_Admin_Assets();
     }
 
-
-    public function init_view_classes()
-    {
-        // Get gallery data first
-        $list_table = new MGWPP_Galleries_List_Table();
-        $list_table->prepare_items();
-        $gallery_items = $list_table->items;
-
-        // Initialize views with data
-        new MGWPP_Galleries_View($gallery_items);
-        new MGWPP_Albums_View();
-        new MGWPP_Dashboard_View();
-    }
+    // REMOVE THIS METHOD COMPLETELY - IT'S NO LONGER NEEDED
+    // public function init_view_classes()
+    // {
+    //     // Get gallery data first
+    //     $list_table = new MGWPP_Galleries_List_Table(); // <-- THIS CLASS WAS REMOVED
+    //     $list_table->prepare_items();
+    //     $gallery_items = $list_table->items;
+    //
+    //     // Initialize views with data
+    //     new MGWPP_Galleries_View($gallery_items);
+    //     new MGWPP_Albums_View();
+    //     new MGWPP_Dashboard_View();
+    // }
 
     public function run()
     {
         // Register menus first
         add_action('admin_menu', [$this->menu_manager, 'register_menus']);
 
-        // Initialize views AFTER menu registration
-        add_action('admin_menu', [$this, 'init_view_classes']);
+        // REMOVE THIS LINE - VIEW INITIALIZATION IS HANDLED IN ADMIN_MENU
+        // add_action('admin_menu', [$this, 'init_view_classes']);
     }
 
     public function add_gallery_preview_iframe($post)

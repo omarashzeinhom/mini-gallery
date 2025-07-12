@@ -13,16 +13,13 @@ class MGWPP_Admin_Menu
     private $security_view;
     private $extensions_view;
 
-
-    // In class-mgwpp-admin-menu.php
     public function __construct($module_loader)
     {
-        // Get gallery data
-        $list_table = new MGWPP_Galleries_List_Table();
-        $list_table->prepare_items();
+        // Fetch galleries directly instead of using list table
+        $gallery_items = $this->get_galleries_data();
 
         // Initialize view with items
-        $this->galleries_view = new MGWPP_Galleries_View($list_table->items);
+        $this->galleries_view = new MGWPP_Galleries_View($gallery_items);
 
         // Initialize other views
         $this->submodules_view = new MGWPP_SubModules_View($module_loader);
@@ -32,6 +29,61 @@ class MGWPP_Admin_Menu
         $this->extensions_view = new MGWPP_Extensions_View();
     }
 
+    /**
+     * Get galleries data formatted for the view
+     */
+    private function get_galleries_data()
+    {
+        $galleries = get_posts([
+            'post_type'      => 'mgwpp_soora',
+            'posts_per_page' => -1,
+            'post_status'    => 'publish'
+        ]);
+
+        $items = [];
+        foreach ($galleries as $gallery) {
+            $type = get_post_meta($gallery->ID, 'gallery_type', true);
+            $type_label = ucfirst(str_replace('_', ' ', $type));
+
+            $items[] = [
+                'ID'        => $gallery->ID,
+                'title'     => $gallery->post_title,
+                'type'      => $type_label,
+                'shortcode' => '[mgwpp_gallery id="' . $gallery->ID . '"]',
+                'date'      => get_the_date('', $gallery),
+                'actions'   => $this->get_gallery_actions($gallery->ID)
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * Generate action links for a gallery
+     */
+    private function get_gallery_actions($gallery_id)
+    {
+        $edit_url = add_query_arg([
+            'page'       => 'mgwpp-edit-gallery',
+            'gallery_id' => $gallery_id,
+            '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery') // Add nonce here
+        ], admin_url('admin.php'));
+        
+        $delete_url = wp_nonce_url(
+            admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $gallery_id),
+            'mgwpp_delete_gallery'
+        );
+
+        return sprintf(
+            '<a href="%s" class="button button-primary">%s</a> ' .
+                '<a href="%s" class="button button-danger" onclick="return confirm(\'%s\')">%s</a>',
+            esc_url($edit_url),
+            esc_html__('Edit', 'mini-gallery'),
+            esc_url($delete_url),
+            esc_js(__('Are you sure?', 'mini-gallery')),
+            esc_html__('Delete', 'mini-gallery')
+        );
+    }
     public function register_menus()
     {
         $this->setup_menu_structure();

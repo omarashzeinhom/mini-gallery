@@ -34,11 +34,9 @@ class MGWPP_Galleries_View
         wp_enqueue_script('thickbox');
         wp_enqueue_style('thickbox');
 
-        // Get plugin version for cache busting
         $plugin_data = get_file_data(__FILE__, ['Version' => 'Version']);
         $plugin_version = $plugin_data['Version'];
 
-        // Enqueue main admin CSS
         wp_enqueue_style(
             'mgwpp-admin-galleries',
             plugins_url('admin/views/galleries/mgwpp-galleries-view.css', dirname(__FILE__, 3)),
@@ -46,7 +44,6 @@ class MGWPP_Galleries_View
             $plugin_version
         );
 
-        // Enqueue custom admin JS
         wp_enqueue_script(
             'mgwpp-admin-galleries-js',
             plugins_url('admin/views/galleries/mgwpp-galleries-view.js', dirname(__FILE__, 3)),
@@ -54,31 +51,8 @@ class MGWPP_Galleries_View
             true
         );
 
-        // Add inline styles for dynamic elements
-        wp_add_inline_style('mgwpp-admin-galleries', '
-            .mgwpp-media-preview {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-                margin-top: 10px;
-            }
-            
-            .mgwpp-media-thumbnail {
-                width: 80px;
-                height: 80px;
-                overflow: hidden;
-                border: 2px solid #e0e0e0;
-                border-radius: 8px;
-                transition: transform 0.2s ease;
-            }
-            
-            .mgwpp-media-thumbnail:hover {
-                transform: scale(1.05);
-            }
-        ');
 
         // Localize script for AJAX and translations
-        // In your enqueue_gallery_scripts() method, update the localized script:
         wp_localize_script('mgwpp-admin-galleries-js', 'mgwppAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp-admin-nonce'),
@@ -108,6 +82,18 @@ class MGWPP_Galleries_View
                             class="page-title-action thickbox">
                             <?php esc_html_e('Add New', 'mini-gallery'); ?>
                         </a>
+
+                        <!-- Bulk Actions Container -->
+                        <div class="mgwpp-bulk-actions" style="display:none;">
+                            <select id="mgwpp-bulk-action">
+                                <option value="-1"><?php esc_html_e('Bulk Actions', 'mini-gallery'); ?></option>
+                                <option value="delete"><?php esc_html_e('Delete', 'mini-gallery'); ?></option>
+                            </select>
+                            <button type="button" id="mgwpp-apply-bulk-action" class="button action">
+                                <?php esc_html_e('Apply', 'mini-gallery'); ?>
+                            </button>
+                        </div>
+
                         <hr class="wp-header-end">
 
                         <?php if (empty($this->items)) : ?>
@@ -116,9 +102,6 @@ class MGWPP_Galleries_View
                                     alt="<?php esc_attr_e('No galleries', 'mini-gallery'); ?>">
                                 <h3><?php esc_html_e('No galleries found', 'mini-gallery'); ?></h3>
                                 <p><?php esc_html_e('Create your first gallery to get started', 'mini-gallery'); ?></p>
-                                <button class="button button-primary mgwpp-open-create-modal">
-                                    <?php esc_html_e('Create Gallery', 'mini-gallery'); ?>
-                                </button>
                             </div>
                         <?php else : ?>
                             <div class="mgwpp-gallery-grid">
@@ -126,6 +109,12 @@ class MGWPP_Galleries_View
                                     <div class="mgwpp-gallery-card">
                                         <div class="mgwpp-card-header">
                                             <div class="mgwpp-gallery-preview">
+                                                <!-- Add checkbox here -->
+                                                <input type="checkbox"
+                                                    name="bulk_delete[]"
+                                                    class="mgwpp-bulk-checkbox"
+                                                    value="<?php echo esc_attr($item['ID']); ?>"
+                                                    style="position:absolute; top:10px; left:10px; z-index:10;">
                                                 <?php echo $this->get_gallery_preview($item['ID']); ?>
                                             </div>
                                             <div class="mgwpp-card-actions">
@@ -174,7 +163,7 @@ class MGWPP_Galleries_View
     {
         // Get gallery images from post meta
         $image_ids = get_post_meta($gallery_id, 'gallery_images', true);
-        
+
         // If no images, return fallback
         if (empty($image_ids)) {
             return $this->get_fallback_preview();
@@ -182,7 +171,7 @@ class MGWPP_Galleries_View
 
         // Normalize to array
         $image_ids = is_array($image_ids) ? $image_ids : explode(',', $image_ids);
-        
+
         return $this->render_image_thumbnails($image_ids);
     }
 
@@ -315,7 +304,7 @@ class MGWPP_Galleries_View
         );
     }
 
-    
+
     private static function render_create_gallery_modal()
     {
     ?>
@@ -368,157 +357,5 @@ class MGWPP_Galleries_View
         </div>
 
 <?php
-    }
-}
-
-if (!class_exists('MGWPP_Galleries_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
-    // Add this in your plugin's main file or admin handler
-    add_action('admin_post_mgwpp_delete_gallery', function () {
-        if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'mgwpp_delete_gallery')) {
-            wp_die(__('Security check failed', 'mini-gallery'));
-        }
-
-        $gallery_id = intval($_GET['gallery_id']);
-
-        if (wp_delete_post($gallery_id, true)) {
-            wp_redirect(admin_url('admin.php?page=mgwpp-galleries&deleted=1'));
-            exit;
-        }
-
-        wp_redirect(admin_url('admin.php?page=mgwpp-galleries&error=1'));
-        exit;
-    });
-    class MGWPP_Galleries_List_Table extends WP_List_Table
-    {
-        public function __construct()
-        {
-            parent::__construct([
-                'singular' => 'gallery',
-                'plural'   => 'galleries',
-                'ajax'     => false
-            ]);
-        }
-
-        public function get_columns()
-        {
-            return [
-                'title'     => esc_html__('Title', 'mini-gallery'),
-                'type'      => esc_html__('Type', 'mini-gallery'),
-                'shortcode' => esc_html__('Shortcode', 'mini-gallery'),
-                'actions'   => esc_html__('Actions', 'mini-gallery')
-            ];
-        }
-
-        public function prepare_items()
-        {
-            $galleries = get_posts([
-                'post_type'      => 'mgwpp_soora',
-                'posts_per_page' => -1,
-                'orderby'        => 'title',
-                'order'          => 'ASC'
-            ]);
-
-            $data = [];
-            foreach ($galleries as $gallery) {
-                $thumbnail = get_the_post_thumbnail_url($gallery->ID, 'medium') ?:
-                    MG_PLUGIN_URL . '/includes/admin/images/default-gallery.webp';
-
-                $data[] = [
-                    'ID'        => $gallery->ID,
-                    'title'     => $gallery->post_title,
-                    'type'      => $this->get_gallery_type($gallery->ID),
-                    'shortcode' => '[mgwpp_gallery id="' . $gallery->ID . '"]',
-                    'thumbnail' => $thumbnail,
-                    'date'      => get_the_date('', $gallery->ID),
-                    'actions'   => $this->get_row_actions($gallery->ID)
-                ];
-            }
-
-            $this->items = $data;
-        }
-
-        public function column_default($item, $column_name)
-        {
-            return $item[$column_name];
-        }
-
-        public function column_title($item)
-        {
-            return sprintf(
-                '<strong>%1$s</strong><div class="row-actions"><span class="id">ID: %2$s</span></div>',
-                esc_html($item['title']),
-                esc_html($item['ID'])
-            );
-        }
-
-        public function column_shortcode($item)
-        {
-            return sprintf(
-                '<input type="text" readonly value="%1$s" class="shortcode-input" onclick="this.select()">',
-                esc_attr($item['shortcode'])
-            );
-        }
-
-        public function column_actions($item)
-        {
-            return sprintf(
-                '<a href="%1$s" class="button">%3$s</a> ' .
-                    '<a href="%2$s" class="button button-link-delete" onclick="return confirm(\'%4$s\')">%5$s</a>',
-                esc_url(wp_nonce_url(
-                    admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $item['ID']),
-                    'mgwpp_edit_gallery'
-                )),
-                esc_url(wp_nonce_url(
-                    admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $item['ID']),
-                    'mgwpp_delete_gallery'
-                )),
-                esc_html__('Edit', 'mini-gallery'),
-                esc_attr__('Are you sure you want to delete this gallery?', 'mini-gallery'),
-                esc_html__('Delete', 'mini-gallery')
-            );
-        }
-
-        private function get_gallery_type($gallery_id)
-        {
-            $type = get_post_meta($gallery_id, 'gallery_type', true);
-            $types = [
-                "single_carousel" => "Single Carousel",
-                "multi_carousel" => "Multi Carousel",
-                "grid" => "Grid Layout",
-                "mega_slider" => "Mega Slider",
-                "full_page_slider" => "Full Page Slider",
-                "pro_carousel" => "Pro Multi Card Carousel",
-                "neon_carousel" => "Neon Carousel",
-                "threed_carousel" => "3D Carousel",
-                "spotlight_carousel" => "Spotlight Carousel",
-                "testimonials_carousel" => "Testimonials Carousel"
-            ];
-
-            return isset($types[$type]) ? $types[$type] : ucwords(str_replace('_', ' ', $type));
-        }
-
-        private function get_row_actions($gallery_id)
-        {
-            $edit_url = wp_nonce_url(
-                admin_url('admin.php?page=mgwpp-edit-gallery&gallery_id=' . $gallery_id),
-                'mgwpp_edit_gallery'
-            );
-
-            $delete_url = wp_nonce_url(
-                admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $gallery_id),
-                'mgwpp_delete_gallery'
-            );
-
-            return sprintf(
-                '<a href="%s" class="button">%s</a>
-        <a href="%s" class="button button-link-delete" onclick="return confirm(\'%s\')">%s</a>',
-                esc_url($edit_url),
-                esc_html__('Edit', 'mini-gallery'),
-                esc_url($delete_url),
-                esc_attr__('Are you sure you want to delete this gallery?', 'mini-gallery'),
-                esc_html__('Delete', 'mini-gallery')
-            );
-        }
     }
 }

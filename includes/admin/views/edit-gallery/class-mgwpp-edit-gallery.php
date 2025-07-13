@@ -133,7 +133,7 @@ class MGWPP_Edit_Gallery_View
             'gallery_id'    => $gallery->ID,
         ], home_url('/'));
         $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
                 echo esc_html(sprintf(
@@ -160,8 +160,6 @@ class MGWPP_Edit_Gallery_View
                                 <span
                                     class="mgwpp-reorder-hint"><?php esc_html_e('(Drag to reorder)', 'mini-gallery'); ?></span>
                             </h2>
-                            // ... existing code ...
-
                             <div class="mgwpp-image-manager">
                                 <div class="mgwpp-image-container sortable">
                                     <?php if (!empty($images)) : ?>
@@ -221,7 +219,7 @@ class MGWPP_Edit_Gallery_View
                                 <?php foreach (self::$gallery_types as $type => $details) :
                                     $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
                                     $is_active = $type === $current_type;
-                                    ?>
+                                ?>
                                     <div class="mgwpp-gallery-type <?php echo $is_active ? 'active' : ''; ?>">
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
@@ -244,7 +242,7 @@ class MGWPP_Edit_Gallery_View
                 </div>
             </div>
         </div>
-        <?php
+<?php
     }
 
     public static function handle_save_gallery_order()
@@ -288,7 +286,8 @@ class MGWPP_Edit_Gallery_View
     public static function handle_save_gallery()
     {
         // Verify nonce and permissions
-        if (!isset($_POST['mgwpp_gallery_nonce']) ||
+        if (
+            !isset($_POST['mgwpp_gallery_nonce']) ||
             !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')
         ) {
             wp_die(__('Security check failed.', 'mini-gallery'));

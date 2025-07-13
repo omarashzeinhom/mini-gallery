@@ -5,7 +5,6 @@ if (!defined('ABSPATH')) {
 
 class MGWPP_Albums_Table extends WP_List_Table
 {
-
     public function __construct()
     {
         parent::__construct([
@@ -19,6 +18,7 @@ class MGWPP_Albums_Table extends WP_List_Table
     public function get_columns()
     {
         return [
+            'thumbnail'     => __('Preview', 'mini-gallery'), // NEW: Thumbnail column
             'title'         => __('Title', 'mini-gallery'),
             'gallery_count' => __('Galleries', 'mini-gallery'),
             'shortcode'     => __('Shortcode', 'mini-gallery'),
@@ -30,6 +30,39 @@ class MGWPP_Albums_Table extends WP_List_Table
     protected function column_default($item, $column_name)
     {
         return isset($item->$column_name) ? $item->$column_name : '';
+    }
+
+    // NEW: Render thumbnail column
+    protected function column_thumbnail($item)
+    {
+        // Try to get first gallery image
+        $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
+        $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;"></span>';
+        
+        if (!empty($galleries) && is_array($galleries)) {
+            $first_gallery_id = $galleries[0];
+            $gallery_images = get_post_meta($first_gallery_id, 'gallery_images', true);
+            
+            if (!empty($gallery_images)) {
+                // Convert to array if needed
+                $image_ids = is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images);
+                
+                if (!empty($image_ids)) {
+                    $first_image_id = $image_ids[0];
+                    $image_url = wp_get_attachment_image_url($first_image_id, 'thumbnail');
+                    
+                    if ($image_url) {
+                        $image_html = sprintf(
+                            '<img src="%s" alt="%s" width="75" height="75" style="object-fit:cover">',
+                            esc_url($image_url),
+                            esc_attr__('Album preview', 'mini-gallery')
+                        );
+                    }
+                }
+            }
+        }
+        
+        return $image_html;
     }
 
     public function prepare_items()
@@ -66,7 +99,6 @@ class MGWPP_Albums_Table extends WP_List_Table
                 esc_url($edit_url),
                 __('Edit', 'mini-gallery')
             ),
-
         ]);
     }
 
@@ -109,11 +141,13 @@ class MGWPP_Albums_Table extends WP_List_Table
         $this->single_row_columns($item);
         echo '</tr>';
         echo '<tr class="mgwpp-album-details-row">';
-        echo '<td colspan="5">';
+        // Update colspan to match new column count (6 columns now)
+        echo '<td colspan="6">';
         $this->album_details_content($item);
         echo '</td>';
         echo '</tr>';
     }
+    
     private function album_details_content($item)
     {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
@@ -140,6 +174,7 @@ class MGWPP_Albums_Table extends WP_List_Table
         echo '</div>';
     }
 }
+
 
 add_action('admin_post_mgwpp_delete_album', function () {
     if (!isset($_GET['album_id']) || !isset($_REQUEST['_wpnonce'])) {

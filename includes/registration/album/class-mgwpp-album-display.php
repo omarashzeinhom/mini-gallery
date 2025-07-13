@@ -107,18 +107,29 @@ class MGWPP_Album_Display
 
     private static function get_gallery_preview_image($gallery_id)
     {
-        $attachments = get_posts([
-            'post_type'      => 'attachment',
-            'posts_per_page' => 1,
-            'post_parent'    => $gallery_id,
-            'orderby'        => 'menu_order',
-            'order'          => 'ASC',
-        ]);
+        // Get gallery images from meta instead of attached media
+        $image_ids = get_post_meta($gallery_id, 'gallery_images', true);
 
-        if (! empty($attachments)) {
+        // Handle different storage formats
+        if (is_string($image_ids) && !empty($image_ids)) {
+            $image_ids = explode(',', $image_ids);
+        }
+
+        // Get the first valid image ID
+        $first_image_id = 0;
+        if (is_array($image_ids) && !empty($image_ids)) {
+            foreach ($image_ids as $id) {
+                if ($id && wp_attachment_is_image($id)) {
+                    $first_image_id = absint($id);
+                    break;
+                }
+            }
+        }
+
+        if ($first_image_id) {
             return wp_get_attachment_image(
-                $attachments[0]->ID,
-                'large',
+                $first_image_id,
+                'medium',
                 false,
                 [
                     'loading' => 'lazy',
@@ -193,7 +204,7 @@ class MGWPP_Album_Display
     public static function get_lightbox_html()
     {
         ob_start();
-        ?>
+?>
         <div id="mgwpp-lightbox" class="mgwpp-lightbox">
             <span class="mgwpp-close">&times;</span>
             <div class="mgwpp-lightbox-overlay"></div>
@@ -204,7 +215,7 @@ class MGWPP_Album_Display
             <a class="mgwpp-prev">&#10094;</a>
             <a class="mgwpp-next">&#10095;</a>
         </div>
-        <?php
+<?php
         return ob_get_clean();
     }
 
@@ -216,4 +227,3 @@ class MGWPP_Album_Display
 }
 
 add_shortcode('mgwpp_album', ['MGWPP_Album_Display', 'album_shortcode']);
-

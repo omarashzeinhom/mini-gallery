@@ -146,147 +146,24 @@ class MGWPP_Ajax_Handler
         // Get gallery data
         $gallery = get_post($gallery_id);
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
-        // Ensure images are always in array format
-        $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
-        if (!is_array($gallery_images)) {
-            $gallery_images = !empty($gallery_images) ? explode(',', $gallery_images) : [];
-        }
-        $gallery_images = array_map('absint', $gallery_images);
-        $gallery_images = array_filter($gallery_images); // Remove empty values        
-        // Ensure images are in array format and properly ordered
-        if (!empty($gallery_images)) {
-            $gallery_images = is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images);
-            $gallery_images = array_map('absint', $gallery_images);
-            $gallery_images = array_filter($gallery_images); // Remove empty values
-        } else {
-            $gallery_images = [];
-        }
 
-        // Check if preview template exists
+        // Get images
+        $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
+        $gallery_images = !empty($gallery_images) ? (array) $gallery_images : [];
+        $gallery_images = array_map('absint', $gallery_images);
+        $gallery_images = array_filter($gallery_images);
+
+        // Always use the proper preview template
         $preview_template = MG_PLUGIN_PATH . 'templates/preview-gallery.php';
         if (file_exists($preview_template)) {
             include $preview_template;
         } else {
-            // Fallback preview HTML
-            self::render_fallback_preview($gallery, $gallery_type, $gallery_images);
+            // Minimal fallback if template is missing
+            echo '<div class="mgwpp-preview-fallback">';
+            echo '<h3>' . esc_html($gallery->post_title) . '</h3>';
+            echo '<p>' . esc_html__('Preview template not found', 'mini-gallery') . '</p>';
+            echo '</div>';
         }
-    }
-
-    /**
-     * Render fallback preview if template doesn't exist
-     */
-    private static function render_fallback_preview($gallery, $gallery_type, $gallery_images)
-    {
-?>
-        <!DOCTYPE html>
-        <html <?php language_attributes(); ?>>
-
-        <head>
-            <meta charset="<?php bloginfo('charset'); ?>">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title><?php echo esc_html($gallery->post_title); ?> - <?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></title>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 20px;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    background: #f1f1f1;
-                }
-
-                .preview-container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    background: white;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                }
-
-                .preview-header {
-                    text-align: center;
-                    margin-bottom: 30px;
-                    padding-bottom: 20px;
-                    border-bottom: 1px solid #eee;
-                }
-
-                .preview-gallery {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                    gap: 20px;
-                }
-
-                .preview-image {
-                    border-radius: 4px;
-                    overflow: hidden;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                }
-
-                .preview-image img {
-                    width: 100%;
-                    height: 200px;
-                    object-fit: cover;
-                    transition: transform 0.3s ease;
-                }
-
-                .preview-image:hover img {
-                    transform: scale(1.05);
-                }
-
-                .no-images {
-                    text-align: center;
-                    color: #666;
-                    font-style: italic;
-                    padding: 40px;
-                }
-
-                .gallery-type {
-                    background: #007cba;
-                    color: white;
-                    padding: 4px 12px;
-                    border-radius: 12px;
-                    font-size: 12px;
-                    display: inline-block;
-                    margin-top: 10px;
-                }
-            </style>
-        </head>
-
-        <body>
-            <div class="preview-container">
-                <div class="preview-header">
-                    <h1><?php echo esc_html($gallery->post_title); ?></h1>
-                    <div class="gallery-type"><?php echo esc_html(ucfirst(str_replace('_', ' ', $gallery_type))); ?></div>
-                </div>
-
-                <div class="preview-gallery">
-                    <?php if (!empty($gallery_images)): ?>
-                        <?php foreach ($gallery_images as $image_id): ?>
-                            <?php
-                            $image_url = wp_get_attachment_image_url($image_id, 'medium');
-                            $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
-                            if (!$image_alt) {
-                                $image_alt = get_the_title($image_id);
-                            }
-                            ?>
-                            <?php if ($image_url): ?>
-                                <div class="preview-image">
-                                    <img src="<?php echo esc_url($image_url); ?>"
-                                        alt="<?php echo esc_attr($image_alt); ?>"
-                                        loading="lazy">
-                                </div>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="no-images">
-                            <p><?php esc_html_e('No images added to this gallery yet.', 'mini-gallery'); ?></p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </body>
-
-        </html>
-<?php
     }
 
     /**
@@ -295,7 +172,7 @@ class MGWPP_Ajax_Handler
     public static function preview_gallery()
     {
         // Verify nonce
-        if (!wp_verify_nonce($_REQUEST['nonce'] ?? '', 'mgwpp_preview')) {
+        if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'mgwpp_preview_nonce')) {
             wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
         }
 
@@ -304,7 +181,7 @@ class MGWPP_Ajax_Handler
             wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
         }
 
-        $gallery_id = absint($_REQUEST['gallery_id'] ?? 0);
+        $gallery_id = isset($_REQUEST['gallery_id']) ? absint($_REQUEST['gallery_id']) : 0;
         if (!$gallery_id) {
             wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
         }
@@ -312,13 +189,13 @@ class MGWPP_Ajax_Handler
         // Generate preview URL
         $preview_url = add_query_arg([
             'mgwpp_preview' => '1',
-            'gallery_id' => $gallery_id,
-            '_wpnonce' => wp_create_nonce('mgwpp_preview')
+            'gallery_id'    => $gallery_id,
+            '_wpnonce'      => wp_create_nonce('mgwpp_preview')
         ], home_url('/'));
 
         wp_send_json_success([
             'preview_url' => $preview_url,
-            'message' => __('Preview URL generated', 'mini-gallery')
+            'message'     => __('Preview URL generated', 'mini-gallery')
         ]);
     }
 

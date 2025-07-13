@@ -465,3 +465,9 @@
     width: auto;
     height: auto;
 }
+
+
+
+.mgwpp-media-preview{
+  display: flex;
+}

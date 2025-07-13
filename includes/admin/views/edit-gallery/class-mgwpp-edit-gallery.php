@@ -113,7 +113,12 @@ class MGWPP_Edit_Gallery_View
                 ? array_map('absint', $gallery_images)
                 : array_map('absint', explode(',', $gallery_images));
         }
+        $preview_url = add_query_arg([
+            'mgwpp_preview' => '1',
+            'gallery_id'    => $gallery->ID,
+        ], home_url('/'));
 
+        $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
         self::render_editor($gallery, $gallery_id, $images);
     }
 
@@ -122,14 +127,12 @@ class MGWPP_Edit_Gallery_View
         // Get gallery type
         $current_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-        // Get preview URL
-        $preview_url = wp_nonce_url(
-            add_query_arg([
-                'action' => 'mgwpp_preview',
-                'gallery_id' => $gallery->ID
-            ], admin_url('admin-ajax.php')),
-            'mgwpp_preview_nonce'
-        );
+        // Add this instead in render_editor():
+        $preview_url = add_query_arg([
+            'mgwpp_preview' => '1',
+            'gallery_id'    => $gallery->ID,
+        ], home_url('/'));
+        $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
 ?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
@@ -314,6 +317,19 @@ class MGWPP_Edit_Gallery_View
 
         wp_redirect($redirect_url);
         exit;
+    }
+
+    public function render_preview_section($gallery_id)
+    {
+        $preview_url = add_query_arg([
+            'mgwpp_preview' => '1',
+            'gallery_id' => $gallery_id,
+            '_wpnonce' => wp_create_nonce('mgwpp_preview')
+        ], home_url('/'));
+
+        echo '<div class="mgwpp-preview-wrapper">';
+        echo '<iframe src="' . esc_url($preview_url) . '" width="100%" height="800px" frameborder="0" class="mgwpp-live-preview"></iframe>';
+        echo '</div>';
     }
 }
 

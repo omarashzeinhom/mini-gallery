@@ -13,8 +13,21 @@ function mgwpp_gallery_shortcode($atts)
         $gallery_type = get_post_meta($post_id, 'gallery_type', true) ?: 'single_carousel';
         $images_per_page = 6;
         $offset = ($paged - 1) * $images_per_page;
-        $all_images = get_attached_media('image', $post_id);
 
+        // FIXED: Get images from gallery_images meta instead of attached media
+        $image_ids = get_post_meta($post_id, 'gallery_images', true);
+
+        // Handle different storage formats (string or array)
+        if (is_string($image_ids) && !empty($image_ids)) {
+            $image_ids = explode(',', $image_ids);
+        }
+
+        $all_images = [];
+        if (!empty($image_ids)) {
+            // Get full image objects
+            $all_images = array_map('get_post', array_filter(array_map('absint', $image_ids)));
+        }
+        
         if ($all_images) {
             $gallery_html = '<p>Gallery type not recognized.</p>';
 

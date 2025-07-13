@@ -310,7 +310,12 @@ class MGWPP_Galleries_View
     ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
-                <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
+              <!-- Loading overlay -->
+            <div id="mgwpp-create-loading" class="mgwpp-loading-overlay" style="display:none;">
+                <div class="mgwpp-loading-spinner"></div>
+                <p><?php esc_html_e('Creating gallery...', 'mini-gallery'); ?></p>
+            </div>    
+            <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="mgwpp_create_gallery">
                     <?php wp_nonce_field('mgwpp_create_gallery', 'mgwpp_gallery_nonce'); ?>

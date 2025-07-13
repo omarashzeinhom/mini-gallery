@@ -3,11 +3,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-get_header();
+// Check if we're in preview mode
+$is_preview = defined('MGWPP_PREVIEW_MODE') && MGWPP_PREVIEW_MODE;
 
-// Get current gallery ID
-$gallery_id = get_the_ID();
-
+if (!$is_preview) {
+    get_header();
+}
 
 echo '<div class="mgwpp-single-gallery-container">';
 
@@ -15,11 +16,11 @@ echo '<div class="mgwpp-single-gallery-container">';
 echo '<h1 class="mgwpp-gallery-title">' . esc_html(get_the_title()) . '</h1>';
 
 // Render gallery using shortcode
-echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+echo do_shortcode('[mgwpp_gallery id="' . get_the_ID() . '"]');
 
-// Back to album link
-$album_id = get_post_meta($gallery_id, '_mgwpp_parent_album', true);
-if ($album_id) {
+// Back to album link (only in normal mode)
+$album_id = get_post_meta(get_the_ID(), '_mgwpp_parent_album', true);
+if ($album_id && !$is_preview) {
     echo '<a href="' . esc_url(get_permalink($album_id)) . '" class="mgwpp-back-to-album">';
     echo '&larr; ' . esc_html__('Back to Album', 'mini-gallery');
     echo '</a>';
@@ -27,4 +28,6 @@ if ($album_id) {
 
 echo '</div>';
 
-get_footer();
+if (!$is_preview) {
+    get_footer();
+}

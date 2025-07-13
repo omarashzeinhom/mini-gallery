@@ -374,3 +374,33 @@
   z-index: 10;
   transform: scale(1.3);
 }
+
+/* Loading Overlay */
+.mgwpp-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.mgwpp-loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: mgwpp-spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes mgwpp-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

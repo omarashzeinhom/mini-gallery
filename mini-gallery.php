@@ -173,6 +173,7 @@ add_action('admin_menu', function () {
 // ======================
 // TEMPLATE HANDLING
 // ======================
+// In your main plugin file, simplify template handling:
 add_filter('template_include', function ($template) {
     if (is_singular('mgwpp_soora')) {
         $custom_template = MG_PLUGIN_PATH . 'templates/single-mgwpp_soora.php';
@@ -203,41 +204,3 @@ add_filter('plugin_row_meta', function ($links, $file) {
     return $links;
 }, 10, 2);
 
-
-
-function mgwpp_handle_preview_request()
-{
-    // 1. First check if this is a preview request
-    if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
-        return;
-    }
-
-    // 2. Verify nonce with proper action
-    if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
-        wp_die(
-            '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
-                '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
-                '<p><a href="' . esc_url(admin_url('edit.php?post_type=mgwpp_soora')) . '">' .
-                esc_html__('Return to Galleries', 'mini-gallery') . '</a></p>'
-        );
-    }
-
-    // 3. Validate gallery ID
-    $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
-    if (!$gallery_id) {
-        wp_die(esc_html__('Invalid gallery ID format.', 'mini-gallery'));
-    }
-
-    // 4. Verify gallery exists
-    $gallery = get_post($gallery_id);
-    if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
-        wp_die(esc_html__('The requested gallery no longer exists.', 'mini-gallery'));
-    }
-
-    // 5. Show preview template
-    get_header();
-    echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
-    get_footer();
-    exit;
-}
-add_action('template_redirect', 'mgwpp_handle_preview_request');

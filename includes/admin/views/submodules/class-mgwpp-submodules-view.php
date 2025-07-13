@@ -2,6 +2,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inner-header.php';
 
 class MGWPP_SubModules_View
 {

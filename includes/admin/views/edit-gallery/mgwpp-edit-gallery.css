@@ -1,247 +1,247 @@
 /* includes/admin/views/edit-gallery/mgwpp-edit-gallery.css */
 :root {
-    --mgwpp-edit-preview-height: 70vh;
-    --mgwpp-edit-preview-mobile-height: 50vh;
-    --mgwpp-edit-preview-border: 1px solid var(--mgwpp-card-border-light);
+  --mgwpp-edit-preview-height: 70vh;
+  --mgwpp-edit-preview-mobile-height: 50vh;
+  --mgwpp-edit-preview-border: 1px solid var(--mgwpp-card-border-light);
 }
 
 .mgwpp-dark-mode {
-    --mgwpp-edit-preview-border: 1px solid var(--mgwpp-card-border-dark);
+  --mgwpp-edit-preview-border: 1px solid var(--mgwpp-card-border-dark);
 }
 
 .mgwpp-edit-wrapper {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .mgwpp-edit-title {
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--mgwpp-border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--mgwpp-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .mgwpp-edit-columns {
-    display: flex;
-    gap: 30px;
+  display: flex;
+  gap: 30px;
 }
 
 .mgwpp-settings-column,
 .mgwpp-preview-column {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .mgwpp-form-section {
-    margin-bottom: 25px;
-    padding: 15px;
-    background: var(--mgwpp-card-bg-light);
-    border: 1px solid var(--mgwpp-card-border-light);
-    border-radius: var(--mgwpp-border-radius);
-    box-shadow: var(--mgwpp-card-shadow-light);
+  margin-bottom: 25px;
+  padding: 15px;
+  background: var(--mgwpp-card-bg-light);
+  border: 1px solid var(--mgwpp-card-border-light);
+  border-radius: var(--mgwpp-border-radius);
+  box-shadow: var(--mgwpp-card-shadow-light);
 }
 
 .mgwpp-dark-mode .mgwpp-form-section {
-    background: var(--mgwpp-card-bg-dark);
-    border-color: var(--mgwpp-card-border-dark);
-    box-shadow: var(--mgwpp-card-shadow-dark);
+  background: var(--mgwpp-card-bg-dark);
+  border-color: var(--mgwpp-card-border-dark);
+  box-shadow: var(--mgwpp-card-shadow-dark);
 }
 
 .mgwpp-form-section h2 {
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--mgwpp-border-color);
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--mgwpp-border-color);
 }
 
 /* Gallery Type Selection */
 .mgwpp-gallery-types {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
 }
 
 .mgwpp-gallery-type {
-    border-radius: var(--mgwpp-border-radius);
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--mgwpp-card-bg-light);
+  border-radius: var(--mgwpp-border-radius);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--mgwpp-card-bg-light);
 }
 
 .mgwpp-dark-mode .mgwpp-gallery-type {
-    border-color: var(--mgwpp-card-border-dark);
-    background: var(--mgwpp-card-bg-dark);
+  border-color: var(--mgwpp-card-border-dark);
+  background: var(--mgwpp-card-bg-dark);
 }
 
 .mgwpp-gallery-type:hover {
-    border-color: var(--mgwpp-primary-color);
+  border-color: var(--mgwpp-primary-color);
 }
 
 .mgwpp-gallery-type.active {
-    border-color: var(--mgwpp-primary-color);
-    background-color: var(--mgwpp-primary-light);
+  border-color: var(--mgwpp-primary-color);
+  background-color: var(--mgwpp-primary-light);
 }
 
-
-
 .mgwpp-type-preview {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .mgwpp-type-preview img {
-    height: auto;
-    max-width: 75px;
-    width: 100%;
-    border-radius: 3px;
-    margin-bottom: 8px;
+  height: auto;
+  max-width: 75px;
+  width: 100%;
+  border-radius: 3px;
+  margin-bottom: 8px;
 }
 
 /* Image Manager */
 .mgwpp-image-manager {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .mgwpp-image-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
 .mgwpp-image-item {
-    position: relative;
-    border: 1px solid var(--mgwpp-card-border-light);
-    border-radius: var(--mgwpp-border-radius);
-    padding: 5px;
-    background: var(--mgwpp-card-bg-light);
-    transition: all 0.2s;
+  position: relative;
+  border: 1px solid var(--mgwpp-card-border-light);
+  border-radius: var(--mgwpp-border-radius);
+  padding: 5px;
+  background: var(--mgwpp-card-bg-light);
+  transition: all 0.2s;
 }
 
 .mgwpp-dark-mode .mgwpp-image-item {
-    border-color: var(--mgwpp-card-border-dark);
-    background: var(--mgwpp-card-bg-dark);
+  border-color: var(--mgwpp-card-border-dark);
+  background: var(--mgwpp-card-bg-dark);
 }
 
 .mgwpp-image-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: var(--mgwpp-border-radius-sm);
-}
-
-.mgwpp-remove-image {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--mgwpp-error-color);
-    color: white;
-    border: none;
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0;
-    display: none;
-    z-index: 10;
-}
-
-.mgwpp-image-item:hover .mgwpp-remove-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mgwpp-image-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--mgwpp-border-radius-sm);
 }
 
 /* Preview styles */
 .mgwpp-preview-container {
-    background: var(--mgwpp-card-bg-light);
-    border: var(--mgwpp-edit-preview-border);
-    border-radius: var(--mgwpp-border-radius);
-    overflow: hidden;
-    padding: 15px;
+  background: var(--mgwpp-card-bg-light);
+  border: var(--mgwpp-edit-preview-border);
+  border-radius: var(--mgwpp-border-radius);
+  overflow: hidden;
+  padding: 15px;
 }
 
 .mgwpp-dark-mode .mgwpp-preview-container {
-    background: var(--mgwpp-card-bg-dark);
+  background: var(--mgwpp-card-bg-dark);
 }
 
 .mgwpp-preview-frame-container {
-    position: relative;
-    width: 100%;
-    height: var(--mgwpp-edit-preview-height);
-    border-radius: var(--mgwpp-border-radius-sm);
-    overflow: hidden;
-    margin-top: 15px;
+  position: relative;
+  width: 100%;
+  height: var(--mgwpp-edit-preview-height);
+  border-radius: var(--mgwpp-border-radius-sm);
+  overflow: hidden;
+  margin-top: 15px;
 }
 
 #mgwpp-preview-frame {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: white;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: white;
 }
 
 .mgwpp-dark-mode #mgwpp-preview-frame {
-    background: #1e1e1e;
+  background: #1e1e1e;
 }
 
 /* Responsive layout */
 @media (max-width: 1200px) {
-    .mgwpp-edit-columns {
-        flex-direction: column;
-    }
-    
-    .mgwpp-preview-column {
-        order: -1;
-        margin-bottom: 30px;
-    }
+  .mgwpp-edit-columns {
+    flex-direction: column;
+  }
+
+  .mgwpp-preview-column {
+    order: -1;
+    margin-bottom: 30px;
+  }
 }
 
 @media (max-width: 782px) {
-    .mgwpp-gallery-types {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    
-    .mgwpp-image-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
+  .mgwpp-gallery-types {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 
-    .mgwpp-preview-frame-container {
-        height: var(--mgwpp-edit-preview-mobile-height);
-    }
+  .mgwpp-image-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .mgwpp-preview-frame-container {
+    height: var(--mgwpp-edit-preview-mobile-height);
+  }
 }
 
 /* Sortable UI feedback */
 .mgwpp-image-container.sortable {
-    min-height: 100px;
+  min-height: 100px;
 }
 
 .mgwpp-image-container.sortable .mgwpp-image-item {
-    cursor: move;
+  cursor: move;
 }
 
 .mgwpp-image-container.sortable .mgwpp-image-item.ui-sortable-helper {
-    transform: rotate(3deg);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transform: rotate(3deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Edit Actions */
-.mgwpp-edit-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    gap: 15px;
+.mgwpp-image-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 20; /* Ensure it's above the image */
+}
+
+.mgwpp-image-item:hover .mgwpp-image-actions {
+  opacity: 1;
+}
+
+.mgwpp-image-actions button {
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 2px;
+  color: white;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.mgwpp-image-actions button:hover {
+  background: #d54e21;
+}
+
+.mgwpp-image-actions button .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }

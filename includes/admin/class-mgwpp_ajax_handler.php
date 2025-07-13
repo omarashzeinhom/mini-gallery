@@ -23,7 +23,10 @@ class MGWPP_Ajax_Handler
         add_action('wp_ajax_mgwpp_save_gallery_order', array(__CLASS__, 'save_gallery_order'));
         add_action('wp_ajax_mgwpp_create_gallery', array(__CLASS__, 'create_gallery'));
         add_action('wp_ajax_mgwpp_delete_gallery', array(__CLASS__, 'delete_gallery'));
-
+        // Handle bulk gallery deletion in view
+        add_action('wp_ajax_mgwpp_bulk_delete_galleries', 'mgwpp_bulk_delete_galleries_handler');
+        // Handle Single Image of Gallery in editing
+        add_action('wp_ajax_mgwpp_delete_image', 'mgwpp_delete_image_handler');
         // Handle form submissions
         add_action('admin_post_mgwpp_create_gallery', array(__CLASS__, 'handle_create_gallery'));
         add_action('admin_post_mgwpp_save_gallery', array(__CLASS__, 'handle_save_gallery'));
@@ -432,6 +435,86 @@ class MGWPP_Ajax_Handler
             wp_send_json_success(['message' => __('Gallery deleted successfully', 'mini-gallery')]);
         } else {
             wp_send_json_error(['message' => __('Failed to delete gallery', 'mini-gallery')]);
+        }
+    }
+
+
+
+    function mgwpp_bulk_delete_galleries_handler()
+    {
+        // Verify nonce
+        check_ajax_referer('mgwpp-admin-nonce', 'nonce');
+
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Unauthorized', 'mini-gallery'), 403);
+        }
+
+        // Get gallery IDs
+        $gallery_ids = isset($_POST['ids']) ? array_map('intval', $_POST['ids']) : [];
+
+        if (empty($gallery_ids)) {
+            wp_send_json_error(__('No galleries selected', 'mini-gallery'), 400);
+        }
+
+        $deleted = [];
+        $errors = [];
+
+        foreach ($gallery_ids as $id) {
+            // Delete gallery post and associated data
+            $result = wp_delete_post($id, true);
+
+            if ($result !== false) {
+                $deleted[] = $id;
+            } else {
+                $errors[] = $id;
+            }
+        }
+
+        if (!empty($errors)) {
+            wp_send_json_error([
+                'message' => sprintf(
+                    __('Deleted %d galleries, failed to delete %d galleries', 'mini-gallery'),
+                    count($deleted),
+                    count($errors)
+                ),
+                'deleted' => $deleted,
+                'failed' => $errors
+            ]);
+        }
+
+        wp_send_json_success([
+            'message' => sprintf(
+                _n('Deleted %d gallery', 'Deleted %d galleries', count($deleted)),
+                count($deleted)
+            ),
+            'deleted' => $deleted
+        ]);
+    }
+    function mgwpp_delete_image_handler()
+    {
+        // Verify nonce
+        check_ajax_referer('mgwpp_edit_gallery', 'nonce');
+
+        // Check permissions
+        if (!current_user_can('delete_posts')) {
+            wp_send_json_error(__('Insufficient permissions', 'mini-gallery'));
+        }
+
+        // Get image ID
+        $image_id = isset($_POST['image_id']) ? absint($_POST['image_id']) : 0;
+
+        if (!$image_id || !wp_attachment_is_image($image_id)) {
+            wp_send_json_error(__('Invalid image ID', 'mini-gallery'));
+        }
+
+        // Delete permanently
+        $result = wp_delete_attachment($image_id, true);
+
+        if ($result) {
+            wp_send_json_success(__('Image deleted successfully', 'mini-gallery'));
+        } else {
+            wp_send_json_error(__('Error deleting image', 'mini-gallery'));
         }
     }
 }

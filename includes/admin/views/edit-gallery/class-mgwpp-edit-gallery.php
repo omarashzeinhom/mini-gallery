@@ -158,6 +158,8 @@ class MGWPP_Edit_Gallery_View
                                 <?php esc_html_e('Gallery Images', 'mini-gallery'); ?>
                                 <span class="mgwpp-reorder-hint"><?php esc_html_e('(Drag to reorder)', 'mini-gallery'); ?></span>
                             </h2>
+                            // ... existing code ...
+
                             <div class="mgwpp-image-manager">
                                 <div class="mgwpp-image-container sortable">
                                     <?php if (!empty($images)) : ?>
@@ -167,7 +169,14 @@ class MGWPP_Edit_Gallery_View
                                                 <div class="mgwpp-image-item" data-id="<?php echo esc_attr($image_id); ?>">
                                                     <img src="<?php echo esc_url($thumb_url); ?>">
                                                     <input type="hidden" name="gallery_images[]" value="<?php echo esc_attr($image_id); ?>">
-                                                    <button type="button" class="mgwpp-remove-image" title="<?php esc_attr_e('Remove image', 'mini-gallery'); ?>">×</button>
+                                                    <div class="mgwpp-item-actions"> <!-- Changed class name -->
+                                                        <button type="button" class="mgwpp-remove-image" title="<?php esc_attr_e('Remove from gallery', 'mini-gallery'); ?>">
+                                                            <span class="dashicons dashicons-no"></span>
+                                                        </button>
+                                                        <button type="button" class="mgwpp-delete-image" title="<?php esc_attr_e('Permanently delete', 'mini-gallery'); ?>">
+                                                            <span class="dashicons dashicons-trash"></span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
@@ -175,7 +184,7 @@ class MGWPP_Edit_Gallery_View
                                         <p class="mgwpp-no-images"><?php esc_html_e('No images added to this gallery yet.', 'mini-gallery'); ?></p>
                                     <?php endif; ?>
                                 </div>
-                                <div class="mgwpp-image-actions">
+                                <div class="mgwpp-manager-actions"> <!-- Changed class name -->
                                     <button type="button" class="button button-primary mgwpp-add-images">
                                         <?php esc_html_e('Add Images', 'mini-gallery'); ?>
                                     </button>
@@ -184,6 +193,7 @@ class MGWPP_Edit_Gallery_View
                                     </button>
                                 </div>
                             </div>
+
                         </div>
 
                         <div class="mgwpp-preview-column">

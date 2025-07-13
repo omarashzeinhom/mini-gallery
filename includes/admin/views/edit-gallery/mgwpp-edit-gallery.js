@@ -185,7 +185,36 @@ jQuery(function ($) {
             $previewFrame.attr('src', newSrc);
         }
     }
+    $imageContainer.on('click', '.mgwpp-delete-image', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
 
+        const $item = $(this).closest('.mgwpp-image-item');
+        const imageId = $item.data('id');
+
+        if (!confirm(mgwppEdit.i18n.confirmDeleteImage)) {
+            return;
+        }
+
+        // AJAX request to delete image
+        $.post(mgwppEdit.ajaxUrl, {
+            action: 'mgwpp_delete_image',
+            image_id: imageId,
+            nonce: mgwppEdit.nonce
+        }).then(response => {
+            if (response.success) {
+                $item.fadeOut(300, function () {
+                    $(this).remove();
+                    checkEmptyContainer();
+                    refreshPreviewIframe();
+                });
+            } else {
+                alert(mgwppEdit.i18n.deleteError);
+            }
+        }).fail(() => {
+            alert(mgwppEdit.i18n.deleteError);
+        });
+    });
     // Initialize color pickers if they exist
     if ($.fn.wpColorPicker) {
         $('.mgwpp-color-field').wpColorPicker();

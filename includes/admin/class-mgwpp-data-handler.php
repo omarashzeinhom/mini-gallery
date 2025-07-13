@@ -114,4 +114,5 @@ class MGWPP_Data_Handler
 
         return $modules;
     }
+    
 }

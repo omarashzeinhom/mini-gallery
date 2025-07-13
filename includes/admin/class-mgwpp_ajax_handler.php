@@ -472,9 +472,10 @@ class MGWPP_Ajax_Handler
         }
 
         if (!empty($errors)) {
+            // Translators: 1: Number of galleries deleted, 2: Number of galleries that failed to delete
             wp_send_json_error([
                 'message' => sprintf(
-                    __('Deleted %d galleries, failed to delete %d galleries', 'mini-gallery'),
+                    __('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
                     count($deleted),
                     count($errors)
                 ),
@@ -483,9 +484,10 @@ class MGWPP_Ajax_Handler
             ]);
         }
 
+        // Translators: %d: Number of galleries deleted
         wp_send_json_success([
             'message' => sprintf(
-                _n('Deleted %d gallery', 'Deleted %d galleries', count($deleted)),
+                _n('Deleted %d gallery', 'Deleted %d galleries', count($deleted), 'mini-gallery'),
                 count($deleted)
             ),
             'deleted' => $deleted

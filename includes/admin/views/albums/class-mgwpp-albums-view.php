@@ -24,8 +24,8 @@ class MGWPP_Albums_View
         wp_enqueue_media();
 
         // Add custom styles and scripts
-        wp_enqueue_style('mgwpp-album-admin-styles', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/views/albums/mgwpp-albums-view.css', array(), MGWPP_ASSET_VERSION);
-        wp_enqueue_script('mgwpp-album-admin-scripts', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/views/albums/mgwpp-albums-view.js', array('jquery', 'jquery-ui-tabs', 'jquery-ui-sortable'), MGWPP_ASSET_VERSION, true);
+        wp_enqueue_style('mgwpp-album-admin-styles', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'views/albums/mgwpp-albums-view.css', array(), MGWPP_ASSET_VERSION);
+        wp_enqueue_script('mgwpp-album-admin-scripts', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'views/albums/mgwpp-albums-view.js', array('jquery', 'jquery-ui-tabs', 'jquery-ui-sortable'), MGWPP_ASSET_VERSION, true);
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
@@ -206,7 +206,7 @@ class MGWPP_Albums_View
                 </div>
                 <div class="mgwpp-album-preview">
                     <div class="mgwpp-preview-cover">
-                        <img src="<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/images/placeholder.jpg'); ?>" alt="<?php esc_attr_e('Album Preview', 'mini-gallery'); ?>" id="preview-cover-image">
+                        <img src="<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>" alt="<?php esc_attr_e('Album Preview', 'mini-gallery'); ?>" id="preview-cover-image">
                     </div>
                     <div class="mgwpp-preview-details">
                         <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
@@ -259,7 +259,7 @@ class MGWPP_Albums_View
                     e.preventDefault();
                     $('#album_cover_id').val('');
                     $('#album-cover-preview').html('');
-                    $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/images/placeholder.jpg'); ?>');
+                    $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>');
                     $(this).hide();
                 });
 
@@ -318,7 +318,7 @@ class MGWPP_Albums_View
                     setTimeout(function() {
                         $('#preview-title').text('<?php esc_html_e('Album Title', 'mini-gallery'); ?>');
                         $('#preview-description').text('<?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?>');
-                        $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/images/placeholder.jpg'); ?>');
+                        $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>');
                         $('#preview-galleries-list').html('<li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>');
                         $('#album-cover-preview').html('');
                         $('.mgwpp-remove-cover-btn').hide();
@@ -351,7 +351,7 @@ class MGWPP_Albums_View
                 <div class="mgwpp-gallery-grid">
                     <?php foreach ($galleries as $gallery) :
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
-                        $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'assets/images/placeholder.jpg';
+                        $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
                         ?>
                         <label class="mgwpp-gallery-item">

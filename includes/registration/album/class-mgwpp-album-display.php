@@ -97,9 +97,6 @@ class MGWPP_Album_Display
             }
             $output .= '</div>';
         }
-
-        // Add lightbox HTML at the bottom
-        $output .= self::get_lightbox_html();
         $output .= '</div>';
 
         return $output;
@@ -201,23 +198,6 @@ class MGWPP_Album_Display
         return $output;
     }
 
-    public static function get_lightbox_html()
-    {
-        ob_start();
-?>
-        <div id="mgwpp-lightbox" class="mgwpp-lightbox">
-            <span class="mgwpp-close">&times;</span>
-            <div class="mgwpp-lightbox-overlay"></div>
-            <div class="mgwpp-lightbox-content">
-                <div class="mgwpp-lightbox-image-container"></div>
-                <div class="mgwpp-lightbox-caption"></div>
-            </div>
-            <a class="mgwpp-prev">&#10094;</a>
-            <a class="mgwpp-next">&#10095;</a>
-        </div>
-<?php
-        return ob_get_clean();
-    }
 
     public static function album_shortcode($atts)
     {

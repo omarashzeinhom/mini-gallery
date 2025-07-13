@@ -17,10 +17,10 @@ jQuery(function ($) {
         stop: function (event, ui) {
             // Show remove buttons after drag
             $('.mgwpp-remove-image').show();
-            
+
             // Update hidden input order to match visual order
             updateHiddenInputOrder();
-            
+
             // Visual feedback that order changed
             $('#mgwpp-save-order-btn').css('background-color', '#d54e21');
         }
@@ -28,10 +28,10 @@ jQuery(function ($) {
 
     // Function to update hidden input order
     function updateHiddenInputOrder() {
-        $imageContainer.find('.mgwpp-image-item').each(function(index) {
+        $imageContainer.find('.mgwpp-image-item').each(function (index) {
             var $item = $(this);
             var imageId = $item.data('id');
-            
+
             // Update or create hidden input with correct order
             var $hiddenInput = $item.find('input[name="gallery_images[]"]');
             if ($hiddenInput.length === 0) {
@@ -65,7 +65,7 @@ jQuery(function ($) {
         mediaUploader.on('select', function () {
             var attachments = mediaUploader.state().get('selection').toJSON();
             var $noImages = $('.mgwpp-no-images');
-            
+
             // Remove "no images" message if present
             if ($noImages.length) {
                 $noImages.remove();
@@ -95,7 +95,7 @@ jQuery(function ($) {
         e.preventDefault();
         $(this).closest('.mgwpp-image-item').fadeOut(300, function () {
             $(this).remove();
-            
+
             // Check if container is empty
             if ($imageContainer.find('.mgwpp-image-item').length === 0) {
                 $imageContainer.append('<p class="mgwpp-no-images">No images added to this gallery yet.</p>');
@@ -144,13 +144,14 @@ jQuery(function ($) {
             },
             success: function (response) {
                 console.log('Save response:', response);
-                
+
                 if (response.success) {
                     $btn.text(mgwppEdit.i18n.saved).css('background-color', '#46b450');
-                    
+
                     // Update hidden inputs to match saved order
                     updateHiddenInputOrder();
-                    
+                    // REFRESH PREVIEW IFRAME
+                    refreshPreviewIframe();
                     setTimeout(() => {
                         $btn.text(originalText).prop('disabled', false).css('background-color', '');
                     }, 2000);
@@ -164,8 +165,26 @@ jQuery(function ($) {
                 alert(mgwppEdit.i18n.saveFailed + ': ' + error);
                 $btn.text(originalText).prop('disabled', false).css('background-color', '');
             }
+
         });
     });
+    function refreshPreviewIframe() {
+        const $previewFrame = $('#mgwpp-preview-frame');
+        if ($previewFrame.length) {
+            // Get current src
+            let currentSrc = $previewFrame.attr('src');
+
+            // Remove existing timestamp if present
+            currentSrc = currentSrc.replace(/[?&]t=\d+/, '');
+
+            // Add new timestamp to bypass cache
+            const separator = currentSrc.includes('?') ? '&' : '?';
+            const newSrc = currentSrc + separator + 't=' + Date.now();
+
+            // Refresh iframe
+            $previewFrame.attr('src', newSrc);
+        }
+    }
 
     // Initialize color pickers if they exist
     if ($.fn.wpColorPicker) {

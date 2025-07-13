@@ -185,7 +185,7 @@ class MGWPP_Edit_Gallery_View
                                 </div>
                             </div>
                         </div>
-
+data-id="<?php echo esc_attr($image_id); ?>"
                         <div class="mgwpp-preview-column">
                             <div class="mgwpp-preview-container">
                                 <h2><?php esc_html_e('Gallery Preview', 'mini-gallery'); ?></h2>

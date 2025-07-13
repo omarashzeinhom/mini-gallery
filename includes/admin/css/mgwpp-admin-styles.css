@@ -436,3 +436,12 @@ body.mgwpp-dark-mode #mgwpp-theme-toggle::after {
 #mgwpp-theme-toggle:active {
   transform: scale(0.97);
 }
+/* Stat description: light‑mode default */
+.mgwpp-stat-description {
+  color: var(--mgwpp-foreground-light);
+}
+
+/* Stat description: dark‑mode override */
+.mgwpp-dark .mgwpp-stat-description {
+  color: var(--mgwpp-foreground-dark);
+}

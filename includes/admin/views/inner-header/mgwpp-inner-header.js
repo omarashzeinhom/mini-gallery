@@ -79,36 +79,38 @@ jQuery(document).ready(function ($) {
     }
 });
 
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     // Global AJAX loader handling
-    $(document).ajaxSend(function(event, jqxhr, settings) {
-        if (settings.url.includes('admin-ajax.php') && 
+    $(document).ajaxSend(function (event, jqxhr, settings) {
+        if (settings.url.includes('admin-ajax.php') &&
             settings.data.includes('action=mgwpp')) {
             showLoader();
         }
     });
     
-    $(document).ajaxComplete(function() {
+    $(document).ajaxComplete(function () {
         hideLoader();
     });
 
     // Form submissions
-    $('form').on('submit', function() {
+    $('form').on('submit', function () {
         if ($(this).is('#mgwpp-gallery-form')) {
             showLoader();
         }
     });
 
     // Button clicks
-    $(document).on('click', '.mgwpp-save-order, .mgwpp-admin-button', function() {
+    $(document).on('click', '.mgwpp-save-order, .mgwpp-admin-button', function () {
         showLoader();
     });
 
-    function showLoader() {
+    function showLoader()
+    {
         $('.mgwpp-loader-overlay').fadeIn(200);
     }
     
-    function hideLoader() {
+    function hideLoader()
+    {
         $('.mgwpp-loader-overlay').fadeOut(200);
     }
 });

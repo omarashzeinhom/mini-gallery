@@ -27,7 +27,8 @@ jQuery(function ($) {
     });
 
     // Function to update hidden input order
-    function updateHiddenInputOrder() {
+    function updateHiddenInputOrder()
+    {
         $imageContainer.find('.mgwpp-image-item').each(function (index) {
             var $item = $(this);
             var imageId = $item.data('id');
@@ -168,7 +169,8 @@ jQuery(function ($) {
 
         });
     });
-    function refreshPreviewIframe() {
+    function refreshPreviewIframe()
+    {
         const $previewFrame = $('#mgwpp-preview-frame');
         if ($previewFrame.length) {
             // Get current src

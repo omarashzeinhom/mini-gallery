@@ -1,5 +1,6 @@
 class MegaCarousel {
-    constructor(carouselElement) {
+    constructor(carouselElement)
+    {
         this.carousel = carouselElement;
         this.slides = Array.from(this.carousel.querySelectorAll('.mg-carousel__slide'));
         this.dotsContainer = this.carousel.querySelector('.mg-mega-carousel-dots-container');
@@ -17,8 +18,11 @@ class MegaCarousel {
         }
     }
 
-    initDots() {
-        if (!this.dotsContainer) return;
+    initDots()
+    {
+        if (!this.dotsContainer) {
+            return;
+        }
         
         // Clear existing dots
         this.dotsContainer.innerHTML = '';
@@ -27,14 +31,19 @@ class MegaCarousel {
         this.slides.forEach((_, index) => {
             const dot = document.createElement('div');
             dot.classList.add('mg-mega-carousel-dot');
-            if (index === 0) dot.classList.add('active');
+            if (index === 0) {
+                dot.classList.add('active');
+            }
             dot.addEventListener('click', () => this.goToSlide(index));
             this.dotsContainer.appendChild(dot);
         });
     }
 
-    updateDots() {
-        if (!this.dotsContainer) return;
+    updateDots()
+    {
+        if (!this.dotsContainer) {
+            return;
+        }
         
         const dots = this.dotsContainer.querySelectorAll('.mg-mega-carousel-dot');
         dots.forEach((dot, index) => {
@@ -42,11 +51,18 @@ class MegaCarousel {
         });
     }
 
-    goToSlide(index) {
+    goToSlide(index)
+    {
         // Validate index
-        if (index < 0) index = this.slides.length - 1;
-        if (index >= this.slides.length) index = 0;
-        if (index === this.currentIndex) return;
+        if (index < 0) {
+            index = this.slides.length - 1;
+        }
+        if (index >= this.slides.length) {
+            index = 0;
+        }
+        if (index === this.currentIndex) {
+            return;
+        }
         
         // Update classes
         this.slides[this.currentIndex].classList.remove('mg-active');
@@ -58,7 +74,8 @@ class MegaCarousel {
         this.resetAutoPlay();
     }
 
-    addEventListeners() {
+    addEventListeners()
+    {
         // Previous button
         const prevArrow = this.carousel.querySelector('.mgwpp__prev-mega-slider');
         if (prevArrow) {
@@ -94,23 +111,29 @@ class MegaCarousel {
         }, { passive: true });
     }
 
-    nextSlide() {
+    nextSlide()
+    {
         this.goToSlide(this.currentIndex + 1);
     }
 
-    prevSlide() {
+    prevSlide()
+    {
         this.goToSlide(this.currentIndex - 1);
     }
 
-    startAutoPlay() {
+    startAutoPlay()
+    {
         const autoplay = this.carousel.dataset.autoplay === 'true';
-        if (!autoplay) return;
+        if (!autoplay) {
+            return;
+        }
         
         const delay = parseInt(this.carousel.dataset.autoplayDelay) || 3000;
         this.autoPlayInterval = setInterval(() => this.nextSlide(), delay);
     }
 
-    resetAutoPlay() {
+    resetAutoPlay()
+    {
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
             this.startAutoPlay();

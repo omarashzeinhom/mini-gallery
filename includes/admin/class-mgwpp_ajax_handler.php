@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Class MGWPP_Ajax_Handler
- * 
+ *
  * Handles AJAX requests for Mini Gallery plugin.
  */
 class MGWPP_Ajax_Handler

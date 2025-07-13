@@ -59,8 +59,7 @@ class MGWPP_Extensions_View
 
     public function save_settings()
     {
-        if (
-            !isset($_POST['_wpnonce']) ||
+        if (!isset($_POST['_wpnonce']) ||
             !wp_verify_nonce($_POST['_wpnonce'], 'mgwpp_smush_settings_nonce')
         ) {
             wp_die(__('Security check failed', 'mini-gallery'));
@@ -83,7 +82,7 @@ class MGWPP_Extensions_View
     public function render_extensions_page()
     {
         $current_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'smush';
-?>
+        ?>
         <div class="wrap">
             <h1><?php esc_html_e('Mini Gallery Extensions', 'mini-gallery'); ?></h1>
 
@@ -104,7 +103,7 @@ class MGWPP_Extensions_View
                 <?php endif; ?>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private function render_smush_tab()
@@ -113,7 +112,7 @@ class MGWPP_Extensions_View
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html($notice) . '</p></div>';
             delete_transient('mgwpp_smush_notice');
         }
-    ?>
+        ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="mgwpp_save_smush_settings">
             <?php wp_nonce_field('mgwpp_smush_settings_nonce', '_wpnonce'); ?>
@@ -171,12 +170,12 @@ User-Agent: <?php echo esc_html(get_bloginfo('name') . '/1.0'); ?>
 Referer: <?php echo esc_url(home_url()); ?>
             </pre>
         </div>
-    <?php
+        <?php
     }
 
     private function render_pro_tab()
     {
-    ?>
+        ?>
         <div class="mgwpp-pro-promo">
             <h2><?php esc_html_e('Premium Extensions', 'mini-gallery'); ?></h2>
             <p><?php esc_html_e('Enhance your galleries with our premium extensions:', 'mini-gallery'); ?></p>
@@ -207,7 +206,7 @@ Referer: <?php echo esc_url(home_url()); ?>
                 </a>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     public function optimize_uploaded_image($file)
@@ -316,7 +315,7 @@ Referer: <?php echo esc_url(home_url()); ?>
             'default_ratio' => '16:9',
             'enable_generate' => 0
         ]);
-    ?>
+        ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="mgwpp_save_picogen_settings">
             <?php wp_nonce_field('mgwpp_picogen_settings_nonce', '_wpnonce'); ?>
@@ -450,14 +449,13 @@ Referer: <?php echo esc_url(home_url()); ?>
                 });
             });
         </script>
-<?php
+        <?php
     }
 
     // Save Picogen settings
     public function save_picogen_settings()
     {
-        if (
-            !isset($_POST['_wpnonce']) ||
+        if (!isset($_POST['_wpnonce']) ||
             !wp_verify_nonce($_POST['_wpnonce'], 'mgwpp_picogen_settings_nonce')
         ) {
             wp_die(__('Security check failed', 'mini-gallery'));

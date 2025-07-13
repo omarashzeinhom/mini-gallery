@@ -10,7 +10,7 @@ class MGWPP_Gallery_Manager
     public static function mgwpp_delete_gallery()
     {
         $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field($_GET['_wpnonce']) : '';
-        if (!wp_verify_nonce($nonce, 'mgwpp_delete_gallery')){
+        if (!wp_verify_nonce($nonce, 'mgwpp_delete_gallery')) {
             wp_die('Security check failed for deleting gallery');
         }
 

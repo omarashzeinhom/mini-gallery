@@ -1,6 +1,8 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     // Only run on galleries pages
-    if (!$('.mgwpp-gallery-grid').length) return;
+    if (!$('.mgwpp-gallery-grid').length) {
+        return;
+    }
 
     // 1. COPY SHORTCODE FUNCTIONALITY
     // ==============================
@@ -12,7 +14,7 @@ jQuery(document).ready(function($) {
             navigator.clipboard.writeText(text)
                 .then(() => showFeedback($element, true))
                 .catch(() => showFeedback($element, false));
-        } 
+        }
         // Fallback for older browsers
         else {
             try {
@@ -45,11 +47,11 @@ jQuery(document).ready(function($) {
     
     // Event delegation for copy actions
     $(document)
-        .on('click', '.mgwpp-shortcode-input', function() {
+        .on('click', '.mgwpp-shortcode-input', function () {
             this.select();
             copyToClipboard(this.value, $(this));
         })
-        .on('click', '.mgwpp-copy-shortcode', function(e) {
+        .on('click', '.mgwpp-copy-shortcode', function (e) {
             e.preventDefault();
             copyToClipboard($(this).siblings('.mgwpp-shortcode-input').val(), $(this));
         });
@@ -84,21 +86,27 @@ jQuery(document).ready(function($) {
     // Event handlers
     $(document)
         .on('change', '.mgwpp-bulk-checkbox', toggleBulkActions)
-        .on('change', '#mgwpp-toggle-all', function() {
+        .on('change', '#mgwpp-toggle-all', function () {
             const isChecked = $(this).prop('checked');
             $bulkCheckboxes.prop('checked', isChecked);
             toggleBulkActions();
         })
-        .on('click', '#mgwpp-apply-bulk-action', function() {
-            if ($bulkActionSelect.val() !== 'delete') return;
+        .on('click', '#mgwpp-apply-bulk-action', function () {
+            if ($bulkActionSelect.val() !== 'delete') {
+                return;
+            }
             
-            const galleryIds = $bulkCheckboxes.filter(':checked').map(function() {
+            const galleryIds = $bulkCheckboxes.filter(':checked').map(function () {
                 return this.value;
             }).get();
             
-            if (galleryIds.length === 0) return;
+            if (galleryIds.length === 0) {
+                return;
+            }
             
-            if (!confirm(mgwppAdmin.i18n.confirmDelete)) return;
+            if (!confirm(mgwppAdmin.i18n.confirmDelete)) {
+                return;
+            }
             
             $.post(mgwppAdmin.ajaxUrl, {
                 action: 'mgwpp_bulk_delete_galleries',

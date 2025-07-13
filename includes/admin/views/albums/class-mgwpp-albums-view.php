@@ -18,6 +18,7 @@ class MGWPP_Albums_View
 
     public static function render()
     {
+        MGWPP_Inner_Header::enqueue_assets();
         // Enqueue necessary scripts and styles
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('jquery-ui-sortable');
@@ -29,59 +30,62 @@ class MGWPP_Albums_View
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
-        ?>
+?>
+
         <?php MGWPP_Inner_Header::render(); ?>
+        <div class="mgwpp-dashboard-container">
 
-        <div class="wrap">
-            <div class="mgwpp-tabs-container">
-                <div id="mgwpp-tabs">
-                    <ul class="mgwpp-tabs-nav">
-                        <li><a href="#tab-albums"><?php esc_html_e('Albums', 'mini-gallery'); ?></a></li>
-                        <li><a href="#tab-create"><?php esc_html_e('Create New', 'mini-gallery'); ?></a></li>
-                        <li><a href="#tab-settings"><?php esc_html_e('Settings', 'mini-gallery'); ?></a></li>
-                    </ul>
+            <div class="wrap">
+                <div class="mgwpp-tabs-container">
+                    <div id="mgwpp-tabs">
+                        <ul class="mgwpp-tabs-nav">
+                            <li><a href="#tab-albums"><?php esc_html_e('Albums', 'mini-gallery'); ?></a></li>
+                            <li><a href="#tab-create"><?php esc_html_e('Create New', 'mini-gallery'); ?></a></li>
+                            <li><a href="#tab-settings"><?php esc_html_e('Settings', 'mini-gallery'); ?></a></li>
+                        </ul>
 
-                    <div id="tab-albums" class="mgwpp-tab-content">
-                        <div class="mgwpp-search-filter">
-                            <input type="text" id="mgwpp-album-search" placeholder="<?php esc_attr_e('Search albums...', 'mini-gallery'); ?>">
-                            <select id="mgwpp-album-filter">
-                                <option value=""><?php esc_html_e('All Albums', 'mini-gallery'); ?></option>
-                                <option value="recent"><?php esc_html_e('Recently Added', 'mini-gallery'); ?></option>
-                                <option value="popular"><?php esc_html_e('Most Galleries', 'mini-gallery'); ?></option>
-                            </select>
+                        <div id="tab-albums" class="mgwpp-tab-content">
+                            <div class="mgwpp-search-filter">
+                                <input type="text" id="mgwpp-album-search" placeholder="<?php esc_attr_e('Search albums...', 'mini-gallery'); ?>">
+                                <select id="mgwpp-album-filter">
+                                    <option value=""><?php esc_html_e('All Albums', 'mini-gallery'); ?></option>
+                                    <option value="recent"><?php esc_html_e('Recently Added', 'mini-gallery'); ?></option>
+                                    <option value="popular"><?php esc_html_e('Most Galleries', 'mini-gallery'); ?></option>
+                                </select>
+                            </div>
+                            <?php self::render_albums_table(); ?>
                         </div>
-                        <?php self::render_albums_table(); ?>
-                    </div>
 
-                    <div id="tab-create" class="mgwpp-tab-content">
-                        <?php self::render_creation_form(); ?>
-                    </div>
+                        <div id="tab-create" class="mgwpp-tab-content">
+                            <?php self::render_creation_form(); ?>
+                        </div>
 
-                    <div id="tab-settings" class="mgwpp-tab-content">
-                        <div class="mgwpp-settings-card">
-                            <h2><?php esc_html_e('Album Display Settings', 'mini-gallery'); ?></h2>
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                <input type="hidden" name="action" value="mgwpp_save_album_settings">
-                                <?php wp_nonce_field('mgwpp_album_settings_nonce', 'mgwpp_album_settings_nonce'); ?>
+                        <div id="tab-settings" class="mgwpp-tab-content">
+                            <div class="mgwpp-settings-card">
+                                <h2><?php esc_html_e('Album Display Settings', 'mini-gallery'); ?></h2>
+                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                                    <input type="hidden" name="action" value="mgwpp_save_album_settings">
+                                    <?php wp_nonce_field('mgwpp_album_settings_nonce', 'mgwpp_album_settings_nonce'); ?>
 
-                                <div class="mgwpp-setting-row">
-                                    <label for="albums_per_page"><?php esc_html_e('Albums Per Page:', 'mini-gallery'); ?></label>
-                                    <input type="number" name="albums_per_page" id="albums_per_page" value="<?php echo esc_attr(get_option('mgwpp_albums_per_page', 12)); ?>" min="1" max="100">
-                                </div>
+                                    <div class="mgwpp-setting-row">
+                                        <label for="albums_per_page"><?php esc_html_e('Albums Per Page:', 'mini-gallery'); ?></label>
+                                        <input type="number" name="albums_per_page" id="albums_per_page" value="<?php echo esc_attr(get_option('mgwpp_albums_per_page', 12)); ?>" min="1" max="100">
+                                    </div>
 
-                                <div class="mgwpp-setting-row">
-                                    <label for="album_layout"><?php esc_html_e('Default Layout:', 'mini-gallery'); ?></label>
-                                    <select name="album_layout" id="album_layout">
-                                        <option value="grid" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'grid'); ?>><?php esc_html_e('Grid', 'mini-gallery'); ?></option>
-                                        <option value="masonry" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'masonry'); ?>><?php esc_html_e('Masonry', 'mini-gallery'); ?></option>
-                                        <option value="carousel" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'carousel'); ?>><?php esc_html_e('Carousel', 'mini-gallery'); ?></option>
-                                    </select>
-                                </div>
+                                    <div class="mgwpp-setting-row">
+                                        <label for="album_layout"><?php esc_html_e('Default Layout:', 'mini-gallery'); ?></label>
+                                        <select name="album_layout" id="album_layout">
+                                            <option value="grid" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'grid'); ?>><?php esc_html_e('Grid', 'mini-gallery'); ?></option>
+                                            <option value="masonry" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'masonry'); ?>><?php esc_html_e('Masonry', 'mini-gallery'); ?></option>
+                                            <option value="carousel" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'carousel'); ?>><?php esc_html_e('Carousel', 'mini-gallery'); ?></option>
+                                        </select>
+                                    </div>
 
-                                <button type="submit" class="button button-primary">
-                                    <span class="dashicons dashicons-saved"></span> <?php esc_html_e('Save Settings', 'mini-gallery'); ?>
-                                </button>
-                            </form>
+                                    <button type="submit" class="button button-primary">
+                                        <span class="dashicons dashicons-saved"></span> <?php esc_html_e('Save Settings', 'mini-gallery'); ?>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,12 +124,12 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-        <?php
+    <?php
     }
 
     private static function render_creation_form()
     {
-        ?>
+    ?>
         <div class="mgwpp-album-form-container">
             <div class="mgwpp-album-form-card">
                 <div class="mgwpp-form-header">
@@ -326,7 +330,7 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-        <?php
+    <?php
     }
 
     private static function render_gallery_selector()
@@ -337,7 +341,7 @@ class MGWPP_Albums_View
             'orderby'        => 'title',
             'order'          => 'ASC'
         ]);
-        ?>
+    ?>
         <div class="mgwpp-gallery-selector">
             <?php if (empty($galleries)) : ?>
                 <div class="mgwpp-no-galleries">
@@ -353,7 +357,7 @@ class MGWPP_Albums_View
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
                         $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
-                        ?>
+                    ?>
                         <label class="mgwpp-gallery-item">
                             <div class="mgwpp-gallery-checkbox">
                                 <input type="checkbox"
@@ -377,20 +381,20 @@ class MGWPP_Albums_View
                 </div>
             <?php endif; ?>
         </div>
-        <?php
+    <?php
     }
 
     private static function render_albums_table()
     {
         $table = new MGWPP_Albums_Table();
         $table->prepare_items();
-        ?>
+    ?>
         <div class="mgwpp-albums-table-container">
             <form method="post">
                 <?php $table->display(); ?>
             </form>
         </div>
-        <?php
+<?php
     }
 
     // Helper methods for stats

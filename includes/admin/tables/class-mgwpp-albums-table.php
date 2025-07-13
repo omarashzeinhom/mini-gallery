@@ -38,19 +38,19 @@ class MGWPP_Albums_Table extends WP_List_Table
         // Try to get first gallery image
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
         $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;"></span>';
-        
+
         if (!empty($galleries) && is_array($galleries)) {
             $first_gallery_id = $galleries[0];
             $gallery_images = get_post_meta($first_gallery_id, 'gallery_images', true);
-            
+
             if (!empty($gallery_images)) {
                 // Convert to array if needed
                 $image_ids = is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images);
-                
+
                 if (!empty($image_ids)) {
                     $first_image_id = $image_ids[0];
                     $image_url = wp_get_attachment_image_url($first_image_id, 'thumbnail');
-                    
+
                     if ($image_url) {
                         $image_html = sprintf(
                             '<img src="%s" alt="%s" width="75" height="75" style="object-fit:cover">',
@@ -61,7 +61,7 @@ class MGWPP_Albums_Table extends WP_List_Table
                 }
             }
         }
-        
+
         return $image_html;
     }
 
@@ -137,17 +137,33 @@ class MGWPP_Albums_Table extends WP_List_Table
 
     public function single_row($item)
     {
-        echo '<tr>';
+        // Get current row classes from parent
+        $parent_row_classes = $this->get_row_class();
+
+        echo '<tr class="' . esc_attr($parent_row_classes) . '">';
         $this->single_row_columns($item);
         echo '</tr>';
-        echo '<tr class="mgwpp-album-details-row">';
-        // Update colspan to match new column count (6 columns now)
-        echo '<td colspan="6">';
+
+        echo '<tr class="mgwpp-album-details-row ' . esc_attr($parent_row_classes) . '">';
+        echo '<td colspan="' . count($this->get_columns()) . '">';
         $this->album_details_content($item);
         echo '</td>';
         echo '</tr>';
     }
-    
+
+    // Helper method to get row classes
+    protected function get_row_class()
+    {
+        static $alternate = '';
+        $alternate = ($alternate == '' ? 'alternate' : '');
+
+        $classes = array();
+        if ($alternate) {
+            $classes[] = $alternate;
+        }
+
+        return implode(' ', $classes);
+    }
     private function album_details_content($item)
     {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);

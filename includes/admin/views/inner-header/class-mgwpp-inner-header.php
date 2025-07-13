@@ -14,24 +14,25 @@ class MGWPP_Inner_Header
 
     public static function enqueue_assets()
     {
-        // Only load on our plugin pages
+        // Only load on our plugin pages - use more reliable check
         $screen = get_current_screen();
-        if (strpos($screen->id, 'mgwpp_') === false) {
-            return;
+        $is_plugin_page = strpos($screen->id, 'mgwpp_') !== false;
+
+        // Always load on plugin pages
+        if ($is_plugin_page) {
+            wp_enqueue_script(
+                'mgwpp-admin-scripts',
+                MG_PLUGIN_URL . '/includes/admin/js/mgwpp-admin-scripts.js',
+                ['jquery'],
+                self::get_plugin_version(),
+                true
+            );
+
+            wp_localize_script('mgwpp-admin-scripts', 'mgwppThemeData', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'   => wp_create_nonce('mgwpp-theme-nonce')
+            ]);
         }
-
-        wp_enqueue_script(
-            'mgwpp-admin-scripts',
-            MG_PLUGIN_URL . '/includes/admin/js/mgwpp-admin-scripts.js',
-            ['jquery'],
-            self::get_plugin_version(),
-            true
-        );
-
-        wp_localize_script('mgwpp-admin-scripts', 'mgwppThemeData', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('mgwpp-theme-nonce')
-        ]);
     }
 
     public static function add_admin_body_class($classes)
@@ -45,6 +46,9 @@ class MGWPP_Inner_Header
         $current_theme = self::get_user_theme_preference();
         $theme_class = $current_theme === 'dark' ? 'mgwpp-dark-mode' : '';
 ?>
+        <div class="mgwpp-loader-overlay" style="display:none;">
+            <div class="mgwpp-loader-spinner"></div>
+        </div>
         <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
             <div class="mgwpp-branding-group">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-link-no-decoration">
@@ -76,6 +80,7 @@ class MGWPP_Inner_Header
                 </a>
             </div>
         </div>
+
     <?php
     }
 

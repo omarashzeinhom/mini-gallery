@@ -25,7 +25,6 @@ body.mgwpp-dark-mode .mgwpp-dashboard-container {
 /* Add subtle texture to background */
 .mgwpp-dashboard-container::before {
   content: "";
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -349,7 +348,6 @@ input:checked + .mgwpp-switch-slider:before {
   height: 100vh;
 }
 
-
 .preview-header {
   text-align: center;
   margin-bottom: 20px;
@@ -373,6 +371,68 @@ input:checked + .mgwpp-switch-slider:before {
   border-radius: 8px;
 }
 
-#TB_window{
+#TB_window {
   width: 100%;
+}
+#mgwpp-theme-toggle {
+  position: relative;
+  width: 80px;
+  height: 40px;
+  background: var(--mgwpp-card-bg-light);
+  border: 1px solid var(--mgwpp-card-border-light);
+  border-radius: 999px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: var(--mgwpp-backdrop-blur-sm);
+  -webkit-backdrop-filter: var(--mgwpp-backdrop-blur-sm);
+}
+
+body.mgwpp-dark-mode #mgwpp-theme-toggle {
+  background: var(--mgwpp-card-bg-dark);
+  border-color: var(--mgwpp-card-border-dark);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Orb (Sun/Moon) */
+#mgwpp-theme-toggle::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff176, #ffca28);
+  transition: all 0.4s ease;
+  box-shadow: 0 2px 6px rgba(255, 202, 40, 0.6),
+    inset 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+body.mgwpp-dark-mode #mgwpp-theme-toggle::before {
+  left: 44px;
+  background: radial-gradient(circle at 50% 50%, #90a4ae, #37474f);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 6px rgba(255, 255, 255, 0.05);
+}
+
+/* Optional inner craters (moon mode) */
+body.mgwpp-dark-mode #mgwpp-theme-toggle::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 52px;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  box-shadow: 10px -5px 0 -2px rgba(255, 255, 255, 0.04),
+    3px 4px 0 -1px rgba(255, 255, 255, 0.04),
+    8px 8px 0 -2px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s ease;
+}
+
+#mgwpp-theme-toggle:active {
+  transform: scale(0.97);
 }

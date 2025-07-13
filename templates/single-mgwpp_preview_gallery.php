@@ -27,16 +27,13 @@ define('MGWPP_PREVIEW_MODE', true);
     <title><?php printf(__('Preview: Gallery #%d', 'mini-gallery'), $gallery_id); ?></title>
     
     <?php 
-    // Load theme styles
-    if ($stylesheet = get_stylesheet_uri()) {
-        echo '<link rel="stylesheet" href="' . esc_url($stylesheet) . '">';
-    }
-    
-    // Load plugin frontend styles
-    wp_enqueue_style('mgwpp-frontend');
-    
-    // Output styles
+    // Load only plugin assets, not theme styles
     wp_head();
+    
+    // Manually load necessary assets
+    if (class_exists('MGWPP_Assets')) {
+        MGWPP_Assets::enqueue_preview_assets($gallery_id);
+    }
     ?>
     
     <style>
@@ -67,30 +64,29 @@ define('MGWPP_PREVIEW_MODE', true);
             position: relative !important;
             z-index: 10000 !important;
         }
+        
+        /* Hide admin bar in preview */
+        #wpadminbar {
+            display: none !important;
+        }
+        
+        /* Prevent theme interference */
+        body *:not(.mgwpp-preview-container):not(.mgwpp-preview-container *) {
+            display: none !important;
+        }
     </style>
 </head>
-<body>
-    <?php
-    // Setup WP Query for the gallery
-    $query = new WP_Query([
-        'p' => $gallery_id,
-        'post_type' => 'mgwpp_soora',
-        'post_status' => 'publish'
-    ]);
+<body class="mgwpp-preview-mode">
+    <div class="mgwpp-preview-container">
+        <?php
+        // Render the gallery using the shortcode
+        echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+        ?>
+    </div>
     
-    if ($query->have_posts()) {
-        while ($query->have_posts()) : $query->the_post();
-            include MG_PLUGIN_PATH . 'templates/single-mgwpp_soora.php';
-        endwhile;
-    } else {
-        echo '<div class="mgwpp-preview-container">';
-        echo '<p>' . esc_html__('Gallery not found', 'mini-gallery') . '</p>';
-        echo '</div>';
-    }
-    
-    wp_reset_postdata();
+    <?php 
+    // Output footer scripts
+    wp_footer();
     ?>
-    
-    <?php wp_footer(); ?>
 </body>
 </html>

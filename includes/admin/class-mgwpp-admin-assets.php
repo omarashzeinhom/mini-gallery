@@ -159,4 +159,78 @@ class MGWPP_Admin_Assets
             true
         );
     }
+
+    
+    public static function enqueue_preview_assets($gallery_id)
+    {
+        // Get gallery type directly from post meta
+        $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
+
+        // Enqueue common frontend assets
+        wp_enqueue_style('mgwpp-frontend');
+
+        // Enqueue specific gallery type assets
+        switch ($gallery_type) {
+            case 'single_carousel':
+                wp_enqueue_style('mg-single-carousel-styles');
+                wp_enqueue_script('mg-single-carousel-js');
+                break;
+            case 'multi_carousel':
+                wp_enqueue_style('mg-multi-carousel-styles');
+                wp_enqueue_script('mg-multi-carousel-js');
+                break;
+            case 'grid':
+                wp_enqueue_style('mg-grid-styles');
+                wp_enqueue_script('mg-grid-gallery-js');
+                break;
+            case 'mega_slider':
+                wp_enqueue_style('mg-mega-carousel-styles');
+                wp_enqueue_script('mg-mega-carousel-js');
+                break;
+            case 'pro_carousel':
+                wp_enqueue_style('mgwpp-pro-carousel-styles');
+                wp_enqueue_script('mgwpp-pro-carousel-js');
+                break;
+            case 'neon_carousel':
+                wp_enqueue_style('mgwpp-neon-carousel-styles');
+                wp_enqueue_script('mgwpp-neon-carousel-js');
+                break;
+            case 'threed_carousel':
+                wp_enqueue_style('mgwpp-threed-carousel-styles');
+                wp_enqueue_script('mgwpp-threed-carousel-js');
+                break;
+            case 'testimonials_carousel':
+                wp_enqueue_style('mgwpp-testimonial-carousel-styles');
+                wp_enqueue_script('mgwpp-testimonial-carousel-js');
+                break;
+            case 'full_page_slider':
+                wp_enqueue_style('mg-fullpage-slider-styles');
+                wp_enqueue_script('mg-fullpage-slider-js');
+                break;
+            case 'spotlight_carousel':
+                wp_enqueue_style('mg-spotlight-slider-styles');
+                wp_enqueue_script('mg-spotlight-slider-js');
+                break;
+        }
+
+        // Add initialization script
+        add_action('wp_footer', function () use ($gallery_type) {
+            echo '<script>';
+            switch ($gallery_type) {
+                case 'single_carousel':
+                    echo 'if (typeof MGWPP_SingleCarousel !== "undefined") MGWPP_SingleCarousel.init();';
+                    break;
+                case 'multi_carousel':
+                    echo 'if (typeof MGWPP_MultiCarousel !== "undefined") MGWPP_MultiCarousel.init();';
+                    break;
+                case 'mega_slider':
+                    echo 'if (typeof MGWPP_MegaSlider !== "undefined") MGWPP_MegaSlider.init();';
+                    break;
+                case 'pro_carousel':
+                    echo 'if (typeof MGWPP_ProCarousel !== "undefined") MGWPP_ProCarousel.init();';
+                    break;
+            }
+            echo '</script>';
+        }, 999);
+    }
 }

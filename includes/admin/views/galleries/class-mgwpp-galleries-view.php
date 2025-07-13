@@ -331,7 +331,7 @@ class MGWPP_Galleries_View
                             <th scope="row"><label><?php esc_html_e('Gallery Images:', 'mini-gallery'); ?></label></th>
                             <td>
                                 <input type="hidden" name="selected_media" id="selected_media" value="">
-                                <button type="button" class="button button-primary mgwpp-media-upload">
+                                <button type="button" class="mgwpp-admin-button mgwpp-media-upload">
                                     <?php esc_html_e('Select Images', 'mini-gallery'); ?>
                                 </button>
                                 <div class="mgwpp-media-preview"></div>

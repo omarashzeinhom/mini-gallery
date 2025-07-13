@@ -16,10 +16,10 @@ class MGWPP_Ajax_Handler
     public static function init()
     {
         // Preview handling
-        add_action('template_redirect', array(__CLASS__, 'handle_preview_request'));
+        add_action('template_redirect', array(__CLASS__, 'mgwpp_handle_preview_request'));
 
         // AJAX handlers
-        add_action('wp_ajax_mgwpp_preview', array(__CLASS__, 'preview_gallery'));
+        add_action('template_redirect', 'mgwpp_handle_preview_request');
         add_action('wp_ajax_mgwpp_save_gallery_order', array(__CLASS__, 'save_gallery_order'));
         add_action('wp_ajax_mgwpp_create_gallery', array(__CLASS__, 'create_gallery'));
         add_action('wp_ajax_mgwpp_delete_gallery', array(__CLASS__, 'delete_gallery'));
@@ -32,15 +32,15 @@ class MGWPP_Ajax_Handler
     /**
      * Handle preview requests
      */
-    public static function handle_preview_request()
+    public static function mgwpp_handle_preview_request()
     {
-        // Check if this is a preview request
+        // 1. First check if this is a preview request
         if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
             return;
         }
 
-        // Verify nonce
-        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_preview')) {
+        // 2. Verify nonce with proper action
+        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
             wp_die(
                 '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
                     '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
@@ -49,25 +49,92 @@ class MGWPP_Ajax_Handler
             );
         }
 
-        // Validate gallery ID
-        $gallery_id = absint($_GET['gallery_id'] ?? 0);
+        // 3. Validate gallery ID
+        $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
         if (!$gallery_id) {
-            wp_die(esc_html__('Invalid gallery ID.', 'mini-gallery'));
+            wp_die(esc_html__('Invalid gallery ID format.', 'mini-gallery'));
         }
 
-        // Get gallery
+        // 4. Verify gallery exists
         $gallery = get_post($gallery_id);
         if (!$gallery || 'mgwpp_soora' !== $gallery->post_type) {
-            wp_die(esc_html__('Gallery not found.', 'mini-gallery'));
+            wp_die(esc_html__('The requested gallery no longer exists.', 'mini-gallery'));
         }
 
-        // Check if user has permission to preview this gallery
-        if (!current_user_can('edit_post', $gallery_id)) {
-            wp_die(esc_html__('You do not have permission to preview this gallery.', 'mini-gallery'));
-        }
+        // 5. Force asset loading
+        add_action('wp_enqueue_scripts', function () use ($gallery_id) {
+            // Get gallery type
+            $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-        // Load preview template
-        self::load_preview_template($gallery_id);
+            // Enqueue frontend assets
+            wp_enqueue_style('mgwpp-frontend');
+
+            // Enqueue specific gallery type assets
+            switch ($gallery_type) {
+                case 'single_carousel':
+                    wp_enqueue_style('mg-single-carousel-styles');
+                    wp_enqueue_script('mg-single-carousel-js');
+                    break;
+                case 'multi_carousel':
+                    wp_enqueue_style('mg-multi-carousel-styles');
+                    wp_enqueue_script('mg-multi-carousel-js');
+                    break;
+                case 'grid':
+                    wp_enqueue_style('mg-grid-styles');
+                    wp_enqueue_script('mg-grid-gallery-js');
+                    break;
+                case 'mega_slider':
+                    wp_enqueue_style('mg-mega-carousel-styles');
+                    wp_enqueue_script('mg-mega-carousel-js');
+                    break;
+                case 'pro_carousel':
+                    wp_enqueue_style('mgwpp-pro-carousel-styles');
+                    wp_enqueue_script('mgwpp-pro-carousel-js');
+                    break;
+                case 'neon_carousel':
+                    wp_enqueue_style('mgwpp-neon-carousel-styles');
+                    wp_enqueue_script('mgwpp-neon-carousel-js');
+                    break;
+                case 'threed_carousel':
+                    wp_enqueue_style('mgwpp-threed-carousel-styles');
+                    wp_enqueue_script('mgwpp-threed-carousel-js');
+                    break;
+                case 'testimonials_carousel':
+                    wp_enqueue_style('mgwpp-testimonial-carousel-styles');
+                    wp_enqueue_script('mgwpp-testimonial-carousel-js');
+                    break;
+                case 'full_page_slider':
+                    wp_enqueue_style('mg-fullpage-slider-styles');
+                    wp_enqueue_script('mg-fullpage-slider-js');
+                    break;
+                case 'spotlight_carousel':
+                    wp_enqueue_style('mg-spotlight-slider-styles');
+                    wp_enqueue_script('mg-spotlight-slider-js');
+                    break;
+            }
+
+            // Add initialization script
+            add_action('wp_footer', function () use ($gallery_type) {
+                echo '<script>';
+                switch ($gallery_type) {
+                    case 'single_carousel':
+                        echo 'if (typeof MGWPP_SingleCarousel !== "undefined") MGWPP_SingleCarousel.init();';
+                        break;
+                    case 'multi_carousel':
+                        echo 'if (typeof MGWPP_MultiCarousel !== "undefined") MGWPP_MultiCarousel.init();';
+                        break;
+                        // Add other gallery types as needed
+                }
+                echo '</script>';
+            }, 999);
+        });
+
+        // 6. Show preview template
+        get_header();
+        echo '<div class="mgwpp-preview-container">';
+        echo do_shortcode('[mgwpp_gallery id="' . $gallery_id . '"]');
+        echo '</div>';
+        get_footer();
         exit;
     }
 

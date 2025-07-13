@@ -19,14 +19,14 @@ class MGWPP_Inner_Header
         if (strpos($screen->id, 'mgwpp_') === false) return;
 
         wp_enqueue_script(
-            'mgwpp-theme-toggle',
-            MG_PLUGIN_URL . '/includes/admin/js/theme-toggle.js',
+            'mgwpp-admin-scripts',
+            MG_PLUGIN_URL . '/includes/admin/js/mgwpp-admin-scripts.js',
             ['jquery'],
             self::get_plugin_version(),
             true
         );
 
-        wp_localize_script('mgwpp-theme-toggle', 'mgwppThemeData', [
+        wp_localize_script('mgwpp-admin-scripts', 'mgwppThemeData', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('mgwpp-theme-nonce')
         ]);

@@ -259,51 +259,65 @@ class MGWPP_Ajax_Handler
      */
     public static function handle_create_gallery()
     {
-        // Verify nonce
-        if (!isset($_POST['mgwpp_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_create_gallery')) {
-            wp_die(__('Security check failed.', 'mini-gallery'));
+        // 1. Check if nonce exists and is valid
+        if (
+            !isset($_POST['mgwpp_gallery_nonce']) ||
+            !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_create_gallery')
+        ) {
+            wp_die(esc_html__('Security check failed.', 'mini-gallery'));
         }
 
-        // Check permissions
+        // 2. Check permissions
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_die(__('You do not have sufficient permissions.', 'mini-gallery'));
+            wp_die(esc_html__('You do not have sufficient permissions.', 'mini-gallery'));
         }
 
-        // Get form data
+        // 3. Sanitize form data
         $gallery_title = sanitize_text_field($_POST['gallery_title'] ?? '');
         $gallery_type = sanitize_text_field($_POST['gallery_type'] ?? 'grid');
         $selected_media = sanitize_text_field($_POST['selected_media'] ?? '');
 
+        // 4. Validate required fields
         if (empty($gallery_title)) {
-            wp_die(__('Gallery title is required.', 'mini-gallery'));
+            wp_die(esc_html__('Gallery title is required.', 'mini-gallery'));
         }
 
-        // Create gallery post
+        // 5. Prepare gallery images
+        $gallery_images = [];
+        if (!empty($selected_media)) {
+            $gallery_images = array_filter(
+                array_map('absint', explode(',', $selected_media)),
+                function ($id) {
+                    return $id > 0;
+                }
+            );
+        }
+
+        // 6. Create gallery post
         $gallery_id = wp_insert_post([
             'post_title' => $gallery_title,
             'post_type' => 'mgwpp_soora',
             'post_status' => 'publish',
             'meta_input' => [
                 'gallery_type' => $gallery_type,
-                'gallery_images' => !empty($selected_media) ? explode(',', $selected_media) : []
+                'gallery_images' => $gallery_images
             ]
         ]);
 
         if (is_wp_error($gallery_id)) {
-            wp_die(__('Failed to create gallery.', 'mini-gallery'));
+            wp_die(esc_html__('Failed to create gallery.', 'mini-gallery'));
         }
 
-        // Redirect to edit page
+        // 7. Redirect to edit page
         $redirect_url = add_query_arg([
             'gallery_id' => $gallery_id,
             '_wpnonce' => wp_create_nonce('mgwpp_edit_gallery'),
             'created' => 1
         ], admin_url('admin.php?page=mgwpp-edit-gallery'));
 
-        wp_redirect($redirect_url);
+        wp_safe_redirect($redirect_url);
         exit;
     }
-
     /**
      * Handle gallery save form submission
      */
@@ -312,16 +326,17 @@ class MGWPP_Ajax_Handler
 
         // Verify nonce and permissions
         if (!isset($_POST['mgwpp_gallery_nonce']) || !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')) {
-            wp_die(__('Security check failed.', 'mini-gallery'));
+
+            wp_die(esc_html__('Security check failed.', 'mini-gallery'));
         }
 
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_die(__('You do not have sufficient permissions.', 'mini-gallery'));
+            wp_die(esc_html__('You do not have sufficient permissions.', 'mini-gallery'));
         }
 
         $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
         if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
-            wp_die(__('Invalid gallery ID.', 'mini-gallery'));
+            wp_die(esc_html__('Invalid gallery ID.', 'mini-gallery'));
         }
 
         // Update title
@@ -367,46 +382,63 @@ class MGWPP_Ajax_Handler
     public static function create_gallery()
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'mgwpp-admin-nonce')) {
-            wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp-admin-nonce')) {
+            wp_send_json_error(['message' => esc_html__('Security check failed', 'mini-gallery')]);
         }
 
         // Check permissions
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
+            wp_send_json_error(['message' => esc_html__('Insufficient permissions', 'mini-gallery')]);
         }
 
-        // Get form data
-        $gallery_title = sanitize_text_field($_POST['gallery_title'] ?? '');
-        $gallery_type = sanitize_text_field($_POST['gallery_type'] ?? 'grid');
-        $selected_media = sanitize_text_field($_POST['selected_media'] ?? '');
+        // Get and validate form data
+        $gallery_title = isset($_POST['gallery_title']) ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) : '';
+        $gallery_type = isset($_POST['gallery_type']) ? sanitize_key($_POST['gallery_type']) : 'grid';
+        $selected_media = isset($_POST['selected_media']) ? sanitize_text_field(wp_unslash($_POST['selected_media'])) : '';
 
+        // Validate gallery title
         if (empty($gallery_title)) {
-            wp_send_json_error(['message' => __('Gallery title is required', 'mini-gallery')]);
+            wp_send_json_error(['message' => esc_html__('Gallery title is required', 'mini-gallery')]);
+        }
+
+        // Validate gallery type
+        $allowed_types = ['grid', 'slider', 'masonry']; // Add your valid types
+        if (!in_array($gallery_type, $allowed_types, true)) {
+            $gallery_type = 'grid'; // Default to safe value
+        }
+
+        // Sanitize media IDs
+        $media_ids = [];
+        if (!empty($selected_media)) {
+            $media_ids = array_map('absint', explode(',', $selected_media));
+            $media_ids = array_filter($media_ids); // Remove empty values
         }
 
         // Create gallery post
         $gallery_id = wp_insert_post([
-            'post_title' => $gallery_title,
-            'post_type' => 'mgwpp_soora',
-            'post_status' => 'publish',
-            'meta_input' => [
-                'gallery_type' => $gallery_type,
-                'gallery_images' => !empty($selected_media) ? explode(',', $selected_media) : []
+            'post_title'   => $gallery_title,
+            'post_type'    => 'mgwpp_soora',
+            'post_status'  => 'publish',
+            'meta_input'   => [
+                'gallery_type'   => $gallery_type,
+                'gallery_images' => $media_ids
             ]
         ]);
 
         if (is_wp_error($gallery_id)) {
-            wp_send_json_error(['message' => __('Failed to create gallery', 'mini-gallery')]);
+            wp_send_json_error(['message' => esc_html__('Failed to create gallery', 'mini-gallery')]);
         }
 
+        // Generate secure redirect URL
+        $redirect_url = add_query_arg([
+            'gallery_id' => absint($gallery_id),
+            '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery')
+        ], admin_url('admin.php?page=mgwpp-edit-gallery'));
+
         wp_send_json_success([
-            'message' => __('Gallery created successfully', 'mini-gallery'),
-            'gallery_id' => $gallery_id,
-            'redirect_url' => add_query_arg([
-                'gallery_id' => $gallery_id,
-                '_wpnonce' => wp_create_nonce('mgwpp_edit_gallery')
-            ], admin_url('admin.php?page=mgwpp-edit-gallery'))
+            'message'      => esc_html__('Gallery created successfully', 'mini-gallery'),
+            'gallery_id'   => absint($gallery_id),
+            'redirect_url' => esc_url_raw($redirect_url)
         ]);
     }
 
@@ -447,14 +479,14 @@ class MGWPP_Ajax_Handler
 
         // Check permissions
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Unauthorized', 'mini-gallery'), 403);
+            wp_send_json_error(esc_html__('Unauthorized', 'mini-gallery'), 403);
         }
 
         // Get gallery IDs
         $gallery_ids = isset($_POST['ids']) ? array_map('intval', $_POST['ids']) : [];
 
         if (empty($gallery_ids)) {
-            wp_send_json_error(__('No galleries selected', 'mini-gallery'), 400);
+            wp_send_json_error(esc_html__('No galleries selected', 'mini-gallery'), 400);
         }
 
         $deleted = [];
@@ -472,10 +504,10 @@ class MGWPP_Ajax_Handler
         }
 
         if (!empty($errors)) {
-            // Translators: 1: Number of galleries deleted, 2: Number of galleries that failed to delete
+            /* translators: 1: Number of galleries deleted, 2: Number of galleries that failed to delete */
             wp_send_json_error([
                 'message' => sprintf(
-                    __('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
+                    esc_html__('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
                     count($deleted),
                     count($errors)
                 ),
@@ -484,10 +516,10 @@ class MGWPP_Ajax_Handler
             ]);
         }
 
-        // Translators: %d: Number of galleries deleted
+        /* translators: %d: Number of galleries deleted */
         wp_send_json_success([
             'message' => sprintf(
-                _n('Deleted %d gallery', 'Deleted %d galleries', count($deleted), 'mini-gallery'),
+                esc_html(_n('Deleted %d gallery', 'Deleted %d galleries', count($deleted), 'mini-gallery')),
                 count($deleted)
             ),
             'deleted' => $deleted

@@ -107,7 +107,7 @@ class MGWPP_Inner_Header
                 data-sun="<?php echo esc_attr($sun_icon); ?>"
                 data-moon="<?php echo esc_attr($moon_icon); ?>"
                 aria-label="<?php esc_attr_e('Toggle dark mode', 'mini-gallery'); ?>">
-                <img src="<?php echo $current_theme === 'dark' ? $sun_icon : $moon_icon; ?>"
+                <img src="<?php echo wp_kses_post($current_theme === 'dark' ? $sun_icon : $moon_icon); ?>"
                     alt="<?php esc_attr_e('Theme Toggle', 'mini-gallery') ?>"
                     width="35" height="35">
             </button>

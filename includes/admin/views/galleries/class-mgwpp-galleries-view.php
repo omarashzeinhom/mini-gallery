@@ -67,7 +67,7 @@ class MGWPP_Galleries_View
 
     public function render()
     {
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -115,10 +115,21 @@ class MGWPP_Galleries_View
                                                     class="mgwpp-bulk-checkbox"
                                                     value="<?php echo esc_attr($item['ID']); ?>"
                                                     style="position:absolute; top:10px; left:10px; z-index:10;">
-                                                <?php echo $this->get_gallery_preview($item['ID']); ?>
+                                                <?php echo wp_kses_post($this->get_gallery_preview(esc_attr($item['ID']))); ?>
                                             </div>
                                             <div class="mgwpp-card-actions">
-                                                <?php echo $item['actions']; ?>
+                                                <?php echo wp_kses($item['actions'], [
+                                                    'a' => [
+                                                        'href' => [],
+                                                        'class' => [],
+                                                        'data-id' => [],
+                                                        'data-nonce' => [],
+                                                        'title' => [],
+                                                    ],
+                                                    'span' => [
+                                                        'class' => [],
+                                                    ],
+                                                ]);  ?>
                                             </div>
                                         </div>
 
@@ -154,7 +165,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+    <?php
         // Render modal and scripts
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
@@ -307,15 +318,15 @@ class MGWPP_Galleries_View
 
     private static function render_create_gallery_modal()
     {
-        ?>
+    ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
-              <!-- Loading overlay -->
-            <div id="mgwpp-create-loading" class="mgwpp-loading-overlay" style="display:none;">
-                <div class="mgwpp-loading-spinner"></div>
-                <p><?php esc_html_e('Creating gallery...', 'mini-gallery'); ?></p>
-            </div>    
-            <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
+                <!-- Loading overlay -->
+                <div id="mgwpp-create-loading" class="mgwpp-loading-overlay" style="display:none;">
+                    <div class="mgwpp-loading-spinner"></div>
+                    <p><?php esc_html_e('Creating gallery...', 'mini-gallery'); ?></p>
+                </div>
+                <h2><?php esc_html_e('Create New Gallery', 'mini-gallery'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="mgwpp_create_gallery">
                     <?php wp_nonce_field('mgwpp_create_gallery', 'mgwpp_gallery_nonce'); ?>
@@ -361,6 +372,6 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+<?php
     }
 }

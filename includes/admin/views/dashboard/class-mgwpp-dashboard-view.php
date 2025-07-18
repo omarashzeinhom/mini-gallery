@@ -114,7 +114,7 @@ class MGWPP_Dashboard_View
             );
         }
 
-        echo '<div class="mgwpp-stat-card">' . $card_content . '</div>';
+        echo '<div class="mgwpp-stat-card">' . esc_html__($card_content, 'mini-gallery') . '</div>';
     }
 
     private static function render_storage_section($storage_data)

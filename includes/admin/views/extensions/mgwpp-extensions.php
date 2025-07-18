@@ -63,11 +63,11 @@ class MGWPP_Extensions_View
         if (!isset($_POST['_wpnonce']) ||
             !wp_verify_nonce($_POST['_wpnonce'], 'mgwpp_smush_settings_nonce')
         ) {
-            wp_die(__('Security check failed', 'mini-gallery'));
+            wp_die(esc_html__('Security check failed', 'mini-gallery'));
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'mini-gallery'));
+            wp_die(esc_html__('Permission denied', 'mini-gallery'));
         }
 
         if (isset($_POST['mgwpp_smush_settings'])) {
@@ -459,11 +459,11 @@ Referer: <?php echo esc_url(home_url()); ?>
         if (!isset($_POST['_wpnonce']) ||
             !wp_verify_nonce($_POST['_wpnonce'], 'mgwpp_picogen_settings_nonce')
         ) {
-            wp_die(__('Security check failed', 'mini-gallery'));
+            wp_die(esc_html__('Security check failed', 'mini-gallery'));
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'mini-gallery'));
+            wp_die(esc_html__('Permission denied', 'mini-gallery'));
         }
 
         if (isset($_POST['mgwpp_picogen_settings'])) {

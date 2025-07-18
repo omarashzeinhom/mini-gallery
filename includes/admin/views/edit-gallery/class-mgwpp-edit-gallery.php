@@ -291,16 +291,16 @@ class MGWPP_Edit_Gallery_View
             !isset($_POST['mgwpp_gallery_nonce']) ||
             !wp_verify_nonce($_POST['mgwpp_gallery_nonce'], 'mgwpp_save_gallery_data')
         ) {
-            wp_die(__('Security check failed.', 'mini-gallery'));
+            wp_die(esc_html__('Security check failed.', 'mini-gallery'));
         }
 
         if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_die(__('You do not have sufficient permissions.', 'mini-gallery'));
+            wp_die(esc_html__('You do not have sufficient permissions.', 'mini-gallery'));
         }
 
         $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
         if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
-            wp_die(__('Invalid gallery ID.', 'mini-gallery'));
+            wp_die(esc_html__('Invalid gallery ID.', 'mini-gallery'));
         }
 
         // Update title

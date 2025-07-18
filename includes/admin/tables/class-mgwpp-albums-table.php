@@ -18,12 +18,12 @@ class MGWPP_Albums_Table extends WP_List_Table
     public function get_columns()
     {
         return [
-            'thumbnail'     => __('Preview', 'mini-gallery'), // NEW: Thumbnail column
-            'title'         => __('Title', 'mini-gallery'),
-            'gallery_count' => __('Galleries', 'mini-gallery'),
-            'shortcode'     => __('Shortcode', 'mini-gallery'),
-            'date'          => __('Date', 'mini-gallery'),
-            'actions'       => __('Actions', 'mini-gallery')
+            'thumbnail'     => esc_html__('Preview', 'mini-gallery'),
+            'title'         => esc_html__('Title', 'mini-gallery'),
+            'gallery_count' => esc_html__('Galleries', 'mini-gallery'),
+            'shortcode'     => esc_html__('Shortcode', 'mini-gallery'),
+            'date'          => esc_html__('Date', 'mini-gallery'),
+            'actions'       => esc_html__('Actions', 'mini-gallery')
         ];
     }
 
@@ -97,10 +97,11 @@ class MGWPP_Albums_Table extends WP_List_Table
             'edit' => sprintf(
                 '<a href="%s">%s</a>',
                 esc_url($edit_url),
-                __('Edit', 'mini-gallery')
+                esc_html__('Edit', 'mini-gallery')
             ),
         ]);
     }
+
 
     protected function column_gallery_count($item)
     {
@@ -131,9 +132,10 @@ class MGWPP_Albums_Table extends WP_List_Table
         return sprintf(
             '<a href="%s" class="button" target="_blank">%s</a>',
             esc_url($preview_url),
-            __('Preview', 'mini-gallery')
+            esc_html__('Preview', 'mini-gallery')
         );
     }
+
 
     public function single_row($item)
     {
@@ -193,28 +195,28 @@ class MGWPP_Albums_Table extends WP_List_Table
 
 
 add_action('admin_post_mgwpp_delete_album', function () {
+
     if (!isset($_GET['album_id']) || !isset($_REQUEST['_wpnonce'])) {
-        wp_die(__('Invalid request parameters', 'mini-gallery'));
+        wp_die(esc_html__('Invalid request parameters', 'mini-gallery'));
     }
 
     $album_id = intval($_GET['album_id']);
     $nonce = isset($_GET['_wpnonce']) ? sanitize_key($_GET['_wpnonce']) : '';
 
     if (!wp_verify_nonce($nonce, 'mgwpp_delete_album_' . $album_id)) {
-        wp_die(__('Security verification failed', 'mini-gallery'));
+        wp_die(esc_html__('Security verification failed', 'mini-gallery'));
     }
 
     if (!get_post($album_id)) {
-        wp_die(__('Specified album does not exist', 'mini-gallery'));
+        wp_die(esc_html__('Specified album does not exist', 'mini-gallery'));
     }
 
     if (!current_user_can('delete_mgwpp_album', $album_id)) {
-        wp_die(__('You lack permissions for this action', 'mini-gallery'));
+        wp_die(esc_html__('You lack permissions for this action', 'mini-gallery'));
     }
 
     $deletion_result = wp_delete_post($album_id, true);
     $redirect_url = admin_url('edit.php?post_type=mgwpp_album');
-
 
     if ($deletion_result) {
         $redirect_url = add_query_arg('mgwpp_deleted', 1, $redirect_url);
@@ -225,6 +227,7 @@ add_action('admin_post_mgwpp_delete_album', function () {
     wp_safe_redirect($redirect_url);
     exit;
 });
+
 
 add_action('admin_notices', function () {
     if (isset($_GET['mgwpp_deleted'])) {

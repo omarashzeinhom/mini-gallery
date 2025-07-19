@@ -146,22 +146,18 @@ class MGWPP_Ajax_Handler
      */
     private static function load_preview_template($gallery_id)
     {
-        // Get gallery data
         $gallery = get_post($gallery_id);
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-        // Get images
         $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
         $gallery_images = !empty($gallery_images) ? (array) $gallery_images : [];
         $gallery_images = array_map('absint', $gallery_images);
         $gallery_images = array_filter($gallery_images);
 
-        // Always use the proper preview template
         $preview_template = MG_PLUGIN_PATH . 'templates/preview-gallery.php';
         if (file_exists($preview_template)) {
             include $preview_template;
         } else {
-            // Minimal fallback if template is missing
             echo '<div class="mgwpp-preview-fallback">';
             echo '<h3>' . esc_html($gallery->post_title) . '</h3>';
             echo '<p>' . esc_html__('Preview template not found', 'mini-gallery') . '</p>';
@@ -240,7 +236,7 @@ class MGWPP_Ajax_Handler
 
             if ($result !== false) {
                 wp_send_json_success([
-                    'message' => __('Image order saved successfully', 'mini-gallery'),
+                    'message' => esc_html_e('Image order saved successfully', 'mini-gallery'),
                     'total_images' => count($valid_ids),
                     'image_ids' => $valid_ids // Return the saved order for verification
                 ]);
@@ -472,10 +468,12 @@ class MGWPP_Ajax_Handler
 
 
 
-    function mgwpp_bulk_delete_galleries_handler()
+    public static function mgwpp_bulk_delete_galleries_handler()
     {
         // Verify nonce
-        check_ajax_referer('mgwpp-admin-nonce', 'nonce');
+        if (!check_ajax_referer('mgwpp-admin-nonce', 'nonce', false)) {
+            wp_send_json_error(esc_html__('Security check failed', 'mini-gallery'), 403);
+        }
 
         // Check permissions
         if (!current_user_can('manage_options')) {
@@ -483,7 +481,7 @@ class MGWPP_Ajax_Handler
         }
 
         // Get gallery IDs
-        $gallery_ids = isset($_POST['ids']) ? array_map('intval', $_POST['ids']) : [];
+        $gallery_ids = isset($_POST['ids']) ? array_map('intval', (array)$_POST['ids']) : [];
 
         if (empty($gallery_ids)) {
             wp_send_json_error(esc_html__('No galleries selected', 'mini-gallery'), 400);
@@ -493,9 +491,7 @@ class MGWPP_Ajax_Handler
         $errors = [];
 
         foreach ($gallery_ids as $id) {
-            // Delete gallery post and associated data
             $result = wp_delete_post($id, true);
-
             if ($result !== false) {
                 $deleted[] = $id;
             } else {
@@ -503,25 +499,37 @@ class MGWPP_Ajax_Handler
             }
         }
 
-        if (!empty($errors)) {
-            /* translators: 1: Number of galleries deleted, 2: Number of galleries that failed to delete */
+        $deleted_count = count($deleted);
+        $errors_count = count($errors);
+
+        if ($errors_count > 0) {
+            $message = sprintf(
+                /* translators: 1: Number of galleries deleted, 2: Number of galleries that failed to delete */
+                esc_html__('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
+                $deleted_count,
+                $errors_count
+            );
+
             wp_send_json_error([
-                'message' => sprintf(
-                    esc_html__('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
-                    count($deleted),
-                    count($errors)
-                ),
+                'message' => $message,
                 'deleted' => $deleted,
                 'failed' => $errors
             ]);
         }
 
-        /* translators: %d: Number of galleries deleted */
+        $message = sprintf(
+            /* translators: %d: Number of galleries deleted */
+            esc_html(_n(
+                'Deleted %d gallery',
+                'Deleted %d galleries',
+                $deleted_count,
+                'mini-gallery'
+            )),
+            $deleted_count
+        );
+
         wp_send_json_success([
-            'message' => sprintf(
-                esc_html(_n('Deleted %d gallery', 'Deleted %d galleries', count($deleted), 'mini-gallery')),
-                count($deleted)
-            ),
+            'message' => $message,
             'deleted' => $deleted
         ]);
     }

@@ -37,8 +37,8 @@ class MGWPP_Upload
 
         if ($existing) {
             wp_die(
-                esc_html__('Gallery with this name already exists! Please use a unique name.', 'mini-gallery'),
-                esc_html__('Duplicate Gallery', 'mini-gallery'),
+                esc_html_e('Gallery with this name already exists! Please use a unique name.', 'mini-gallery'),
+                esc_html_e('Duplicate Gallery', 'mini-gallery'),
                 ['response' => 400]
             );
         }

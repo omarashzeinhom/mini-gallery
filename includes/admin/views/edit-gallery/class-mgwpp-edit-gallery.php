@@ -137,8 +137,8 @@ class MGWPP_Edit_Gallery_View
 ?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
-                echo esc_html(sprintf(
-                    __('Edit Gallery: %s', 'mini-gallery'),
+                echo esc_html_e(sprintf(
+                    esc_html_e('Edit Gallery: %s', 'mini-gallery'),
                     $gallery->post_title
                 )); ?></h1>
 

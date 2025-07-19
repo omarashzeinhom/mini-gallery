@@ -6,26 +6,14 @@ if (!defined('ABSPATH')) {
 
 class MGWPP_Capabilities
 {
-    /**
-     * Add custom Marketing Team role with specific capabilities
-     */
-    public static function mgwpp_add_marketing_team_role()
-    {
-        remove_role('marketing_team'); // Remove existing role if it exists
-
-        add_role(
-            'marketing_team',
-            __('Marketing Team', 'mini-gallery'),
-            self::get_marketing_team_caps()
-        );
-    }
+   
 
     /**
      * Set capabilities for gallery post type
      */
     public static function mgwpp_gallery_capabilities()
     {
-        $roles = ['administrator', 'editor', 'marketing_team'];
+        $roles = ['administrator'];
         $caps = self::get_gallery_caps();
         
         foreach ($roles as $role_slug) {
@@ -43,7 +31,7 @@ class MGWPP_Capabilities
      */
     public static function mgwpp_album_capabilities()
     {
-        $roles = ['administrator', 'editor', 'marketing_team'];
+        $roles = ['administrator'];
         $caps = self::get_album_caps();
         
         foreach ($roles as $role_slug) {
@@ -61,7 +49,7 @@ class MGWPP_Capabilities
      */
     public static function mgwpp_testimonial_capabilities()
     {
-        $roles = ['administrator', 'editor', 'marketing_team'];
+        $roles = ['administrator'];
         $caps = self::get_testimonial_caps();
         
         foreach ($roles as $role_slug) {
@@ -72,21 +60,6 @@ class MGWPP_Capabilities
                 }
             }
         }
-    }
-
-    /**
-     * Get marketing team capabilities
-     */
-    private static function get_marketing_team_caps()
-    {
-        return [
-            'read' => true,
-            'upload_files' => true,
-            'edit_posts' => true,
-            'delete_posts' => true,
-            'edit_published_posts' => true,
-            'delete_published_posts' => true,
-        ];
     }
 
     /**
@@ -171,7 +144,7 @@ class MGWPP_Capabilities
     public static function mgwpp_remove_capabilities()
     {
         // Remove capabilities from roles
-        $roles = ['administrator', 'editor', 'marketing_team'];
+        $roles = ['administrator'];
         $all_caps = array_merge(
             self::get_gallery_caps(),
             self::get_album_caps(),
@@ -187,7 +160,6 @@ class MGWPP_Capabilities
             }
         }
         
-        // Remove marketing team role
-        remove_role('marketing_team');
+        
     }
 }

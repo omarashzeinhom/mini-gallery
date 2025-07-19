@@ -14,7 +14,6 @@ class MGWPP_Settings
             'gallery' => true,  // Enabled by default
             'album' => false,
             'testimonial' => false,
-            'marketing' => false
         ];
 
         // Allow users to filter the default configuration
@@ -52,12 +51,6 @@ class MGWPP_Settings
     {
         require_once MG_PLUGIN_URL . 'modules/class-testimonial-capabilities.php';
         MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
-    }
-
-    private static function initialize_marketing()
-    {
-        require_once MG_PLUGIN_URL . 'modules/class-marketing-capabilities.php';
-        MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     }
 }
 

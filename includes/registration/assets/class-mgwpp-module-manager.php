@@ -147,8 +147,8 @@ class MGWPP_Module_Manager
         $modules = self::$sub_modules;
         
         foreach ($modules as $slug => &$module) {
-            $module['config']['name'] = __($module['config']['name'], 'mini-gallery');
-            $module['config']['description'] = __($module['config']['description'], 'mini-gallery');
+            $module['config']['name'] = esc_html__($module['config']['name'], 'mini-gallery');
+            $module['config']['description'] = esc_html__($module['config']['description'], 'mini-gallery');
         }
         
         return $modules;

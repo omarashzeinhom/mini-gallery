@@ -137,10 +137,12 @@ class MGWPP_Edit_Gallery_View
 ?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
-                echo esc_html_e(sprintf(
-                    esc_html_e('Edit Gallery: %s', 'mini-gallery'),
-                    $gallery->post_title
-                )); ?></h1>
+                printf(
+                    /* translators: %s: Gallery Title */
+                    esc_html__('Edit: Gallery %s', 'mini-gallery'),
+                    esc_html($gallery->post_title)
+                );
+                ?></h1>
 
             <div class="mgwpp-glass-container">
                 <div class="mgwpp-editor-column">

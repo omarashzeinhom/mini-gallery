@@ -171,54 +171,259 @@ class MGWPP_Admin_Assets
         );
     }
 
+    /**
+     * Get version for gallery type assets - uses plugin version or file modification time
+     */
+    private static function get_gallery_asset_version($asset_path)
+    {
+        // Try to get plugin version first (if available)
+        if (defined('MG_VERSION')) {
+            return MGWPP_ASSET_VERSION;
+        }
+        
+        // Fallback to file modification time if file exists
+        if (defined('MG_PLUGIN_PATH') && file_exists(MG_PLUGIN_PATH . $asset_path)) {
+            return filemtime(MG_PLUGIN_PATH . $asset_path);
+        }
+        
+        // Final fallback to current timestamp
+        return time();
+    }
 
     public static function enqueue_preview_assets($gallery_id)
     {
         // Get gallery type directly from post meta
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-        // Enqueue common frontend assets
+        // Enqueue common frontend assets with version
+        if (!wp_style_is('mgwpp-frontend', 'registered')) {
+            wp_register_style(
+                'mgwpp-frontend',
+                MG_PLUGIN_URL . '/includes/assets/css/mgwpp-frontend.css',
+                [],
+                self::get_gallery_asset_version('/includes/assets/css/mgwpp-frontend.css')
+            );
+        }
         wp_enqueue_style('mgwpp-frontend');
 
-        // Enqueue specific gallery type assets
+        // Enqueue specific gallery type assets with versions
         switch ($gallery_type) {
             case 'single_carousel':
+                if (!wp_style_is('mg-single-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-single-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/single-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/single-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mg-single-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mg-single-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/single-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/single-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-single-carousel-styles');
                 wp_enqueue_script('mg-single-carousel-js');
                 break;
+
             case 'multi_carousel':
+                if (!wp_style_is('mg-multi-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-multi-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/multi-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/multi-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mg-multi-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mg-multi-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/multi-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/multi-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-multi-carousel-styles');
                 wp_enqueue_script('mg-multi-carousel-js');
                 break;
+
             case 'grid':
+                if (!wp_style_is('mg-grid-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-grid-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/grid.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/grid.css')
+                    );
+                }
+                if (!wp_script_is('mg-grid-gallery-js', 'registered')) {
+                    wp_register_script(
+                        'mg-grid-gallery-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/grid.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/grid.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-grid-styles');
                 wp_enqueue_script('mg-grid-gallery-js');
                 break;
+
             case 'mega_slider':
+                if (!wp_style_is('mg-mega-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-mega-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/mega-slider.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/mega-slider.css')
+                    );
+                }
+                if (!wp_script_is('mg-mega-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mg-mega-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/mega-slider.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/mega-slider.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-mega-carousel-styles');
                 wp_enqueue_script('mg-mega-carousel-js');
                 break;
+
             case 'pro_carousel':
+                if (!wp_style_is('mgwpp-pro-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mgwpp-pro-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/pro-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/pro-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mgwpp-pro-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mgwpp-pro-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/pro-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/pro-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mgwpp-pro-carousel-styles');
                 wp_enqueue_script('mgwpp-pro-carousel-js');
                 break;
+
             case 'neon_carousel':
+                if (!wp_style_is('mgwpp-neon-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mgwpp-neon-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/neon-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/neon-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mgwpp-neon-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mgwpp-neon-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/neon-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/neon-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mgwpp-neon-carousel-styles');
                 wp_enqueue_script('mgwpp-neon-carousel-js');
                 break;
+
             case 'threed_carousel':
+                if (!wp_style_is('mgwpp-threed-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mgwpp-threed-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/threed-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/threed-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mgwpp-threed-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mgwpp-threed-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/threed-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/threed-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mgwpp-threed-carousel-styles');
                 wp_enqueue_script('mgwpp-threed-carousel-js');
                 break;
+
             case 'testimonials_carousel':
+                if (!wp_style_is('mgwpp-testimonial-carousel-styles', 'registered')) {
+                    wp_register_style(
+                        'mgwpp-testimonial-carousel-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/testimonials-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/testimonials-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mgwpp-testimonial-carousel-js', 'registered')) {
+                    wp_register_script(
+                        'mgwpp-testimonial-carousel-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/testimonials-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/testimonials-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mgwpp-testimonial-carousel-styles');
                 wp_enqueue_script('mgwpp-testimonial-carousel-js');
                 break;
+
             case 'full_page_slider':
+                if (!wp_style_is('mg-fullpage-slider-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-fullpage-slider-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/fullpage-slider.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/fullpage-slider.css')
+                    );
+                }
+                if (!wp_script_is('mg-fullpage-slider-js', 'registered')) {
+                    wp_register_script(
+                        'mg-fullpage-slider-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/fullpage-slider.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/fullpage-slider.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-fullpage-slider-styles');
                 wp_enqueue_script('mg-fullpage-slider-js');
                 break;
+
             case 'spotlight_carousel':
+                if (!wp_style_is('mg-spotlight-slider-styles', 'registered')) {
+                    wp_register_style(
+                        'mg-spotlight-slider-styles',
+                        MG_PLUGIN_URL . '/includes/assets/css/spotlight-carousel.css',
+                        ['mgwpp-frontend'],
+                        self::get_gallery_asset_version('/includes/assets/css/spotlight-carousel.css')
+                    );
+                }
+                if (!wp_script_is('mg-spotlight-slider-js', 'registered')) {
+                    wp_register_script(
+                        'mg-spotlight-slider-js',
+                        MG_PLUGIN_URL . '/includes/assets/js/spotlight-carousel.js',
+                        ['jquery'],
+                        self::get_gallery_asset_version('/includes/assets/js/spotlight-carousel.js'),
+                        true
+                    );
+                }
                 wp_enqueue_style('mg-spotlight-slider-styles');
                 wp_enqueue_script('mg-spotlight-slider-js');
                 break;

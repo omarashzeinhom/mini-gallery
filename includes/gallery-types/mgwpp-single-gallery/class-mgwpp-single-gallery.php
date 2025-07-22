@@ -77,7 +77,7 @@ class MGWPP_Gallery_Single
                             ?>
                             <div class="mgwpp-single-carousel__slide <?php echo $index === 0 ? 'mgwpp-single-carousel__slide--active' : ''; ?>">
                                 <?php if ($has_link) : ?>
-                                    <a <?php echo $link_attrs; ?> class="mgwpp-single-carousel__link">
+                                    <a <?php echo wp_kses_post($link_attrs); ?> class="mgwpp-single-carousel__link">
                                 <?php endif; ?>
 
                                     <?php echo wp_get_attachment_image($image_id, 'large', false, [

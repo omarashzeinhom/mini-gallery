@@ -269,7 +269,7 @@ add_action('wp_ajax_mgwpp_preview', function () {
         <?php
         // Load critical CSS directly
         $critical_css = file_get_contents(MG_PLUGIN_PATH . 'public/css/mgwpp-preview-critical.css');
-        echo '<style>' . $critical_css . '</style>';
+        echo wp_kses_post('<style>' . $critical_css . '</style>');
 
         // Enqueue gallery-specific assets
         MGWPP_Assets::enqueue_preview_assets($gallery_type);

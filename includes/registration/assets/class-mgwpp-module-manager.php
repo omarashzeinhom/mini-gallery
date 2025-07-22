@@ -123,7 +123,7 @@ class MGWPP_Module_Manager
                 'editor',
                 'embed_editor'
             ];
-            
+
             self::$enabled_modules = get_option('mgwpp_enabled_modules', $default);
         }
         return self::$enabled_modules;
@@ -137,26 +137,63 @@ class MGWPP_Module_Manager
     public function get_sub_modules()
     {
         $modules = self::$sub_modules;
-        
+
         foreach ($modules as $slug => &$module) {
-            $module['config']['name'] = esc_html__($module['config']['name'], 'mini-gallery');
-            $module['config']['description'] = esc_html__($module['config']['description'], 'mini-gallery');
+            $module['config']['name'] = $this->get_translated_name($slug);
+            $module['config']['description'] = $this->get_translated_description($slug);
         }
-        
+
         return $modules;
     }
 
+    private function get_translated_name($slug)
+    {
+        $translations = [
+            'single_carousel'     => __('Single Carousel', 'mini-gallery'),
+            'multi_carousel'      => __('Multi Carousel', 'mini-gallery'),
+            'grid'                => __('Grid Gallery', 'mini-gallery'),
+            'mega_slider'         => __('Mega Slider', 'mini-gallery'),
+            'pro_carousel'        => __('Pro Carousel', 'mini-gallery'),
+            'neon_carousel'       => __('Neon Carousel', 'mini-gallery'),
+            'threed_carousel'     => __('3D Carousel', 'mini-gallery'),
+            'testimonials_carousel' => __('Testimonials Carousel', 'mini-gallery'),
+            'fullpage_slider'     => __('Fullpage Slider', 'mini-gallery'),
+            'spotlight_slider'    => __('Spotlight Slider', 'mini-gallery'),
+            'albums'              => __('Albums', 'mini-gallery'),
+        ];
+
+        return $translations[$slug] ?? self::$sub_modules[$slug]['config']['name'];
+    }
+
+    private function get_translated_description($slug)
+    {
+        $translations = [
+            'single_carousel'     => __('A carousel gallery with a single item at a time.', 'mini-gallery'),
+            'multi_carousel'      => __('A carousel gallery with multiple items at a time.', 'mini-gallery'),
+            'grid'                => __('A grid layout gallery.', 'mini-gallery'),
+            'mega_slider'         => __('A mega slider gallery.', 'mini-gallery'),
+            'pro_carousel'        => __('A professional carousel gallery.', 'mini-gallery'),
+            'neon_carousel'       => __('A neon themed carousel gallery.', 'mini-gallery'),
+            'threed_carousel'     => __('A 3D carousel gallery.', 'mini-gallery'),
+            'testimonials_carousel' => __('A testimonials carousel.', 'mini-gallery'),
+            'fullpage_slider'     => __('A fullpage slider gallery.', 'mini-gallery'),
+            'spotlight_slider'    => __('A spotlight slider gallery.', 'mini-gallery'),
+            'albums'              => __('Gallery albums.', 'mini-gallery'),
+        ];
+
+        return $translations[$slug] ?? self::$sub_modules[$slug]['config']['description'];
+    }
     public static function load_enabled_modules()
     {
         $enabled = self::get_enabled_modules();
-        
+
         // Load galleries module first
         if (in_array('gallery', $enabled)) {
             require_once MG_PLUGIN_PATH . 'includes/registration/gallery/class-mgwpp-gallery-post-type.php';
             require_once MG_PLUGIN_PATH . 'includes/registration/gallery/class-mgwpp-gallery-capabilities.php';
             require_once MG_PLUGIN_PATH . 'includes/registration/gallery/class-mgwpp-gallery-manager.php';
         }
-        
+
         // Load other modules
         foreach ($enabled as $module) {
             switch ($module) {
@@ -165,32 +202,32 @@ class MGWPP_Module_Manager
                     require_once MG_PLUGIN_PATH . 'includes/registration/album/class-mgwpp-album-capabilities.php';
                     require_once MG_PLUGIN_PATH . 'includes/registration/album/class-mgwpp-album-display.php';
                     break;
-                    
+
                 case 'testimonials':
                     require_once MG_PLUGIN_PATH . 'includes/registration/testimonials/class-mgwpp-testimonials-post-type.php';
                     require_once MG_PLUGIN_PATH . 'includes/registration/testimonials/class-mgwpp-testimonials-capabilties.php';
                     require_once MG_PLUGIN_PATH . 'includes/registration/testimonials/class-mgwpp-testimonials-manager.php';
                     break;
-                    
+
                 case 'editor':
                     require_once MG_PLUGIN_PATH . 'includes/admin/class-mgwpp-admin-editors.php';
                     require_once MG_PLUGIN_PATH . 'includes/admin/views/class-mgwpp-visual-editor-view.php';
                     break;
-                    
+
                 case 'embed_editor':
                     require_once MG_PLUGIN_PATH . 'includes/admin/views/class-mgwpp-embed-editor-view.php';
                     break;
             }
         }
-        
+
         // Load enabled gallery types
         self::load_enabled_gallery_types();
     }
-    
+
     public static function load_enabled_gallery_types()
     {
         $enabled_types = self::get_enabled_sub_modules();
-        
+
         foreach ($enabled_types as $type) {
             $file = self::get_gallery_type_path($type);
             if ($file && file_exists($file)) {
@@ -198,26 +235,26 @@ class MGWPP_Module_Manager
             }
         }
     }
-    
+
     private static function get_gallery_type_path($type)
     {
         if (!isset(self::$gallery_type_files[$type])) {
             return false;
         }
-        
+
         $file = self::$gallery_type_files[$type];
         if (empty($file)) {
             return false;
         }
-        
+
         // Handle testimonials special case (file instead of directory)
         if ($type === 'testimonials_carousel') {
             return MG_PLUGIN_PATH . 'includes/gallery-types/' . $file;
         }
-        
+
         return MG_PLUGIN_PATH . 'includes/gallery-types/' . $file;
     }
-    
+
     public static function reset_to_defaults()
     {
         update_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));

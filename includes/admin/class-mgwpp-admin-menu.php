@@ -10,8 +10,6 @@ class MGWPP_Admin_Menu
     private $galleries_view;
     private $albums_view;
     private $testimonials_view;
-    private $security_view;
-    private $extensions_view;
 
     public function __construct($module_loader)
     {
@@ -25,8 +23,6 @@ class MGWPP_Admin_Menu
         $this->submodules_view = new MGWPP_SubModules_View($module_loader);
         $this->albums_view = new MGWPP_Albums_View();
         $this->testimonials_view = new MGWPP_Testimonials_View();
-        $this->security_view = new MGWPP_Security_View();
-        $this->extensions_view = new MGWPP_Extensions_View();
     }
 
     /**
@@ -68,7 +64,7 @@ class MGWPP_Admin_Menu
             'gallery_id' => $gallery_id,
             '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery') //  nonce here
         ], admin_url('admin.php'));
-        
+
         $delete_url = wp_nonce_url(
             admin_url('admin-post.php?action=mgwpp_delete_gallery&gallery_id=' . $gallery_id),
             'mgwpp_delete_gallery'
@@ -131,21 +127,13 @@ class MGWPP_Admin_Menu
                 'callback' => [$this->testimonials_view, 'render'],
                 'capability' => 'manage_options'
             ],
-            'security' => [
-                'page_title' => __('Security', 'mini-gallery'),
-                'callback' => [$this->security_view, 'render'],
-                'capability' => 'manage_options'
-            ],
+
             'modules' => [
                 'page_title' => __('Modules', 'mini-gallery'),
                 'callback' => [$this->submodules_view, 'render'],
                 'capability' => 'manage_options'
             ],
-            'extensions' => [
-                'page_title' => __('Extensions', 'mini-gallery'),
-                'callback' => [$this->extensions_view, 'render_extensions_page'],
-                'capability' => 'manage_options'
-            ],
+
         ];
     }
 

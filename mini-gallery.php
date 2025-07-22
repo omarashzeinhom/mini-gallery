@@ -40,7 +40,6 @@ function get_plugin_version()
 // Core functionality
 require_once MG_PLUGIN_PATH . 'includes/registration/assets/class-mgwpp-module-manager.php';
 require_once MG_PLUGIN_PATH . 'includes/functions/class-mgwpp-shortcode.php';
-require_once MG_PLUGIN_PATH . 'includes/functions/class-mgwpp-security-uploads-scanner.php';
 
 // Gallery types
 require_once MG_PLUGIN_PATH . 'includes/gallery-types/mgwpp-single-gallery/class-mgwpp-single-gallery.php';

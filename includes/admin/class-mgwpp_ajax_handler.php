@@ -41,13 +41,13 @@ class MGWPP_Ajax_Handler
      */
     public static function mgwpp_handle_preview_request()
     {
-        // 1. First check if this is a preview request
         if (!isset($_GET['mgwpp_preview']) || $_GET['mgwpp_preview'] !== '1') {
             return;
         }
 
-        // 2. Verify nonce with proper action
-        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview')) {
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : '';
+
+        if (!wp_verify_nonce($nonce, 'mgwpp_preview')) {
             wp_die(
                 '<h1>' . esc_html__('Preview Authorization Failed', 'mini-gallery') . '</h1>' .
                     '<p>' . esc_html__('Please return to the admin and click the preview button again.', 'mini-gallery') . '</p>' .
@@ -152,9 +152,16 @@ class MGWPP_Ajax_Handler
      */
     public static function preview_gallery()
     {
+
         // Verify nonce
-        if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'mgwpp_preview_nonce')) {
+        if (!isset($_REQUEST['nonce'])) {
             wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+        }
+
+        $nonce = sanitize_key(wp_unslash(($_REQUEST['nonce'])));
+
+        if (!wp_verify_nonce($nonce, 'mgwpp_preview_nonce')) {
+            wp_send_json_error(['message' => esc_html__('Security Check Failed', 'mini-gallery')]);
         }
 
         // Check permissions
@@ -162,7 +169,7 @@ class MGWPP_Ajax_Handler
             wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
         }
 
-        $gallery_id = isset($_REQUEST['gallery_id']) ? absint($_REQUEST['gallery_id']) : 0;
+        $gallery_id = isset($_REQUEST['gallery_id']) ? absint(wp_unslash($_REQUEST['gallery_id'])) : 0;
         if (!$gallery_id) {
             wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
         }
@@ -175,8 +182,8 @@ class MGWPP_Ajax_Handler
         ], home_url('/'));
 
         wp_send_json_success([
-            'preview_url' => $preview_url,
-            'message'     => __('Preview URL generated', 'mini-gallery')
+            'preview_url' => esc_url_raw($preview_url),
+            'message'     => esc_html__('Preview URL generated', 'mini-gallery')
         ]);
     }
 
@@ -186,48 +193,62 @@ class MGWPP_Ajax_Handler
     public static function save_gallery_order()
     {
         try {
-            // Verify nonce
-            if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
+            // 1. Check nonce exists first
+            if (!isset($_POST['nonce'])) {
                 wp_send_json_error(['message' => esc_html__('Security check failed', 'mini-gallery')]);
             }
 
-            // Check permissions
+            // 2. Unslash and sanitize nonce BEFORE verification
+            $nonce = sanitize_key(wp_unslash($_POST['nonce']));
+            if (!wp_verify_nonce($nonce, 'mgwpp_edit_gallery')) {
+                wp_send_json_error(['message' => esc_html__('Security check failed', 'mini-gallery')]);
+            }
+
+            // 3. Check permissions
             if (!current_user_can('edit_mgwpp_sooras')) {
                 wp_send_json_error(['message' => esc_html__('Insufficient permissions', 'mini-gallery')]);
             }
 
-            // Get gallery ID and images
-            $gallery_id = isset($_POST['gallery_id']) ? absint($_POST['gallery_id']) : 0;
-            $image_ids = isset($_POST['image_ids']) ? array_map('absint', $_POST['image_ids']) : [];
+            // 4. Validate gallery ID with unslashing
+            $gallery_id = isset($_POST['gallery_id']) ? absint(wp_unslash($_POST['gallery_id'])) : 0;
+            $post_type = $gallery_id ? get_post_type($gallery_id) : '';
 
-            // Validate inputs
-            if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
+            if (!$gallery_id || $post_type !== 'mgwpp_soora') {
                 wp_send_json_error(['message' => esc_html__('Invalid gallery ID', 'mini-gallery')]);
             }
 
-            // Filter out invalid image IDs and ensure they're actual image attachments
+            // 5. Validate and sanitize image IDs
+            $image_ids = [];
+            if (isset($_POST['image_ids']) && is_array($_POST['image_ids'])) {
+                $image_ids = array_map('absint', $_POST['image_ids']);
+            }
+
+            // 6. Filter valid image IDs
             $valid_ids = [];
             foreach ($image_ids as $image_id) {
+                // Validate image existence and type
                 if ($image_id > 0 && wp_attachment_is_image($image_id)) {
                     $valid_ids[] = $image_id;
                 }
             }
 
-            // Save the new order - this preserves the exact order from the frontend
+            // 7. Save the new order
             $result = update_post_meta($gallery_id, 'gallery_images', $valid_ids);
 
             if ($result !== false) {
                 wp_send_json_success([
                     'message' => esc_html__('Image order saved successfully', 'mini-gallery'),
                     'total_images' => count($valid_ids),
-                    'image_ids' => $valid_ids // Return the saved order for verification
+                    'image_ids' => $valid_ids
                 ]);
             } else {
                 wp_send_json_error(['message' => esc_html__('Failed to save image order', 'mini-gallery')]);
             }
         } catch (Exception $e) {
+            // 8. Secure error handling
+            error_log('MiniGallery Error: ' . $e->getMessage());
             wp_send_json_error([
-                'message' => $e->getMessage(),
+                'message' => esc_html__('An unexpected error occurred', 'mini-gallery')
             ]);
         }
     }

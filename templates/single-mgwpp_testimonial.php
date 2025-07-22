@@ -1,7 +1,7 @@
 <?php
-/**
- * Single Testimonial Template
- */
+if (! defined('ABSPATH')) {
+    exit;
+}
 get_header();
 ?>
 
@@ -9,7 +9,7 @@ get_header();
     <?php while (have_posts()) :
         the_post(); ?>
         <article <?php post_class('testimonial-content'); ?>>
-            
+
             <!-- Featured Image -->
             <?php if (has_post_thumbnail()) : ?>
                 <div class="testimonial-image">
@@ -24,9 +24,9 @@ get_header();
                     $author = get_post_meta(get_the_ID(), '_mgwpp_author', true);
                     $position = get_post_meta(get_the_ID(), '_mgwpp_position', true);
                     ?>
-                    
+
                     <h1 class="testimonial-title"><?php the_title(); ?></h1>
-                    
+
                     <?php if ($author) : ?>
                         <div class="testimonial-author">
                             <?php echo esc_html($author); ?>

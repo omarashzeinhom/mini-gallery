@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 /**
  * Mini Gallery Preview Template
  * Displays gallery preview in isolation
@@ -28,6 +30,7 @@ define('MGWPP_PREVIEW_MODE', true);
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php /* translators: %s: Gallery Title   */;?>
     <title><?php printf(esc_html__('Preview: %s', 'mini-gallery'), esc_html(get_the_title($gallery_id))); ?></title>
 
     <?php

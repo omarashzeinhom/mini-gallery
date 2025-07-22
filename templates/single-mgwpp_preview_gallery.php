@@ -11,7 +11,7 @@ if (!$gallery_id ||
     !isset($_GET['_wpnonce']) || 
     !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_preview')) {
     status_header(403);
-    wp_die(__('Invalid gallery preview request', 'mini-gallery'));
+    wp_die(esc_html__('Invalid gallery preview request', 'mini-gallery'));
 }
 
 // Set preview mode constant
@@ -23,7 +23,7 @@ define('MGWPP_PREVIEW_MODE', true);
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php printf(__('Preview: %s', 'mini-gallery'), get_the_title($gallery_id)); ?></title>
+    <title><?php printf(esc_html__('Preview: %s', 'mini-gallery'), get_the_title($gallery_id)); ?></title>
   
     <?php 
     // Output necessary scripts and styles

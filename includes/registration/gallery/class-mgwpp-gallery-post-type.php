@@ -93,8 +93,8 @@ class MGWPP_Gallery_Post_Type
             foreach ($attachments as $attachment) {
                 $image_url = wp_get_attachment_url($attachment->ID);
                 $current_link = $image_links[$attachment->ID] ?? '';
-                ?>
-                <div class="mgwpp-image-link-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+?>
+                <div class="mgwpp-image-link-item" data-attachment-id="<?php echo wp_kses_post($attachment->ID); ?>">
                     <div class="mgwpp-image-preview">
                         <img src="<?php echo esc_url($image_url); ?>" style="max-width: 150px; height: auto;">
                         <div class="mgwpp-image-info">
@@ -105,20 +105,20 @@ class MGWPP_Gallery_Post_Type
                         <div class="mgwpp-link-field">
                             <label>Link URL:</label>
                             <input type="url"
-                                name="mgwpp_image_links[<?php echo $attachment->ID; ?>]"
+                                name="mgwpp_image_links[<?php echo wp_kses_post($attachment->ID); ?>]"
                                 value="<?php echo esc_attr($current_link); ?>"
                                 placeholder="https://example.com">
                         </div>
                         <div class="mgwpp-link-options">
                             <label>
                                 <input type="checkbox"
-                                    name="mgwpp_image_link_new_tab[<?php echo $attachment->ID; ?>]"
+                                    name="mgwpp_image_link_new_tab[<?php echo  wp_kses_post($attachment->ID); ?>]"
                                     <?php checked(isset($image_links[$attachment->ID . '_new_tab']) && $image_links[$attachment->ID . '_new_tab']); ?>>
                                 Open in new tab
                             </label>
                             <label>
                                 <input type="checkbox"
-                                    name="mgwpp_image_link_nofollow[<?php echo $attachment->ID; ?>]"
+                                    name="mgwpp_image_link_nofollow[<?php echo wp_kses_post($attachment->ID); ?>]"
                                     <?php checked(isset($image_links[$attachment->ID . '_nofollow']) && $image_links[$attachment->ID . '_nofollow']); ?>>
                                 Nofollow
                             </label>
@@ -126,7 +126,7 @@ class MGWPP_Gallery_Post_Type
                     </div>
                     <button type="button" class="mgwpp-remove-image-link button-link">Remove</button>
                 </div>
-                <?php
+<?php
             }
         } else {
             echo '<p class="mgwpp-no-images-notice">No images found in this gallery. Upload images first.</p>';
@@ -135,12 +135,12 @@ class MGWPP_Gallery_Post_Type
         echo '</div>'; // .mgwpp-image-links-list
 
         //  new image button
-        echo '<button type="button" class="button mgwpp-add-gallery-image" data-post-id="' . $post->ID . '">Add Gallery Image</button>';
+        echo wp_kses_post('<button type="button" class="button mgwpp-add-gallery-image" data-post-id="' . $post->ID . '">Add Gallery Image</button>');
 
         // CTA Links section
         echo '<h3>Call-to-Action Links</h3>';
         echo '<div class="mgwpp-cta-links">';
-        echo '<p><label>Primary CTA: <input type="url" name="mgwpp_cta_links[primary]" value="' . esc_attr($cta_links['primary'] ?? '') . '"></label></p>';
+        echo wp_kses_post('<p><label>Primary CTA: <input type="url" name="mgwpp_cta_links[primary]" value="' . esc_attr($cta_links['primary'] ?? '') . '"></label></p>');
         echo '<p><label>Secondary CTA: <input type="url" name="mgwpp_cta_links[secondary]" value="' . esc_attr($cta_links['secondary'] ?? '') . '"></label></p>';
         echo '</div>';
 
@@ -159,7 +159,8 @@ class MGWPP_Gallery_Post_Type
     public static function mgwpp_save_gallery_meta($post_id)
     {
         // Verify nonce and permissions
-        if (!isset($_POST['mgwpp_gallery_links_nonce']) ||
+        if (
+            !isset($_POST['mgwpp_gallery_links_nonce']) ||
             !wp_verify_nonce($_POST['mgwpp_gallery_links_nonce'], 'mgwpp_save_gallery_links')
         ) {
             return;

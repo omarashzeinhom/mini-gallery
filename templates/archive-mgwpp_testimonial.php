@@ -19,7 +19,7 @@
                     <div class="testimonial-excerpt">
                         <?php
                         $excerpt = get_the_excerpt();
-                        echo wp_trim_words($excerpt, 20);
+                        echo wp_kses_post(wp_trim_words($excerpt, 20));
                         ?>
                     </div>
 

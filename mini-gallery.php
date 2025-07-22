@@ -96,7 +96,6 @@ register_activation_hook(__FILE__, function () {
     MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();
     MGWPP_Gallery_Post_Type::mgwpp_register_gallery_post_type();
     MGWPP_Album_Post_Type::mgwpp_register_album_post_type();
-    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Gallery_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
 
@@ -110,7 +109,6 @@ register_deactivation_hook(__FILE__, function () {
     unregister_post_type('mgwpp_testimonials');
     unregister_post_type('mgwpp_soora');
     unregister_post_type('mgwpp_album');
-    remove_role('marketing_team');
     flush_rewrite_rules(false);
 });
 
@@ -127,7 +125,6 @@ function mgwpp_plugin_uninstall()
     foreach ($sowar as $gallery_image) {
         wp_delete_post(intval($gallery_image->ID), true);
     }
-    remove_role('marketing_team');
 }
 
 // ======================
@@ -143,7 +140,6 @@ add_action('init', function () {
     MGWPP_Testimonial_Post_Type::mgwpp_register_testimonial_post_type();
 
     // Initialize capabilities
-    MGWPP_Capabilities::mgwpp_add_marketing_team_role();
     MGWPP_Gallery_Capabilities::mgwpp_gallery_capabilities();
     MGWPP_Album_Capabilities::mgwpp_album_capabilities();
     MGWPP_Testimonial_Capabilities::mgwpp_testimonial_capabilities();

@@ -57,12 +57,12 @@ class MGWPP_Gallery_Single
                             if ($has_link) {
                                 $link_attrs = 'href="' . esc_url($image_links[$image_id]) . '"';
 
-                                // Add target attribute if set to open in new tab
+                                //  target attribute if set to open in new tab
                                 if (isset($image_links[$image_id . '_new_tab']) && $image_links[$image_id . '_new_tab']) {
                                     $link_attrs .= ' target="_blank"';
                                 }
 
-                                // Add rel attribute
+                                //  rel attribute
                                 $rel_attrs = [];
                                 if (isset($image_links[$image_id . '_nofollow']) && $image_links[$image_id . '_nofollow']) {
                                     $rel_attrs[] = 'nofollow';

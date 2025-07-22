@@ -44,7 +44,7 @@ class MGWPP_Assets
             wp_register_script(
                 'mg-single-carousel-js',
                 $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js',
-                ['jquery'], // Add jQuery as dependency here
+                ['jquery'], //  jQuery as dependency here
                 '1.0',
                 true
             );
@@ -231,7 +231,7 @@ class MGWPP_Assets
             case 'multi_carousel':
                 echo '<script>MGWPP_MultiCarousel.initAll();</script>';
                 break;
-                // Add other gallery types as needed
+                //  other gallery types as needed
         }
     }
 }

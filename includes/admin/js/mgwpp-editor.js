@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
 
             $tab.closest('.mgwpp-properties-content').find('.mgwpp-tab-content').removeClass('active');
 
-            // Add active classes
+            //  active classes
             $tab.addClass('active');
             $(`.mgwpp-tab-content[data-tab="${target}"]`).addClass('active');
         },
@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
 
             // Keep existing add first item binding
             $(document).on('click', '.mgwpp-add-first-item', this.addNewItem.bind(this));
-            // Add new item
+            //  new item
             $(document).on('click', '.mgwpp-add-new-item, .mgwpp-add-first-item', this.addNewItem.bind(this));
 
             // Item controls
@@ -177,7 +177,7 @@ jQuery(document).ready(function ($) {
             });
         },
 
-        // Add these methods to handle dirty state
+        //  these methods to handle dirty state
         markDirty: function () {
             this.isDirty = true;
             // Optional: Add visual indicator
@@ -190,7 +190,7 @@ jQuery(document).ready(function ($) {
             $('.mgwpp-save-gallery').removeClass('mgwpp-has-changes');
         },
 
-        // Add this method to handle saving
+        //  this method to handle saving
         saveGallery: function (e) {
             e.preventDefault();
 
@@ -511,7 +511,7 @@ jQuery(document).ready(function ($) {
             $(`#${selector}`).prop('checked', Boolean(state));
         },
 
-        // Add this method to clear the properties panel
+        //  this method to clear the properties panel
         clearPropertiesPanel: function () {
             $('.mgwpp-properties-panel input, .mgwpp-properties-panel select, .mgwpp-properties-panel textarea').val('');
             $('.mgwpp-properties-tabs .nav-tab').removeClass('active').first().addClass('active');
@@ -519,7 +519,7 @@ jQuery(document).ready(function ($) {
             $('.mgwpp-selected-item-info').text(mgwppEditor.strings.selectItem || 'Select an item to edit');
             this.currentItem = null;
         },
-        // Add to your MGWPPEnhancedEditor object
+        //  to your MGWPPEnhancedEditor object
 
         // Update the canvas object methods
         canvas: {
@@ -636,7 +636,7 @@ jQuery(document).ready(function ($) {
         },
 
 
-        // Add to your MGWPPEnhancedEditor object
+        //  to your MGWPPEnhancedEditor object
         canvasProperties: {
             init: function () {
                 // Position controls

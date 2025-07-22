@@ -66,7 +66,7 @@ class MGWPP_Admin_Menu
         $edit_url = add_query_arg([
             'page'       => 'mgwpp-edit-gallery',
             'gallery_id' => $gallery_id,
-            '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery') // Add nonce here
+            '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery') //  nonce here
         ], admin_url('admin.php'));
         
         $delete_url = wp_nonce_url(

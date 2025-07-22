@@ -15,18 +15,22 @@ class MGWPP_Ajax_Handler
      */
     public static function init()
     {
+
+
         // Preview handling
         add_action('template_redirect', array(__CLASS__, 'mgwpp_handle_preview_request'));
 
         // AJAX handlers
-        add_action('template_redirect', 'mgwpp_handle_preview_request');
         add_action('wp_ajax_mgwpp_save_gallery_order', array(__CLASS__, 'save_gallery_order'));
         add_action('wp_ajax_mgwpp_create_gallery', array(__CLASS__, 'create_gallery'));
         add_action('wp_ajax_mgwpp_delete_gallery', array(__CLASS__, 'delete_gallery'));
+
         // Handle bulk gallery deletion in view
-        add_action('wp_ajax_mgwpp_bulk_delete_galleries', 'mgwpp_bulk_delete_galleries_handler');
+        add_action('wp_ajax_mgwpp_bulk_delete_galleries', array(__CLASS__, 'mgwpp_bulk_delete_galleries_handler'));
+
         // Handle Single Image of Gallery in editing
-        add_action('wp_ajax_mgwpp_delete_image', 'mgwpp_delete_image_handler');
+        add_action('wp_ajax_mgwpp_delete_image', array(__CLASS__, 'mgwpp_delete_image_handler'));
+
         // Handle form submissions
         add_action('admin_post_mgwpp_create_gallery', array(__CLASS__, 'handle_create_gallery'));
         add_action('admin_post_mgwpp_save_gallery', array(__CLASS__, 'handle_save_gallery'));
@@ -116,7 +120,6 @@ class MGWPP_Ajax_Handler
                     break;
             }
 
-            // Add initialization script
             add_action('wp_footer', function () use ($gallery_type) {
                 echo '<script>';
                 switch ($gallery_type) {
@@ -126,7 +129,7 @@ class MGWPP_Ajax_Handler
                     case 'multi_carousel':
                         echo 'if (typeof MGWPP_MultiCarousel !== "undefined") MGWPP_MultiCarousel.init();';
                         break;
-                        // Add other gallery types as needed
+                        //  other gallery types as needed
                 }
                 echo '</script>';
             }, 999);
@@ -144,27 +147,6 @@ class MGWPP_Ajax_Handler
     /**
      * Load preview template
      */
-    private static function load_preview_template($gallery_id)
-    {
-        $gallery = get_post($gallery_id);
-        $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
-
-        $gallery_images = get_post_meta($gallery_id, 'gallery_images', true);
-        $gallery_images = !empty($gallery_images) ? (array) $gallery_images : [];
-        $gallery_images = array_map('absint', $gallery_images);
-        $gallery_images = array_filter($gallery_images);
-
-        $preview_template = MG_PLUGIN_PATH . 'templates/preview-gallery.php';
-        if (file_exists($preview_template)) {
-            include $preview_template;
-        } else {
-            echo '<div class="mgwpp-preview-fallback">';
-            echo '<h3>' . esc_html($gallery->post_title) . '</h3>';
-            echo '<p>' . esc_html__('Preview template not found', 'mini-gallery') . '</p>';
-            echo '</div>';
-        }
-    }
-
     /**
      * AJAX callback to preview a gallery
      */
@@ -206,12 +188,12 @@ class MGWPP_Ajax_Handler
         try {
             // Verify nonce
             if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'mgwpp_edit_gallery')) {
-                wp_send_json_error(['message' => __('Security check failed', 'mini-gallery')]);
+                wp_send_json_error(['message' => esc_html__('Security check failed', 'mini-gallery')]);
             }
 
             // Check permissions
             if (!current_user_can('edit_mgwpp_sooras')) {
-                wp_send_json_error(['message' => __('Insufficient permissions', 'mini-gallery')]);
+                wp_send_json_error(['message' => esc_html__('Insufficient permissions', 'mini-gallery')]);
             }
 
             // Get gallery ID and images
@@ -220,7 +202,7 @@ class MGWPP_Ajax_Handler
 
             // Validate inputs
             if (!$gallery_id || get_post_type($gallery_id) !== 'mgwpp_soora') {
-                wp_send_json_error(['message' => __('Invalid gallery ID', 'mini-gallery')]);
+                wp_send_json_error(['message' => esc_html__('Invalid gallery ID', 'mini-gallery')]);
             }
 
             // Filter out invalid image IDs and ensure they're actual image attachments
@@ -236,12 +218,12 @@ class MGWPP_Ajax_Handler
 
             if ($result !== false) {
                 wp_send_json_success([
-                    'message' => esc_html_e('Image order saved successfully', 'mini-gallery'),
+                    'message' => esc_html__('Image order saved successfully', 'mini-gallery'),
                     'total_images' => count($valid_ids),
                     'image_ids' => $valid_ids // Return the saved order for verification
                 ]);
             } else {
-                wp_send_json_error(['message' => __('Failed to save image order', 'mini-gallery')]);
+                wp_send_json_error(['message' => esc_html__('Failed to save image order', 'mini-gallery')]);
             }
         } catch (Exception $e) {
             wp_send_json_error([
@@ -398,7 +380,7 @@ class MGWPP_Ajax_Handler
         }
 
         // Validate gallery type
-        $allowed_types = ['grid', 'slider', 'masonry']; // Add your valid types
+        $allowed_types = ['grid', 'slider', 'masonry']; //  your valid types
         if (!in_array($gallery_type, $allowed_types, true)) {
             $gallery_type = 'grid'; // Default to safe value
         }

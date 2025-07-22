@@ -59,7 +59,7 @@ class MGWPP_SubModules_View
         $option = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
         $is_checked = in_array($slug, (array)$option);
         $module = $this->sub_modules[$slug];
-        ?>
+?>
         <div class="mgwpp-module-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
             <div class="module-header">
                 <div class="module-icon">
@@ -91,7 +91,7 @@ class MGWPP_SubModules_View
                 <?php echo esc_html($module['config']['description'] ?? ''); ?>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function get_gallery_icon($gallery_type)
@@ -118,7 +118,7 @@ class MGWPP_SubModules_View
     public function render()
     {
         $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
-        ?>
+    ?>
         <div class="mgwpp-modules-view">
             <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
 
@@ -131,15 +131,17 @@ class MGWPP_SubModules_View
                                 continue;
                             }
                             $module = $this->sub_modules[$slug];
-                            ?>
+                        ?>
                             <div class="mgwpp-stat-card" data-module="<?php echo esc_attr($slug); ?>">
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                                     alt="<?php echo esc_attr($module['config']['name']); ?>"
                                     class="mgwpp-stat-card-icon">
                                 <?php echo esc_html($module['config']['name']); ?>
                                 <div class="mgwpp-switch">
-                                    <input type="checkbox" <?php checked(true); ?> disabled>
-                                    <span class="mgwpp-switch-slider round"></span>
+                                    <input type="checkbox"
+                                        class="mgwpp-module-toggle-summary"
+                                        data-module="<?php echo esc_attr($slug); ?>"
+                                        <?php checked(true); ?>> <span class="mgwpp-switch-slider round"></span>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -156,7 +158,7 @@ class MGWPP_SubModules_View
                 <?php $this->display_performance_metrics(); ?>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function display_performance_metrics()
@@ -194,7 +196,7 @@ class MGWPP_SubModules_View
 
         $total_size = $enabled_size + $disabled_size;
         $savings_percent = $total_size > 0 ? round(($disabled_size / $total_size) * 100, 2) : 0;
-        ?>
+    ?>
         <div class="performance-metrics-grid">
             <div class="metric-card">
                 <h3><?php esc_html_e('Active Modules', 'mini-gallery'); ?></h3>
@@ -245,7 +247,7 @@ class MGWPP_SubModules_View
                 </tbody>
             </table>
         </div>
-        <?php
+<?php
     }
 
     private function get_module_asset_info($module_slug)
@@ -317,27 +319,46 @@ class MGWPP_SubModules_View
             'genericError' => __('An error occurred. Please try again.', 'mini-gallery')
         ]);
     }
+
+
+
     public function ajax_toggle_module()
     {
         try {
-            // Verify nonce and capabilities (existing code)
+            // Verify nonce
+            if (!check_ajax_referer('module_toggle_nonce', 'nonce', false)) {
+                throw new Exception(__('Security check failed', 'mini-gallery'));
+            }
+
+            // Check permissions
+            if (!current_user_can('manage_options')) {
+                throw new Exception(__('Insufficient permissions', 'mini-gallery'));
+            }
+
+            $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
 
             // Handle bulk operations
             if (isset($_POST['is_bulk']) && $_POST['is_bulk']) {
                 $modules = isset($_POST['modules']) ? (array)$_POST['modules'] : [];
                 $valid_modules = array_keys($this->sub_modules);
                 $enabled_sub_modules = array_intersect($modules, $valid_modules);
+
+                // Ensure we always have an array
+                $enabled_sub_modules = array_values($enabled_sub_modules);
             }
             // Handle single toggle
             else {
                 $module = sanitize_text_field($_POST['module'] ?? '');
-                $status = (bool)($_POST['status'] ?? false);
+                $status = isset($_POST['status']) ? (bool)$_POST['status'] : false;
 
                 if (!array_key_exists($module, $this->sub_modules)) {
                     throw new Exception(__('Invalid module specified', 'mini-gallery'));
                 }
 
-                $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
+                // Ensure enabled_sub_modules is an array
+                if (!is_array($enabled_sub_modules)) {
+                    $enabled_sub_modules = array_keys($this->sub_modules);
+                }
 
                 if ($status && !in_array($module, $enabled_sub_modules)) {
                     $enabled_sub_modules[] = $module;
@@ -348,18 +369,79 @@ class MGWPP_SubModules_View
                 $enabled_sub_modules = array_values($enabled_sub_modules);
             }
 
-            // Save and return response
-            if (update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules)) {
+            // Save the option
+            $updated = update_option('mgwpp_enabled_sub_modules', $enabled_sub_modules);
+
+            if ($updated !== false) {
+                // Clear all caches
+                wp_cache_flush();
+
                 wp_send_json_success([
+                    'message' => __('Settings updated successfully', 'mini-gallery'),
+                    'enabled_modules' => $enabled_sub_modules,
                     'metrics' => $this->get_performance_metrics_html()
                 ]);
             } else {
-                throw new Exception(__('No changes were made to settings', 'mini-gallery'));
+                // Check if no update was needed (values were the same)
+                $current_option = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
+                if ($current_option === $enabled_sub_modules) {
+                    wp_send_json_success([
+                        'message' => __('Settings are already up to date', 'mini-gallery'),
+                        'enabled_modules' => $enabled_sub_modules,
+                        'metrics' => $this->get_performance_metrics_html()
+                    ]);
+                } else {
+                    throw new Exception(__('Failed to save settings', 'mini-gallery'));
+                }
             }
         } catch (Exception $e) {
+            error_log('MGWPP Module Toggle Error: ' . $e->getMessage());
             wp_send_json_error($e->getMessage(), 400);
         }
     }
+
+
+    public function conditional_asset_loading()
+    {
+        $enabled_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
+
+        // Only load assets for enabled modules
+        foreach ($enabled_modules as $module_slug) {
+            if (isset($this->sub_modules[$module_slug])) {
+                $this->enqueue_module_assets($module_slug);
+            }
+        }
+    }
+
+    private function enqueue_module_assets($module_slug)
+    {
+        $css_file = MG_PLUGIN_URL . "/public/css/mgwpp-{$module_slug}.css";
+        $js_file = MG_PLUGIN_URL . "/public/js/mgwpp-{$module_slug}.js";
+
+        // Check if files exist before enqueuing
+        $css_path = MG_PLUGIN_PATH . "/public/css/mgwpp-{$module_slug}.css";
+        $js_path = MG_PLUGIN_PATH . "/public/js/mgwpp-{$module_slug}.js";
+
+        if (file_exists($css_path)) {
+            wp_enqueue_style(
+                "mgwpp-{$module_slug}",
+                $css_file,
+                [],
+                filemtime($css_path)
+            );
+        }
+
+        if (file_exists($js_path)) {
+            wp_enqueue_script(
+                "mgwpp-{$module_slug}",
+                $js_file,
+                ['jquery'],
+                filemtime($js_path),
+                true
+            );
+        }
+    }
+
     private function get_performance_metrics_html()
     {
         ob_start();

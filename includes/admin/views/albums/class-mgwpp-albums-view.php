@@ -24,7 +24,7 @@ class MGWPP_Albums_View
         wp_enqueue_script('jquery-ui-sortable');
         wp_enqueue_media();
 
-        // Add custom styles and scripts
+        //  custom styles and scripts
         wp_enqueue_style('mgwpp-album-admin-styles', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'views/albums/mgwpp-albums-view.css', array(), MGWPP_ASSET_VERSION);
         wp_enqueue_script('mgwpp-album-admin-scripts', plugin_dir_url(MGWPP_PLUGIN_FILE) . 'views/albums/mgwpp-albums-view.js', array('jquery', 'jquery-ui-tabs', 'jquery-ui-sortable'), MGWPP_ASSET_VERSION, true);
 

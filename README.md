@@ -17,7 +17,8 @@ This WordPress plugin provides a lightweight gallery with a simple carousel. It 
 
 ### Features
 
-- Allows the user marketing team to upload images.
+- 11 Galleries
+- Can Change Order of Images
 - Simple gallery carousel.
 - Lightweight carousel with shortcode.
 

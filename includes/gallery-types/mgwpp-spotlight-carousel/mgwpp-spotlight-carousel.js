@@ -17,7 +17,7 @@ function activateSlide(index)
     carouselSlides[currentSlideIndex].classList.remove('mgwpp-active');
     navButtons[currentSlideIndex].classList.remove('mgwpp-active');
 
-    // Add active classes to new slide
+    //  active classes to new slide
     carouselSlides[index].classList.add('mgwpp-active');
     navButtons[index].classList.add('mgwpp-active');
 

@@ -128,7 +128,7 @@ class MGWPP_Edit_Gallery_View
         // Get gallery type
         $current_type = get_post_meta($gallery_id, 'gallery_type', true);
 
-        // Add this instead in render_editor():
+        //  this instead in render_editor():
         $preview_url = add_query_arg([
             'mgwpp_preview' => '1',
             'gallery_id'    => $gallery->ID,

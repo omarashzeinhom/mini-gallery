@@ -72,14 +72,6 @@ class MGWPP_Module_Manager
                 'description' => 'A testimonials carousel.',
             ],
         ],
-        'lightbox' => [
-            'config' => [
-                'name' => 'Lightbox',
-                'version' => '1.0.0',
-                'author' => 'Mini Gallery Team',
-                'description' => 'A lightbox for images.',
-            ],
-        ],
         'fullpage_slider' => [
             'config' => [
                 'name' => 'Fullpage Slider',

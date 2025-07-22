@@ -94,7 +94,7 @@ class MGWPP_Neon_Carousel
                 'data-slide-index' => true
             ],
             'h2' => ['class' => true],
-            // Add other allowed tags as needed
+            //  other allowed tags as needed
         ]);
     }
 }

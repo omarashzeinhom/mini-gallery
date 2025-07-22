@@ -254,7 +254,7 @@ class MGWPP_Galleries_View
             return $this->get_fallback_preview();
         }
 
-        // Add count indicator if there are more images
+        //  count indicator if there are more images
         $total_images = count($images);
         if ($total_images > $max_thumbnails) {
             $remaining = $total_images - $max_thumbnails;

@@ -6,10 +6,8 @@ class MGWPP_Testimonial_Capabilities
 {
     public static function mgwpp_testimonial_capabilities()
     {
-        // Get the administrator role
         $admin = get_role('administrator');
 
-        // Core testimonial management capabilities
         $testimonial_caps = array(
             'edit_mgwpp_testimonial',
             'read_mgwpp_testimonial',
@@ -36,25 +34,14 @@ class MGWPP_Testimonial_Capabilities
             'delete_others_attachments'    // Allow deleting others' media
         );
 
-        // Add all capabilities to admin
+        //  all capabilities to admin
         foreach (array_merge($testimonial_caps, $media_caps) as $cap) {
             $admin->add_cap($cap);
         }
 
-        // Add capabilities to marketing team role
-        $marketing = get_role('marketing_team');
-        if ($marketing) {
-            // Full testimonial capabilities
-            foreach ($testimonial_caps as $cap) {
-                $marketing->add_cap($cap);
-            }
+      
 
-            // Limited media capabilities (only upload and edit their own)
-            $marketing->add_cap('upload_files');
-            $marketing->add_cap('edit_attachments');
-        }
-
-        // Add featured image support for testimonials
+        //  featured image support for testimonials
         add_post_type_support('mgwpp_testimonial', 'thumbnail');
     }
 }

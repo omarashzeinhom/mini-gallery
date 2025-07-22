@@ -8,11 +8,11 @@ class MGWPP_Gallery_Capabilities
     // Assign custom capabilities to roles
     public static function mgwpp_gallery_capabilities()
     {
-        $roles = ['administrator', 'marketing_team'];
+        $roles = ['administrator'];
         foreach ($roles as $role_name) {
             $role = get_role($role_name);
             if ($role) {
-                // Add the custom capabilities to the specified roles
+                //  the custom capabilities to the specified roles
                 $role->add_cap('edit_mgwpp_soora');
                 $role->add_cap('read_mgwpp_soora');
                 $role->add_cap('delete_mgwpp_soora');

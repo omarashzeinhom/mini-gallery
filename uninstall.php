@@ -18,5 +18,3 @@ foreach ($sowar as $gallery_image) {
     wp_delete_post(intval($gallery_image->ID), true);
 }
 
-// Delete custom role
-remove_role('marketing_team');

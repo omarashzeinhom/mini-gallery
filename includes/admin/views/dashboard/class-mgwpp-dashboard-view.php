@@ -88,7 +88,7 @@ class MGWPP_Dashboard_View
             $display_value = number_format_i18n($count);
         }
 
-        // Add link wrapper if URL is provided
+        //  link wrapper if URL is provided
         $card_content = sprintf(
             '<div class="mgwpp-stat-content">
             <div class="mgwpp-stat-icon">
@@ -114,7 +114,7 @@ class MGWPP_Dashboard_View
             );
         }
 
-        echo '<div class="mgwpp-stat-card">' . $card_content . '</div>';
+        echo wp_kses_post('<div class="mgwpp-stat-card">' . $card_content . '</div>');
     }
 
     private static function render_storage_section($storage_data)

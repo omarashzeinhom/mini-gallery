@@ -5,7 +5,7 @@
 ;(($) => {
   // Initialize when document is ready
     $(document).ready(() => {
-      // Add animation classes to elements
+      //  animation classes to elements
         animateElements()
 
       // Initialize sortable galleries

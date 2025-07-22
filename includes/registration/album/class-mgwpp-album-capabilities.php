@@ -9,7 +9,7 @@ class MGWPP_Album_Capabilities
         // Get the administrator role
         $admin = get_role('administrator');
 
-        // Add album management capabilities to administrator
+        //  album management capabilities to administrator
         $capabilities = array(
             'edit_mgwpp_album',
             'read_mgwpp_album',
@@ -31,13 +31,7 @@ class MGWPP_Album_Capabilities
             $admin->add_cap($cap);
         }
 
-        // Add album capabilities to marketing team role if it exists
-        $marketing = get_role('marketing_team');
-        if ($marketing) {
-            foreach ($capabilities as $cap) {
-                $marketing->add_cap($cap);
-            }
-        }
+       
     }
 }
 

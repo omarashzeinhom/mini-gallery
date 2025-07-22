@@ -43,7 +43,7 @@ jQuery(function ($) {
         });
     }
 
-    // Add Images button
+    //  Images button
     $('.mgwpp-add-images').on('click', function (e) {
         e.preventDefault();
 
@@ -179,7 +179,7 @@ jQuery(function ($) {
             // Remove existing timestamp if present
             currentSrc = currentSrc.replace(/[?&]t=\d+/, '');
 
-            // Add new timestamp to bypass cache
+            //  new timestamp to bypass cache
             const separator = currentSrc.includes('?') ? '&' : '?';
             const newSrc = currentSrc + separator + 't=' + Date.now();
 

@@ -134,7 +134,7 @@ class MGWPP_Gallery_Post_Type
 
         echo '</div>'; // .mgwpp-image-links-list
 
-        // Add new image button
+        //  new image button
         echo '<button type="button" class="button mgwpp-add-gallery-image" data-post-id="' . $post->ID . '">Add Gallery Image</button>';
 
         // CTA Links section
@@ -201,6 +201,6 @@ class MGWPP_Gallery_Post_Type
 
 // Register the custom post type during the 'init' hook
 add_action('init', array('MGWPP_Gallery_Post_Type', 'mgwpp_register_gallery_post_type'));
-// Add the hooks
+//  the hooks
 add_action('add_meta_boxes', [MGWPP_Gallery_Post_Type::class, 'mgwpp_add_gallery_meta_boxes']);
 add_action('save_post_mgwpp_soora', [MGWPP_Gallery_Post_Type::class, 'mgwpp_save_gallery_meta']);

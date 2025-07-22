@@ -17,7 +17,7 @@ class MGWPP_Admin_Assets
             'toplevel_page_mgwpp_dashboard',
             'gallery_page_mgwpp-galleries',
             'gallery_page_mgwpp-edit-gallery',
-            'admin_page_mgwpp-edit-gallery' // Add this for the edit page
+            'admin_page_mgwpp-edit-gallery' //  this for the edit page
         ];
 
         // Check if it's one of our plugin pages
@@ -135,8 +135,19 @@ class MGWPP_Admin_Assets
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('mgwpp-theme-nonce')
         ]);
-    }
 
+        add_action('admin_enqueue_scripts', [$this, 'conditional_asset_loading'], 20);
+    }
+    public function conditional_asset_loading()
+    {
+        // Only run on our plugin pages
+        $screen = get_current_screen();
+        if (strpos($screen->id, 'mgwpp') === false) return;
+
+        $module_loader = new MGWPP_Module_Manager();
+        $submodules_view = new MGWPP_SubModules_View($module_loader);
+        $submodules_view->conditional_asset_loading();
+    }
 
     private function load_dashboard_assets()
     {
@@ -160,7 +171,7 @@ class MGWPP_Admin_Assets
         );
     }
 
-    
+
     public static function enqueue_preview_assets($gallery_id)
     {
         // Get gallery type directly from post meta
@@ -213,7 +224,7 @@ class MGWPP_Admin_Assets
                 break;
         }
 
-        // Add initialization script
+        //  initialization script
         add_action('wp_footer', function () use ($gallery_type) {
             echo '<script>';
             switch ($gallery_type) {

@@ -44,13 +44,14 @@ class MGWPP_Galleries_View
             $plugin_version
         );
 
+        // Fixed script enqueueing with explicit dependencies and footer parameter
         wp_enqueue_script(
             'mgwpp-admin-galleries-js',
             plugins_url('admin/views/galleries/mgwpp-galleries-view.js', dirname(__FILE__, 3)),
+            array('jquery', 'thickbox'), // Explicit dependencies
             $plugin_version,
-            true
+            true // Explicitly load in footer
         );
-
 
         wp_localize_script('mgwpp-admin-galleries-js', 'mgwppAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -64,31 +65,29 @@ class MGWPP_Galleries_View
         ]);
     }
 
-    /**
-     * Helper method to generate plugin asset image HTML
-     * Addresses plugin checker warnings about direct img tag usage
-     */
+
     private static function get_plugin_asset_image($relative_path, $attributes = [])
     {
         $src = esc_url(MG_PLUGIN_URL . '/includes/admin/images/' . $relative_path);
-        
+
         $default_attributes = [
             'loading' => 'lazy'
         ];
-        
+
         $attributes = array_merge($default_attributes, $attributes);
-        
+
         $attr_string = '';
         foreach ($attributes as $key => $value) {
             $attr_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
         }
-        
+
+        // Return properly escaped image tag
         return sprintf('<img src="%s"%s>', $src, $attr_string);
     }
 
     public function render()
     {
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -189,7 +188,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+    <?php
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
@@ -206,7 +205,7 @@ class MGWPP_Galleries_View
         return $this->render_image_thumbnails($image_ids);
     }
 
-  
+
     private function render_image_thumbnails($images)
     {
         if (is_string($images)) {
@@ -303,7 +302,7 @@ class MGWPP_Galleries_View
         );
     }
 
- 
+
     private function get_fallback_preview()
     {
         return sprintf(
@@ -318,7 +317,7 @@ class MGWPP_Galleries_View
 
     private static function render_create_gallery_modal()
     {
-        ?>
+    ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <!-- Loading overlay -->
@@ -372,6 +371,6 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+<?php
     }
 }

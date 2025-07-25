@@ -21,7 +21,7 @@ class MGWPP_Dashboard_View
             'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -33,7 +33,7 @@ class MGWPP_Dashboard_View
                 </div>
             </div>
         </div>
-        <?php
+    <?php
     }
 
 
@@ -42,7 +42,7 @@ class MGWPP_Dashboard_View
     private static function render_stats_grid($stats)
     {
         $admin_url = admin_url('admin.php');
-        ?>
+    ?>
         <div class="mgwpp-stats-grid">
             <?php
             self::render_stat_card(
@@ -74,7 +74,7 @@ class MGWPP_Dashboard_View
             );
             ?>
         </div>
-        <?php
+    <?php
     }
 
     private static function render_stat_card($title, $count, $icon, $url = '')
@@ -88,19 +88,23 @@ class MGWPP_Dashboard_View
             $display_value = number_format_i18n($count);
         }
 
-        //  link wrapper if URL is provided
+        // Image with proper escaping
+        $image_html = sprintf(
+            '<img src="%s" alt="%s" loading="lazy" width="64" height="64">',
+            esc_url($icon_url),
+            esc_attr($title)
+        );
+
+        // Card content with proper escaping
         $card_content = sprintf(
             '<div class="mgwpp-stat-content">
-            <div class="mgwpp-stat-icon">
-                <img src="%s" alt="%s" loading="lazy" width="64" height="64">
-            </div>
+            <div class="mgwpp-stat-icon">%s</div>
             <div class="mgwpp-stat-info">
                 <h3 class="mgwpp-stat-title">%s</h3>
                 <p class="mgwpp-stat-count">%s</p>
             </div>
         </div>',
-            esc_url($icon_url),
-            esc_attr($title),
+            $image_html,
             esc_html($title),
             $display_value
         );
@@ -119,7 +123,7 @@ class MGWPP_Dashboard_View
 
     private static function render_storage_section($storage_data)
     {
-        ?>
-        <?php
+    ?>
+<?php
     }
 }

@@ -86,62 +86,72 @@ class MGWPP_Gallery_Post_Type
         echo '<div class="mgwpp-gallery-links-container">';
 
         // Existing images section
-        echo '<h3>Gallery Image Links</h3>';
+        echo '<h3>' . esc_html__('Gallery Image Links', 'mini-gallery') . '</h3>';
         echo '<div class="mgwpp-image-links-list">';
 
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
-                $image_url = wp_get_attachment_url($attachment->ID);
                 $current_link = $image_links[$attachment->ID] ?? '';
-                ?>
-                <div class="mgwpp-image-link-item" data-attachment-id="<?php echo wp_kses_post($attachment->ID); ?>">
+                $attachment_id = absint($attachment->ID);
+?>
+                <div class="mgwpp-image-link-item" data-attachment-id="<?php echo esc_attr($attachment_id); ?>">
                     <div class="mgwpp-image-preview">
-                        <img src="<?php echo esc_url($image_url); ?>" style="max-width: 150px; height: auto;">
+                        <?php
+                        // Use WordPress function for media library images
+                        echo wp_get_attachment_image(
+                            $attachment_id,
+                            [150, 150],
+                            false,
+                            [
+                                'style' => 'max-width:150px; height:auto;'
+                            ]
+                        );
+                        ?>
                         <div class="mgwpp-image-info">
                             <span><?php echo esc_html($attachment->post_title); ?></span>
                         </div>
                     </div>
                     <div class="mgwpp-link-fields">
                         <div class="mgwpp-link-field">
-                            <label>Link URL:</label>
+                            <label><?php esc_html_e('Link URL:', 'mini-gallery'); ?></label>
                             <input type="url"
-                                name="mgwpp_image_links[<?php echo wp_kses_post($attachment->ID); ?>]"
+                                name="mgwpp_image_links[<?php echo esc_attr($attachment_id); ?>]"
                                 value="<?php echo esc_attr($current_link); ?>"
                                 placeholder="https://example.com">
                         </div>
                         <div class="mgwpp-link-options">
                             <label>
                                 <input type="checkbox"
-                                    name="mgwpp_image_link_new_tab[<?php echo  wp_kses_post($attachment->ID); ?>]"
-                                    <?php checked(isset($image_links[$attachment->ID . '_new_tab']) && $image_links[$attachment->ID . '_new_tab']); ?>>
-                                Open in new tab
+                                    name="mgwpp_image_link_new_tab[<?php echo esc_attr($attachment_id); ?>]"
+                                    <?php checked(isset($image_links[$attachment_id . '_new_tab']) && $image_links[$attachment_id . '_new_tab']); ?>>
+                                <?php esc_html_e('Open in new tab', 'mini-gallery'); ?>
                             </label>
                             <label>
                                 <input type="checkbox"
-                                    name="mgwpp_image_link_nofollow[<?php echo wp_kses_post($attachment->ID); ?>]"
-                                    <?php checked(isset($image_links[$attachment->ID . '_nofollow']) && $image_links[$attachment->ID . '_nofollow']); ?>>
-                                Nofollow
+                                    name="mgwpp_image_link_nofollow[<?php echo esc_attr($attachment_id); ?>]"
+                                    <?php checked(isset($image_links[$attachment_id . '_nofollow']) && $image_links[$attachment_id . '_nofollow']); ?>>
+                                <?php esc_html_e('Nofollow', 'mini-gallery'); ?>
                             </label>
                         </div>
                     </div>
-                    <button type="button" class="mgwpp-remove-image-link button-link">Remove</button>
+                    <button type="button" class="mgwpp-remove-image-link button-link"><?php esc_html_e('Remove', 'mini-gallery'); ?></button>
                 </div>
-                <?php
+<?php
             }
         } else {
-            echo '<p class="mgwpp-no-images-notice">No images found in this gallery. Upload images first.</p>';
+            echo '<p class="mgwpp-no-images-notice">' . esc_html__('No images found in this gallery. Upload images first.', 'mini-gallery') . '</p>';
         }
 
         echo '</div>'; // .mgwpp-image-links-list
 
-        //  new image button
-        echo wp_kses_post('<button type="button" class="button mgwpp-add-gallery-image" data-post-id="' . $post->ID . '">Add Gallery Image</button>');
+        // Add new image button
+        echo '<button type="button" class="button mgwpp-add-gallery-image" data-post-id="' . esc_attr($post->ID) . '">' . esc_html__('Add Gallery Image', 'mini-gallery') . '</button>';
 
         // CTA Links section
-        echo '<h3>Call-to-Action Links</h3>';
+        echo '<h3>' . esc_html__('Call-to-Action Links', 'mini-gallery') . '</h3>';
         echo '<div class="mgwpp-cta-links">';
-        echo wp_kses_post('<p><label>Primary CTA: <input type="url" name="mgwpp_cta_links[primary]" value="' . esc_attr($cta_links['primary'] ?? '') . '"></label></p>');
-        echo '<p><label>Secondary CTA: <input type="url" name="mgwpp_cta_links[secondary]" value="' . esc_attr($cta_links['secondary'] ?? '') . '"></label></p>';
+        echo '<p><label>' . esc_html__('Primary CTA:', 'mini-gallery') . ' <input type="url" name="mgwpp_cta_links[primary]" value="' . esc_attr($cta_links['primary'] ?? '') . '"></label></p>';
+        echo '<p><label>' . esc_html__('Secondary CTA:', 'mini-gallery') . ' <input type="url" name="mgwpp_cta_links[secondary]" value="' . esc_attr($cta_links['secondary'] ?? '') . '"></label></p>';
         echo '</div>';
 
         echo '</div>'; // .mgwpp-gallery-links-container

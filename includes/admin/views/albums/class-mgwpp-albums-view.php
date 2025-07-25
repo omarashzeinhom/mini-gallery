@@ -46,7 +46,8 @@ class MGWPP_Albums_View
 
                         <div id="tab-albums" class="mgwpp-tab-content">
                             <div class="mgwpp-search-filter">
-                                <input type="text" id="mgwpp-album-search" placeholder="<?php esc_attr_e('Search albums...', 'mini-gallery'); ?>">
+                                <input type="text" id="mgwpp-album-search"
+                                    placeholder="<?php esc_attr_e('Search albums...', 'mini-gallery'); ?>">
                                 <select id="mgwpp-album-filter">
                                     <option value=""><?php esc_html_e('All Albums', 'mini-gallery'); ?></option>
                                     <option value="recent"><?php esc_html_e('Recently Added', 'mini-gallery'); ?></option>
@@ -68,21 +69,32 @@ class MGWPP_Albums_View
                                     <?php wp_nonce_field('mgwpp_album_settings_nonce', 'mgwpp_album_settings_nonce'); ?>
 
                                     <div class="mgwpp-setting-row">
-                                        <label for="albums_per_page"><?php esc_html_e('Albums Per Page:', 'mini-gallery'); ?></label>
-                                        <input type="number" name="albums_per_page" id="albums_per_page" value="<?php echo esc_attr(get_option('mgwpp_albums_per_page', 12)); ?>" min="1" max="100">
+                                        <label
+                                            for="albums_per_page"><?php esc_html_e('Albums Per Page:', 'mini-gallery'); ?></label>
+                                        <input type="number" name="albums_per_page" id="albums_per_page"
+                                            value="<?php echo esc_attr(get_option('mgwpp_albums_per_page', 12)); ?>" min="1"
+                                            max="100">
                                     </div>
 
                                     <div class="mgwpp-setting-row">
-                                        <label for="album_layout"><?php esc_html_e('Default Layout:', 'mini-gallery'); ?></label>
+                                        <label
+                                            for="album_layout"><?php esc_html_e('Default Layout:', 'mini-gallery'); ?></label>
                                         <select name="album_layout" id="album_layout">
-                                            <option value="grid" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'grid'); ?>><?php esc_html_e('Grid', 'mini-gallery'); ?></option>
-                                            <option value="masonry" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'masonry'); ?>><?php esc_html_e('Masonry', 'mini-gallery'); ?></option>
-                                            <option value="carousel" <?php selected(get_option('mgwpp_album_layout', 'grid'), 'carousel'); ?>><?php esc_html_e('Carousel', 'mini-gallery'); ?></option>
+                                            <option value="grid"
+                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'grid'); ?>>
+                                                <?php esc_html_e('Grid', 'mini-gallery'); ?></option>
+                                            <option value="masonry"
+                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'masonry'); ?>>
+                                                <?php esc_html_e('Masonry', 'mini-gallery'); ?></option>
+                                            <option value="carousel"
+                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'carousel'); ?>>
+                                                <?php esc_html_e('Carousel', 'mini-gallery'); ?></option>
                                         </select>
                                     </div>
 
                                     <button type="submit" class="button button-primary">
-                                        <span class="dashicons dashicons-saved"></span> <?php esc_html_e('Save Settings', 'mini-gallery'); ?>
+                                        <span class="dashicons dashicons-saved"></span>
+                                        <?php esc_html_e('Save Settings', 'mini-gallery'); ?>
                                     </button>
                                 </form>
                             </div>
@@ -150,7 +162,8 @@ class MGWPP_Albums_View
                             <span class="dashicons dashicons-edit"></span>
                             <?php esc_html_e('Album Title', 'mini-gallery'); ?>
                         </label>
-                        <input type="text" name="album_title" id="album_title" required placeholder="<?php esc_attr_e('Enter album title...', 'mini-gallery'); ?>">
+                        <input type="text" name="album_title" id="album_title" required
+                            placeholder="<?php esc_attr_e('Enter album title...', 'mini-gallery'); ?>">
                     </div>
 
                     <div class="mgwpp-form-row">
@@ -158,7 +171,8 @@ class MGWPP_Albums_View
                             <span class="dashicons dashicons-text"></span>
                             <?php esc_html_e('Description (Optional)', 'mini-gallery'); ?>
                         </label>
-                        <textarea name="album_description" id="album_description" rows="3" placeholder="<?php esc_attr_e('Enter album description...', 'mini-gallery'); ?>"></textarea>
+                        <textarea name="album_description" id="album_description" rows="3"
+                            placeholder="<?php esc_attr_e('Enter album description...', 'mini-gallery'); ?>"></textarea>
                     </div>
 
                     <div class="mgwpp-form-row">
@@ -185,7 +199,8 @@ class MGWPP_Albums_View
                         </label>
                         <div class="mgwpp-gallery-selector-container">
                             <div class="mgwpp-gallery-filter">
-                                <input type="text" id="gallery-search" placeholder="<?php esc_attr_e('Search galleries...', 'mini-gallery'); ?>">
+                                <input type="text" id="gallery-search"
+                                    placeholder="<?php esc_attr_e('Search galleries...', 'mini-gallery'); ?>">
                             </div>
                             <?php self::render_gallery_selector(); ?>
                         </div>
@@ -214,11 +229,13 @@ class MGWPP_Albums_View
                     </div>
                     <div class="mgwpp-preview-details">
                         <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
-                        <p id="preview-description"><?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
+                        <p id="preview-description">
+                            <?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
                         <div class="mgwpp-preview-galleries">
                             <p><?php esc_html_e('Selected Galleries:', 'mini-gallery'); ?></p>
                             <ul id="preview-galleries-list">
-                                <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>
+                                <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -252,7 +269,8 @@ class MGWPP_Albums_View
                         $('#album_cover_id').val(attachment.id);
 
                         // Use a helper function to generate the image HTML
-                        var imageHtml = mgwppGenerateImageHtml(attachment.url, '<?php esc_attr_e('Album Cover', 'mini-gallery'); ?>');
+                        var imageHtml = mgwppGenerateImageHtml(attachment.url,
+                            '<?php esc_attr_e('Album Cover', 'mini-gallery'); ?>');
                         $('#album-cover-preview').html(imageHtml);
                         $('#preview-cover-image').attr('src', attachment.url);
                         $('.mgwpp-remove-cover-btn').show();
@@ -273,7 +291,8 @@ class MGWPP_Albums_View
                     e.preventDefault();
                     $('#album_cover_id').val('');
                     $('#album-cover-preview').html('');
-                    $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>');
+                    $('#preview-cover-image').attr('src',
+                        '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>');
                     $(this).hide();
                 });
 
@@ -293,7 +312,8 @@ class MGWPP_Albums_View
                     if (description) {
                         $('#preview-description').text(description);
                     } else {
-                        $('#preview-description').text('<?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?>');
+                        $('#preview-description').text(
+                            '<?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?>');
                     }
                 });
 
@@ -323,7 +343,9 @@ class MGWPP_Albums_View
                         });
                         $('#preview-galleries-list').html(html);
                     } else {
-                        $('#preview-galleries-list').html('<li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>');
+                        $('#preview-galleries-list').html(
+                            '<li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>'
+                        );
                     }
                 }
 
@@ -331,9 +353,15 @@ class MGWPP_Albums_View
                 $('.mgwpp-reset-btn').click(function() {
                     setTimeout(function() {
                         $('#preview-title').text('<?php esc_html_e('Album Title', 'mini-gallery'); ?>');
-                        $('#preview-description').text('<?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?>');
-                        $('#preview-cover-image').attr('src', '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>');
-                        $('#preview-galleries-list').html('<li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>');
+                        $('#preview-description').text(
+                            '<?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?>'
+                        );
+                        $('#preview-cover-image').attr('src',
+                            '<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>'
+                        );
+                        $('#preview-galleries-list').html(
+                            '<li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>'
+                        );
                         $('#album-cover-preview').html('');
                         $('.mgwpp-remove-cover-btn').hide();
                     }, 100);
@@ -351,6 +379,7 @@ class MGWPP_Albums_View
             esc_attr__('Album Preview', 'mini-gallery')
         );
     }
+
     private static function render_gallery_selector()
     {
         $galleries = get_posts([
@@ -373,18 +402,30 @@ class MGWPP_Albums_View
                 <div class="mgwpp-gallery-grid">
                     <?php foreach ($galleries as $gallery) :
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
-                        $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
                     ?>
                         <label class="mgwpp-gallery-item">
                             <div class="mgwpp-gallery-checkbox">
-                                <input type="checkbox"
-                                    name="album_galleries[]"
-                                    value="<?php echo absint($gallery->ID); ?>">
+                                <input type="checkbox" name="album_galleries[]" value="<?php echo absint($gallery->ID); ?>">
                                 <span class="mgwpp-checkmark"></span>
                             </div>
                             <div class="mgwpp-gallery-thumbnail">
-                                <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($gallery->post_title); ?>">
+                                <?php if ($thumbnail_id) :
+                                    echo wp_get_attachment_image(
+                                        $thumbnail_id,
+                                        'thumbnail',
+                                        false,
+                                        [
+                                            'alt' => esc_attr($gallery->post_title),
+                                            'loading' => 'lazy'
+                                        ]
+                                    );
+                                else :
+                                    $placeholder_url = plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
+                                ?>
+                                    <img src="<?php echo esc_url($placeholder_url); ?>" alt="<?php echo esc_attr($gallery->post_title); ?>"
+                                        loading="lazy">
+                                <?php endif; ?>
                             </div>
                             <div class="mgwpp-gallery-info">
                                 <h4><?php echo esc_html($gallery->post_title); ?></h4>

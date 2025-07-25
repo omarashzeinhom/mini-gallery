@@ -112,12 +112,12 @@ class MGWPP_Edit_Gallery_View
 
     private static function render_editor($gallery, $gallery_id, $images)
     {
-        $current_type = get_post_meta($gallery_id, 'gallery_type', true);
-        $preview_url = add_query_arg([
-            'mgwpp_preview' => '1',
-            'gallery_id'    => $gallery->ID,
-        ], home_url('/'));
-        $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
+         $current_type = get_post_meta($gallery_id, 'gallery_type', true);
+    $preview_url = add_query_arg([
+        'mgwpp_preview' => '1',
+        'gallery_id'    => $gallery->ID,
+    ], home_url('/'));
+    $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
 ?>
         <div class="mgwpp-dashboard-container">
             <h1><?php

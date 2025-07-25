@@ -35,29 +35,32 @@ class MGWPP_Albums_Table extends WP_List_Table
     // Render thumbnail column
     protected function column_thumbnail($item)
     {
+        // Default icon if no images found
+        $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;"></span>';
+
         // Try to get first gallery image
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
-        $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;"></span>';
 
         if (!empty($galleries) && is_array($galleries)) {
             $first_gallery_id = $galleries[0];
             $gallery_images = get_post_meta($first_gallery_id, 'gallery_images', true);
 
             if (!empty($gallery_images)) {
-                // Convert to array if needed
                 $image_ids = is_array($gallery_images) ? $gallery_images : explode(',', $gallery_images);
 
                 if (!empty($image_ids)) {
                     $first_image_id = $image_ids[0];
-                    $image_url = wp_get_attachment_image_url($first_image_id, 'thumbnail');
 
-                    if ($image_url) {
-                        $image_html = sprintf(
-                            '<img src="%s" alt="%s" width="75" height="75" style="object-fit:cover">',
-                            esc_url($image_url),
-                            esc_attr__('Album preview', 'mini-gallery')
-                        );
-                    }
+                    // Use WordPress function to get properly escaped image
+                    $image_html = wp_get_attachment_image(
+                        $first_image_id,
+                        [75, 75], // Custom size array
+                        false,
+                        [
+                            'style' => 'object-fit:cover; width:75px; height:75px;',
+                            'alt' => esc_attr__('Album preview', 'mini-gallery')
+                        ]
+                    );
                 }
             }
         }
@@ -202,7 +205,7 @@ add_action('admin_post_mgwpp_delete_album', function () {
 
     // Get album ID safely
     $album_id = isset($_GET['album_id']) ? absint(wp_unslash($_GET['album_id'])) : 0;
-    
+
     // Verify nonce with dynamic action
     if (!wp_verify_nonce(sanitize_key(wp_unslash($_REQUEST['_wpnonce'])), 'mgwpp_delete_album_' . $album_id)) {
         wp_die(esc_html__('Security verification failed', 'mini-gallery'));

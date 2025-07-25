@@ -63,6 +63,7 @@ class MGWPP_SubModules_View
         <div class="mgwpp-module-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
             <div class="module-header">
                 <div class="module-icon">
+                    <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                     <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                         alt="<?php echo esc_attr($module['config']['name']); ?>">
                 </div>
@@ -133,6 +134,7 @@ class MGWPP_SubModules_View
                             $module = $this->sub_modules[$slug];
                             ?>
                             <div class="mgwpp-stat-card" data-module="<?php echo esc_attr($slug); ?>">
+                                <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                                     alt="<?php echo esc_attr($module['config']['name']); ?>"
                                     class="mgwpp-stat-card-icon">

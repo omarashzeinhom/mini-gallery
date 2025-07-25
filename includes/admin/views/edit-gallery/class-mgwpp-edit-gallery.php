@@ -118,11 +118,11 @@ class MGWPP_Edit_Gallery_View
             'gallery_id'    => $gallery->ID,
         ], home_url('/'));
         $preview_url = wp_nonce_url($preview_url, 'mgwpp_preview');
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <h1><?php
                 printf(
-                    /* translators s%: Id Of Gallery */
+                    /* translators: %s: Gallery title/name */
                     esc_html__('Edit: Gallery %s', 'mini-gallery'),
                     esc_html($gallery->post_title)
                 );
@@ -201,7 +201,7 @@ class MGWPP_Edit_Gallery_View
                                 <?php foreach (self::$gallery_types as $type => $details) :
                                     $type_image_url = MG_PLUGIN_URL . '/includes/admin/images/galleries-preview/' . $details[1];
                                     $is_active = $type === $current_type;
-                                    ?>
+                                ?>
                                     <div class="mgwpp-gallery-type <?php echo $is_active ? 'active' : ''; ?>">
                                         <label>
                                             <input type="radio" name="gallery_type" value="<?php echo esc_attr($type); ?>"
@@ -224,7 +224,7 @@ class MGWPP_Edit_Gallery_View
                 </div>
             </div>
         </div>
-        <?php
+<?php
     }
 
     public static function handle_save_gallery_order()

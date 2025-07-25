@@ -30,8 +30,6 @@ class MGWPP_Album_Capabilities
         foreach ($capabilities as $cap) {
             $admin->add_cap($cap);
         }
-
-       
     }
 }
 

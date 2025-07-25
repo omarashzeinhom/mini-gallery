@@ -142,7 +142,9 @@ class MGWPP_Admin_Assets
     {
         // Only run on our plugin pages
         $screen = get_current_screen();
-        if (strpos($screen->id, 'mgwpp') === false) return;
+        if (strpos($screen->id, 'mgwpp') === false) {
+            return;
+        }
 
         $module_loader = new MGWPP_Module_Manager();
         $submodules_view = new MGWPP_SubModules_View($module_loader);

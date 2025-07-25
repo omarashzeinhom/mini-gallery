@@ -159,7 +159,5 @@ class MGWPP_Capabilities
                 }
             }
         }
-        
-        
     }
 }

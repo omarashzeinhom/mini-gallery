@@ -5,7 +5,8 @@ jQuery(document).ready(function ($) {
         return;
     }
 
-    function showNotice(message, type = 'success') {
+    function showNotice(message, type = 'success')
+    {
         let $noticeArea = $('#mgwpp-notice-area');
         
         // Create notice area if it doesn't exist
@@ -31,12 +32,13 @@ jQuery(document).ready(function ($) {
         }
         
         // Handle dismiss button
-        $noticeArea.find('.notice-dismiss').on('click', function() {
+        $noticeArea.find('.notice-dismiss').on('click', function () {
             $(this).closest('.notice').fadeOut();
         });
     }
 
-    function toggleModuleAjax(module, status, isIndividual = true) {
+    function toggleModuleAjax(module, status, isIndividual = true)
+    {
         const $card = $(`.mgwpp-module-card[data-module="${module}"]`);
         const $toggle = $card.find('.mgwpp-module-toggle');
         
@@ -76,11 +78,10 @@ jQuery(document).ready(function ($) {
                     $('.mgwpp-performance-metrics').html(response.data.metrics);
                 }
                 
-                const message = isIndividual ? 
-                    'Module settings updated successfully!' : 
+                const message = isIndividual ?
+                    'Module settings updated successfully!' :
                     'All settings saved successfully!';
                 showNotice(message);
-                
             } else {
                 throw new Error(response.data || 'Unknown error occurred');
             }
@@ -109,8 +110,9 @@ jQuery(document).ready(function ($) {
     }
 
     // Update all cards based on enabled modules
-    function updateAllCards(enabledModules) {
-        $('.mgwpp-module-card').each(function() {
+    function updateAllCards(enabledModules)
+    {
+        $('.mgwpp-module-card').each(function () {
             const $card = $(this);
             const module = $card.data('module');
             const isActive = enabledModules.includes(module);
@@ -128,7 +130,8 @@ jQuery(document).ready(function ($) {
         updateEnabledGalleryTypes(enabledModules);
     }
 
-    function updateEnabledGalleryTypes(enabledModules) {
+    function updateEnabledGalleryTypes(enabledModules)
+    {
         const $container = $('.mgwpp-enabled-gallery-types .mgwpp-stats-grid');
         $container.empty();
         
@@ -218,7 +221,7 @@ jQuery(document).ready(function ($) {
     }
 
     // Global error handler for uncaught AJAX errors
-    $(document).ajaxError(function(event, jqXHR, ajaxSettings) {
+    $(document).ajaxError(function (event, jqXHR, ajaxSettings) {
         if (ajaxSettings.url.includes('toggle_module_status')) {
             console.error('AJAX Error in module toggle:', jqXHR);
         }

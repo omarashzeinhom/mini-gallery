@@ -47,7 +47,8 @@ jQuery(document).ready(function ($) {
                 }
             });
 
-            function revertUI() {
+            function revertUI()
+            {
                 // Revert to previous theme
                 body.toggleClass('mgwpp-dark-mode', currentTheme === 'dark');
                 icon.attr('src', currentTheme === 'dark' ? sunIcon : moonIcon);
@@ -58,7 +59,7 @@ jQuery(document).ready(function ($) {
 
     // Global AJAX loader
     $(document).ajaxSend(function (event, jqxhr, settings) {
-        if (settings.url.includes('admin-ajax.php') && 
+        if (settings.url.includes('admin-ajax.php') &&
             settings.data.includes('action=mgwpp')) {
             loaderOverlay.fadeIn(100);
         }

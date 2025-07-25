@@ -93,7 +93,7 @@ class MGWPP_Gallery_Post_Type
             foreach ($attachments as $attachment) {
                 $image_url = wp_get_attachment_url($attachment->ID);
                 $current_link = $image_links[$attachment->ID] ?? '';
-?>
+                ?>
                 <div class="mgwpp-image-link-item" data-attachment-id="<?php echo wp_kses_post($attachment->ID); ?>">
                     <div class="mgwpp-image-preview">
                         <img src="<?php echo esc_url($image_url); ?>" style="max-width: 150px; height: auto;">
@@ -126,7 +126,7 @@ class MGWPP_Gallery_Post_Type
                     </div>
                     <button type="button" class="mgwpp-remove-image-link button-link">Remove</button>
                 </div>
-<?php
+                <?php
             }
         } else {
             echo '<p class="mgwpp-no-images-notice">No images found in this gallery. Upload images first.</p>';

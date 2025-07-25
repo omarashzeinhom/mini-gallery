@@ -43,8 +43,8 @@ class MGWPP_Assets
                 'mg-single-carousel-js',
                 $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js',
                 ['jquery'],
-                file_exists($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js') 
-                    ? filemtime($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js') 
+                file_exists($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js')
+                    ? filemtime($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js')
                     : '1.0',
                 true
             );
@@ -87,8 +87,8 @@ class MGWPP_Assets
                 'mg-grid-gallery-js',
                 $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js',
                 [],
-                file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') 
-                    ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') 
+                file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js')
+                    ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js')
                     : '1.0',
                 true
             );
@@ -106,8 +106,8 @@ class MGWPP_Assets
                 'mg-mega-carousel-js',
                 $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.js',
                 [],
-                file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') 
-                    ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') 
+                file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js')
+                    ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js')
                     : '1.0',
                 true
             );
@@ -144,8 +144,8 @@ class MGWPP_Assets
                 'mgwpp-neon-carousel-js',
                 $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js',
                 ['jquery'],
-                file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') 
-                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') 
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js')
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js')
                     : '1.0',
                 true
             );
@@ -163,8 +163,8 @@ class MGWPP_Assets
                 'mgwpp-threed-carousel-js',
                 $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js',
                 ['jquery'],
-                file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') 
-                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') 
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js')
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js')
                     : '1.0',
                 true
             );
@@ -182,8 +182,8 @@ class MGWPP_Assets
                 'mgwpp-testimonial-carousel-js',
                 $base_url . 'js/mgwpp-testimonial-carousel.js',
                 ['jquery'],
-                file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') 
-                    ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') 
+                file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js')
+                    ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js')
                     : '1.0',
                 true
             );
@@ -201,8 +201,8 @@ class MGWPP_Assets
                 'mg-fullpage-slider-js',
                 $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js',
                 ['jquery'],
-                file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') 
-                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') 
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js')
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js')
                     : '1.0',
                 true
             );
@@ -220,8 +220,8 @@ class MGWPP_Assets
                 'mg-spotlight-slider-js',
                 $gallery_types_url . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js',
                 [],
-                file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') 
-                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') 
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js')
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js')
                     : '1.0',
                 true
             );

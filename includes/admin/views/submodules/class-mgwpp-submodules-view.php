@@ -59,7 +59,7 @@ class MGWPP_SubModules_View
         $option = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
         $is_checked = in_array($slug, (array)$option);
         $module = $this->sub_modules[$slug];
-?>
+        ?>
         <div class="mgwpp-module-card<?php echo $is_checked ? ' active' : ''; ?>" data-module="<?php echo esc_attr($slug); ?>">
             <div class="module-header">
                 <div class="module-icon">
@@ -91,7 +91,7 @@ class MGWPP_SubModules_View
                 <?php echo esc_html($module['config']['description'] ?? ''); ?>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private function get_gallery_icon($gallery_type)
@@ -118,7 +118,7 @@ class MGWPP_SubModules_View
     public function render()
     {
         $enabled_sub_modules = get_option('mgwpp_enabled_sub_modules', array_keys($this->sub_modules));
-    ?>
+        ?>
         <div class="mgwpp-modules-view">
             <h1><?php esc_html_e('Gallery Modules', 'mini-gallery'); ?></h1>
 
@@ -131,7 +131,7 @@ class MGWPP_SubModules_View
                                 continue;
                             }
                             $module = $this->sub_modules[$slug];
-                        ?>
+                            ?>
                             <div class="mgwpp-stat-card" data-module="<?php echo esc_attr($slug); ?>">
                                 <img src="<?php echo esc_url($this->get_gallery_icon($slug)); ?>"
                                     alt="<?php echo esc_attr($module['config']['name']); ?>"
@@ -158,7 +158,7 @@ class MGWPP_SubModules_View
                 <?php $this->display_performance_metrics(); ?>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private function display_performance_metrics()
@@ -196,7 +196,7 @@ class MGWPP_SubModules_View
 
         $total_size = $enabled_size + $disabled_size;
         $savings_percent = $total_size > 0 ? round(($disabled_size / $total_size) * 100, 2) : 0;
-    ?>
+        ?>
         <div class="performance-metrics-grid">
             <div class="metric-card">
                 <h3><?php esc_html_e('Active Modules', 'mini-gallery'); ?></h3>
@@ -247,7 +247,7 @@ class MGWPP_SubModules_View
                 </tbody>
             </table>
         </div>
-<?php
+        <?php
     }
 
     private function get_module_asset_info($module_slug)

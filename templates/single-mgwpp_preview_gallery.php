@@ -10,8 +10,7 @@ if (! defined('ABSPATH')) {
 // Get and validate parameters
 $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
 
-if (
-    !$gallery_id ||
+if (!$gallery_id ||
     !isset($_GET['_wpnonce']) ||
     !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_preview')
 ) {

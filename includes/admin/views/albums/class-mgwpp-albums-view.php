@@ -417,24 +417,62 @@ class MGWPP_Albums_View
     // Helper methods for stats
     private static function get_albums_count()
     {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'mgwpp_albums';
-        $table_name = esc_sql($table_name); // Escape table name
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+        $cache_key = 'mgwpp_albums_count';
+        $count = wp_cache_get($cache_key, 'mini-gallery');
+
+        if (false === $count) {
+            $count = get_transient($cache_key);
+
+            if (false === $count) {
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'mgwpp_albums';
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+                $count = (int) $wpdb->get_var(
+                    "SELECT COUNT(*) FROM `" . esc_sql($table_name) . "`"
+                );
+                set_transient($cache_key, $count, 12 * HOUR_IN_SECONDS);
+            }
+
+            wp_cache_set($cache_key, $count, 'mini-gallery', 0);
+        }
+
+        return $count;
     }
 
     private static function get_galleries_count()
     {
-        return wp_count_posts('mgwpp_soora')->publish;
+        $cache_key = 'mgwpp_galleries_count';
+        $count = wp_cache_get($cache_key, 'mini-gallery');
+
+        if (false === $count) {
+            $count = (int) wp_count_posts('mgwpp_soora')->publish;
+            wp_cache_set($cache_key, $count, 'mini-gallery', 0);
+        }
+
+        return $count;
     }
 
     private static function get_images_count()
     {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'mgwpp_gallery_images';
-        $table_name = esc_sql($table_name); // Escape table name
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+        $cache_key = 'mgwpp_images_count';
+        $count = wp_cache_get($cache_key, 'mini-gallery');
+
+        if (false === $count) {
+            $count = get_transient($cache_key);
+
+            if (false === $count) {
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'mgwpp_gallery_images';
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+                $count = (int) $wpdb->get_var(
+                    "SELECT COUNT(*) FROM `" . esc_sql($table_name) . "`"
+                );
+                set_transient($cache_key, $count, 12 * HOUR_IN_SECONDS);
+            }
+
+            wp_cache_set($cache_key, $count, 'mini-gallery', 0);
+        }
+
+        return $count;
     }
 }

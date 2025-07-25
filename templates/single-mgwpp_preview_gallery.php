@@ -7,12 +7,14 @@ if (! defined('ABSPATH')) {
  * Displays gallery preview in isolation
  */
 
-// Get and validate parameters
+// Validate and sanitize parameters
 $gallery_id = isset($_GET['gallery_id']) ? absint($_GET['gallery_id']) : 0;
 
+// Properly handle nonce
+$nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : '';
+
 if (!$gallery_id ||
-    !isset($_GET['_wpnonce']) ||
-    !wp_verify_nonce($_GET['_wpnonce'], 'mgwpp_preview')
+    !wp_verify_nonce($nonce, 'mgwpp_preview')
 ) {
     status_header(403);
     wp_die(esc_html__('Invalid gallery preview request', 'mini-gallery'));

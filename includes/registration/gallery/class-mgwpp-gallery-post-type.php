@@ -159,16 +159,15 @@ class MGWPP_Gallery_Post_Type
     public static function mgwpp_save_gallery_meta($post_id)
     {
         // Verify nonce and permissions
-        if (
-            !isset($_POST['mgwpp_gallery_links_nonce']) ||
-            !wp_verify_nonce(wp_unslash($_POST['mgwpp_gallery_links_nonce']), 'mgwpp_save_gallery_links')
-        ) {
+        $nonce = isset($_POST['mgwpp_gallery_links_nonce']) ? sanitize_text_field(wp_unslash($_POST['mgwpp_gallery_links_nonce'])) : '';
+        if (!$nonce || !wp_verify_nonce($nonce, 'mgwpp_save_gallery_links')) {
             return;
         }
 
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
+
         if (!current_user_can('edit_mgwpp_soora', $post_id)) {
             return;
         }
@@ -176,31 +175,60 @@ class MGWPP_Gallery_Post_Type
         // Save image links and their attributes
         $image_links_data = [];
 
-        if (isset($_POST['mgwpp_image_links'])) {
-            $image_links = wp_unslash($_POST['mgwpp_image_links']);
-            $new_tabs = isset($_POST['mgwpp_image_link_new_tab']) ? wp_unslash($_POST['mgwpp_image_link_new_tab']) : [];
-            $nofollows = isset($_POST['mgwpp_image_link_nofollow']) ? wp_unslash($_POST['mgwpp_image_link_nofollow']) : [];
-            
-            foreach ($image_links as $attachment_id => $link) {
-                if (!empty($link)) {
-                    $image_links_data[$attachment_id] = esc_url_raw($link);
+        // Fix: Sanitize the entire $_POST arrays first
+        $image_links = isset($_POST['mgwpp_image_links']) && is_array($_POST['mgwpp_image_links'])
+            ? array_map('sanitize_text_field', wp_unslash($_POST['mgwpp_image_links']))
+            : [];
 
-                    // Save link attributes
-                    $image_links_data[$attachment_id . '_new_tab'] = isset($new_tabs[$attachment_id]);
-                    $image_links_data[$attachment_id . '_nofollow'] = isset($nofollows[$attachment_id]);
+        $new_tabs = isset($_POST['mgwpp_image_link_new_tab']) && is_array($_POST['mgwpp_image_link_new_tab'])
+            ? array_map('sanitize_text_field', wp_unslash($_POST['mgwpp_image_link_new_tab']))
+            : [];
+
+        $nofollows = isset($_POST['mgwpp_image_link_nofollow']) && is_array($_POST['mgwpp_image_link_nofollow'])
+            ? array_map('sanitize_text_field', wp_unslash($_POST['mgwpp_image_link_nofollow']))
+            : [];
+
+        if (!empty($image_links)) {
+            foreach ($image_links as $attachment_id => $link) {
+                $attachment_id = sanitize_key($attachment_id);
+                $sanitized_link = esc_url_raw($link);
+
+                if (!empty($sanitized_link)) {
+                    $image_links_data[$attachment_id] = $sanitized_link;
+
+                    // Save link attributes as booleans
+                    $image_links_data[$attachment_id . '_new_tab'] = !empty($new_tabs[$attachment_id]);
+                    $image_links_data[$attachment_id . '_nofollow'] = !empty($nofollows[$attachment_id]);
                 }
             }
+
             update_post_meta($post_id, '_mgwpp_image_links', $image_links_data);
         } else {
             delete_post_meta($post_id, '_mgwpp_image_links');
         }
 
-        // Save CTA links
-        if (isset($_POST['mgwpp_cta_links'])) {
-            $cta_links = wp_unslash($_POST['mgwpp_cta_links']);
-            update_post_meta($post_id, '_mgwpp_cta_links', array_map('esc_url_raw', $cta_links));
+        // Save CTA links - Fix: Sanitize the $_POST array first
+        $cta_links = isset($_POST['mgwpp_cta_links']) && is_array($_POST['mgwpp_cta_links'])
+            ? array_map('sanitize_text_field', wp_unslash($_POST['mgwpp_cta_links']))
+            : [];
+
+        if (!empty($cta_links)) {
+            $sanitized_cta_links = [];
+
+            foreach ($cta_links as $key => $url) {
+                $key = sanitize_key($key);
+                $sanitized_cta_links[$key] = esc_url_raw($url);
+            }
+
+            update_post_meta($post_id, '_mgwpp_cta_links', $sanitized_cta_links);
         } else {
             delete_post_meta($post_id, '_mgwpp_cta_links');
+        }
+
+        // Save custom text if present
+        if (isset($_POST['mgwpp_custom_text'])) {
+            $custom_text = wp_kses_post(wp_unslash($_POST['mgwpp_custom_text']));
+            update_post_meta($post_id, '_mgwpp_custom_text', $custom_text);
         }
     }
 }

@@ -319,4 +319,8 @@ class MGWPP_SubModules_View
             'genericError' => __('An error occurred. Please try again.', 'mini-gallery')
         ]);
     }
+    public function conditional_asset_loading()
+    {
+        $this->enqueue_assets();
+    }
 }

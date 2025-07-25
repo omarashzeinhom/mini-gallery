@@ -30,7 +30,7 @@ class MGWPP_Albums_View
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
-        ?>
+?>
 
         <?php MGWPP_Inner_Header::render(); ?>
         <div class="mgwpp-dashboard-container">
@@ -124,12 +124,12 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-        <?php
+    <?php
     }
 
     private static function render_creation_form()
     {
-        ?>
+    ?>
         <div class="mgwpp-album-form-container">
             <div class="mgwpp-album-form-card">
                 <div class="mgwpp-form-header">
@@ -210,7 +210,7 @@ class MGWPP_Albums_View
                 </div>
                 <div class="mgwpp-album-preview">
                     <div class="mgwpp-preview-cover">
-                        <img src="<?php echo esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg'); ?>" alt="<?php esc_attr_e('Album Preview', 'mini-gallery'); ?>" id="preview-cover-image">
+                        <?php echo wp_kses_post(self::get_plugin_placeholder_image()); ?>
                     </div>
                     <div class="mgwpp-preview-details">
                         <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
@@ -250,14 +250,24 @@ class MGWPP_Albums_View
                     image_frame.on('select', function() {
                         var attachment = image_frame.state().get('selection').first().toJSON();
                         $('#album_cover_id').val(attachment.id);
-                        $('#album-cover-preview').html('<img src="' + attachment.url + '" alt="<?php esc_attr_e('Album Cover', 'mini-gallery'); ?>">');
+
+                        // Use a helper function to generate the image HTML
+                        var imageHtml = mgwppGenerateImageHtml(attachment.url, '<?php esc_attr_e('Album Cover', 'mini-gallery'); ?>');
+                        $('#album-cover-preview').html(imageHtml);
                         $('#preview-cover-image').attr('src', attachment.url);
                         $('.mgwpp-remove-cover-btn').show();
                     });
 
+
                     image_frame.open();
                 });
 
+                function mgwppGenerateImageHtml(src, alt) {
+                    var img = document.createElement('img');
+                    img.src = src;
+                    img.alt = alt;
+                    return img.outerHTML;
+                }
                 // Remove cover image
                 $('.mgwpp-remove-cover-btn').click(function(e) {
                     e.preventDefault();
@@ -330,9 +340,17 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-        <?php
+    <?php
     }
-
+    private static function get_plugin_placeholder_image()
+    {
+        $placeholder_url = esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg');
+        return sprintf(
+            '<img src="%s" alt="%s" id="preview-cover-image">',
+            $placeholder_url,
+            esc_attr__('Album Preview', 'mini-gallery')
+        );
+    }
     private static function render_gallery_selector()
     {
         $galleries = get_posts([
@@ -341,7 +359,7 @@ class MGWPP_Albums_View
             'orderby'        => 'title',
             'order'          => 'ASC'
         ]);
-        ?>
+    ?>
         <div class="mgwpp-gallery-selector">
             <?php if (empty($galleries)) : ?>
                 <div class="mgwpp-no-galleries">
@@ -357,7 +375,7 @@ class MGWPP_Albums_View
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
                         $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
-                        ?>
+                    ?>
                         <label class="mgwpp-gallery-item">
                             <div class="mgwpp-gallery-checkbox">
                                 <input type="checkbox"
@@ -381,20 +399,20 @@ class MGWPP_Albums_View
                 </div>
             <?php endif; ?>
         </div>
-        <?php
+    <?php
     }
 
     private static function render_albums_table()
     {
         $table = new MGWPP_Albums_Table();
         $table->prepare_items();
-        ?>
+    ?>
         <div class="mgwpp-albums-table-container">
             <form method="post">
                 <?php $table->display(); ?>
             </form>
         </div>
-        <?php
+<?php
     }
     // Helper methods for stats
     private static function get_albums_count()

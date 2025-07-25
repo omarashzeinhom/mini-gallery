@@ -188,7 +188,7 @@ class MGWPP_Assets
                 true
             );
         }
-        
+
         if (in_array('fullpage_slider', $enabled_sub)) {
             $fullpage_css_path = $gallery_types_path . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css';
             wp_register_style(
@@ -379,23 +379,25 @@ add_action('init', function () {
 });
 
 
-// In preview handler
-// In your preview handler file (e.g., includes/admin/class-mgwpp-preview.php)
+
 add_action('wp_ajax_mgwpp_preview', function () {
-    $nonce = sanitize_key(wp_unslash($_GET['gallery_id']));
-    // Verify nonce
-    if (!isset($nonce) ||
-        !wp_verify_nonce($nonce ?? '', 'mgwpp_preview_nonce')
-    ) {
+    // Verify nonce first before processing any data
+    if (!isset($_GET['nonce']) || !wp_verify_nonce(sanitize_key(wp_unslash($_GET['nonce'])), 'mgwpp_preview_nonce')) {
         wp_send_json_error(__('Invalid request', 'mini-gallery'), 403);
         exit;
     }
 
-    $gallery_id = intval($_GET['gallery_id']);
+    // Validate gallery_id exists in GET request
+    if (!isset($_GET['gallery_id'])) {
+        wp_send_json_error(__('Missing gallery ID', 'mini-gallery'), 400);
+        exit;
+    }
+
+    $gallery_id = intval(sanitize_key(wp_unslash($_GET['gallery_id'])));
     $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
     // Generate minimal HTML document
-    ?>
+?>
     <!DOCTYPE html>
     <html>
 
@@ -427,6 +429,6 @@ add_action('wp_ajax_mgwpp_preview', function () {
     </body>
 
     </html>
-    <?php
+<?php
     exit;
 });

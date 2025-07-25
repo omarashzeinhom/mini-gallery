@@ -1,7 +1,5 @@
 <?php
 
-
-
 class MGWPP_Assets
 {
     private static $load_assets = false;
@@ -34,70 +32,209 @@ class MGWPP_Assets
         $enabled_sub = $this->get_enabled_sub_modules();
         $enabled_main = $this->get_enabled_main_modules();
 
-
         $base_url = MG_PLUGIN_URL . '/public/';
         $base_path = MG_PLUGIN_PATH . 'public/';
         $gallery_types_url = MG_PLUGIN_URL . '/includes/gallery-types/';
-
+        $gallery_types_path = MG_PLUGIN_PATH . 'includes/gallery-types/';
 
         if (in_array('single_carousel', $enabled_sub)) {
+            $single_css_path = $gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.css';
             wp_register_script(
                 'mg-single-carousel-js',
                 $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.js',
-                ['jquery'], //  jQuery as dependency here
-                '1.0',
+                ['jquery'],
+                file_exists($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js') 
+                    ? filemtime($gallery_types_path . 'mgwpp-single-gallery/mgwpp-single-gallery.js') 
+                    : '1.0',
                 true
             );
-            wp_register_style('mg-single-carousel-styles', $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.css');
+            wp_register_style(
+                'mg-single-carousel-styles',
+                $gallery_types_url . 'mgwpp-single-gallery/mgwpp-single-gallery.css',
+                [],
+                file_exists($single_css_path) ? filemtime($single_css_path) : '1.0'
+            );
         }
 
         if (in_array('multi_carousel', $enabled_sub)) {
-            wp_register_script('mg-multi-carousel-js', $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js', array(), '1.0', true);
-            wp_register_style('mg-multi-carousel-styles', $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.css');
+            $multi_css_path = $gallery_types_path . 'mgwpp-multi-gallery/mgwpp-multi-gallery.css';
+            wp_register_script(
+                'mg-multi-carousel-js',
+                $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js',
+                [],
+                file_exists($gallery_types_path . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js')
+                    ? filemtime($gallery_types_path . 'mgwpp-multi-gallery/mgwpp-multi-gallery.js')
+                    : '1.0',
+                true
+            );
+            wp_register_style(
+                'mg-multi-carousel-styles',
+                $gallery_types_url . 'mgwpp-multi-gallery/mgwpp-multi-gallery.css',
+                [],
+                file_exists($multi_css_path) ? filemtime($multi_css_path) : '1.0'
+            );
         }
 
         if (in_array('grid', $enabled_sub)) {
-            wp_register_style('mg-grid-styles', $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.css');
-            wp_register_script('mg-grid-gallery-js', $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js', array(), file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') : '1.0', true);
+            $grid_css_path = $gallery_types_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.css';
+            wp_register_style(
+                'mg-grid-styles',
+                $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.css',
+                [],
+                file_exists($grid_css_path) ? filemtime($grid_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mg-grid-gallery-js',
+                $gallery_types_url . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js',
+                [],
+                file_exists($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') 
+                    ? filemtime($base_path . 'mgwpp-grid-gallery/mgwpp-grid-gallery.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('mega_slider', $enabled_sub)) {
-            wp_register_style('mg-mega-carousel-styles', $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.css');
-            wp_register_script('mg-mega-carousel-js', $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.js', array(), file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') : '1.0', true);
+            $mega_css_path = $gallery_types_path . 'mgwpp-mega-slider/mgwpp-mega-slider.css';
+            wp_register_style(
+                'mg-mega-carousel-styles',
+                $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.css',
+                [],
+                file_exists($mega_css_path) ? filemtime($mega_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mg-mega-carousel-js',
+                $gallery_types_url . 'mgwpp-mega-slider/mgwpp-mega-slider.js',
+                [],
+                file_exists($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') 
+                    ? filemtime($base_path . 'mgwpp-mega-slider/mgwpp-mega-slider.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('pro_carousel', $enabled_sub)) {
-            wp_register_style('mgwpp-pro-carousel-styles', $gallery_types_url . 'mgwpp-pro-carousel/mgwpp-pro-carousel.css');
-            wp_register_script('mgwpp-pro-carousel-js', $gallery_types_url . 'mgwpp-pro-carousel/mgwpp-pro-carousel.js', array(), '1.0', true);
+            $pro_css_path = $gallery_types_path . 'mgwpp-pro-carousel/mgwpp-pro-carousel.css';
+            wp_register_style(
+                'mgwpp-pro-carousel-styles',
+                $gallery_types_url . 'mgwpp-pro-carousel/mgwpp-pro-carousel.css',
+                [],
+                file_exists($pro_css_path) ? filemtime($pro_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mgwpp-pro-carousel-js',
+                $gallery_types_url . 'mgwpp-pro-carousel/mgwpp-pro-carousel.js',
+                [],
+                file_exists($gallery_types_path . 'mgwpp-pro-carousel/mgwpp-pro-carousel.js')
+                    ? filemtime($gallery_types_path . 'mgwpp-pro-carousel/mgwpp-pro-carousel.js')
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('neon_carousel', $enabled_sub)) {
-            wp_register_style('mgwpp-neon-carousel-styles', $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css');
-            wp_register_script('mgwpp-neon-carousel-js', $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js', array('jquery'), file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') : '1.0', true);
+            $neon_css_path = $gallery_types_path . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css';
+            wp_register_style(
+                'mgwpp-neon-carousel-styles',
+                $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.css',
+                [],
+                file_exists($neon_css_path) ? filemtime($neon_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mgwpp-neon-carousel-js',
+                $gallery_types_url . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js',
+                ['jquery'],
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') 
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-neon-carousel/mgwpp-neon-carousel.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('threed_carousel', $enabled_sub)) {
-            wp_register_style('mgwpp-threed-carousel-styles', $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css');
-            wp_register_script('mgwpp-threed-carousel-js', $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js', array('jquery'), file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') : '1.0', true);
+            $threed_css_path = $gallery_types_path . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css';
+            wp_register_style(
+                'mgwpp-threed-carousel-styles',
+                $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.css',
+                [],
+                file_exists($threed_css_path) ? filemtime($threed_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mgwpp-threed-carousel-js',
+                $gallery_types_url . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js',
+                ['jquery'],
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') 
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-threed-carousel/mgwpp-threed-carousel.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('testimonials_carousel', $enabled_sub)) {
-            wp_register_style('mgwpp-testimonial-carousel-styles', $base_url . 'css/mgwpp-testimonial-carousel.css');
-            wp_register_script('mgwpp-testimonial-carousel-js', $base_url . 'js/mgwpp-testimonial-carousel.js', array('jquery'), file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') : '1.0', true);
+            $testimonial_css_path = $base_path . 'css/mgwpp-testimonial-carousel.css';
+            wp_register_style(
+                'mgwpp-testimonial-carousel-styles',
+                $base_url . 'css/mgwpp-testimonial-carousel.css',
+                [],
+                file_exists($testimonial_css_path) ? filemtime($testimonial_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mgwpp-testimonial-carousel-js',
+                $base_url . 'js/mgwpp-testimonial-carousel.js',
+                ['jquery'],
+                file_exists(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') 
+                    ? filemtime(MG_PLUGIN_PATH . 'public/js/mgwpp-testimonial-carousel.js') 
+                    : '1.0',
+                true
+            );
         }
+        
         if (in_array('fullpage_slider', $enabled_sub)) {
-            wp_register_style('mg-fullpage-slider-styles', $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css');
-            wp_register_script('mg-fullpage-slider-js', $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js', array('jquery'), file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') : '1.0', true);
+            $fullpage_css_path = $gallery_types_path . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css';
+            wp_register_style(
+                'mg-fullpage-slider-styles',
+                $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.css',
+                [],
+                file_exists($fullpage_css_path) ? filemtime($fullpage_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mg-fullpage-slider-js',
+                $gallery_types_url . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js',
+                ['jquery'],
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') 
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-full-page-slider/mgwpp-full-page-slider.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('spotlight_slider', $enabled_sub)) {
-            wp_register_style('mg-spotlight-slider-styles', $gallery_types_url . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css');
-            wp_register_script('mg-spotlight-slider-js', $gallery_types_url . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js', array(), file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') : '1.0', true);
+            $spotlight_css_path = $gallery_types_path . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css';
+            wp_register_style(
+                'mg-spotlight-slider-styles',
+                $gallery_types_url . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.css',
+                [],
+                file_exists($spotlight_css_path) ? filemtime($spotlight_css_path) : '1.0'
+            );
+            wp_register_script(
+                'mg-spotlight-slider-js',
+                $gallery_types_url . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js',
+                [],
+                file_exists(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') 
+                    ? filemtime(MG_PLUGIN_PATH . 'mgwpp-spotlight-carousel/mgwpp-spotlight-carousel.js') 
+                    : '1.0',
+                true
+            );
         }
 
         if (in_array('albums', $enabled_sub)) {
-            wp_register_style('mg-album-styles', $base_url . 'css/mgwpp-albums.css', array(), file_exists(MG_PLUGIN_PATH . '/public/css/mgwpp-albums.css') ? filemtime(MG_PLUGIN_PATH . '/public/css/mgwpp-albums.css') : '1.0');
-            //wp_register_script('mg-albums-script', $base_url . 'js/mgwpp-album-scripts.js', array(), file_exists(MG_PLUGIN_PATH . '/public/js/mgwpp-album-scripts.js') ? filemtime(MG_PLUGIN_PATH . '/public/js/mgwpp-album-scripts.js') : '1.0', true);
+            $albums_css_path = $base_path . 'css/mgwpp-albums.css';
+            wp_register_style(
+                'mg-album-styles',
+                $base_url . 'css/mgwpp-albums.css',
+                [],
+                file_exists($albums_css_path) ? filemtime($albums_css_path) : '1.0'
+            );
         }
     }
 

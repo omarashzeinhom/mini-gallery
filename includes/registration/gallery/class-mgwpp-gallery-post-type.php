@@ -161,7 +161,7 @@ class MGWPP_Gallery_Post_Type
         // Verify nonce and permissions
         if (
             !isset($_POST['mgwpp_gallery_links_nonce']) ||
-            !wp_verify_nonce($_POST['mgwpp_gallery_links_nonce'], 'mgwpp_save_gallery_links')
+            !wp_verify_nonce(wp_unslash($_POST['mgwpp_gallery_links_nonce']), 'mgwpp_save_gallery_links')
         ) {
             return;
         }
@@ -177,13 +177,17 @@ class MGWPP_Gallery_Post_Type
         $image_links_data = [];
 
         if (isset($_POST['mgwpp_image_links'])) {
-            foreach ($_POST['mgwpp_image_links'] as $attachment_id => $link) {
+            $image_links = wp_unslash($_POST['mgwpp_image_links']);
+            $new_tabs = isset($_POST['mgwpp_image_link_new_tab']) ? wp_unslash($_POST['mgwpp_image_link_new_tab']) : [];
+            $nofollows = isset($_POST['mgwpp_image_link_nofollow']) ? wp_unslash($_POST['mgwpp_image_link_nofollow']) : [];
+            
+            foreach ($image_links as $attachment_id => $link) {
                 if (!empty($link)) {
                     $image_links_data[$attachment_id] = esc_url_raw($link);
 
                     // Save link attributes
-                    $image_links_data[$attachment_id . '_new_tab'] = isset($_POST['mgwpp_image_link_new_tab'][$attachment_id]);
-                    $image_links_data[$attachment_id . '_nofollow'] = isset($_POST['mgwpp_image_link_nofollow'][$attachment_id]);
+                    $image_links_data[$attachment_id . '_new_tab'] = isset($new_tabs[$attachment_id]);
+                    $image_links_data[$attachment_id . '_nofollow'] = isset($nofollows[$attachment_id]);
                 }
             }
             update_post_meta($post_id, '_mgwpp_image_links', $image_links_data);
@@ -193,7 +197,8 @@ class MGWPP_Gallery_Post_Type
 
         // Save CTA links
         if (isset($_POST['mgwpp_cta_links'])) {
-            update_post_meta($post_id, '_mgwpp_cta_links', array_map('esc_url_raw', $_POST['mgwpp_cta_links']));
+            $cta_links = wp_unslash($_POST['mgwpp_cta_links']);
+            update_post_meta($post_id, '_mgwpp_cta_links', array_map('esc_url_raw', $cta_links));
         } else {
             delete_post_meta($post_id, '_mgwpp_cta_links');
         }

@@ -14,11 +14,9 @@ class MGWPP_Inner_Header
 
     public static function enqueue_assets()
     {
-        // Only load on our plugin pages - use more reliable check
         $screen = get_current_screen();
         $is_plugin_page = strpos($screen->id, 'mgwpp_') !== false;
 
-        // Always load on plugin pages
         if ($is_plugin_page) {
             wp_enqueue_script(
                 'mgwpp-admin-scripts',
@@ -52,7 +50,7 @@ class MGWPP_Inner_Header
         <div class="mgwpp-dashboard-header <?php echo esc_attr($theme_class); ?>">
             <div class="mgwpp-branding-group">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_dashboard')); ?>" class="mgwpp-link-no-decoration">
-                    <?php /* Static plugin asset - safe to use directly */ ?>
+                    <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                     <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/logo/mgwpp-logo.png'); ?>"
                         class="mgwpp-logo"
                         width="50"
@@ -74,7 +72,7 @@ class MGWPP_Inner_Header
                 <?php self::render_theme_toggle($current_theme); ?>
                 <a class="mgwpp-admin-button mgwpp-link-no-decoration" href="<?php echo esc_url(admin_url('admin.php?page=mgwpp_galleries')); ?>">
                     <?php esc_html_e('New Gallery', 'mini-gallery') ?>
-                    <?php /* Static plugin asset - safe to use directly */ ?>
+                    <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                     <img src="<?php echo esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/add-new.png'); ?>"
                         alt="<?php esc_attr_e('New Gallery', 'mini-gallery') ?>" class="mgwpp-admin-button__icon">
                 </a>
@@ -98,16 +96,17 @@ class MGWPP_Inner_Header
     private static function render_theme_toggle($current_theme)
     {
         $version = self::get_plugin_version();
-        $sun_icon = esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png?v=' . $version);
-        $moon_icon = esc_url(MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png?v=' . $version);
+        $sun_icon_url = MG_PLUGIN_URL . '/includes/admin/images/icons/sun-icon.png?v=' . $version;
+        $moon_icon_url = MG_PLUGIN_URL . '/includes/admin/images/icons/moon-icon.png?v=' . $version;
         ?>
         <div class="mgwpp-theme-toggle-wrapper">
             <button id="mgwpp-theme-toggle"
                 data-current-theme="<?php echo esc_attr($current_theme); ?>"
-                data-sun="<?php echo esc_attr($sun_icon); ?>"
-                data-moon="<?php echo esc_attr($moon_icon); ?>"
+                data-sun="<?php echo esc_attr($sun_icon_url); ?>"
+                data-moon="<?php echo esc_attr($moon_icon_url); ?>"
                 aria-label="<?php esc_attr_e('Toggle dark mode', 'mini-gallery'); ?>">
-                <img src="<?php echo wp_kses_post($current_theme === 'dark' ? $sun_icon : $moon_icon); ?>"
+                <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+                <img src="<?php echo esc_url($current_theme === 'dark' ? $sun_icon_url : $moon_icon_url); ?>"
                     alt="<?php esc_attr_e('Theme Toggle', 'mini-gallery') ?>"
                     width="35" height="35">
             </button>
@@ -118,12 +117,10 @@ class MGWPP_Inner_Header
     public static function handle_theme_toggle()
     {
         try {
-            // Validate request security
             if (!check_ajax_referer('mgwpp-theme-nonce', 'security', false)) {
                 throw new Exception(__('Security verification failed', 'mini-gallery'), 403);
             }
 
-            // Validate theme parameter
             if (!isset($_POST['theme']) || !in_array($_POST['theme'], ['light', 'dark'])) {
                 throw new Exception(__('Invalid theme parameter', 'mini-gallery'), 400);
             }
@@ -131,7 +128,6 @@ class MGWPP_Inner_Header
             $user_id = get_current_user_id();
             $new_theme = sanitize_key($_POST['theme']);
 
-            // Update user preference
             if (!update_user_meta($user_id, 'mgwpp_admin_theme', $new_theme)) {
                 throw new Exception(__('Failed to save theme preference', 'mini-gallery'), 500);
             }

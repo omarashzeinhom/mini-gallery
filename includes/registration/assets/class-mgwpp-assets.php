@@ -382,9 +382,10 @@ add_action('init', function () {
 // In preview handler
 // In your preview handler file (e.g., includes/admin/class-mgwpp-preview.php)
 add_action('wp_ajax_mgwpp_preview', function () {
+    $nonce = sanitize_key(wp_unslash($_GET['gallery_id']));
     // Verify nonce
-    if (!isset($_GET['gallery_id']) ||
-        !wp_verify_nonce($_GET['_wpnonce'] ?? '', 'mgwpp_preview_nonce')
+    if (!isset($nonce) ||
+        !wp_verify_nonce($nonce ?? '', 'mgwpp_preview_nonce')
     ) {
         wp_send_json_error(__('Invalid request', 'mini-gallery'), 403);
         exit;

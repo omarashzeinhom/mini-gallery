@@ -396,12 +396,13 @@ class MGWPP_Albums_View
         </div>
 <?php
     }
-
     // Helper methods for stats
     private static function get_albums_count()
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mgwpp_albums';
+        $table_name = esc_sql($table_name); // Escape table name
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
     }
 
@@ -414,6 +415,8 @@ class MGWPP_Albums_View
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mgwpp_gallery_images';
+        $table_name = esc_sql($table_name); // Escape table name
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
     }
 }

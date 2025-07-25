@@ -312,7 +312,7 @@ class MGWPP_Ajax_Handler
         wp_safe_redirect($redirect_url);
         exit;
     }
-    
+
     /**
      * Handle gallery save form submission
      */
@@ -498,28 +498,29 @@ class MGWPP_Ajax_Handler
 
         if ($errors_count > 0) {
             $message = sprintf(
-                esc_html__('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
+                /* translators: 1: Number of deleted galleries, 2: Number of failed deletions */
+                __('Deleted %1$d galleries, failed to delete %2$d galleries', 'mini-gallery'),
                 $deleted_count,
                 $errors_count
             );
 
             wp_send_json_error([
-                'message' => $message,
+                'message' => esc_html($message),
                 'deleted' => $deleted,
                 'failed' => $errors
             ]);
         }
 
         $message = sprintf(
-            esc_html(_n(
+            /* translators: %d: Number of deleted galleries */
+            _n(
                 'Deleted %d gallery',
                 'Deleted %d galleries',
                 $deleted_count,
                 'mini-gallery'
-            )),
+            ),
             $deleted_count
         );
-
         wp_send_json_success([
             'message' => $message,
             'deleted' => $deleted

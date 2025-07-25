@@ -32,7 +32,7 @@ class MGWPP_Albums_Table extends WP_List_Table
         return isset($item->$column_name) ? $item->$column_name : '';
     }
 
-    // NEW: Render thumbnail column
+    // Render thumbnail column
     protected function column_thumbnail($item)
     {
         // Try to get first gallery image
@@ -195,16 +195,21 @@ class MGWPP_Albums_Table extends WP_List_Table
 
 
 add_action('admin_post_mgwpp_delete_album', function () {
-
-    if (!isset($_GET['album_id']) || !isset($_REQUEST['_wpnonce'])) {
-        wp_die(esc_html__('Invalid request parameters', 'mini-gallery'));
+    // Verify nonce first
+    if (!isset($_REQUEST['_wpnonce'])) {
+        wp_die(esc_html__('Security verification failed', 'mini-gallery'));
     }
 
-    $album_id = intval($_GET['album_id']);
-    $nonce = isset($_GET['_wpnonce']) ? sanitize_key($_GET['_wpnonce']) : '';
-
-    if (!wp_verify_nonce($nonce, 'mgwpp_delete_album_' . $album_id)) {
+    // Get album ID safely
+    $album_id = isset($_GET['album_id']) ? absint(wp_unslash($_GET['album_id'])) : 0;
+    
+    // Verify nonce with dynamic action
+    if (!wp_verify_nonce(sanitize_key(wp_unslash($_REQUEST['_wpnonce'])), 'mgwpp_delete_album_' . $album_id)) {
         wp_die(esc_html__('Security verification failed', 'mini-gallery'));
+    }
+
+    if (!$album_id) {
+        wp_die(esc_html__('Invalid request parameters', 'mini-gallery'));
     }
 
     if (!get_post($album_id)) {
@@ -230,12 +235,27 @@ add_action('admin_post_mgwpp_delete_album', function () {
 
 
 add_action('admin_notices', function () {
-    if (isset($_GET['mgwpp_deleted'])) {
+    // Check if we're on the albums page and user has permission
+    $screen = get_current_screen();
+    if (!$screen || 'edit-mgwpp_album' !== $screen->id || !current_user_can('manage_options')) {
+        return;
+    }
+
+    // Check nonce for security
+    if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce(sanitize_key(wp_unslash($_REQUEST['_wpnonce'])), 'mgwpp_album_notice')) {
+        return;
+    }
+
+    // Safely check for success/error flags
+    $deleted = isset($_GET['mgwpp_deleted']) ? absint($_GET['mgwpp_deleted']) : 0;
+    $delete_error = isset($_GET['mgwpp_delete_error']) ? absint($_GET['mgwpp_delete_error']) : 0;
+
+    if ($deleted) {
         echo '<div class="notice notice-success is-dismissible"><p>';
         esc_html_e('Album successfully removed.', 'mini-gallery');
         echo '</p></div>';
     }
-    if (isset($_GET['mgwpp_delete_error'])) {
+    if ($delete_error) {
         echo '<div class="notice notice-error is-dismissible"><p>';
         esc_html_e('Failed to delete album.', 'mini-gallery');
         echo '</p></div>';

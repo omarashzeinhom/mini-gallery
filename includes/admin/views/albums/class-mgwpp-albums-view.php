@@ -31,9 +31,8 @@ class MGWPP_Albums_View
         $albums_count = self::get_albums_count();
 ?>
 
-        <?php MGWPP_Inner_Header::render(); ?>
         <div class="mgwpp-dashboard-container">
-
+        <?php MGWPP_Inner_Header::render(); ?>
             <div class="wrap">
                 <div class="mgwpp-tabs-container">
                     <div id="mgwpp-tabs">
@@ -60,44 +59,7 @@ class MGWPP_Albums_View
                             <?php self::render_creation_form(); ?>
                         </div>
 
-                        <div id="tab-settings" class="mgwpp-tab-content">
-                            <div class="mgwpp-settings-card">
-                                <h2><?php esc_html_e('Album Display Settings', 'mini-gallery'); ?></h2>
-                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                                    <input type="hidden" name="action" value="mgwpp_save_album_settings">
-                                    <?php wp_nonce_field('mgwpp_album_settings_nonce', 'mgwpp_album_settings_nonce'); ?>
-
-                                    <div class="mgwpp-setting-row">
-                                        <label
-                                            for="albums_per_page"><?php esc_html_e('Albums Per Page:', 'mini-gallery'); ?></label>
-                                        <input type="number" name="albums_per_page" id="albums_per_page"
-                                            value="<?php echo esc_attr(get_option('mgwpp_albums_per_page', 12)); ?>" min="1"
-                                            max="100">
-                                    </div>
-
-                                    <div class="mgwpp-setting-row">
-                                        <label
-                                            for="album_layout"><?php esc_html_e('Default Layout:', 'mini-gallery'); ?></label>
-                                        <select name="album_layout" id="album_layout">
-                                            <option value="grid"
-                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'grid'); ?>>
-                                                <?php esc_html_e('Grid', 'mini-gallery'); ?></option>
-                                            <option value="masonry"
-                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'masonry'); ?>>
-                                                <?php esc_html_e('Masonry', 'mini-gallery'); ?></option>
-                                            <option value="carousel"
-                                                <?php selected(get_option('mgwpp_album_layout', 'grid'), 'carousel'); ?>>
-                                                <?php esc_html_e('Carousel', 'mini-gallery'); ?></option>
-                                        </select>
-                                    </div>
-
-                                    <button type="submit" class="button button-primary">
-                                        <span class="dashicons dashicons-saved"></span>
-                                        <?php esc_html_e('Save Settings', 'mini-gallery'); ?>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -219,27 +181,27 @@ class MGWPP_Albums_View
             </div>
 
 
-                <div class="mgwpp-preview-header">
-                    <h3><?php esc_html_e('Album Preview', 'mini-gallery'); ?></h3>
+            <div class="mgwpp-preview-header">
+                <h3><?php esc_html_e('Album Preview', 'mini-gallery'); ?></h3>
+            </div>
+            <div class="mgwpp-album-preview">
+                <div class="mgwpp-preview-cover">
+                    <?php echo wp_kses_post(self::get_plugin_placeholder_image()); ?>
                 </div>
-                <div class="mgwpp-album-preview">
-                    <div class="mgwpp-preview-cover">
-                        <?php echo wp_kses_post(self::get_plugin_placeholder_image()); ?>
-                    </div>
-                    <div class="mgwpp-preview-details">
-                        <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
-                        <p id="preview-description">
-                            <?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
-                        <div class="mgwpp-preview-galleries">
-                            <p><?php esc_html_e('Selected Galleries:', 'mini-gallery'); ?></p>
-                            <ul id="preview-galleries-list">
-                                <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?>
-                                </li>
-                            </ul>
-                        </div>
+                <div class="mgwpp-preview-details">
+                    <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
+                    <p id="preview-description">
+                        <?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
+                    <div class="mgwpp-preview-galleries">
+                        <p><?php esc_html_e('Selected Galleries:', 'mini-gallery'); ?></p>
+                        <ul id="preview-galleries-list">
+                            <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <script>
@@ -375,6 +337,7 @@ class MGWPP_Albums_View
         $encoded = base64_encode($svg);
 
         return sprintf(
+            // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
             '<img src="data:image/svg+xml;base64,%s" alt="%s" id="preview-cover-image">',
             $encoded,
             esc_attr__('Album Preview', 'mini-gallery')

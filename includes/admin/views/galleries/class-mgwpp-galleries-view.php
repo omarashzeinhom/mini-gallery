@@ -81,13 +81,13 @@ class MGWPP_Galleries_View
             $attr_string .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
         }
 
-        // Return properly escaped image tag
-        return sprintf('<img src="%s"%s>', $src, $attr_string);
+        // Return safely escaped image tag
+        return sprintf('<img src="%s"%s>', esc_url($src), $attr_string);
     }
 
     public function render()
     {
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -188,7 +188,7 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+    <?php
         self::render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
@@ -317,7 +317,7 @@ class MGWPP_Galleries_View
 
     private static function render_create_gallery_modal()
     {
-        ?>
+    ?>
         <div id="mgwpp-create-gallery" style="display:none;">
             <div class="mgwpp-modal-content">
                 <!-- Loading overlay -->
@@ -371,6 +371,6 @@ class MGWPP_Galleries_View
             </div>
         </div>
 
-        <?php
+<?php
     }
 }

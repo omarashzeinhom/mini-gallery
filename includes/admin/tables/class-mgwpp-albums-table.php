@@ -196,10 +196,19 @@ add_action('admin_post_mgwpp_delete_album', function () {
     $deletion_result = wp_delete_post($album_id, true);
     $redirect_url = admin_url('admin.php?page=mgwpp_albums');
 
+    // Add nonce for the admin notice
+    $notice_nonce = wp_create_nonce('mgwpp_album_notice');
+
     if ($deletion_result) {
-        $redirect_url = add_query_arg('mgwpp_deleted', 1, $redirect_url);
+        $redirect_url = add_query_arg([
+            'mgwpp_deleted' => 1,
+            '_wpnonce_mgwpp' => $notice_nonce
+        ], $redirect_url);
     } else {
-        $redirect_url = add_query_arg('mgwpp_delete_error', 1, $redirect_url);
+        $redirect_url = add_query_arg([
+            'mgwpp_delete_error' => 1,
+            '_wpnonce_mgwpp' => $notice_nonce
+        ], $redirect_url);
     }
 
     wp_safe_redirect($redirect_url);
@@ -210,6 +219,14 @@ add_action('admin_post_mgwpp_delete_album', function () {
 add_action('admin_notices', function () {
     $screen = get_current_screen();
     if (!$screen || 'toplevel_page_mgwpp_albums' !== $screen->id) {
+        return;
+    }
+
+    // Verify nonce for admin notice
+    if (
+        !isset($_GET['_wpnonce_mgwpp']) ||
+        !wp_verify_nonce(sanitize_key($_GET['_wpnonce_mgwpp']), 'mgwpp_album_notice')
+    ) {
         return;
     }
 

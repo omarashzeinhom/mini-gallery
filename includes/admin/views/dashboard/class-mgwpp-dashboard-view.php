@@ -21,7 +21,7 @@ class MGWPP_Dashboard_View
             'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 
-        ?>
+?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -33,7 +33,7 @@ class MGWPP_Dashboard_View
                 </div>
             </div>
         </div>
-        <?php
+    <?php
     }
 
 
@@ -42,7 +42,7 @@ class MGWPP_Dashboard_View
     private static function render_stats_grid($stats)
     {
         $admin_url = admin_url('admin.php');
-        ?>
+    ?>
         <div class="mgwpp-stats-grid">
             <?php
             self::render_stat_card(
@@ -66,31 +66,28 @@ class MGWPP_Dashboard_View
                 add_query_arg('page', 'mgwpp_testimonials', $admin_url)
             );
 
-            
+
             ?>
         </div>
-        <?php
+    <?php
     }
 
     private static function render_stat_card($title, $count, $icon, $url = '')
     {
         $icon_url = MG_PLUGIN_URL . "/includes/admin/images/icons/{$icon}.png";
 
-        // Format storage usage as "85% used"
         if ($icon === 'storage-usage') {
             $display_value = esc_html($count) . '% used';
         } else {
             $display_value = number_format_i18n($count);
         }
 
-        // Image with proper escaping
         $image_html = sprintf(
             '<img src="%s" alt="%s" loading="lazy" width="64" height="64">',
             esc_url($icon_url),
             esc_attr($title)
         );
 
-        // Card content with proper escaping
         $card_content = sprintf(
             '<div class="mgwpp-stat-content">
             <div class="mgwpp-stat-icon">%s</div>
@@ -104,7 +101,6 @@ class MGWPP_Dashboard_View
             $display_value
         );
 
-        // Wrap with link if URL exists
         if ($url) {
             $card_content = sprintf(
                 '<a href="%s" class="mgwpp-stat-card-link mgwpp-link-no-decoration">%s</a>',
@@ -113,12 +109,13 @@ class MGWPP_Dashboard_View
             );
         }
 
-        echo wp_kses_post('<div class="mgwpp-stat-card">' . $card_content . '</div>');
+        $output = '<div class="mgwpp-stat-card">' . $card_content . '</div>';
+        echo wp_kses_post($output);
     }
 
     private static function render_storage_section($storage_data)
     {
-        ?>
-        <?php
+    ?>
+<?php
     }
 }

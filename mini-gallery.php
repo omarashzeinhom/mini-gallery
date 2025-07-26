@@ -18,7 +18,9 @@ Docs: https://minigallery.andgowebsolutions.com/docs/
 // ======================
 // SECURITY & CONSTANTS
 // ======================
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // Plugin constants
 define('MG_PLUGIN_PATH', plugin_dir_path(__FILE__));
@@ -192,7 +194,9 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), function ($links)
 });
 
 add_filter('plugin_row_meta', function ($links, $file) {
-    if (plugin_basename(__FILE__) !== $file) return $links;
+    if (plugin_basename(__FILE__) !== $file) {
+        return $links;
+    }
 
     $links[] = '<a href="https://github.com/omarashzeinhom/mini-gallery-dev" target="_blank">Contribute</a>';
     $links[] = '<a href="https://wordpress.org/support/plugin/mini-gallery/reviews/#new-post" target="_blank">Rate Plugin ★★★★★</a>';

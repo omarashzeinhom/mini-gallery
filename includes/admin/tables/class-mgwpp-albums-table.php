@@ -127,16 +127,6 @@ class MGWPP_Albums_Table extends WP_List_Table
 
     protected function column_actions($item)
     {
-        $preview_url = add_query_arg([
-            'album_id' => $item->ID,
-            'preview' => 'true'
-        ], home_url());
-
-        return sprintf(
-            '<a href="%s" class="button" target="_blank">%s</a>',
-            esc_url($preview_url),
-            esc_html__('Preview', 'mini-gallery')
-        );
     }
 
 

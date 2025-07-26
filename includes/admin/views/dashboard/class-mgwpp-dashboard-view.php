@@ -21,7 +21,7 @@ class MGWPP_Dashboard_View
             'storage-usage' => MGWPP_Data_Handler::get_storage_data()['percent']
         ];
 
-?>
+        ?>
         <div class="mgwpp-dashboard-container">
             <div class="mgwpp-dashboard-wrapper">
                 <div class="mgwpp-glass-container">
@@ -33,7 +33,7 @@ class MGWPP_Dashboard_View
                 </div>
             </div>
         </div>
-    <?php
+        <?php
     }
 
 
@@ -42,7 +42,7 @@ class MGWPP_Dashboard_View
     private static function render_stats_grid($stats)
     {
         $admin_url = admin_url('admin.php');
-    ?>
+        ?>
         <div class="mgwpp-stats-grid">
             <?php
             self::render_stat_card(
@@ -66,15 +66,10 @@ class MGWPP_Dashboard_View
                 add_query_arg('page', 'mgwpp_testimonials', $admin_url)
             );
 
-            self::render_stat_card(
-                __('Storage Usage', 'mini-gallery'),
-                $stats['storage-usage'],
-                'storage-usage',
-                add_query_arg('page', 'mgwpp_security', $admin_url)
-            );
+            
             ?>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_stat_card($title, $count, $icon, $url = '')
@@ -123,7 +118,7 @@ class MGWPP_Dashboard_View
 
     private static function render_storage_section($storage_data)
     {
-    ?>
-<?php
+        ?>
+        <?php
     }
 }

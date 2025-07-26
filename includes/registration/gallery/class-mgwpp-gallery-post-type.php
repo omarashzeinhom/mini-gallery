@@ -93,7 +93,7 @@ class MGWPP_Gallery_Post_Type
             foreach ($attachments as $attachment) {
                 $current_link = $image_links[$attachment->ID] ?? '';
                 $attachment_id = absint($attachment->ID);
-?>
+                ?>
                 <div class="mgwpp-image-link-item" data-attachment-id="<?php echo esc_attr($attachment_id); ?>">
                     <div class="mgwpp-image-preview">
                         <?php
@@ -136,7 +136,7 @@ class MGWPP_Gallery_Post_Type
                     </div>
                     <button type="button" class="mgwpp-remove-image-link button-link"><?php esc_html_e('Remove', 'mini-gallery'); ?></button>
                 </div>
-<?php
+                <?php
             }
         } else {
             echo '<p class="mgwpp-no-images-notice">' . esc_html__('No images found in this gallery. Upload images first.', 'mini-gallery') . '</p>';

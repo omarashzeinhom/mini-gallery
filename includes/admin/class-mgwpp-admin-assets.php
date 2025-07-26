@@ -145,7 +145,6 @@ class MGWPP_Admin_Assets
         if (strpos($screen->id, 'mgwpp') === false) {
             return;
         }
-        
     }
 
 

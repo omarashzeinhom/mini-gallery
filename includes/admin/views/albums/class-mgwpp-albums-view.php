@@ -30,7 +30,7 @@ class MGWPP_Albums_View
 
         // Get counts for dashboard stats
         $albums_count = self::get_albums_count();
-?>
+        ?>
 
         <?php MGWPP_Inner_Header::render(); ?>
         <div class="mgwpp-dashboard-container">
@@ -136,12 +136,12 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-    <?php
+        <?php
     }
 
     private static function render_creation_form()
     {
-    ?>
+        ?>
         <div class="mgwpp-album-form-container">
             <div class="mgwpp-album-form-card">
                 <div class="mgwpp-form-header">
@@ -219,7 +219,7 @@ class MGWPP_Albums_View
                 </form>
             </div>
 
-            <div class="mgwpp-album-preview-card">
+
                 <div class="mgwpp-preview-header">
                     <h3><?php esc_html_e('Album Preview', 'mini-gallery'); ?></h3>
                 </div>
@@ -368,7 +368,7 @@ class MGWPP_Albums_View
                 });
             });
         </script>
-    <?php
+        <?php
     }
     private static function get_plugin_placeholder_image()
     {
@@ -390,7 +390,7 @@ class MGWPP_Albums_View
             'orderby'        => 'title',
             'order'          => 'ASC'
         ]);
-    ?>
+        ?>
         <div class="mgwpp-gallery-selector">
             <?php if (empty($galleries)) : ?>
                 <div class="mgwpp-no-galleries">
@@ -405,7 +405,7 @@ class MGWPP_Albums_View
                     <?php foreach ($galleries as $gallery) :
                         $thumbnail_id = get_post_thumbnail_id($gallery->ID);
                         $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true);
-                    ?>
+                        ?>
                         <label class="mgwpp-gallery-item">
                             <div class="mgwpp-gallery-checkbox">
                                 <input type="checkbox" name="album_galleries[]" value="<?php echo absint($gallery->ID); ?>">
@@ -445,20 +445,20 @@ class MGWPP_Albums_View
                 </div>
             <?php endif; ?>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_albums_table()
     {
         $table = new MGWPP_Albums_Table();
         $table->prepare_items();
-    ?>
+        ?>
         <div class="mgwpp-albums-table-container">
             <form method="post">
                 <?php $table->display(); ?>
             </form>
         </div>
-<?php
+        <?php
     }
     // Helper methods for stats
     private static function get_albums_count()

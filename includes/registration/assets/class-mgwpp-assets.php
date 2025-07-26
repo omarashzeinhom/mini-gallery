@@ -397,7 +397,7 @@ add_action('wp_ajax_mgwpp_preview', function () {
     $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
     // Generate minimal HTML document
-?>
+    ?>
     <!DOCTYPE html>
     <html>
 
@@ -429,6 +429,6 @@ add_action('wp_ajax_mgwpp_preview', function () {
     </body>
 
     </html>
-<?php
+    <?php
     exit;
 });

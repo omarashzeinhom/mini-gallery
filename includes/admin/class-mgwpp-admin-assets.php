@@ -200,6 +200,7 @@ class MGWPP_Admin_Assets
     public static function enqueue_preview_assets($gallery_id)
     {
 
+        // Get enabled modules
         $enabled_modules = get_option('mgwpp_enabled_sub_modules', []);
 
         // Get gallery type

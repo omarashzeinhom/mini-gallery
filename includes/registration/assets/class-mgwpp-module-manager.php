@@ -267,39 +267,4 @@ class MGWPP_Module_Manager
         update_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));
         return array_keys(self::$sub_modules);
     }
-
-   public static function get_enabled_gallery_types()
-    {
-        $enabled_types = self::get_enabled_sub_modules();
-        $types = [];
-        
-        foreach ($enabled_types as $type) {
-            if (isset(self::$sub_modules[$type])) {
-                $types[$type] = [
-                    'name' => self::get_translated_name($type),
-                    'image' => self::get_gallery_type_image($type)
-                ];
-            }
-        }
-        
-        return $types;
-    }
-
-    private static function get_gallery_type_image($type)
-    {
-        $images = [
-            'single_carousel' => 'single-carousel.webp',
-            'multi_carousel' => 'multi-carousel.webp',
-            'grid' => 'grid.webp',
-            'mega_slider' => 'mega-slider.webp',
-            'full_page_slider' => 'full-page-slider.webp',
-            'pro_carousel' => 'pro-carousel.webp',
-            'neon_carousel' => 'neon-carousel.webp',
-            'threed_carousel' => '3d-carousel.webp',
-            'spotlight_carousel' => 'spotlight-carousel.webp',
-            'testimonials_carousel' => 'testimonials.webp'
-        ];
-        
-        return $images[$type] ?? 'default.webp';
-    }
 }

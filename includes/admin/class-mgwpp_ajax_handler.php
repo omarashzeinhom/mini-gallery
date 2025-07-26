@@ -20,7 +20,6 @@ class MGWPP_Ajax_Handler
 
         // AJAX handlers
         add_action('wp_ajax_mgwpp_save_gallery_order', array(__CLASS__, 'save_gallery_order'));
-        add_action('wp_ajax_mgwpp_create_gallery', array(__CLASS__, 'create_gallery'));
         add_action('wp_ajax_mgwpp_delete_gallery', array(__CLASS__, 'delete_gallery'));
 
         // Handle bulk gallery deletion in view
@@ -268,14 +267,9 @@ class MGWPP_Ajax_Handler
 
         // 3. Sanitize form data
         $gallery_title = isset($_POST['gallery_title']) ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) : '';
-        $gallery_type = isset($_POST['gallery_type']) ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) : 'grid'; // MOVE THIS UP
+        $gallery_type = isset($_POST['gallery_type']) ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) : 'grid';
         $selected_media = isset($_POST['selected_media']) ? sanitize_text_field(wp_unslash($_POST['selected_media'])) : '';
 
-        // Check if gallery type is enabled FIRST
-        $enabled_types = MGWPP_Module_Manager::get_enabled_sub_modules();
-        if (!in_array($gallery_type, $enabled_types)) {
-            wp_die(esc_html__('Selected gallery type is not enabled.', 'mini-gallery'));
-        }
         // 4. Validate required fields
         if (empty($gallery_title)) {
             wp_die(esc_html__('Gallery title is required.', 'mini-gallery'));
@@ -369,73 +363,6 @@ class MGWPP_Ajax_Handler
 
         wp_redirect($redirect_url);
         exit;
-    }
-
-    /**
-     * Create gallery via AJAX
-     */
-    public static function create_gallery()
-    {
-        // Verify nonce
-        $nonce = isset($_POST['nonce']) ? sanitize_key(wp_unslash($_POST['nonce'])) : '';
-        if (!wp_verify_nonce($nonce, 'mgwpp-admin-nonce')) {
-            wp_send_json_error(['message' => esc_html__('Security check failed', 'mini-gallery')]);
-        }
-
-        // Check permissions
-        if (!current_user_can('edit_mgwpp_sooras')) {
-            wp_send_json_error(['message' => esc_html__('Insufficient permissions', 'mini-gallery')]);
-        }
-
-        // Get and validate form data
-        $gallery_title = isset($_POST['gallery_title']) ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) : '';
-        $gallery_type = isset($_POST['gallery_type']) ? sanitize_key(wp_unslash($_POST['gallery_type'])) : 'grid';
-        $selected_media = isset($_POST['selected_media']) ? sanitize_text_field(wp_unslash($_POST['selected_media'])) : '';
-
-        // Validate gallery title
-        if (empty($gallery_title)) {
-            wp_send_json_error(['message' => esc_html__('Gallery title is required', 'mini-gallery')]);
-        }
-
-        // Validate gallery type
-        $allowed_types = ['grid', 'slider', 'masonry'];
-        if (!in_array($gallery_type, $allowed_types, true)) {
-            $gallery_type = 'grid';
-        }
-
-        // Sanitize media IDs
-        $media_ids = [];
-        if (!empty($selected_media)) {
-            $media_ids = array_map('absint', explode(',', $selected_media));
-            $media_ids = array_filter($media_ids);
-        }
-
-        // Create gallery post
-        $gallery_id = wp_insert_post([
-            'post_title'   => $gallery_title,
-            'post_type'    => 'mgwpp_soora',
-            'post_status'  => 'publish',
-            'meta_input'   => [
-                'gallery_type'   => $gallery_type,
-                'gallery_images' => $media_ids
-            ]
-        ]);
-
-        if (is_wp_error($gallery_id)) {
-            wp_send_json_error(['message' => esc_html__('Failed to create gallery', 'mini-gallery')]);
-        }
-
-        // Generate secure redirect URL
-        $redirect_url = add_query_arg([
-            'gallery_id' => absint($gallery_id),
-            '_wpnonce'   => wp_create_nonce('mgwpp_edit_gallery')
-        ], admin_url('admin.php?page=mgwpp-edit-gallery'));
-
-        wp_send_json_success([
-            'message'      => esc_html__('Gallery created successfully', 'mini-gallery'),
-            'gallery_id'   => absint($gallery_id),
-            'redirect_url' => esc_url_raw($redirect_url)
-        ]);
     }
 
     /**

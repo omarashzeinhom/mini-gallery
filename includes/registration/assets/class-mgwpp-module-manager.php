@@ -128,25 +128,30 @@ class MGWPP_Module_Manager
         }
         return self::$enabled_modules;
     }
+    public static function get_all_sub_modules()
+    {
+        return self::$sub_modules;
+    }
 
     public static function get_enabled_sub_modules()
     {
         return get_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));
     }
 
-    public function get_sub_modules()
+    public static function get_sub_modules()
     {
         $modules = self::$sub_modules;
 
         foreach ($modules as $slug => &$module) {
-            $module['config']['name'] = $this->get_translated_name($slug);
-            $module['config']['description'] = $this->get_translated_description($slug);
+            // Use static method for translation
+            $module['config']['name'] = self::get_translated_name($slug);
+            $module['config']['description'] = self::get_translated_description($slug);
         }
 
         return $modules;
     }
 
-    private function get_translated_name($slug)
+    private static function get_translated_name($slug)
     {
         $translations = [
             'single_carousel'     => __('Single Carousel', 'mini-gallery'),
@@ -165,7 +170,7 @@ class MGWPP_Module_Manager
         return $translations[$slug] ?? self::$sub_modules[$slug]['config']['name'];
     }
 
-    private function get_translated_description($slug)
+    private static function get_translated_description($slug)
     {
         $translations = [
             'single_carousel'     => __('A carousel gallery with a single item at a time.', 'mini-gallery'),
@@ -183,6 +188,8 @@ class MGWPP_Module_Manager
 
         return $translations[$slug] ?? self::$sub_modules[$slug]['config']['description'];
     }
+
+
     public static function load_enabled_modules()
     {
         $enabled = self::get_enabled_modules();
@@ -259,5 +266,40 @@ class MGWPP_Module_Manager
     {
         update_option('mgwpp_enabled_sub_modules', array_keys(self::$sub_modules));
         return array_keys(self::$sub_modules);
+    }
+
+   public static function get_enabled_gallery_types()
+    {
+        $enabled_types = self::get_enabled_sub_modules();
+        $types = [];
+        
+        foreach ($enabled_types as $type) {
+            if (isset(self::$sub_modules[$type])) {
+                $types[$type] = [
+                    'name' => self::get_translated_name($type),
+                    'image' => self::get_gallery_type_image($type)
+                ];
+            }
+        }
+        
+        return $types;
+    }
+
+    private static function get_gallery_type_image($type)
+    {
+        $images = [
+            'single_carousel' => 'single-carousel.webp',
+            'multi_carousel' => 'multi-carousel.webp',
+            'grid' => 'grid.webp',
+            'mega_slider' => 'mega-slider.webp',
+            'full_page_slider' => 'full-page-slider.webp',
+            'pro_carousel' => 'pro-carousel.webp',
+            'neon_carousel' => 'neon-carousel.webp',
+            'threed_carousel' => '3d-carousel.webp',
+            'spotlight_carousel' => 'spotlight-carousel.webp',
+            'testimonials_carousel' => 'testimonials.webp'
+        ];
+        
+        return $images[$type] ?? 'default.webp';
     }
 }

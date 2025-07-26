@@ -199,3 +199,9 @@ add_filter('plugin_row_meta', function ($links, $file) {
     return $links;
 }, 10, 2);
 
+add_action('init', function () {
+    // Load enabled gallery types
+    MGWPP_Module_Manager::load_enabled_gallery_types();
+
+    // Other initialization code...
+});

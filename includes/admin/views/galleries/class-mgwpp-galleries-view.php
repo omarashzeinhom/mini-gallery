@@ -8,24 +8,13 @@ require_once MG_PLUGIN_PATH . 'includes/admin/views/inner-header/class-mgwpp-inn
 class MGWPP_Galleries_View
 {
 
-    private static $gallery_types = [
-        "single_carousel" => ["Single Carousel", "single-carousel.webp"],
-        "multi_carousel" => ["Multi Carousel", "multi-carousel.webp"],
-        "grid" => ["Grid Layout", "grid.webp"],
-        "mega_slider" => ["Mega Slider", "mega-slider.webp"],
-        "full_page_slider" => ["Full Page Slider", "full-page-slider.webp"],
-        "pro_carousel" => ["Pro Multi Card Carousel", "pro-carousel.webp"],
-        "neon_carousel" => ["Neon Carousel", "neon-carousel.webp"],
-        "threed_carousel" => ["3D Carousel", "3d-carousel.webp"],
-        "spotlight_carousel" => ["Spotlight Carousel", "spotlight-carousel.webp"],
-        "testimonials_carousel" => ["Testimonials Carousel", "testimonials.webp"]
-    ];
-
     private $items;
+    private $enabled_gallery_types;
 
     public function __construct($items = [])
     {
         $this->items = $items;
+        $this->enabled_gallery_types = MGWPP_Module_Manager::get_enabled_gallery_types();
     }
 
     private static function enqueue_gallery_scripts()
@@ -189,7 +178,7 @@ class MGWPP_Galleries_View
         </div>
 
     <?php
-        self::render_create_gallery_modal();
+        $this->render_create_gallery_modal();
         self::enqueue_gallery_scripts();
     }
     private function get_gallery_preview($gallery_id)
@@ -315,7 +304,7 @@ class MGWPP_Galleries_View
     }
 
 
-    private static function render_create_gallery_modal()
+    private  function render_create_gallery_modal()
     {
     ?>
         <div id="mgwpp-create-gallery" style="display:none;">
@@ -353,9 +342,9 @@ class MGWPP_Galleries_View
                                     for="gallery_type"><?php esc_html_e('Gallery Style:', 'mini-gallery'); ?></label></th>
                             <td>
                                 <select id="gallery_type" name="gallery_type" required class="regular-text">
-                                    <?php foreach (self::$gallery_types as $key => $type) : ?>
+                                    <?php foreach ($this->enabled_gallery_types as $key => $type) : ?>
                                         <option value="<?php echo esc_attr($key); ?>">
-                                            <?php echo esc_html($type[0]); ?>
+                                            <?php echo esc_html($type['name']); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

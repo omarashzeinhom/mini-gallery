@@ -5,8 +5,25 @@ jQuery(document).ready(function ($) {
         return;
     }
 
-    function showNotice(message, type = 'success')
-    {
+    // Create modal element if it doesn't exist
+    if ($('#mgwpp-files-modal').length === 0) {
+        $('body').append(`
+            <div id="mgwpp-files-modal" class="mgwpp-modal" style="display:none;">
+                <div class="mgwpp-modal-content">
+                    <span class="mgwpp-close-modal">&times;</span>
+                    <h3 class="mgwpp-modal-title">Module Files</h3>
+                    <div class="mgwpp-modal-body">
+                        <ul class="mgwpp-file-list"></ul>
+                    </div>
+                    <div class="mgwpp-modal-footer">
+                        <button class="button button-primary mgwpp-close-modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        `);
+    }
+
+    function showNotice(message, type = 'success') {
         let $noticeArea = $('#mgwpp-notice-area');
         
         // Create notice area if it doesn't exist
@@ -37,12 +54,11 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    function toggleModuleAjax(module, status, isIndividual = true)
-    {
+    function toggleModuleAjax(module, status, isIndividual = true) {
         const $card = $(`.mgwpp-module-card[data-module="${module}"]`);
         const $toggle = $card.find('.mgwpp-module-toggle');
         
-        //  loading state
+        // Add loading state
         $card.addClass('loading');
         
         const ajaxData = {
@@ -67,9 +83,10 @@ jQuery(document).ready(function ($) {
             url: MGWPPData.ajaxurl,
             type: 'POST',
             data: ajaxData,
-            timeout: 10000 // 10 second timeout
+            dataType: 'json',
+            timeout: 10000
         }).done(function (response) {
-            if (response.success) {
+            if (response && response.success) {
                 // Update UI for both individual and bulk operations
                 updateAllCards(response.data.enabled_modules);
                 
@@ -109,9 +126,13 @@ jQuery(document).ready(function ($) {
         });
     }
 
+    // Update enabled modules hidden field
+    function updateEnabledModulesField(enabledModules) {
+        $('#mgwpp-enabled-modules').val(enabledModules.join(','));
+    }
+
     // Update all cards based on enabled modules
-    function updateAllCards(enabledModules)
-    {
+    function updateAllCards(enabledModules) {
         $('.mgwpp-module-card').each(function () {
             const $card = $(this);
             const module = $card.data('module');
@@ -122,16 +143,17 @@ jQuery(document).ready(function ($) {
             
             // Update toggle state without triggering change event
             $card.find('.mgwpp-module-toggle')
-                .prop('checked', isActive)
-                .data('prev-state', isActive);
+                .prop('checked', isActive);
         });
         
         // Update enabled gallery types section
         updateEnabledGalleryTypes(enabledModules);
+        
+        // Update hidden field
+        updateEnabledModulesField(enabledModules);
     }
 
-    function updateEnabledGalleryTypes(enabledModules)
-    {
+    function updateEnabledGalleryTypes(enabledModules) {
         const $container = $('.mgwpp-enabled-gallery-types .mgwpp-stats-grid');
         $container.empty();
         
@@ -139,7 +161,7 @@ jQuery(document).ready(function ($) {
             const $card = $(`.mgwpp-module-card[data-module="${module}"]`);
             if ($card.length) {
                 const iconSrc = $card.find('.module-icon img').attr('src');
-                const moduleName = $card.find('h3').text();
+                const moduleName = $card.find('.module-info h3').text();
 
                 const badgeHtml = `
                     <div class="mgwpp-stat-card" data-module="${module}">
@@ -157,11 +179,44 @@ jQuery(document).ready(function ($) {
         });
     }
 
+    // Modal functions
+    function showFilesModal(files) {
+        const $modal = $('#mgwpp-files-modal');
+        const $fileList = $modal.find('.mgwpp-file-list');
+        
+        $fileList.empty();
+        
+        if (files.length > 0) {
+            files.forEach(file => {
+                $fileList.append(`<li>${file}</li>`);
+            });
+        } else {
+            $fileList.append('<li>No files found for this module</li>');
+        }
+        
+        $modal.fadeIn();
+    }
+    
+    function closeFilesModal() {
+        $('#mgwpp-files-modal').fadeOut();
+    }
+
     // Initialize only on submodules page
     if ($('.mgwpp-modules-view').length) {
-        // Initialize toggle states
-        const enabledModules = JSON.parse('<?php echo json_encode(get_option("mgwpp_enabled_sub_modules", array_keys($this->sub_modules)) ?>');
-        updateAllCards(enabledModules);
+        // Initialize toggle states from PHP data
+        if (typeof MGWPPData.enabledModules !== 'undefined') {
+            updateAllCards(MGWPPData.enabledModules);
+        } else {
+            // Fallback: Initialize from current DOM state
+            const enabledModules = [];
+            $('.mgwpp-module-card').each(function() {
+                const $card = $(this);
+                if ($card.find('.mgwpp-module-toggle').is(':checked')) {
+                    enabledModules.push($card.data('module'));
+                }
+            });
+            updateAllCards(enabledModules);
+        }
 
         // Individual module toggle handler
         $(document).on('change', '.mgwpp-modules-view .mgwpp-module-toggle', function (e) {
@@ -186,22 +241,8 @@ jQuery(document).ready(function ($) {
         $(document).on('click', '#mgwpp-save-settings', function (e) {
             e.preventDefault();
             
-            const $button = $(this);
-            const originalText = $button.text();
-
-            // Prevent multiple clicks
-            if ($button.prop('disabled')) {
-                return;
-            }
-
-            $button.text('Saving...').prop('disabled', true);
-
-            // Use a small delay to show the "Saving..." state
-            setTimeout(() => {
-                toggleModuleAjax(null, null, false).always(() => {
-                    $button.text(originalText).prop('disabled', false);
-                });
-            }, 100);
+            // Submit the form instead of using AJAX for bulk save
+            $('#mgwpp-submodules-form').submit();
         });
 
         // Handle click events on module cards (excluding the toggle switch)
@@ -217,6 +258,23 @@ jQuery(document).ready(function ($) {
             
             // Toggle the switch
             $toggle.prop('checked', newState).trigger('change');
+        });
+        
+        // Handle file list clicks in performance metrics
+        $(document).on('click', '.module-asset-details tbody td:nth-child(3)', function() {
+            const $row = $(this).closest('tr');
+            const files = $row.data('files') || [];
+            showFilesModal(files);
+        });
+        
+        // Handle modal close events
+        $(document).on('click', '.mgwpp-close-modal, .mgwpp-modal-footer .button', closeFilesModal);
+        
+        // Close modal when clicking outside content
+        $(document).on('click', '#mgwpp-files-modal', function(e) {
+            if ($(e.target).is('#mgwpp-files-modal')) {
+                closeFilesModal();
+            }
         });
     }
 

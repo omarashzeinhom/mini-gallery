@@ -17,7 +17,8 @@ class MGWPP_Admin_Assets
             'toplevel_page_mgwpp_dashboard',
             'gallery_page_mgwpp-galleries',
             'gallery_page_mgwpp-edit-gallery',
-            'admin_page_mgwpp-edit-gallery' //  this for the edit page
+            'gallery_page_mgwpp-submodules',
+            'admin_page_mgwpp-edit-gallery'
         ];
 
         // Check if it's one of our plugin pages
@@ -146,10 +147,14 @@ class MGWPP_Admin_Assets
             return;
         }
 
-        $module_loader = new MGWPP_Module_Manager();
-        $submodules_view = new MGWPP_SubModules_View($module_loader);
-        $submodules_view->conditional_asset_loading();
+        // Only load submodule assets on submodules page
+        if ($screen->id === 'gallery_page_mgwpp-submodules') {
+            $module_loader = new MGWPP_Module_Manager();
+            $submodules_view = new MGWPP_SubModules_View($module_loader);
+            $submodules_view->enqueue_assets();
+        }
     }
+
 
     private function load_dashboard_assets()
     {
@@ -182,21 +187,28 @@ class MGWPP_Admin_Assets
         if (defined('MG_VERSION')) {
             return MGWPP_ASSET_VERSION;
         }
-        
+
         // Fallback to file modification time if file exists
         if (defined('MG_PLUGIN_PATH') && file_exists(MG_PLUGIN_PATH . $asset_path)) {
             return filemtime(MG_PLUGIN_PATH . $asset_path);
         }
-        
+
         // Final fallback to current timestamp
         return time();
     }
 
     public static function enqueue_preview_assets($gallery_id)
     {
-        // Get gallery type directly from post meta
+
+        $enabled_modules = get_option('mgwpp_enabled_sub_modules', []);
+
+        // Get gallery type
         $gallery_type = get_post_meta($gallery_id, 'gallery_type', true);
 
+        // Only load assets if module is enabled
+        if (!in_array($gallery_type, $enabled_modules)) {
+            return;
+        }
         // Enqueue common frontend assets with version
         if (!wp_style_is('mgwpp-frontend', 'registered')) {
             wp_register_style(

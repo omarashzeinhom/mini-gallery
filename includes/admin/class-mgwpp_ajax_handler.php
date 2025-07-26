@@ -268,9 +268,14 @@ class MGWPP_Ajax_Handler
 
         // 3. Sanitize form data
         $gallery_title = isset($_POST['gallery_title']) ? sanitize_text_field(wp_unslash($_POST['gallery_title'])) : '';
-        $gallery_type = isset($_POST['gallery_type']) ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) : 'grid';
+        $gallery_type = isset($_POST['gallery_type']) ? sanitize_text_field(wp_unslash($_POST['gallery_type'])) : 'grid'; // MOVE THIS UP
         $selected_media = isset($_POST['selected_media']) ? sanitize_text_field(wp_unslash($_POST['selected_media'])) : '';
 
+        // Check if gallery type is enabled FIRST
+        $enabled_types = MGWPP_Module_Manager::get_enabled_sub_modules();
+        if (!in_array($gallery_type, $enabled_types)) {
+            wp_die(esc_html__('Selected gallery type is not enabled.', 'mini-gallery'));
+        }
         // 4. Validate required fields
         if (empty($gallery_title)) {
             wp_die(esc_html__('Gallery title is required.', 'mini-gallery'));

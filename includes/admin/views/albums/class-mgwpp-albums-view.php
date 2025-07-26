@@ -372,10 +372,12 @@ class MGWPP_Albums_View
     }
     private static function get_plugin_placeholder_image()
     {
-        $placeholder_url = esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg');
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f0f0f1"/><text x="50" y="50" font-size="10" fill="#8d96a0" text-anchor="middle" dominant-baseline="middle">' . esc_html__('Album Preview', 'mini-gallery') . '</text></svg>';
+        $encoded = base64_encode($svg);
+
         return sprintf(
-            '<img src="%s" alt="%s" id="preview-cover-image">',
-            $placeholder_url,
+            '<img src="data:image/svg+xml;base64,%s" alt="%s" id="preview-cover-image">',
+            $encoded,
             esc_attr__('Album Preview', 'mini-gallery')
         );
     }
@@ -420,11 +422,14 @@ class MGWPP_Albums_View
                                             'loading' => 'lazy'
                                         ]
                                     );
-                                else :
-                                    $placeholder_url = plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg';
-                                ?>
-                                    <img src="<?php echo esc_url($placeholder_url); ?>" alt="<?php echo esc_attr($gallery->post_title); ?>"
-                                        loading="lazy">
+                                else : ?>
+                                    <!-- Replaced image with SVG placeholder -->
+                                    <svg class="mgwpp-svg-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="<?php esc_attr_e('Placeholder image', 'mini-gallery'); ?>">
+                                        <rect width="100%" height="100%" fill="#f0f0f1"></rect>
+                                        <text x="50%" y="50%" fill="#8d96a0" font-size="12" text-anchor="middle" dominant-baseline="middle">
+                                            <?php esc_html_e('No Image', 'mini-gallery'); ?>
+                                        </text>
+                                    </svg>
                                 <?php endif; ?>
                             </div>
                             <div class="mgwpp-gallery-info">

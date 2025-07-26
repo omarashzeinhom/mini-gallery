@@ -18,6 +18,7 @@ class MGWPP_Albums_Table extends WP_List_Table
     public function get_columns()
     {
         return [
+            'cb'            => '<input type="checkbox">',
             'thumbnail'     => esc_html__('Preview', 'mini-gallery'),
             'title'         => esc_html__('Title', 'mini-gallery'),
             'gallery_count' => esc_html__('Galleries', 'mini-gallery'),
@@ -25,6 +26,18 @@ class MGWPP_Albums_Table extends WP_List_Table
             'date'          => esc_html__('Date', 'mini-gallery'),
             'actions'       => esc_html__('Actions', 'mini-gallery')
         ];
+    }
+
+    protected function get_bulk_actions()
+    {
+        return [
+            'delete' => esc_html__('Delete', 'mini-gallery')
+        ];
+    }
+
+    protected function column_cb($item)
+    {
+        return sprintf('<input type="checkbox" name="album[]" value="%s">', $item->ID);
     }
 
     protected function column_default($item, $column_name)
@@ -71,24 +84,34 @@ class MGWPP_Albums_Table extends WP_List_Table
     public function prepare_items()
     {
         $columns = $this->get_columns();
-        $this->_column_headers = [$columns, [], []];
+        $hidden = [];
+        $sortable = [];
+        $this->_column_headers = [$columns, $hidden, $sortable];
+
+        $per_page = 20;
+        $current_page = $this->get_pagenum();
+        $offset = ($current_page - 1) * $per_page;
 
         $args = [
             'post_type'      => 'mgwpp_album',
-            'posts_per_page' => -1,
+            'posts_per_page' => $per_page,
+            'offset'         => $offset,
             'post_status'    => 'publish'
         ];
 
-        $this->items = get_posts($args);
+        $query = new WP_Query($args);
+        $this->items = $query->posts;
+
+        $this->set_pagination_args([
+            'total_items' => $query->found_posts,
+            'per_page'    => $per_page,
+            'total_pages' => ceil($query->found_posts / $per_page)
+        ]);
     }
 
     protected function column_title($item)
     {
         $edit_url = get_edit_post_link($item->ID);
-        $delete_url = wp_nonce_url(
-            admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $item->ID),
-            'mgwpp_delete_album_' . $item->ID
-        );
 
         $title = sprintf(
             '<strong><a class="row-title" href="%s">%s</a></strong>',
@@ -96,15 +119,8 @@ class MGWPP_Albums_Table extends WP_List_Table
             esc_html($item->post_title)
         );
 
-        return $title . $this->row_actions([
-            'edit' => sprintf(
-                '<a href="%s">%s</a>',
-                esc_url($edit_url),
-                esc_html__('Edit', 'mini-gallery')
-            ),
-        ]);
+        return $title;
     }
-
 
     protected function column_gallery_count($item)
     {
@@ -127,65 +143,29 @@ class MGWPP_Albums_Table extends WP_List_Table
 
     protected function column_actions($item)
     {
-    }
+        $edit_url = get_edit_post_link($item->ID);
+        $delete_url = wp_nonce_url(
+            admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $item->ID),
+            'mgwpp_delete_album_' . $item->ID
+        );
 
+        $actions = [
+            'edit' => sprintf(
+                '<a href="%s" class="mgwpp-action-link">%s</a>',
+                esc_url($edit_url),
+                esc_html__('Edit', 'mini-gallery')
+            ),
+            'delete' => sprintf(
+                '<a href="%s" class="mgwpp-action-link mgwpp-action-delete" onclick="return confirm(\'%s\')">%s</a>',
+                esc_url($delete_url),
+                esc_js(__('Are you sure you want to delete this album?', 'mini-gallery')),
+                esc_html__('Delete', 'mini-gallery')
+            )
+        ];
 
-    public function single_row($item)
-    {
-        // Get current row classes from parent
-        $parent_row_classes = $this->get_row_class();
-
-        echo '<tr class="' . esc_attr($parent_row_classes) . '">';
-        $this->single_row_columns($item);
-        echo '</tr>';
-
-        echo '<tr class="mgwpp-album-details-row ' . esc_attr($parent_row_classes) . '">';
-        echo '<td colspan="' . count($this->get_columns()) . '">';
-        $this->album_details_content($item);
-        echo '</td>';
-        echo '</tr>';
-    }
-
-    // Helper method to get row classes
-    protected function get_row_class()
-    {
-        static $alternate = '';
-        $alternate = ($alternate == '' ? 'alternate' : '');
-
-        $classes = array();
-        if ($alternate) {
-            $classes[] = $alternate;
-        }
-
-        return implode(' ', $classes);
-    }
-    private function album_details_content($item)
-    {
-        $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
-        echo '<div class="mgwpp-album-details"><h4>';
-        esc_html_e('Album Contents', 'mini-gallery');
-        echo '</h4>';
-
-        if (!empty($galleries)) {
-            echo '<ul class="mgwpp-album-galleries">';
-            foreach ($galleries as $gallery_id) {
-                $gallery = get_post($gallery_id);
-                if ($gallery) {
-                    echo '<li><a href="' . esc_url(get_edit_post_link($gallery_id)) . '">'
-                        . esc_html($gallery->post_title) . '</a><span class="mgwpp-gallery-type">'
-                        . esc_html(get_post_meta($gallery_id, 'gallery_type', true)) . '</span></li>';
-                }
-            }
-            echo '</ul>';
-        } else {
-            echo '<p>';
-            esc_html_e('No galleries in this album.', 'mini-gallery');
-            echo '</p>';
-        }
-        echo '</div>';
+        return $this->row_actions($actions, true);
     }
 }
-
 
 add_action('admin_post_mgwpp_delete_album', function () {
     // Verify nonce first
@@ -214,7 +194,7 @@ add_action('admin_post_mgwpp_delete_album', function () {
     }
 
     $deletion_result = wp_delete_post($album_id, true);
-    $redirect_url = admin_url('edit.php?post_type=mgwpp_album');
+    $redirect_url = admin_url('admin.php?page=mgwpp_albums');
 
     if ($deletion_result) {
         $redirect_url = add_query_arg('mgwpp_deleted', 1, $redirect_url);
@@ -228,14 +208,8 @@ add_action('admin_post_mgwpp_delete_album', function () {
 
 
 add_action('admin_notices', function () {
-    // Check if we're on the albums page and user has permission
     $screen = get_current_screen();
-    if (!$screen || 'edit-mgwpp_album' !== $screen->id || !current_user_can('manage_options')) {
-        return;
-    }
-
-    // Check nonce for security
-    if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce(sanitize_key(wp_unslash($_REQUEST['_wpnonce'])), 'mgwpp_album_notice')) {
+    if (!$screen || 'toplevel_page_mgwpp_albums' !== $screen->id) {
         return;
     }
 

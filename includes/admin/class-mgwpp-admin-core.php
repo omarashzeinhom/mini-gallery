@@ -35,7 +35,6 @@ class MGWPP_Admin_Core
         require_once $base_path . '/views/galleries/class-mgwpp-galleries-view.php';
         require_once $base_path . '/views/testimonials/class-mgwpp-testimonials-view.php';
         require_once $base_path . '/views/dashboard/class-mgwpp-dashboard-view.php';
-        require_once $base_path . '/views/submodules/class-mgwpp-submodules-view.php';
         // Admin classes
         require_once $base_path . '/class-mgwpp-admin-menu.php';
         require_once $base_path . '/class-mgwpp-admin-assets.php';

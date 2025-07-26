@@ -17,7 +17,6 @@ class MGWPP_Admin_Assets
             'toplevel_page_mgwpp_dashboard',
             'gallery_page_mgwpp-galleries',
             'gallery_page_mgwpp-edit-gallery',
-            'gallery_page_mgwpp-submodules',
             'admin_page_mgwpp-edit-gallery'
         ];
 
@@ -146,13 +145,7 @@ class MGWPP_Admin_Assets
         if (strpos($screen->id, 'mgwpp') === false) {
             return;
         }
-
-        // Only load submodule assets on submodules page
-        if ($screen->id === 'gallery_page_mgwpp-submodules') {
-            $module_loader = new MGWPP_Module_Manager();
-            $submodules_view = new MGWPP_SubModules_View($module_loader);
-            $submodules_view->enqueue_assets();
-        }
+        
     }
 
 

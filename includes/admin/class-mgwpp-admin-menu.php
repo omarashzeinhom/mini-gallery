@@ -6,7 +6,6 @@ if (! defined('ABSPATH')) {
 class MGWPP_Admin_Menu
 {
     private $view_classes = [];
-    private $submodules_view;
     private $galleries_view;
     private $albums_view;
     private $testimonials_view;
@@ -20,7 +19,6 @@ class MGWPP_Admin_Menu
         $this->galleries_view = new MGWPP_Galleries_View($gallery_items);
 
         // Initialize other views
-        $this->submodules_view = new MGWPP_SubModules_View($module_loader);
         $this->albums_view = new MGWPP_Albums_View();
         $this->testimonials_view = new MGWPP_Testimonials_View();
     }
@@ -128,11 +126,6 @@ class MGWPP_Admin_Menu
                 'capability' => 'manage_options'
             ],
 
-            'modules' => [
-                'page_title' => __('Modules', 'mini-gallery'),
-                'callback' => [$this->submodules_view, 'render'],
-                'capability' => 'manage_options'
-            ],
 
         ];
     }

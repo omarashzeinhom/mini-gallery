@@ -13,6 +13,17 @@ class MGWPP_Albums_Table extends WP_List_Table
             'ajax'     => false,
             'screen'   => 'mgwpp-albums'
         ]);
+
+        // Add dark mode classes to the table
+        add_filter('admin_body_class', [$this, 'add_dark_mode_classes']);
+    }
+
+    public function add_dark_mode_classes($classes)
+    {
+        if (isset($_COOKIE['mgwpp_dark_mode']) && $_COOKIE['mgwpp_dark_mode'] === '1') {
+            $classes .= ' mgwpp-dark-mode ';
+        }
+        return $classes;
     }
 
     public function get_columns()
@@ -49,7 +60,7 @@ class MGWPP_Albums_Table extends WP_List_Table
     protected function column_thumbnail($item)
     {
         // Default icon if no images found
-        $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;"></span>';
+        $image_html = '<span class="dashicons dashicons-format-gallery" style="font-size:48px;color:var(--mgwpp-icon-color);"></span>';
 
         // Try to get first gallery image
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
@@ -71,14 +82,15 @@ class MGWPP_Albums_Table extends WP_List_Table
                         false,
                         [
                             'style' => 'object-fit:cover; width:75px; height:75px;',
-                            'alt' => esc_attr__('Album preview', 'mini-gallery')
+                            'alt'   => esc_attr__('Album preview', 'mini-gallery'),
+                            'class' => 'mgwpp-album-thumbnail'
                         ]
                     );
                 }
             }
         }
 
-        return $image_html;
+        return '<div class="mgwpp-album-thumbnail-container">' . $image_html . '</div>';
     }
 
     public function prepare_items()
@@ -96,7 +108,9 @@ class MGWPP_Albums_Table extends WP_List_Table
             'post_type'      => 'mgwpp_album',
             'posts_per_page' => $per_page,
             'offset'         => $offset,
-            'post_status'    => 'publish'
+            'post_status'    => 'publish',
+            'orderby'        => 'date',
+            'order'          => 'DESC'
         ];
 
         $query = new WP_Query($args);
@@ -111,7 +125,8 @@ class MGWPP_Albums_Table extends WP_List_Table
 
     protected function column_title($item)
     {
-        $edit_url = get_edit_post_link($item->ID);
+        // Custom edit URL pointing to edit.php?post_type=mgwpp_album
+        $edit_url = admin_url('edit.php?post_type=mgwpp_album&action=edit&post=' . $item->ID);
 
         $title = sprintf(
             '<strong><a class="row-title" href="%s">%s</a></strong>',
@@ -125,96 +140,154 @@ class MGWPP_Albums_Table extends WP_List_Table
     protected function column_gallery_count($item)
     {
         $galleries = get_post_meta($item->ID, '_mgwpp_album_galleries', true);
-        return is_array($galleries) ? count($galleries) : 0;
+        $count = is_array($galleries) ? count($galleries) : 0;
+
+        return sprintf(
+            '<span class="mgwpp-gallery-count">%d %s</span>',
+            $count,
+            _n('gallery', 'galleries', $count, 'mini-gallery')
+        );
     }
 
     protected function column_shortcode($item)
     {
         return sprintf(
-            '<input type="text" readonly value="[mgwpp_album id=&quot;%d&quot;]" class="mgwpp-shortcode-code">',
+            '<div class="mgwpp-shortcode-container">
+                <input type="text" readonly value="[mgwpp_album id=&quot;%d&quot;]" class="mgwpp-shortcode-code">
+                <button class="button mgwpp-copy-shortcode" data-clipboard-text="[mgwpp_album id=&quot;%d&quot;]">
+                    <span class="dashicons dashicons-clipboard"></span>
+                </button>
+            </div>',
+            absint($item->ID),
             absint($item->ID)
         );
     }
 
     protected function column_date($item)
     {
-        return get_the_date('', $item);
+        $date = get_the_date('', $item);
+        $modified = get_the_modified_date('', $item);
+
+        return sprintf(
+            '<span class="mgwpp-date">%s</span><br><small class="mgwpp-modified">%s: %s</small>',
+            $date,
+            esc_html__('Modified', 'mini-gallery'),
+            $modified
+        );
     }
 
     protected function column_actions($item)
     {
-        $edit_url = get_edit_post_link($item->ID);
-        $delete_url = wp_nonce_url(
-            admin_url('admin-post.php?action=mgwpp_delete_album&album_id=' . $item->ID),
-            'mgwpp_delete_album_' . $item->ID
-        );
+        // Custom edit URL pointing to edit.php?post_type=mgwpp_album
+        $edit_url = admin_url('edit.php?post_type=mgwpp_album&action=edit&post=' . $item->ID);
+
+        // Custom delete URL pointing to edit.php?post_type=mgwpp_album
+        $delete_url = admin_url('edit.php?post_type=mgwpp_album&action=delete&post=' . $item->ID);
+        $delete_nonce = wp_create_nonce('mgwpp_delete_album_' . $item->ID);
+        $delete_url = add_query_arg('_wpnonce', $delete_nonce, $delete_url);
 
         $actions = [
             'edit' => sprintf(
-                '<a href="%s" class="mgwpp-action-link">%s</a>',
+                '<a href="%s" class="mgwpp-action-link mgwpp-action-edit">
+                <span class="dashicons dashicons-edit"></span> %s
+            </a>',
                 esc_url($edit_url),
                 esc_html__('Edit', 'mini-gallery')
             ),
             'delete' => sprintf(
-                '<a href="%s" class="mgwpp-action-link mgwpp-action-delete" onclick="return confirm(\'%s\')">%s</a>',
+                '<a href="%s" class="mgwpp-action-link mgwpp-action-delete" data-id="%d" onclick="return confirm(\'%s\');">
+                <span class="dashicons dashicons-trash"></span> %s
+            </a>',
                 esc_url($delete_url),
+                absint($item->ID),
                 esc_js(__('Are you sure you want to delete this album?', 'mini-gallery')),
                 esc_html__('Delete', 'mini-gallery')
             )
         ];
 
-        return $this->row_actions($actions, true);
+        return '<div class="mgwpp-action-links">' . implode(' | ', $actions) . '</div>';
     }
 }
 
-add_action('admin_post_mgwpp_delete_album', function () {
-    // Verify nonce first
-    if (!isset($_REQUEST['_wpnonce'])) {
-        wp_die(esc_html__('Security verification failed', 'mini-gallery'));
+// Initialize table styles
+add_action('admin_head', function () {
+    $screen = get_current_screen();
+    if ($screen && 'toplevel_page_mgwpp_albums' === $screen->id) {
+        $table = new MGWPP_Albums_Table();
+        if (method_exists($table, 'print_table_styles')) {
+            $table->print_table_styles();
+        }
     }
-
-    // Get album ID safely
-    $album_id = isset($_GET['album_id']) ? absint(wp_unslash($_GET['album_id'])) : 0;
-
-    // Verify nonce with dynamic action
-    if (!wp_verify_nonce(sanitize_key(wp_unslash($_REQUEST['_wpnonce'])), 'mgwpp_delete_album_' . $album_id)) {
-        wp_die(esc_html__('Security verification failed', 'mini-gallery'));
-    }
-
-    if (!$album_id) {
-        wp_die(esc_html__('Invalid request parameters', 'mini-gallery'));
-    }
-
-    if (!get_post($album_id)) {
-        wp_die(esc_html__('Specified album does not exist', 'mini-gallery'));
-    }
-
-    if (!current_user_can('delete_mgwpp_album', $album_id)) {
-        wp_die(esc_html__('You lack permissions for this action', 'mini-gallery'));
-    }
-
-    $deletion_result = wp_delete_post($album_id, true);
-    $redirect_url = admin_url('admin.php?page=mgwpp_albums');
-
-    // Add nonce for the admin notice
-    $notice_nonce = wp_create_nonce('mgwpp_album_notice');
-
-    if ($deletion_result) {
-        $redirect_url = add_query_arg([
-            'mgwpp_deleted' => 1,
-            '_wpnonce_mgwpp' => $notice_nonce
-        ], $redirect_url);
-    } else {
-        $redirect_url = add_query_arg([
-            'mgwpp_delete_error' => 1,
-            '_wpnonce_mgwpp' => $notice_nonce
-        ], $redirect_url);
-    }
-
-    wp_safe_redirect($redirect_url);
-    exit;
 });
 
+// Handle edit and delete actions on edit.php?post_type=mgwpp_album
+add_action('admin_init', function () {
+    // Check if we're on the edit.php page for mgwpp_album post type
+    if (!is_admin() || !isset($_GET['post_type']) || sanitize_text_field(wp_unslash($_GET['post_type'])) !== 'mgwpp_album') {
+        return;
+    }
+
+    $action = isset($_GET['action']) ? sanitize_text_field(wp_unslash($_GET['action'])) : '';
+    $post_id = isset($_GET['post']) ? absint(wp_unslash($_GET['post'])) : 0;
+
+    if ($action === 'delete' && $post_id) {
+        // Handle delete action
+        if (!isset($_GET['_wpnonce'])) {
+            wp_die(esc_html__('Security verification failed', 'mini-gallery'));
+        }
+
+        if (!wp_verify_nonce(sanitize_key(wp_unslash($_GET['_wpnonce'])), 'mgwpp_delete_album_' . $post_id)) {
+            wp_die(esc_html__('Security verification failed', 'mini-gallery'));
+        }
+
+        if (!get_post($post_id)) {
+            wp_die(esc_html__('Specified album does not exist', 'mini-gallery'));
+        }
+
+        if (!current_user_can('delete_posts')) {
+            wp_die(esc_html__('You lack permissions for this action', 'mini-gallery'));
+        }
+
+        $deletion_result = wp_delete_post($post_id, true);
+        $redirect_url = admin_url('admin.php?page=mgwpp_albums');
+
+        // Add nonce for admin notice
+        $notice_nonce = wp_create_nonce('mgwpp_album_notice');
+
+        if ($deletion_result) {
+            $redirect_url = add_query_arg([
+                'mgwpp_deleted' => 1,
+                '_wpnonce_notice' => $notice_nonce
+            ], $redirect_url);
+        } else {
+            $redirect_url = add_query_arg([
+                'mgwpp_delete_error' => 1,
+                '_wpnonce_notice' => $notice_nonce
+            ], $redirect_url);
+        }
+
+        wp_safe_redirect($redirect_url);
+        exit;
+    }
+
+    if ($action === 'edit' && $post_id) {
+        // Handle edit action - you can customize this further
+        // For now, it will just load the edit.php page with your post type
+        // You might want to include your custom edit form here
+
+        // Verify the post exists and user has permission
+        if (!get_post($post_id)) {
+            wp_die(esc_html__('Specified album does not exist', 'mini-gallery'));
+        }
+
+        if (!current_user_can('edit_posts')) {
+            wp_die(esc_html__('You lack permissions for this action', 'mini-gallery'));
+        }
+
+        // The edit.php page will naturally load here
+        // You can add custom edit form rendering logic here if needed
+    }
+});
 
 add_action('admin_notices', function () {
     $screen = get_current_screen();
@@ -222,17 +295,14 @@ add_action('admin_notices', function () {
         return;
     }
 
-    // Verify nonce for admin notice
-    if (
-        !isset($_GET['_wpnonce_mgwpp']) ||
-        !wp_verify_nonce(sanitize_key($_GET['_wpnonce_mgwpp']), 'mgwpp_album_notice')
-    ) {
+    // Verify nonce for admin notices
+    if (!isset($_GET['_wpnonce_notice']) || !wp_verify_nonce(sanitize_key(wp_unslash($_GET['_wpnonce_notice'])), 'mgwpp_album_notice')) {
         return;
     }
 
-    // Safely check for success/error flags
-    $deleted = isset($_GET['mgwpp_deleted']) ? absint($_GET['mgwpp_deleted']) : 0;
-    $delete_error = isset($_GET['mgwpp_delete_error']) ? absint($_GET['mgwpp_delete_error']) : 0;
+    // Check for success/error flags with proper sanitization
+    $deleted = isset($_GET['mgwpp_deleted']) ? absint(wp_unslash($_GET['mgwpp_deleted'])) : 0;
+    $delete_error = isset($_GET['mgwpp_delete_error']) ? absint(wp_unslash($_GET['mgwpp_delete_error'])) : 0;
 
     if ($deleted) {
         echo '<div class="notice notice-success is-dismissible"><p>';

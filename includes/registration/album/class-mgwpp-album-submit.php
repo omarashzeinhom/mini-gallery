@@ -60,7 +60,15 @@ class MGWPP_Album_Submit
         if ($cover_id) {
             set_post_thumbnail($new_album_id, $cover_id);
         }
-
+        // Check for duplicate album title
+        $existing_album = get_page_by_title($album_title, OBJECT, 'mgwpp_album');
+        if ($existing_album && $existing_album->post_status !== 'trash') {
+            wp_die(
+                esc_html__('An album with this title already exists.', 'mini-gallery'),
+                esc_html__('Error', 'mini-gallery'),
+                ['response' => 400]
+            );
+        }
         wp_safe_redirect(admin_url('admin.php?page=mgwpp_albums&album_created=1'));
         exit;
     }
@@ -115,7 +123,7 @@ class MGWPP_Album_Submit
 add_action('admin_notices', function () {
     // Add nonce verification for admin notice
     if (
-        isset($_GET['album_created']) && 
+        isset($_GET['album_created']) &&
         $_GET['album_created'] === '1' &&
         isset($_GET['_wpnonce']) &&
         wp_verify_nonce(sanitize_key(wp_unslash($_GET['_wpnonce'])), 'mgwpp_album_created_notice')

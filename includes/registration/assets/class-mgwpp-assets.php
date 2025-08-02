@@ -368,7 +368,6 @@ class MGWPP_Assets
             case 'multi_carousel':
                 echo '<script>MGWPP_MultiCarousel.initAll();</script>';
                 break;
-                //  other gallery types as needed
         }
     }
 }

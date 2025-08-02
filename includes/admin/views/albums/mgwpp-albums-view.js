@@ -1,5 +1,5 @@
 (($) => {
-    // Initialize when document is ready
+    // mgwpp-albums-view.js
     $(document).ready(() => {
         initAlbumForm();
         initSortableGalleries();

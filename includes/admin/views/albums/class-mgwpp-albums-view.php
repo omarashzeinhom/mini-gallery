@@ -29,111 +29,157 @@ class MGWPP_Albums_View
             true
         );
 
-        // Add inline scripts
         wp_add_inline_script('mgwpp-album-admin-scripts', '
-            jQuery(document).ready(function($) {
-                // Initialize tabs
-                $("#mgwpp-tabs").tabs();
-                
-                // Search functionality
-                $("#mgwpp-album-search").on("keyup", function() {
-                    var value = $(this).val().toLowerCase();
-                    $(".mgwpp-albums-table tbody tr").filter(function() {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                    });
-                });
-                
-                // Gallery search functionality
-                $("#gallery-search").on("keyup", function() {
-                    var value = $(this).val().toLowerCase();
-                    $(".mgwpp-gallery-item").filter(function() {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                    });
-                });
-                
-                // Form submission handler
-                $("#mgwpp-album-creation-form").on("submit", function(e) {
-                    var $form = $(this);
-                    if ($form.data("submitting")) {
-                        e.preventDefault();
-                        return false;
-                    }
-                    $form.data("submitting", true);
-                    var $submitBtn = $form.find(".mgwpp-submit-btn");
-                    $submitBtn.prop("disabled", true);
-                    $submitBtn.html(\'<span class="dashicons dashicons-update mgwpp-spin"></span> ' . esc_js(__('Creating...', 'mini-gallery')) . '\');
-                });
-                
-                // Live preview updates
-                $("#album_title").on("input", function() {
-                    var title = $(this).val() || "' . esc_js(__('Album Title', 'mini-gallery')) . '";
-                    $("#preview-title").text(title);
-                });
-                
-                $("#album_description").on("input", function() {
-                    var desc = $(this).val() || "' . esc_js(__('Album description will appear here...', 'mini-gallery')) . '";
-                    $("#preview-description").text(desc);
-                });
-                
-                // Gallery checkbox handling
-                $(".mgwpp-gallery-checkbox-input").on("change", function() {
-                    updateGalleryPreview();
-                });
-                
-                function updateGalleryPreview() {
-                    var $list = $("#preview-galleries-list");
-                    var $checked = $(".mgwpp-gallery-checkbox-input:checked");
-                    
-                    $list.empty();
-                    
-                    if ($checked.length === 0) {
-                        $list.append(\'<li class="mgwpp-empty-selection">' . esc_js(__('No galleries selected', 'mini-gallery')) . '</li>\');
-                    } else {
-                        $checked.each(function() {
-                            var galleryName = $(this).closest(".mgwpp-gallery-item").find("h4").text();
-                            $list.append(\'<li>\' + galleryName + \'</li>\');
-                        });
-                    }
+jQuery(document).ready(function($) {
+    // Initialize tabs
+    $("#mgwpp-tabs").tabs();
+    
+    // Search functionality
+    $("#mgwpp-album-search").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $(".mgwpp-albums-table tbody tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+    
+    // Gallery search functionality
+    $("#gallery-search").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $(".mgwpp-gallery-item").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+    
+    // Album creation form submission
+    $("#mgwpp-album-creation-form").on("submit", function(e) {
+        e.preventDefault();
+        
+        var $form = $(this);
+        var $submitBtn = $form.find(".mgwpp-submit-btn");
+        var originalText = $submitBtn.html();
+        
+        // Prevent multiple submissions
+        if ($submitBtn.prop("disabled")) {
+            return false;
+        }
+        
+        // Show loading state
+        $submitBtn.prop("disabled", true).html(\'<span class="dashicons dashicons-update-alt"></span> ' . esc_js(__('Creating...', 'mini-gallery')) . '\');
+        
+        // CAPTURE FORM DATA BEFORE DISABLING ELEMENTS
+        var formData = $form.serialize() + 
+              "&action=mgwpp_create_album_ajax" + 
+              "&security=" + mgwpp_admin_vars.nonce;
+        
+        // Disable the form to prevent further interactions
+        $form.find("input, textarea, button, select").prop("disabled", true);
+        
+        // Perform AJAX submission
+        $.ajax({
+            type: "POST",
+            url: ajaxurl,
+            data: formData,
+            timeout: 30000,
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.data.redirect;
+                } else {
+                    alert(mgwpp_admin_vars.creation_error + ": " + response.data);
+                    resetForm();
                 }
-                
-                // Media uploader
-                var mediaUploader;
-                $(".mgwpp-upload-cover-btn").on("click", function(e) {
-                    e.preventDefault();
-                    
-                    if (mediaUploader) {
-                        mediaUploader.open();
-                        return;
-                    }
-                    
-                    mediaUploader = wp.media({
-                        title: "' . esc_js(__('Choose Album Cover', 'mini-gallery')) . '",
-                        button: {
-                            text: "' . esc_js(__('Use This Image', 'mini-gallery')) . '"
-                        },
-                        multiple: false
-                    });
-                    
-                    mediaUploader.on("select", function() {
-                        var attachment = mediaUploader.state().get("selection").first().toJSON();
-                        $("#album_cover_id").val(attachment.id);
-                        $("#album-cover-preview img").attr("src", attachment.url);
-                        $("#preview-cover-image").attr("src", attachment.url);
-                        $(".mgwpp-remove-cover-btn").show();
-                    });
-                    
-                    mediaUploader.open();
-                });
-                
-                $(".mgwpp-remove-cover-btn").on("click", function(e) {
-                    e.preventDefault();
-                    $("#album_cover_id").val("");
-                    $("#album-cover-preview img").attr("src", "' . esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg') . '");
-                    $("#preview-cover-image").attr("src", "' . esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg') . '");
-                    $(this).hide();
-                });
+            },
+            error: function(xhr, status, error) {
+                var errorMsg = mgwpp_admin_vars.creation_error;
+                if (status === "timeout") {
+                    errorMsg += ": Request timed out";
+                } else if (xhr.responseJSON && xhr.responseJSON.data) {
+                    errorMsg += ": " + xhr.responseJSON.data;
+                } else if (xhr.responseText) {
+                    errorMsg += ": " + xhr.responseText;
+                } else {
+                    errorMsg += ": " + error;
+                }
+                alert(errorMsg);
+                resetForm();
+            }
+        });
+        
+        function resetForm() {
+            $form.find("input, textarea, button, select").prop("disabled", false);
+            $submitBtn.prop("disabled", false).html(originalText);
+        }
+    });
+
+    // Live preview updates
+    $("#album_title").on("input", function() {
+        var title = $(this).val() || "' . esc_js(__('Album Title', 'mini-gallery')) . '";
+        $("#preview-title").text(title);
+    });
+    
+    $("#album_description").on("input", function() {
+        var desc = $(this).val() || "' . esc_js(__('Album description will appear here...', 'mini-gallery')) . '";
+        $("#preview-description").text(desc);
+    });
+    
+    // Gallery checkbox handling
+    $(".mgwpp-gallery-checkbox-input").on("change", function() {
+        updateGalleryPreview();
+    });
+    
+    function updateGalleryPreview() {
+        var $list = $("#preview-galleries-list");
+        var $checked = $(".mgwpp-gallery-checkbox-input:checked");
+        
+        $list.empty();
+        
+        if ($checked.length === 0) {
+            $list.append(\'<li class="mgwpp-empty-selection">' . esc_js(__('No galleries selected', 'mini-gallery')) . '</li>\');
+        } else {
+            $checked.each(function() {
+                var galleryName = $(this).closest(".mgwpp-gallery-item").find("h4").text();
+                $list.append(\'<li>\' + galleryName + \'</li>\');
             });
-        ', 'after');
+        }
+    }
+    
+    // Media uploader
+    var mediaUploader;
+    $(".mgwpp-upload-cover-btn").on("click", function(e) {
+        e.preventDefault();
+        
+        if (mediaUploader) {
+            mediaUploader.open();
+            return;
+        }
+        
+        mediaUploader = wp.media({
+            title: "' . esc_js(__('Choose Album Cover', 'mini-gallery')) . '",
+            button: {
+                text: "' . esc_js(__('Use This Image', 'mini-gallery')) . '"
+            },
+            multiple: false
+        });
+        
+        mediaUploader.on("select", function() {
+            var attachment = mediaUploader.state().get("selection").first().toJSON();
+            $("#album_cover_id").val(attachment.id);
+            $("#album-cover-preview img").attr("src", attachment.url);
+            $("#preview-cover-image").attr("src", attachment.url);
+            $(".mgwpp-remove-cover-btn").show();
+        });
+        
+        mediaUploader.open();
+    });
+    
+    $(".mgwpp-remove-cover-btn").on("click", function(e) {
+        e.preventDefault();
+        $("#album_cover_id").val("");
+        $("#album-cover-preview img").attr("src", "' . esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg') . '");
+        $("#preview-cover-image").attr("src", "' . esc_url(plugin_dir_url(MGWPP_PLUGIN_FILE) . 'images/placeholder.jpg') . '");
+        $(this).hide();
+    });
+});
+', 'after');
 
         // Localize script with proper translations
         wp_localize_script('mgwpp-album-admin-scripts', 'mgwpp_admin_vars', [
@@ -142,8 +188,13 @@ class MGWPP_Albums_View
             'confirm_delete' => __('Are you sure you want to delete the selected albums?', 'mini-gallery'),
             'confirm_delete_single' => __('Are you sure you want to delete this album?', 'mini-gallery'),
             'album_deleted' => __('Album deleted successfully!', 'mini-gallery'),
-            'delete_error' => __('Failed to delete album. Please try again.', 'mini-gallery')
+            'delete_error' => __('Failed to delete album. Please try again.', 'mini-gallery'),
+            'creating_text' => __('Creating...', 'mini-gallery'),
+            'creation_error' => __('Album creation failed', 'mini-gallery'),
+            'admin_url' => admin_url()
         ]);
+
+
 ?>
 
         <div class="mgwpp-dashboard-container">
@@ -189,8 +240,8 @@ class MGWPP_Albums_View
                     <h2><?php esc_html_e('Create New Album', 'mini-gallery') ?></h2>
                 </div>
 
-                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"
-                    class="mgwpp-album-form" id="mgwpp-album-creation-form">
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="mgwpp-album-form"
+                    id="mgwpp-album-creation-form">
                     <input type="hidden" name="action" value="mgwpp_create_album">
                     <?php wp_nonce_field('mgwpp_album_submit_nonce', 'mgwpp_album_submit_nonce'); ?>
 
@@ -280,7 +331,8 @@ class MGWPP_Albums_View
                     </div>
                     <div class="mgwpp-preview-details">
                         <h4 id="preview-title"><?php esc_html_e('Album Title', 'mini-gallery'); ?></h4>
-                        <p id="preview-description"><?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
+                        <p id="preview-description">
+                            <?php esc_html_e('Album description will appear here...', 'mini-gallery'); ?></p>
 
                         <div class="mgwpp-preview-galleries">
                             <div class="mgwpp-preview-section-header">
@@ -288,7 +340,8 @@ class MGWPP_Albums_View
                                 <h5><?php esc_html_e('Selected Galleries', 'mini-gallery'); ?></h5>
                             </div>
                             <ul id="preview-galleries-list">
-                                <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?></li>
+                                <li class="mgwpp-empty-selection"><?php esc_html_e('No galleries selected', 'mini-gallery'); ?>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -332,7 +385,8 @@ class MGWPP_Albums_View
                     <span class="dashicons dashicons-images-alt2"></span>
                 </div>
                 <h4><?php esc_html_e('No Galleries Found', 'mini-gallery'); ?></h4>
-                <p><?php esc_html_e('You need to create some galleries first before you can add them to an album.', 'mini-gallery'); ?></p>
+                <p><?php esc_html_e('You need to create some galleries first before you can add them to an album.', 'mini-gallery'); ?>
+                </p>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=mgwpp-galleries')); ?>" class="button button-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Create Your First Gallery', 'mini-gallery'); ?>
@@ -347,16 +401,14 @@ class MGWPP_Albums_View
                 ?>
                     <label class="mgwpp-gallery-item">
                         <div class="mgwpp-gallery-checkbox">
-                            <input type="checkbox" name="album_galleries[]"
-                                value="<?php echo absint($gallery->ID); ?>"
+                            <input type="checkbox" name="album_galleries[]" value="<?php echo absint($gallery->ID); ?>"
                                 class="mgwpp-gallery-checkbox-input">
                             <span class="mgwpp-checkmark"></span>
                         </div>
 
                         <div class="mgwpp-gallery-thumbnail">
                             <?php if ($thumbnail_url) : ?>
-                                <img src="<?php echo esc_url($thumbnail_url); ?>"
-                                    alt="<?php echo esc_attr($gallery->post_title); ?>">
+                                <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($gallery->post_title); ?>">
                             <?php else : ?>
                                 <span class="dashicons dashicons-format-gallery"></span>
                             <?php endif; ?>

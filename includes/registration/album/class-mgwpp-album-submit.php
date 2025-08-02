@@ -7,36 +7,41 @@ class MGWPP_Album_Submit
 {
     public static function init()
     {
-        add_action('admin_post_mgwpp_create_album', [__CLASS__, 'handle_album_submission']);
-        add_action('admin_post_nopriv_mgwpp_create_album', [__CLASS__, 'handle_album_submission']);
+        add_action('wp_ajax_mgwpp_create_album_ajax', [__CLASS__, 'handle_album_ajax_submission']);
+        add_action('wp_ajax_nopriv_mgwpp_create_album_ajax', [__CLASS__, 'handle_album_ajax_submission']);
         add_action('save_post_mgwpp_album', [__CLASS__, 'save_album_submission'], 10, 3);
     }
 
-    public static function handle_album_submission()
+    public static function handle_album_ajax_submission()
     {
-        // Verify nonce
-        if (
-            !isset($_POST['mgwpp_album_submit_nonce']) ||
-            !wp_verify_nonce(sanitize_key(wp_unslash($_POST['mgwpp_album_submit_nonce'])), 'mgwpp_album_submit_nonce')
-        ) {
-            wp_die('Security check failed', 'Error', ['response' => 403]);
+        // Verify nonce using security parameter
+        if (!isset($_POST['security'])) {
+            wp_send_json_error('Security nonce not provided', 403);
+        }
+
+        if (!wp_verify_nonce(sanitize_key($_POST['security']), 'mgwpp_nonce')) {
+            wp_send_json_error('Security verification failed', 403);
         }
 
         // Check permissions
         if (!current_user_can('create_mgwpp_albums')) {
-            wp_die('Permission denied', 'Error', ['response' => 403]);
+            wp_send_json_error('Permission denied', 403);
         }
 
         // Validate required fields
         if (empty($_POST['album_title'])) {
-            wp_die('Album title is required', 'Error', ['response' => 400]);
+            wp_send_json_error('Album title is required', 400);
         }
 
-        // Sanitize input
-        $album_title = sanitize_text_field(wp_unslash($_POST['album_title']));
-        $album_description = isset($_POST['album_description']) ? sanitize_textarea_field(wp_unslash($_POST['album_description'])) : '';
-        $galleries = isset($_POST['album_galleries']) ? array_map('intval', wp_unslash($_POST['album_galleries'])) : [];
-        $cover_id = isset($_POST['album_cover_id']) ? intval(wp_unslash($_POST['album_cover_id'])) : 0;
+        $album_title = sanitize_text_field($_POST['album_title']);
+        $album_description = isset($_POST['album_description']) ? sanitize_textarea_field($_POST['album_description']) : '';
+        $galleries = isset($_POST['album_galleries']) ? array_map('intval', $_POST['album_galleries']) : [];
+        $cover_id = isset($_POST['album_cover_id']) ? intval($_POST['album_cover_id']) : 0;
+
+        // Validate galleries - MUST have at least one selected
+        if (empty($galleries)) {
+            wp_send_json_error('Please select at least one gallery', 400);
+        }
 
         // Create album
         $new_album_id = wp_insert_post([
@@ -47,11 +52,7 @@ class MGWPP_Album_Submit
         ]);
 
         if (is_wp_error($new_album_id)) {
-            wp_die(
-                esc_html__('Album creation failed: ', 'mini-gallery') . esc_html($new_album_id->get_error_message()),
-                esc_html__('Error', 'mini-gallery'),
-                ['response' => 500]
-            );
+            wp_send_json_error('Album creation failed: ' . $new_album_id->get_error_message(), 500);
         }
 
         // Save meta
@@ -60,19 +61,12 @@ class MGWPP_Album_Submit
         if ($cover_id) {
             set_post_thumbnail($new_album_id, $cover_id);
         }
-        // Check for duplicate album title
-        $existing_album = get_page_by_title($album_title, OBJECT, 'mgwpp_album');
-        if ($existing_album && $existing_album->post_status !== 'trash') {
-            wp_die(
-                esc_html__('An album with this title already exists.', 'mini-gallery'),
-                esc_html__('Error', 'mini-gallery'),
-                ['response' => 400]
-            );
-        }
-        wp_safe_redirect(admin_url('admin.php?page=mgwpp_albums&album_created=1'));
-        exit;
-    }
 
+        wp_send_json_success([
+            'message' => 'Album created successfully!',
+            'redirect' => admin_url('admin.php?page=mgwpp_albums&album_created=1')
+        ]);
+    }
     public static function save_album_submission($post_id, $post, $update)
     {
         // Security checks

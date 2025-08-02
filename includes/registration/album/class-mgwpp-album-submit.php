@@ -33,8 +33,8 @@ class MGWPP_Album_Submit
             wp_send_json_error('Album title is required', 400);
         }
 
-        $album_title = sanitize_text_field($_POST['album_title']);
-        $album_description = isset($_POST['album_description']) ? sanitize_textarea_field($_POST['album_description']) : '';
+        $album_title = sanitize_text_field(wp_unslash($_POST['album_title']));
+        $album_description = isset($_POST['album_description']) ? sanitize_textarea_field(wp_unslash($_POST['album_description'])) : '';
         $galleries = isset($_POST['album_galleries']) ? array_map('intval', $_POST['album_galleries']) : [];
         $cover_id = isset($_POST['album_cover_id']) ? intval($_POST['album_cover_id']) : 0;
 

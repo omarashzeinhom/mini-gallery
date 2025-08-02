@@ -195,7 +195,7 @@ jQuery(document).ready(function($) {
         ]);
 
 
-?>
+        ?>
 
         <div class="mgwpp-dashboard-container">
             <?php MGWPP_Inner_Header::render(); ?>
@@ -227,12 +227,12 @@ jQuery(document).ready(function($) {
                 </div>
             </div>
         </div>
-    <?php
+        <?php
     }
 
     private static function render_creation_form()
     {
-    ?>
+        ?>
         <div class="mgwpp-album-form-container">
             <div class="mgwpp-album-form-card">
                 <div class="mgwpp-form-header">
@@ -398,7 +398,7 @@ jQuery(document).ready(function($) {
                     $thumbnail_id = get_post_thumbnail_id($gallery->ID);
                     $image_count = get_post_meta($gallery->ID, 'mgwpp_image_count', true) ?: 0;
                     $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'thumbnail') : '';
-                ?>
+                    ?>
                     <label class="mgwpp-gallery-item">
                         <div class="mgwpp-gallery-checkbox">
                             <input type="checkbox" name="album_galleries[]" value="<?php echo absint($gallery->ID); ?>"
@@ -440,7 +440,7 @@ jQuery(document).ready(function($) {
                 <?php $table->display(); ?>
             </form>
         </div>
-<?php
+        <?php
     }
 
     private static function get_albums_count()

@@ -17,4 +17,3 @@ $sowar = get_posts(array(
 foreach ($sowar as $gallery_image) {
     wp_delete_post(intval($gallery_image->ID), true);
 }
-

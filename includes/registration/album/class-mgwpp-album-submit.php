@@ -70,13 +70,20 @@ class MGWPP_Album_Submit
     public static function save_album_submission($post_id, $post, $update)
     {
         // Security checks
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-        if ($post->post_type !== 'mgwpp_album') return;
-        if (!current_user_can('edit_post', $post_id)) return;
-        if (
-            !isset($_POST['mgwpp_album_galleries_nonce']) ||
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        if ($post->post_type !== 'mgwpp_album') {
+            return;
+        }
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+        if (!isset($_POST['mgwpp_album_galleries_nonce']) ||
             !wp_verify_nonce(sanitize_key(wp_unslash($_POST['mgwpp_album_galleries_nonce'])), 'mgwpp_album_galleries_nonce')
-        ) return;
+        ) {
+            return;
+        }
 
         // Save galleries
         $galleries = isset($_POST['mgwpp_album_galleries']) ?
@@ -116,8 +123,7 @@ class MGWPP_Album_Submit
 
 add_action('admin_notices', function () {
     // Add nonce verification for admin notice
-    if (
-        isset($_GET['album_created']) &&
+    if (isset($_GET['album_created']) &&
         $_GET['album_created'] === '1' &&
         isset($_GET['_wpnonce']) &&
         wp_verify_nonce(sanitize_key(wp_unslash($_GET['_wpnonce'])), 'mgwpp_album_created_notice')

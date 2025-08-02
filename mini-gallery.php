@@ -202,4 +202,3 @@ add_filter('plugin_row_meta', function ($links, $file) {
     $links[] = '<a href="https://wordpress.org/support/plugin/mini-gallery/reviews/#new-post" target="_blank">Rate Plugin ★★★★★</a>';
     return $links;
 }, 10, 2);
-
